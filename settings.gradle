@@ -1,7 +1,8 @@
-
+include ':common'
 List<Module> myModuleList = new ArrayList<>()
 myModuleList.with {
     add(new Module(name: ":AppProjectStructure", path: ":app"))
+    add(new Module(name: ":Common", path: ":common"))
 
 }
 
