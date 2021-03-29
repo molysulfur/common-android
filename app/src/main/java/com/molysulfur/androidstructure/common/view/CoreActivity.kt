@@ -5,7 +5,7 @@ import com.molysulfur.library.ui.activity.ScreenOrientationHelperActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-abstract class MainActivity : ScreenOrientationHelperActivity() {
+abstract class CoreActivity : ScreenOrientationHelperActivity() {
 
     init {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
