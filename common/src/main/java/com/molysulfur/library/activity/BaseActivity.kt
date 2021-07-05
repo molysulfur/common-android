@@ -1,20 +1,20 @@
-package com.molysulfur.library.ui.activity
+package com.forexcity.common.activity
 
 import android.os.Bundle
 import android.os.PersistableBundle
+import com.akexorcist.localizationactivity.ui.LocalizationActivity
 import com.akexorcist.screenorientationhelper.ScreenOrientationHelper
-import com.molysulfur.library.utils.ScreenOrientationChangeAdapter
 
-abstract class ScreenOrientationHelperActivity : LocalizationHelperActivity() {
+
+open class BaseActivity constructor(resLayout: Int) : LocalizationActivity(resLayout), ScreenOrientationHelper.ScreenOrientationChangeListener {
+
     @Suppress("LeakingThis")
     private val helper = ScreenOrientationHelper(this)
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
-        helper.onCreate(savedInstanceState)
-        helper.setScreenOrientationChangeListener(ScreenOrientationChangeAdapter { orientation ->
-            onScreenOrientationChanged(orientation)
-        })
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        helper.onCreate(savedInstanceState);
+        helper.setScreenOrientationChangeListener(this)
     }
 
     override fun onStart() {
@@ -32,6 +32,8 @@ abstract class ScreenOrientationHelperActivity : LocalizationHelperActivity() {
         helper.onRestoreInstanceState(savedInstanceState)
     }
 
-    open fun onScreenOrientationChanged(orientation: Int) {
+    override fun onScreenOrientationChanged(orientation: Int) {
+
     }
+
 }

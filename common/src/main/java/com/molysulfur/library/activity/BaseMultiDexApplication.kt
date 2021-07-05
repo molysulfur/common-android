@@ -1,4 +1,4 @@
-package com.molysulfur.library.ui.application
+package com.forexcity.common.activity
 
 import androidx.multidex.MultiDexApplication
 

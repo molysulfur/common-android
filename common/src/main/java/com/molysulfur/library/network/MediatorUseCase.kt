@@ -1,7 +1,7 @@
-package com.molysulfur.library.domain
+package com.forexcity.common.network
 
 import androidx.lifecycle.MediatorLiveData
-import com.molysulfur.library.vm.Result
+import com.forexcity.common.result.Result
 
 /**
  * Executes business logic in its execute method and keep posting updates to the result as

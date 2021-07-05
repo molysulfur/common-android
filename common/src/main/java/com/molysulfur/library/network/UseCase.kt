@@ -1,9 +1,10 @@
-package com.molysulfur.library.domain
+package com.forexcity.common.network
 
-import com.molysulfur.library.vm.Result
+import com.forexcity.common.result.Result
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+
 
 /**
  * Executes business logic synchronously or asynchronously using Coroutines.

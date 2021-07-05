@@ -1,11 +1,12 @@
-package com.molysulfur.library.ui.application
+package com.forexcity.common.activity
 
 import android.content.Context
 import android.content.res.Configuration
+import android.content.res.Resources
 import com.akexorcist.localizationactivity.core.LocalizationApplicationDelegate
 import java.util.*
 
-abstract class LocalizationMultiDexApplication : BaseMultiDexApplication() {
+abstract class LocalizationApplication : BaseApplication() {
 
     private val localizationDelegate = LocalizationApplicationDelegate()
 
@@ -23,4 +24,7 @@ abstract class LocalizationMultiDexApplication : BaseMultiDexApplication() {
         return localizationDelegate.getApplicationContext(super.getApplicationContext())
     }
 
+    override fun getResources(): Resources {
+        return localizationDelegate.getResources(baseContext, super.getResources())
+    }
 }
