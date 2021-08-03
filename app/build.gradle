@@ -13,12 +13,6 @@ apply from: "$project.rootDir/tools/applyCommon.gradle"
 
 android {
 
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-        debug.java.srcDirs += 'src/debug/kotlin'
-        release.java.srcDirs += 'src/release/kotlin'
-    }
-
     compileSdkVersion config.compileSdkVersion
     buildToolsVersion config.buildToolsVersion
 
@@ -29,64 +23,8 @@ android {
         versionCode config.versionCode
         versionName config.versionName
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        multiDexEnabled true
-    }
-
-    signingConfigs {
-        release {
-            storeFile file(KEYSTORE_FILE)
-            storePassword KEYSTORE_PASSWORD
-            keyAlias KEYSTORE_ALIAS
-            keyPassword KEYSTORE_PASSWORD
-        }
-
-        debug {
-            keyAlias 'androiddebugkey'
-            storePassword 'android'
-            keyPassword 'android'
-        }
-    }
-
-    flavorDimensions "mode"
-
-    productFlavors {
-        production {
-            dimension "mode"
-        }
-        development {
-            dimension "mode"
-            minSdkVersion 21
-            versionNameSuffix "-debug"
-            applicationIdSuffix ".debug"
-        }
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-
-        debug {
-            signingConfig signingConfigs.debug
-            proguardFiles getDefaultProguardFile('proguard-android.txt'),
-                    "$project.rootDir/tools/rules-proguard-debug.pro"
-        }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
-    buildFeatures {
-        viewBinding true
-    }
-
-    hilt {
-        enableTransformForLocalTests = true
+        testInstrumentationRunner config.junitRunner
+        multiDexEnabled config.multiDexEnabled
     }
 
 }
