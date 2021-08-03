@@ -1,7 +1,4 @@
-package com.forexcity.common.activity
+package com.molysulfur.library.activity
 
-import androidx.multidex.MultiDexApplication
-import dagger.hilt.android.HiltAndroidApp
-
-abstract class BaseApplication : MultiDexApplication() {
+abstract class BaseApplication : LocalizationApplication() {
 }

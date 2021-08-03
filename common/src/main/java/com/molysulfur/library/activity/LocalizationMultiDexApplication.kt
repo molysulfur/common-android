@@ -1,12 +1,13 @@
-package com.forexcity.common.activity
+package com.molysulfur.library.activity
 
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
+import androidx.multidex.MultiDexApplication
 import com.akexorcist.localizationactivity.core.LocalizationApplicationDelegate
 import java.util.*
 
-abstract class LocalizationMultiDexApplication : BaseMultiDexApplication() {
+abstract class LocalizationMultiDexApplication : MultiDexApplication() {
 
     private val localizationDelegate = LocalizationApplicationDelegate()
 

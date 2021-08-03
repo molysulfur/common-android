@@ -1,5 +1,3 @@
-package com.forexcity.common.activity
+package com.molysulfur.library.activity
 
-import androidx.multidex.MultiDexApplication
-
-open class BaseMultiDexApplication : MultiDexApplication()
+open class BaseMultiDexApplication : LocalizationMultiDexApplication()

@@ -1,6 +1,6 @@
-package com.forexcity.common.network
+package com.molysulfur.library.network
 
-import com.forexcity.common.result.Result
+import com.molysulfur.library.result.Result
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import timber.log.Timber

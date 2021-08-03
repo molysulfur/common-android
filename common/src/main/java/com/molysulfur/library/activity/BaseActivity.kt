@@ -1,12 +1,12 @@
-package com.forexcity.common.activity
+package com.molysulfur.library.activity
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import com.akexorcist.localizationactivity.ui.LocalizationActivity
 import com.akexorcist.screenorientationhelper.ScreenOrientationHelper
 
 
-open class BaseActivity constructor(resLayout: Int) : LocalizationActivity(resLayout), ScreenOrientationHelper.ScreenOrientationChangeListener {
+open class BaseActivity : LocalizationActivity(),
+    ScreenOrientationHelper.ScreenOrientationChangeListener {
 
     @Suppress("LeakingThis")
     private val helper = ScreenOrientationHelper(this)

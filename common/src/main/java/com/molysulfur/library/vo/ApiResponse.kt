@@ -1,4 +1,4 @@
-package com.forexcity.common.vo
+package com.molysulfur.library.vo
 
 import retrofit2.Response
 import timber.log.Timber

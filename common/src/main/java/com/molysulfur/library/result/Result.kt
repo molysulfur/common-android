@@ -1,4 +1,4 @@
-package com.forexcity.common.result
+package com.molysulfur.library.result
 
 /*
  * Copyright 2018 Google LLC
