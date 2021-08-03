@@ -1,11 +1,11 @@
 package com.molysulfur.androidstructure
 
-import com.molysulfur.library.ui.application.LocalizationMultiDexApplication
+import com.molysulfur.library.activity.BaseApplication
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
 @HiltAndroidApp
-class MainApplication : LocalizationMultiDexApplication() {
+class MainApplication : BaseApplication() {
 
     override fun onCreate() {
         super.onCreate()

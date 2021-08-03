@@ -1,11 +1,24 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
+    id 'kotlin-parcelize'
+    id "androidx.navigation.safeargs"
+
+}
+
 apply from: "$project.rootDir/tools/applyCommon.gradle"
-apply plugin: 'kotlin-kapt'
-apply plugin: 'dagger.hilt.android.plugin'
+
 
 android {
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+        debug.java.srcDirs += 'src/debug/kotlin'
+        release.java.srcDirs += 'src/release/kotlin'
+    }
+
     compileSdkVersion config.compileSdkVersion
     buildToolsVersion config.buildToolsVersion
 
@@ -80,35 +93,46 @@ android {
 
 dependencies {
 
-    implementation project(":common")
-
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(path: ':common')
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.3.2'
-    implementation "androidx.activity:activity-ktx:1.2.2"
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.3.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.core:core-ktx:1.6.0'
+    implementation 'androidx.appcompat:appcompat:1.3.0'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation "androidx.constraintlayout:constraintlayout:2.0.4"
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
-    implementation "androidx.core:core-ktx:1.3.2"
-    implementation "androidx.fragment:fragment-ktx:1.3.2"
-    implementation "androidx.multidex:multidex:2.0.1"
-    // Dagger
-    implementation 'com.google.dagger:hilt-android:2.33-beta'
-    kapt 'com.google.dagger:hilt-compiler:2.33-beta'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    implementation 'androidx.fragment:fragment-ktx:1.3.5'
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.3.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0-alpha02"
+
+    def dagger_version = "2.37"
+    def androidx_hilt_version = "1.0.0"
+    implementation 'com.google.dagger:hilt-android:2.37'
+    kapt 'com.google.dagger:hilt-compiler:2.37'
 
     // For instrumentation tests
-    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.33-beta'
-    kaptAndroidTest 'com.google.dagger:hilt-compiler:2.33-beta'
+    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.37'
+    kaptAndroidTest 'com.google.dagger:hilt-compiler:2.37'
 
     // For local unit tests
-    testImplementation 'com.google.dagger:hilt-android-testing:2.33-beta'
-    kaptTest 'com.google.dagger:hilt-compiler:2.33-beta'
+    testImplementation 'com.google.dagger:hilt-android-testing:2.37'
+    kaptTest 'com.google.dagger:hilt-compiler:2.37'
+    def multidex_version = "2.0.1"
+    implementation "androidx.multidex:multidex:$multidex_version"
+    implementation 'com.akexorcist:localization:1.2.10'
+    implementation 'com.akexorcist:screenorientationhelper:1.0.0'
+
+    def navigation_verion = "2.4.0-alpha01"
+    implementation "androidx.navigation:navigation-runtime-ktx:$navigation_verion"
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigation_verion"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigation_verion"
+//    implementation "androidx.navigation:navigation-safe-args-gradle-plugin:$navigation_verion"
 
     implementation 'com.jakewharton.timber:timber:4.7.1'
-    implementation ('com.akexorcist:localization:1.2.7') {
-        exclude group: 'androidx.core', module: 'core'
-    }
+    implementation "io.coil-kt:coil:1.2.2"
+
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0"
 }
