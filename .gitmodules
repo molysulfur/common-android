@@ -1,0 +1,3 @@
+[submodule "common-android"]
+	path = common-android
+	url = https://github.com/molysulfur/common-android.git
