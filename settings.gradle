@@ -1,7 +1,7 @@
 
 List<Module> myModuleList = new ArrayList<>()
 myModuleList.with {
-    add(new Module(name: ":app", path: "./app"))
+    add(new Module(name: ":app", path: ":app"))
     add(new Module(name: ":common", path: "./common-android"))
 
 }
