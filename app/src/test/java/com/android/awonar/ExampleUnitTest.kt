@@ -1,4 +1,4 @@
-package com.molysulfur.androidstructure
+package com.android.awonar
 
 import org.junit.Test
 

@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="app/src/main/res/drawable/awonar_ic_visibility_off.xml" value="0.2359375" />
+        <entry key="app/src/main/res/drawable/awonar_ripple_green.xml" value="0.17592592592592593" />
+        <entry key="app/src/main/res/drawable/awonar_ripple_icon.xml" value="0.2359375" />
+        <entry key="app/src/main/res/drawable/awonar_ripple_tranparent.xml" value="0.17592592592592593" />
+        <entry key="app/src/main/res/drawable/awonar_select_password_visibility.xml" value="0.2359375" />
+        <entry key="app/src/main/res/layout/awonar_activity_auth.xml" value="0.21979166666666666" />
+        <entry key="app/src/main/res/layout/awonar_activity_main.xml" value="0.21979166666666666" />
+        <entry key="app/src/main/res/layout/awonar_fragment_signin.xml" value="0.21574074074074073" />
+        <entry key="app/src/main/res/layout/awonar_fragment_signup.xml" value="0.21979166666666666" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>

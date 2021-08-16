@@ -1,4 +1,4 @@
-package com.molysulfur.androidstructure
+package com.android.awonar
 
 import com.molysulfur.library.activity.BaseApplication
 import dagger.hilt.android.HiltAndroidApp

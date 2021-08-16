@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Awonar" />
+
+    <style name="Awonar.Default"></style>
+
+    <style name="Awonar.Text">
+        <item name="android:textColor">@color/awonar_color_variant</item>
+    </style>
+
+    <style name="Awonar.Text.Default">
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="Awonar.Text.Default.Small">
+        <item name="android:textSize">@dimen/awonar_size_text_small</item>
+    </style>
+
+    <style name="Awonar.Text.Default.Normal">
+        <item name="android:textSize">@dimen/awonar_size_text_normal</item>
+    </style>
+
+    <style name="Awonar.Text.Default.Large">
+        <item name="android:textSize">@dimen/awonar_size_text_large</item>
+    </style>
+
+    <style name="Awonar.Text.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Awonar.Text.Bold.Small">
+        <item name="android:textSize">@dimen/awonar_size_text_small</item>
+    </style>
+
+    <style name="Awonar.Text.Bold.Normal">
+        <item name="android:textSize">@dimen/awonar_size_text_normal</item>
+    </style>
+
+    <style name="Awonar.Text.Bold.Large">
+        <item name="android:textSize">@dimen/awonar_size_text_large</item>
+    </style>
+
+    <style name="Awonar.Button">
+        <item name="android:textColor">@color/awonar_color_variant</item>
+    </style>
+
+    <style name="Awonar.Button.Default" />
+
+    <style name="Awonar.Button.Default.Green">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/awonar_ripple_green</item>
+    </style>
+
+    <style name="Awonar.EditText" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox" />
+
+    <style name="Awonar.Title" parent="Awonar.Text.Bold.Large"></style>
+</resources>

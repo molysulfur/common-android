@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">AndroidStructure</string>
+    <string name="awonar_text_username">Username</string>
+    <string name="awonar_text_email">Email</string>
+    <string name="awonar_text_password">Password</string>
+    <string name="awonar_text_confirm_password">Confirm Passwrod</string>
+    <string name="awonar_text_partner_code">Code Partner</string>
+    <string name="awonar_text_create_your_account">Create your account</string>
+    <string name="awonar_text_sign_in">Sign In</string>
 </resources>

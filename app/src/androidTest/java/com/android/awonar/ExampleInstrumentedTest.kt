@@ -1,4 +1,4 @@
-package com.molysulfur.androidstructure
+package com.android.awonar
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
