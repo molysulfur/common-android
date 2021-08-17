@@ -23,20 +23,6 @@ android {
         }
     }
 
-    flavorDimensions "mode"
-
-    productFlavors {
-        production {
-            dimension "mode"
-        }
-        development {
-            dimension "mode"
-            minSdkVersion 21
-            versionNameSuffix "-debug"
-            applicationIdSuffix ".debug"
-        }
-    }
-
     buildTypes {
         release {
             minifyEnabled true

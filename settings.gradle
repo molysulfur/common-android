@@ -1,8 +1,9 @@
-
 List<Module> myModuleList = new ArrayList<>()
 myModuleList.with {
     add(new Module(name: ":app", path: ":app"))
     add(new Module(name: ":common", path: "./common-android"))
+    add(new Module(name: ":model", path: "./model"))
+    add(new Module(name: ":shared", path: "./shared"))
 
 }
 
@@ -14,9 +15,9 @@ myModuleList.forEach {
 void addProject(String name, String path) {
     include name
     if (path != null) {
-        if( path == ":app"){
+        if (path == ":app") {
             project(name).projectDir = new File('app')
-        }else{
+        } else {
             project(name).projectDir = new File(settingsDir, path)
         }
     }
@@ -26,3 +27,4 @@ class Module {
     String name
     String path
 }
+

@@ -31,7 +31,9 @@ ext.versions = [
         androidSupport    : "27.1.0",
         kotlinCoroutines  : "1.5.0",
         localization      : "1.2.10",
-        screenOrientation : "1.0.0"
+        screenOrientation : "1.0.0",
+        retrofit          : "2.9.0",
+        okhttp           : "4.9.0"
 
 ]
 
