@@ -17,5 +17,4 @@ class SignInWithPasswordUseCase @Inject constructor(
     override fun execute(parameters: SignInRequest): Flow<Result<Auth?>> =
         repository.signInWithPassword(SignInRequest("", ""))
 
-
 }

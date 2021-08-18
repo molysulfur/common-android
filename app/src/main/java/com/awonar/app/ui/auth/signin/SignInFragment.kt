@@ -9,10 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentSigninBinding
 import com.awonar.app.ui.auth.AuthViewModel
 import com.awonar.app.utils.SpannableUtil
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.regex.Pattern
 
 class SignInFragment : Fragment(R.layout.awonar_fragment_signin) {
@@ -28,6 +32,11 @@ class SignInFragment : Fragment(R.layout.awonar_fragment_signin) {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        lifecycleScope.launch {
+            authViewModel.signInWithPasswordState.collect {
+                Timber.e("$it")
+            }
+        }
         init()
         return binding.root
     }
