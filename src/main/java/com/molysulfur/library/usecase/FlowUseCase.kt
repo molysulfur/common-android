@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.molysulfur.library.network
+package com.molysulfur.library.usecase
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow

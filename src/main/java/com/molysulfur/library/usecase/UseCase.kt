@@ -1,4 +1,4 @@
-package com.molysulfur.library.network
+package com.molysulfur.library.usecase
 
 import com.molysulfur.library.result.Result
 import kotlinx.coroutines.CoroutineDispatcher
