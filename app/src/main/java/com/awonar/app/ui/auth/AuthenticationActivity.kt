@@ -1,7 +1,7 @@
-package com.android.awonar.ui.auth
+package com.awonar.app.ui.auth
 
 import android.os.Bundle
-import com.android.awonar.R
+import com.awonar.app.R
 import com.molysulfur.library.activity.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 

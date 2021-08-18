@@ -1,4 +1,4 @@
-package com.android.awonar
+package com.android.app
 
 import org.junit.Test
 

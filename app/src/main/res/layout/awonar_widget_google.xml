@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/awonar_ripple_orange"
+    android:gravity="center"
+    android:padding="@dimen/awonar_size_margin_padding_small">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/awonar_google_button_image_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:tint="@color/white"
+        app:srcCompat="@drawable/awonar_ic_google" />
+
+    <TextView
+        android:id="@+id/awonar_google_button_text_title"
+        style="@style/Awonar.Button.Default"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/awonar_size_margin_padding_small"
+        android:text="@string/awonar_text_google"
+        android:textColor="@color/white" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

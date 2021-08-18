@@ -12,7 +12,6 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
-        <item name="android:background">@color/awonar_color_background</item>
         <item name="android:textColor">@color/awonar_color_text_primary</item>
     </style>
 </resources>

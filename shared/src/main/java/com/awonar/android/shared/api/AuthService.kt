@@ -1,14 +1,20 @@
 package com.awonar.android.shared.api
 
+import com.awonar.android.model.Auth
+import com.awonar.android.model.SignInRequest
 import com.awonar.android.shared.constrant.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Body
 import retrofit2.http.GET
 
 interface AuthService {
 
+    @GET("api/v1/users/login/password")
+    fun signInWithPassword(@Body signInRequest: SignInRequest): Call<Auth>
 
     companion object {
         private const val BASE_URL = BuildConfig.BASE_URL

@@ -17,8 +17,9 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.awonar.android.shared.MainInstrumentedTest"
         consumerProguardFiles "consumer-rules.pro"
+
     }
 
     buildTypes {
@@ -38,24 +39,32 @@ android {
 
 dependencies {
 
+    implementation project(path: ':common')
     implementation project(path: ':model')
-
     implementation "androidx.core:core-ktx:$versions.androidxCore"
     implementation "androidx.appcompat:appcompat:$versions.androixAppCompat"
+    implementation 'androidx.test.ext:junit-ktx:1.1.3'
     androidTestImplementation "androidx.test.ext:junit:$versions.junitExt"
     testImplementation "junit:junit:$versions.junit"
     androidTestImplementation "androidx.test.espresso:espresso-core:$versions.expresso"
 
     implementation "com.google.dagger:hilt-android:$versions.daggerHilt"
     kapt "com.google.dagger:hilt-compiler:$versions.daggerHilt"
-    androidTestImplementation "com.google.dagger:hilt-android-testing:$versions.daggerHilt "
     kaptAndroidTest "com.google.dagger:hilt-compiler:$versions.daggerHilt "
     testImplementation "com.google.dagger:hilt-android-testing:$versions.daggerHilt"
+    androidTestImplementation "com.google.dagger:hilt-android-testing:$versions.daggerHilt"
     kaptTest "com.google.dagger:hilt-compiler:$versions.daggerHilt"
 
 
     implementation "com.squareup.okhttp3:logging-interceptor:$versions.okhttp"
     implementation "com.squareup.retrofit2:converter-gson:$versions.retrofit"
     implementation "com.squareup.retrofit2:retrofit:$versions.retrofit"
+    implementation "com.jakewharton.timber:timber:$versions.timber"
     implementation "com.orhanobut:hawk:2.0.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0"
+    testImplementation "androidx.arch.core:core-common:2.1.0"
+    testImplementation "androidx.arch.core:core-runtime:2.1.0"
+    testImplementation "androidx.arch.core:core-testing:2.1.0"
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.1'
+    testImplementation "org.mockito:mockito-core:3.11.2"
 }

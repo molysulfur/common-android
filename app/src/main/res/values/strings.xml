@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AndroidStructure</string>
+    <string name="app_name">Awonar</string>
     <string name="awonar_text_username">Username</string>
     <string name="awonar_text_email">Email</string>
     <string name="awonar_text_password">Password</string>
@@ -7,4 +7,9 @@
     <string name="awonar_text_partner_code">Code Partner</string>
     <string name="awonar_text_create_your_account">Create your account</string>
     <string name="awonar_text_sign_in">Sign In</string>
+    <string name="awonar_text_or">OR</string>
+    <string name="awonar_text_facebook">Facebook</string>
+    <string name="awonar_text_google">Google</string>
+    <string name="awonar_hint_no_account_signup">Don\'t have an account yet? Sign up!</string>
+    <string name="awonar_span_no_account_signup">Sign up!</string>
 </resources>

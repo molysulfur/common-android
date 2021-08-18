@@ -52,7 +52,19 @@
         <item name="android:background">@drawable/awonar_ripple_green</item>
     </style>
 
-    <style name="Awonar.EditText" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox" />
+    <style name="Awonar.EditText" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:textColor">@color/awonar_color_text_primary</item>
+        <item name="hintTextColor">@color/awonar_color_primary</item>
+        <item name="boxStrokeColor">@color/awonar_color_primary</item>
+        <item name="errorEnabled">true</item>
+
+    </style>
 
     <style name="Awonar.Title" parent="Awonar.Text.Bold.Large"></style>
+
+    <style name="Awonar.SubTitle" parent="Awonar.Text.Bold.Normal"></style>
+
+    <style name="Awonar.Description" parent="Awonar.Text.Default.Normal"></style>
+
+    <style name="Awonar.SubDescription" parent="Awonar.Text.Default.Small"></style>
 </resources>

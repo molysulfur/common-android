@@ -1,5 +1,5 @@
 ext.config = [
-        applicationId    : "com.android.awonar",
+        applicationId    : "com.awonar.app",
         compileSdkVersion: 30,
         minimumSdkVersion: 21,
         targetSdkVersion : 30,
