@@ -10,12 +10,11 @@ import com.molysulfur.library.vo.ApiSuccessResponse
 import kotlinx.coroutines.flow.flow
 import retrofit2.Response
 
-abstract class FlowNetwork<RequestType, ResultType, ResponseType> {
+abstract class DirectNetworkFlow<RequestType, ResultType, ResponseType> {
 
     fun asFlow() = flow {
         emit(Result.Loading)
-        val response: ApiResponse<ResponseType> = ApiResponse.create(createCall())
-        when (response) {
+        when (val response: ApiResponse<ResponseType> = ApiResponse.create(createCall())) {
             is ApiSuccessResponse -> {
                 val result: ResultType = convertToResultType(response.body)
                 emit(Result.Success(result))
