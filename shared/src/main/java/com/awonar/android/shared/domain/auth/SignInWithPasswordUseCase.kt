@@ -15,6 +15,6 @@ class SignInWithPasswordUseCase @Inject constructor(
     @IoDispatcher val ioDispatcher: CoroutineDispatcher
 ) : FlowUseCase<SignInRequest, Auth?>(ioDispatcher) {
     override fun execute(parameters: SignInRequest): Flow<Result<Auth?>> =
-        repository.signInWithPassword(SignInRequest("", ""))
+        repository.signInWithPassword(parameters)
 
 }

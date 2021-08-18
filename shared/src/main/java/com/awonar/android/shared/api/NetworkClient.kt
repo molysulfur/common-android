@@ -6,10 +6,10 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 
 class NetworkClient constructor(
-    private val accessTokenManager: AccessTokenManager,
+    private val accessTokenManager: AccessTokenManager
 ) {
 
-    fun getClient(interceptorList: List<Interceptor>): OkHttpClient {
+    fun getClient(interceptorList: List<Interceptor> = listOf()): OkHttpClient {
         return OkHttpClient().newBuilder().apply {
             addInterceptor(getRequestInterceptor())
             addInterceptor(getHttpLoggingInterceptor())

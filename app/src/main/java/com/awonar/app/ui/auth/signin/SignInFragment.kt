@@ -33,8 +33,15 @@ class SignInFragment : Fragment(R.layout.awonar_fragment_signin) {
         savedInstanceState: Bundle?
     ): View {
         lifecycleScope.launch {
-            authViewModel.signInWithPasswordState.collect {
+            authViewModel.signInError.collect {
                 Timber.e("$it")
+                if (!it.isNullOrBlank()) {
+                    binding.awonarSigninInputEmail.error = getString(R.string.awonar_error_username)
+                    binding.awonarSigninInputPassword.error =
+                        getString(R.string.awonar_error_password)
+                }
+            }
+            authViewModel.signInWithPasswordState.collect {
             }
         }
         init()
@@ -44,19 +51,24 @@ class SignInFragment : Fragment(R.layout.awonar_fragment_signin) {
     private fun init() {
         binding.awonarSigninButtonSignin.setOnClickListener {
             val password: String = binding.awonarSigninInputPassword.editText?.text.toString()
+            val username: String = binding.awonarSigninInputEmail.editText?.text.toString()
             val regex: Pattern = Pattern.compile("[^A-Za-z0-9]")
-            if (regex.matcher(password).find()) {
-                binding.awonarSigninInputPassword.error = "Only A-Z,a-z,0-9"
-                return@setOnClickListener;
+            if (username.isNullOrBlank()) {
+                binding.awonarSigninInputEmail.error = getString(R.string.awonar_error_username)
+                return@setOnClickListener
             }
+            if (regex.matcher(password).find()) {
+                binding.awonarSigninInputPassword.error = getString(R.string.awonar_error_password)
+                return@setOnClickListener
+            }
+            binding.awonarSigninInputEmail.error = ""
             binding.awonarSigninInputPassword.error = ""
-
+            authViewModel.signIn(username = username, password = password)
         }
         binding.awonarSigninButtonFacebook.setOnClickListener {
-            authViewModel.testViewModel()
         }
 
-        binding.awonarSigninButtonGoogle.setOnClickListener {
+        binding.awonarSigninButtonGoogle.setOnClickListener{
 
         }
         binding.awonarSigninTextNoAccount.apply {

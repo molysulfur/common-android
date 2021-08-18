@@ -1,6 +1,10 @@
 package com.awonar.android.shared.di
 
+import android.app.Application
 import com.awonar.android.shared.api.AuthService
+import com.awonar.android.shared.api.NetworkClient
+import com.awonar.android.shared.db.hawk.AccessTokenManager
+import com.awonar.android.shared.utils.HawkUtil
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,7 +17,16 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideUnsplashService(): AuthService {
-        return AuthService.create()
+    fun provideAccessTokenManager(app: Application) = AccessTokenManager(hawk = HawkUtil(app))
+
+    @Singleton
+    @Provides
+    fun provideNetworkClient(accessTokenManager: AccessTokenManager) =
+        NetworkClient(accessTokenManager)
+
+    @Singleton
+    @Provides
+    fun provideUnsplashService(client: NetworkClient): AuthService {
+        return AuthService.create(client)
     }
 }

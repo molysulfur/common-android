@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.awonar.android.model.Auth
 import com.awonar.android.model.SignInRequest
 import com.awonar.android.shared.domain.auth.SignInWithPasswordUseCase
+import com.molysulfur.library.result.Result
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -20,12 +21,18 @@ class AuthViewModel @Inject constructor(
     private val _signInWithPasswordState = MutableStateFlow<Auth?>(null)
     val signInWithPasswordState: StateFlow<Auth?> get() = _signInWithPasswordState
 
-    fun testViewModel() {
+    private val _signInError = MutableStateFlow("")
+    val signInError: StateFlow<String> get() = _signInError
+
+    fun signIn(username: String, password: String) {
         viewModelScope.launch {
-            signInWithPasswordUseCase(SignInRequest("", "")).collect {
+            signInWithPasswordUseCase(SignInRequest(username, password)).collect {
                 val data = it.successOr(null)
-                Timber.e("$data")
-                _signInWithPasswordState.value = data
+                if (data != null) {
+                    _signInWithPasswordState.value = data
+                } else {
+                    _signInError.value = "Error"
+                }
             }
         }
     }

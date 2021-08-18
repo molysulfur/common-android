@@ -19,35 +19,13 @@ interface AuthService {
     fun signInWithPassword(@Body signInRequest: SignInRequest): Call<Auth?>
 
     companion object {
-        private const val BASE_URL = BuildConfig.BASE_URL
 
-        fun create(): AuthService {
-            val logger =
-                HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BASIC }
-
-            val client = OkHttpClient.Builder()
-                .addInterceptor(logger)
-                .addInterceptor(getRequestInterceptor())
-                .build()
-
-            return Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-                .create(AuthService::class.java)
-        }
-
-        private fun getRequestInterceptor(): Interceptor {
-            return Interceptor { chain ->
-                val request = chain.request().newBuilder().apply {
-                    addHeader("Content-Type", "application/json;charset=utf-8")
-                    addHeader("Accept", "application/json;")
-                }.build()
-                chain.proceed(request)
-            }
-        }
-
+        fun create(client: NetworkClient): AuthService = Retrofit.Builder()
+            .baseUrl(BuildConfig.BASE_URL)
+            .client(client.getClient())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(AuthService::class.java)
 
     }
 }
