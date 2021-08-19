@@ -31,7 +31,7 @@ class LauncherActivity : BaseActivity() {
                 Timber.e("$it")
                 when (it) {
                     false -> openActivityAndClearThisActivity(AuthenticationActivity::class.java)
-                    true -> openActivityAndClearThisActivity(MainActivity::class.java)
+                    true -> openActivityAndClearThisActivity(AuthenticationActivity::class.java)
                 }
             }
         }

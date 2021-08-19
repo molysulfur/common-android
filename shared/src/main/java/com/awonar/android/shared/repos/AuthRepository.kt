@@ -67,5 +67,9 @@ class AuthRepository @Inject constructor(
 
     }.asFlow()
 
+    fun forgotPassword() {
+
+    }
+
 
 }

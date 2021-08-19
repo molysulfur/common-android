@@ -43,9 +43,9 @@ class TextDividerView : BaseViewGroup {
     }
 
     override fun saveInstanceState(state: Parcelable?): Parcelable? {
-        val ss = state as SavedState
-        ss.text = text
-        ss.textRes = textRes
+        val ss = state?.let { SavedState(it) }
+        ss?.text = text
+        ss?.textRes = textRes
         return ss
     }
 

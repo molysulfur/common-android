@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentSigninBinding
 import com.awonar.app.ui.auth.AuthViewModel
@@ -19,7 +20,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.regex.Pattern
 
-class SignInFragment : Fragment(R.layout.awonar_fragment_signin) {
+class SignInFragment : Fragment() {
 
     private val binding: AwonarFragmentSigninBinding by lazy {
         AwonarFragmentSigninBinding.inflate(layoutInflater)
@@ -34,7 +35,6 @@ class SignInFragment : Fragment(R.layout.awonar_fragment_signin) {
     ): View {
         lifecycleScope.launch {
             authViewModel.signInError.collect {
-                Timber.e("$it")
                 if (!it.isNullOrBlank()) {
                     binding.awonarSigninInputEmail.error = getString(R.string.awonar_error_username)
                     binding.awonarSigninInputPassword.error =
@@ -66,6 +66,9 @@ class SignInFragment : Fragment(R.layout.awonar_fragment_signin) {
             authViewModel.signIn(username = username, password = password)
         }
         binding.awonarSigninButtonFacebook.setOnClickListener {
+        }
+        binding.awonarSigninButtonForgot.setOnClickListener {
+            findNavController().navigate(R.id.action_signInFragment_to_forgotPasswordFragment)
         }
 
         binding.awonarSigninButtonGoogle.setOnClickListener{
