@@ -104,7 +104,7 @@ abstract class BaseViewGroup : FrameLayout {
         }
     }
 
-    abstract class ChildSavedState : View.BaseSavedState {
+    abstract class ChildSavedState : AbsSavedState {
         var childrenStates: SparseArray<Any>? = null
 
         constructor(superState: Parcelable) : super(superState)
