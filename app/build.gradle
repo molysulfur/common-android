@@ -27,14 +27,12 @@ android {
     }
 
     productFlavors {
-        flavorDimensions "development"
+        flavorDimensions("development")
         development {
-            dimension "development"
             minSdkVersion config.minSdkVersion
-            versionNameSuffix "-debug"
-            applicationIdSuffix ".debug"
+            applicationIdSuffix ".dev"
         }
-        flavorDimensions "production"
+        flavorDimensions("production")
         production {
             dimension "production"
         }
