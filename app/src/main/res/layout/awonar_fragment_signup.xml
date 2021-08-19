@@ -16,14 +16,36 @@
             android:layout_height="match_parent">
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_signup_text_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/awonar_size_margin_padding_normal"
+                android:text="Easy and smarter investing in multiple types of assets. Choose an investment product to start with Awonar."
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/awonar_signup_image_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_signup_text_header"
+                app:srcCompat="@drawable/awonar_ic_full_logo" />
+
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/awonar_signup_text_title"
                 style="@style/Awonar.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/awonar_size_margin_padding_large"
+                android:gravity="center"
                 android:text="@string/awonar_text_create_your_account"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/awonar_signup_image_logo" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/awonar_signup_input_username"
@@ -56,7 +78,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
-
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/awonar_signup_input_password"
@@ -110,7 +131,8 @@
                 android:id="@+id/awonar_signup_checkbox_agree"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="CheckBox"
+                android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+                android:text="I agree that my information will be used in accordance with the Policy Privacy and Cookie Policy"
                 app:layout_constraintTop_toBottomOf="@+id/awonar_signup_input_partner_code" />
 
             <androidx.appcompat.widget.AppCompatButton
@@ -124,6 +146,43 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/awonar_signup_checkbox_agree" />
+
+            <com.awonar.app.widget.TextDividerView
+                android:id="@+id/awonar_signup_text_divider_or"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_signup_button_agree"
+                app:textDividerView_setText="@string/awonar_text_or" />
+
+            <com.awonar.app.widget.FaceBookButton
+                android:id="@+id/awonar_signup_button_facebook"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_signup_text_divider_or" />
+
+            <com.awonar.app.widget.GoogleButton
+                android:id="@+id/awonar_signup_button_google"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_signup_button_facebook" />
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_signup_text_cert"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/awonar_size_margin_padding_normal"
+                android:text="Trade Responsibly: Trading CFDs involves significant risk of loss. Read Awonar’s ‘Risk Disclosure Statement’. Awonar Global Markets Ltd is regulated by the SCB (license no. SIA-F184) and is part of Awonar Group Limited. Other subsidiaries of Awonar Group Limited are regulated by the CySEC, FCA and DFSA."
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_signup_button_google" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>

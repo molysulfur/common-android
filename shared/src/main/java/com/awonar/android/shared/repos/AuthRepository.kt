@@ -25,13 +25,10 @@ class AuthRepository @Inject constructor(
             override fun convertToResultType(response: Auth?): Auth? = response
 
             override fun onFetchFailed(errorMessage: String) {
-                Timber.e(errorMessage)
+                println(errorMessage)
             }
 
-            override fun shouldFresh(data: Auth?): Boolean {
-                Timber.e("${data == null} || ${data?.isExpireToken()}")
-                return data == null || data.isExpireToken()
-            }
+            override fun shouldFresh(data: Auth?): Boolean = true
 
             override fun loadFromDb(): Flow<Auth?> = flow {
                 emit(accessTokenManager.load())
@@ -45,6 +42,30 @@ class AuthRepository @Inject constructor(
 
         }.asFlow()
     }
+
+    fun autoSignIn() = object : NetworkFlow<Unit, Auth?, Auth?>() {
+        override fun shouldFresh(data: Auth?): Boolean = data == null || data.isExpireToken()
+
+        override fun createCall(): Response<Auth?> =
+            authService.getRefreshToken(accessTokenManager.load()).execute()
+
+        override fun convertToResultType(response: Auth?): Auth? = response
+
+        override fun loadFromDb(): Flow<Auth?> = flow {
+            emit(accessTokenManager.load())
+        }
+
+        override fun saveToDb(data: Auth?) {
+            if (data != null) {
+                accessTokenManager.save(data)
+            }
+        }
+
+        override fun onFetchFailed(errorMessage: String) {
+            println(errorMessage)
+        }
+
+    }.asFlow()
 
 
 }

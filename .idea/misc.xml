@@ -12,9 +12,10 @@
         <entry key="app/src/main/res/drawable/awonar_ripple_tranparent.xml" value="0.17592592592592593" />
         <entry key="app/src/main/res/drawable/awonar_select_password_visibility.xml" value="0.2359375" />
         <entry key="app/src/main/res/layout/awonar_activity_auth.xml" value="0.21979166666666666" />
+        <entry key="app/src/main/res/layout/awonar_activity_launcher.xml" value="0.16927083333333334" />
         <entry key="app/src/main/res/layout/awonar_activity_main.xml" value="0.21979166666666666" />
-        <entry key="app/src/main/res/layout/awonar_fragment_signin.xml" value="0.15021459227467812" />
-        <entry key="app/src/main/res/layout/awonar_fragment_signup.xml" value="0.21979166666666666" />
+        <entry key="app/src/main/res/layout/awonar_fragment_signin.xml" value="0.165" />
+        <entry key="app/src/main/res/layout/awonar_fragment_signup.xml" value="0.22436459246275198" />
         <entry key="app/src/main/res/layout/awonar_widget_facebook.xml" value="0.1" />
         <entry key="app/src/main/res/layout/awonar_widget_google.xml" value="0.14166666666666666" />
         <entry key="app/src/main/res/layout/awonar_widget_text_divider.xml" value="0.32386363636363635" />

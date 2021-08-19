@@ -18,6 +18,9 @@ interface AuthService {
     @POST("api/v1/users/login/password")
     fun signInWithPassword(@Body signInRequest: SignInRequest): Call<Auth?>
 
+    @POST("api/v1/users/token")
+    fun getRefreshToken(@Body auth: Auth): Call<Auth?>
+
     companion object {
 
         fun create(client: NetworkClient): AuthService = Retrofit.Builder()
