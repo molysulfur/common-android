@@ -17,7 +17,6 @@ import timber.log.Timber
 abstract class NetworkFlow<RequestType, ResultType, ResponseType> {
 
     fun asFlow() = flow {
-        Timber.e("asFlow")
         emit(Result.Loading)
         loadFromDb().collect { data: ResultType ->
             if (shouldFresh(data)) {
@@ -40,7 +39,7 @@ abstract class NetworkFlow<RequestType, ResultType, ResponseType> {
                     }
                 }
             } else {
-                Result.Success(data)
+                emit(Result.Success(data))
             }
         }
 
