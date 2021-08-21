@@ -2,27 +2,34 @@ package com.awonar.app.ui.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.awonar.android.exception.UnAuthenticationIsExistEmailException
 import com.awonar.android.model.Auth
+import com.awonar.android.model.SignInGoogleRequest
 import com.awonar.android.model.SignInRequest
 import com.awonar.android.shared.domain.auth.AutoSignInUseCase
+import com.awonar.android.shared.domain.auth.SignInWithGoogleUseCase
 import com.awonar.android.shared.domain.auth.SignInWithPasswordUseCase
 import com.awonar.android.shared.utils.WhileViewSubscribed
+import com.molysulfur.library.result.Result
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    val signInWithPasswordUseCase: SignInWithPasswordUseCase,
-    val autoSignInUseCase: AutoSignInUseCase
+    private val signInWithPasswordUseCase: SignInWithPasswordUseCase,
+    private val signInWithGoogleUseCase: SignInWithGoogleUseCase,
+    private val autoSignInUseCase: AutoSignInUseCase
 ) : ViewModel() {
 
-
-    private val _signInWithPasswordState = MutableStateFlow<Auth?>(null)
-    val signInWithPasswordState: StateFlow<Auth?> get() = _signInWithPasswordState
-
+    val goToLinkAccountState = MutableStateFlow<String?>("")
+    private val _goToSignUpState = MutableStateFlow(false)
+    val goToSignUpState: StateFlow<Boolean> get() = _goToSignUpState
+    private val _signInState = MutableStateFlow<Auth?>(null)
+    val signInState: StateFlow<Auth?> get() = _signInState
     private val _signInError = MutableStateFlow("")
     val signInError: StateFlow<String> get() = _signInError
 
@@ -38,9 +45,38 @@ class AuthViewModel @Inject constructor(
             signInWithPasswordUseCase(SignInRequest(username, password)).collect {
                 val data = it.successOr(null)
                 if (data != null) {
-                    _signInWithPasswordState.value = data
+                    _signInState.value = data
                 } else {
                     _signInError.value = "Error"
+                }
+            }
+        }
+    }
+
+    fun signInWithGoogle(email: String?, token: String?, id: String?) {
+        viewModelScope.launch {
+            signInWithGoogleUseCase(
+                SignInGoogleRequest(
+                    email = email,
+                    token = token,
+                    id = id
+                )
+            ).collect { result ->
+                when (result) {
+                    is Result.Success -> {
+                        _signInState.value = result.data
+                    }
+                    is Result.Error -> {
+                        if (result.exception is UnAuthenticationIsExistEmailException) {
+                            Timber.e("$result $email")
+                            goToLinkAccountState.value = (email)
+                        } else {
+                            _goToSignUpState.value = true
+                        }
+                    }
+                    is Result.Loading -> {
+
+                    }
                 }
             }
         }

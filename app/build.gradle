@@ -76,5 +76,5 @@ dependencies {
     implementation "io.coil-kt:coil:$versions.coil"
     implementation "com.akexorcist:localization:$versions.localization"
     implementation "com.akexorcist:screenorientationhelper:$versions.screenOrientation"
-
+    implementation 'com.google.android.gms:play-services-auth:19.2.0'
 }

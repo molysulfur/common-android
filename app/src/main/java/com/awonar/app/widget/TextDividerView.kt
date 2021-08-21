@@ -50,7 +50,7 @@ class TextDividerView : BaseViewGroup {
     }
 
     override fun restoreInstanceState(state: Parcelable) {
-        val ss = onRestoreInstanceState(state) as SavedState
+        val ss = state as SavedState
         text = ss.text
         textRes = ss.textRes
         updateText()

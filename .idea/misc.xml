@@ -16,6 +16,7 @@
         <entry key="app/src/main/res/layout/awonar_activity_launcher.xml" value="0.16927083333333334" />
         <entry key="app/src/main/res/layout/awonar_activity_main.xml" value="0.21979166666666666" />
         <entry key="app/src/main/res/layout/awonar_fragment_forgot_password.xml" value="0.309255079006772" />
+        <entry key="app/src/main/res/layout/awonar_fragment_link_account.xml" value="0.2833333333333333" />
         <entry key="app/src/main/res/layout/awonar_fragment_signin.xml" value="0.28541666666666665" />
         <entry key="app/src/main/res/layout/awonar_fragment_signup.xml" value="0.22436459246275198" />
         <entry key="app/src/main/res/layout/awonar_widget_facebook.xml" value="0.1" />

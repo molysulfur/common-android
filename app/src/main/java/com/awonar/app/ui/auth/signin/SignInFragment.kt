@@ -9,16 +9,29 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentSigninBinding
 import com.awonar.app.ui.auth.AuthViewModel
 import com.awonar.app.utils.SpannableUtil
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.regex.Pattern
+import android.content.Intent
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.os.bundleOf
+import com.awonar.app.ui.main.MainActivity
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
+import com.molysulfur.library.extension.openActivityAndClearAllActivity
+import com.molysulfur.library.extension.openActivityAndClearThisActivity
+import com.molysulfur.library.extension.toast
+import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
+
 
 class SignInFragment : Fragment() {
 
@@ -26,43 +39,105 @@ class SignInFragment : Fragment() {
         AwonarFragmentSigninBinding.inflate(layoutInflater)
     }
 
-    val authViewModel: AuthViewModel by activityViewModels()
+    private lateinit var mGoogleSignInClient: GoogleSignInClient
+    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
+
+    private val authViewModel: AuthViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        lifecycleScope.launch {
-            authViewModel.signInError.collect {
-                if (!it.isNullOrBlank()) {
-                    binding.awonarSigninInputEmail.error = getString(R.string.awonar_error_username)
-                    binding.awonarSigninInputPassword.error =
-                        getString(R.string.awonar_error_password)
-                }
-            }
-            authViewModel.signInWithPasswordState.collect {
-            }
-        }
+        setupGoogleSignIn()
         init()
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        observe()
+    }
+    private fun observe() {
+        launchAndRepeatWithViewLifecycle {
+            authViewModel.goToLinkAccountState.collect { email ->
+                if (!email.isNullOrBlank()) {
+                    findNavController().navigate(
+                        R.id.action_signInFragment_to_linkAccountFragment,
+                        bundleOf(
+                            "email" to email
+                        )
+                    )
+                }
+            }
+        }
+        launchAndRepeatWithViewLifecycle {
+            authViewModel.signInError.collect { message ->
+                toast(message)
+                if (!message.isNullOrBlank()) {
+                    binding.awonarSigninInputEmail.error =
+                        getString(R.string.awonar_error_username)
+                    binding.awonarSigninInputPassword.error =
+                        getString(R.string.awonar_error_password)
+                }
+            }
+        }
+        launchAndRepeatWithViewLifecycle {
+            authViewModel.signInState.collect {
+                openActivityAndClearAllActivity(MainActivity::class.java)
+            }
+        }
+        launchAndRepeatWithViewLifecycle {
+            authViewModel.goToSignUpState.collect { shouldGo ->
+                Timber.e("$shouldGo")
+                if (shouldGo) {
+                    findNavController().navigate(R.id.action_signInFragment_to_signUpFragment)
+                }
+            }
+        }
+    }
+
+
+    private fun setupGoogleSignIn() {
+        val gso: GoogleSignInOptions =
+            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.awonar_google_server_client_id))
+                .requestEmail()
+                .build()
+        mGoogleSignInClient = GoogleSignIn.getClient(context ?: requireContext(), gso)
+    }
+
+    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
+        try {
+            val account = completedTask.getResult(ApiException::class.java)
+            authViewModel.signInWithGoogle(
+                email = account.email,
+                token = account.idToken,
+                id = account.id
+            )
+        } catch (e: ApiException) {
+            toast("Google sign in has something wrong!")
+        }
+    }
+
     private fun init() {
+        activityResultLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                handleSignInResult(task)
+            }
+
         binding.awonarSigninButtonSignin.setOnClickListener {
             val password: String = binding.awonarSigninInputPassword.editText?.text.toString()
             val username: String = binding.awonarSigninInputEmail.editText?.text.toString()
-            val regex: Pattern = Pattern.compile("[^A-Za-z0-9]")
             if (username.isNullOrBlank()) {
                 binding.awonarSigninInputEmail.error = getString(R.string.awonar_error_username)
                 return@setOnClickListener
             }
-            if (regex.matcher(password).find()) {
+            if (password.isNullOrBlank()) {
                 binding.awonarSigninInputPassword.error = getString(R.string.awonar_error_password)
                 return@setOnClickListener
             }
-            binding.awonarSigninInputEmail.error = ""
-            binding.awonarSigninInputPassword.error = ""
             authViewModel.signIn(username = username, password = password)
         }
         binding.awonarSigninButtonFacebook.setOnClickListener {
@@ -71,8 +146,12 @@ class SignInFragment : Fragment() {
             findNavController().navigate(R.id.action_signInFragment_to_forgotPasswordFragment)
         }
 
-        binding.awonarSigninButtonGoogle.setOnClickListener{
+        binding.awonarSigninButtonGoogle.setOnClickListener {
+            mGoogleSignInClient.signOut().addOnCompleteListener {
+                val signInIntent: Intent = mGoogleSignInClient.signInIntent
+                activityResultLauncher.launch(signInIntent)
 
+            }
         }
         binding.awonarSigninTextNoAccount.apply {
             text = SpannableUtil.getDontHaveAccountSpannable(context ?: requireContext(),
@@ -87,8 +166,11 @@ class SignInFragment : Fragment() {
                 })
             movementMethod = LinkMovementMethod()
         }
-
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        activityResultLauncher.unregister()
+    }
 
 }

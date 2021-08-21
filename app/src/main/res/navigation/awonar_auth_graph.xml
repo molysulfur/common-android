@@ -12,10 +12,16 @@
         tools:layout="@layout/awonar_fragment_signin">
         <action
             android:id="@+id/action_signInFragment_to_signUpFragment"
-            app:destination="@id/signUpFragment" />
+            app:destination="@id/signUpFragment"
+            app:popUpTo="@+id/signInFragment" />
         <action
             android:id="@+id/action_signInFragment_to_forgotPasswordFragment"
-            app:destination="@id/forgotPasswordFragment" />
+            app:destination="@id/forgotPasswordFragment"
+            app:popUpTo="@+id/signInFragment" />
+        <action
+            android:id="@+id/action_signInFragment_to_linkAccountFragment"
+            app:destination="@id/linkAccountFragment"
+            app:popUpTo="@+id/signInFragment" />
     </fragment>
 
     <fragment
@@ -28,5 +34,16 @@
         android:name="com.awonar.app.ui.auth.forgot.ForgotPasswordFragment"
         android:label="ForgotPasswordFragment"
         tools:layout="@layout/awonar_fragment_forgot_password" />
+
+    <fragment
+        android:id="@+id/linkAccountFragment"
+        android:name="com.awonar.app.ui.auth.linkaccount.LinkAccountFragment"
+        android:label="SignUpFragment"
+        tools:layout="@layout/awonar_fragment_link_account">
+        <argument
+            android:name="email"
+            app:argType="string"
+            android:defaultValue="0" />
+    </fragment>
 
 </navigation>
