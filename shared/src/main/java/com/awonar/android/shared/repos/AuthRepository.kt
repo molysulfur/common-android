@@ -3,6 +3,7 @@ package com.awonar.android.shared.repos
 import com.awonar.android.model.Auth
 import com.awonar.android.model.SignInGoogleRequest
 import com.awonar.android.model.SignInRequest
+import com.awonar.android.model.SignOutResponse
 import com.awonar.android.shared.api.AuthService
 import com.awonar.android.shared.db.hawk.AccessTokenManager
 import com.molysulfur.library.network.DirectNetworkFlow
@@ -99,4 +100,24 @@ class AuthRepository @Inject constructor(
 
         }.asFlow()
 
+    fun signOut(): Flow<Result<Auth?>> = object : NetworkFlow<Unit, Auth?, SignOutResponse?>() {
+        override fun shouldFresh(data: Auth?): Boolean = true
+
+        override fun createCall(): Response<SignOutResponse?> = authService.signOut().execute()
+
+        override fun convertToResultType(response: SignOutResponse?): Auth? = null
+
+        override fun loadFromDb(): Flow<Auth?> = flow {
+            emit(accessTokenManager.load())
+        }
+
+        override fun saveToDb(data: Auth?) {
+            accessTokenManager.clearToken()
+        }
+
+        override fun onFetchFailed(errorMessage: String) {
+            println(errorMessage)
+        }
+
+    }.asFlow()
 }

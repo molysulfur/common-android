@@ -111,8 +111,8 @@ class SignInFragment : Fragment() {
         }
         launchAndRepeatWithViewLifecycle {
             authViewModel.signInError.collect { message ->
-                toast(message)
                 if (!message.isNullOrBlank()) {
+                    toast(message)
                     binding.awonarSigninInputEmail.error =
                         getString(R.string.awonar_error_username)
                     binding.awonarSigninInputPassword.error =

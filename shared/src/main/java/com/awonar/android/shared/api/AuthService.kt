@@ -3,6 +3,7 @@ package com.awonar.android.shared.api
 import com.awonar.android.model.Auth
 import com.awonar.android.model.SignInGoogleRequest
 import com.awonar.android.model.SignInRequest
+import com.awonar.android.model.SignOutResponse
 import com.awonar.android.shared.constrant.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -12,6 +13,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface AuthService {
@@ -27,6 +29,9 @@ interface AuthService {
 
     @POST("api/v1/users/token")
     fun getRefreshToken(@Body auth: Auth): Call<Auth?>
+
+    @POST("api/v1/users/logout")
+    fun signOut(): Call<SignOutResponse?>
 
     companion object {
 

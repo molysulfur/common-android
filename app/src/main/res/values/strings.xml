@@ -19,4 +19,6 @@
     <string name="awonar_text_sent">Sent</string>
     <string name="awonar_signin_to_your_account">Sign in to your account</string>
     <string name="awonar_text_link_account">Link Account</string>
+
+    <string name="awonar_example_name">John Smith</string>
 </resources>

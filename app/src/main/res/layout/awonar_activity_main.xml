@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
+
     <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -20,7 +21,7 @@
                     android:id="@+id/awonar_main_toolbar_header"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:menu="@menu/awonar_toobar_main_menu"
+                    app:menu="@menu/awonar_menu_toobar_main"
                     app:navigationIcon="@drawable/awonar_ic_hamburger"
                     app:title="Main Activity" />
 
@@ -37,9 +38,12 @@
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
         <com.google.android.material.navigation.NavigationView
+            android:id="@+id/awonar_main_drawer_navigation_main"
+            style="@style/Awonar.NavigationView"
             android:layout_width="wrap_content"
-            app:headerLayout=""
             android:layout_height="match_parent"
-            android:layout_gravity="start" />
+            android:layout_gravity="start"
+            app:headerLayout="@layout/awonar_drawer_header_main"
+            app:menu="@menu/awonar_menu_drawer_main" />
     </androidx.drawerlayout.widget.DrawerLayout>
 </layout>

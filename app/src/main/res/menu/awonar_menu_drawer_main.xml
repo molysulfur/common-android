@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/awonar_menu_drawer_main_group"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/awonar_menu_drawer_main_watchlist"
+            android:checked="true"
+            android:title="Watchlist" />
+        <item
+            android:id="@+id/awonar_menu_drawer_main_portfolio"
+            android:title="Portfolio" />
+        <item
+            android:id="@+id/awonar_menu_drawer_main_news_feed"
+            android:title="News Feed" />
+
+        <item
+            android:id="@+id/awonar_menu_drawer_main_market"
+            android:title="Market" />
+
+        <item
+            android:id="@+id/subtitle"
+            android:title="Helper and Support">
+            <menu>
+                <item
+                    android:id="@+id/awonar_menu_drawer_main_logout"
+                    android:title="Logout" />
+
+            </menu>
+        </item>
+    </group>
+
+</menu>

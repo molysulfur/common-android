@@ -9,6 +9,7 @@ import com.awonar.android.model.SignInRequest
 import com.awonar.android.shared.domain.auth.AutoSignInUseCase
 import com.awonar.android.shared.domain.auth.SignInWithGoogleUseCase
 import com.awonar.android.shared.domain.auth.SignInWithPasswordUseCase
+import com.awonar.android.shared.domain.auth.SignOutUseCase
 import com.awonar.android.shared.utils.WhileViewSubscribed
 import com.molysulfur.library.result.Result
 import com.molysulfur.library.result.successOr
@@ -22,7 +23,8 @@ import javax.inject.Inject
 class AuthViewModel @Inject constructor(
     private val signInWithPasswordUseCase: SignInWithPasswordUseCase,
     private val signInWithGoogleUseCase: SignInWithGoogleUseCase,
-    private val autoSignInUseCase: AutoSignInUseCase
+    private val autoSignInUseCase: AutoSignInUseCase,
+    private val signOutUseCase: SignOutUseCase
 ) : ViewModel() {
 
     val goToLinkAccountState = MutableStateFlow<String?>("")
@@ -32,6 +34,11 @@ class AuthViewModel @Inject constructor(
     val signInState: StateFlow<Auth?> get() = _signInState
     private val _signInError = MutableStateFlow("")
     val signInError: StateFlow<String> get() = _signInError
+    private val _signInLoading = MutableStateFlow<Unit?>(null)
+    val signInLoading: StateFlow<Unit?> get() = _signInLoading
+    private val _signOutState = MutableStateFlow<Unit?>(null)
+    val signOutState: StateFlow<Unit?> get() = _signOutState
+
 
     val autoSignIn: StateFlow<Boolean?> = flow {
         autoSignInUseCase(Unit).collect {
@@ -76,6 +83,26 @@ class AuthViewModel @Inject constructor(
                     }
                     is Result.Loading -> {
 
+                    }
+                }
+            }
+        }
+    }
+
+    fun signOut() {
+        viewModelScope.launch {
+            signOutUseCase(Unit).collect {
+                Timber.e("$it")
+                when (it) {
+                    is Result.Success -> {
+                        if (it.data)
+                            _signOutState.value = Unit
+                    }
+                    is Result.Error -> {
+                        _signInError.value = "${it.exception.message}"
+                    }
+                    is Result.Loading -> {
+                        _signInLoading.value = Unit
                     }
                 }
             }
