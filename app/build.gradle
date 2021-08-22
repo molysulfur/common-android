@@ -77,4 +77,5 @@ dependencies {
     implementation "com.akexorcist:localization:$versions.localization"
     implementation "com.akexorcist:screenorientationhelper:$versions.screenOrientation"
     implementation 'com.google.android.gms:play-services-auth:19.2.0'
+    implementation 'com.facebook.android:facebook-login:11.1.0'
 }

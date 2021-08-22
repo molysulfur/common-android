@@ -23,17 +23,30 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
 import com.awonar.app.ui.main.MainActivity
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.molysulfur.library.extension.openActivityAndClearAllActivity
-import com.molysulfur.library.extension.openActivityAndClearThisActivity
 import com.molysulfur.library.extension.toast
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 
 
 class SignInFragment : Fragment() {
+
+    private lateinit var mCallbackManager: CallbackManager
+
+    companion object {
+        private const val EMAIL = "email"
+        private const val USER_POSTS = "user_posts"
+        private const val AUTH_TYPE = "rerequest"
+    }
 
     private val binding: AwonarFragmentSigninBinding by lazy {
         AwonarFragmentSigninBinding.inflate(layoutInflater)
@@ -58,6 +71,31 @@ class SignInFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         observe()
     }
+
+    private fun setFacebookSignIn() {
+        binding.awonarSigninButtonFacebook.setPermissions(arrayListOf(EMAIL, USER_POSTS))
+        binding.awonarSigninButtonFacebook.authType = AUTH_TYPE
+        mCallbackManager = CallbackManager.Factory.create()
+        LoginManager.getInstance()
+            .registerCallback(mCallbackManager, object : FacebookCallback<LoginResult> {
+                override fun onSuccess(result: LoginResult?) {
+                    Timber.e("${result?.accessToken}")
+                }
+
+                override fun onCancel() {
+                    Timber.e("cancel")
+                }
+
+                override fun onError(error: FacebookException?) {
+                    Timber.e("${error?.message}")
+                }
+
+            })
+        Timber.e(
+            AccessToken.getCurrentAccessToken()?.token?:""
+        )
+    }
+
     private fun observe() {
         launchAndRepeatWithViewLifecycle {
             authViewModel.goToLinkAccountState.collect { email ->
@@ -84,7 +122,9 @@ class SignInFragment : Fragment() {
         }
         launchAndRepeatWithViewLifecycle {
             authViewModel.signInState.collect {
-                openActivityAndClearAllActivity(MainActivity::class.java)
+                if (it != null) {
+                    openActivityAndClearAllActivity(MainActivity::class.java)
+                }
             }
         }
         launchAndRepeatWithViewLifecycle {
@@ -141,6 +181,7 @@ class SignInFragment : Fragment() {
             authViewModel.signIn(username = username, password = password)
         }
         binding.awonarSigninButtonFacebook.setOnClickListener {
+            setFacebookSignIn()
         }
         binding.awonarSigninButtonForgot.setOnClickListener {
             findNavController().navigate(R.id.action_signInFragment_to_forgotPasswordFragment)
@@ -172,5 +213,11 @@ class SignInFragment : Fragment() {
         super.onDestroy()
         activityResultLauncher.unregister()
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        mCallbackManager.onActivityResult(requestCode, resultCode, data)
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
 
 }

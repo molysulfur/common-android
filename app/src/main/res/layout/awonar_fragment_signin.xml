@@ -109,7 +109,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/awonar_signin_button_signin"
                 app:textDividerView_setText="@string/awonar_text_or" />
 
-            <com.awonar.app.widget.FaceBookButton
+            <com.facebook.login.widget.LoginButton
                 android:id="@+id/awonar_signin_button_facebook"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -1,4 +1,6 @@
 <resources>
+    <string name="awonar_facebook_app_id">634305876943666</string>
+    <string name="awonar_google_server_client_id" translatable="false">365782781588-djb7tev58j6j3og3te6tk2jnuc04cmsv.apps.googleusercontent.com</string>
     <string name="app_name">Awonar</string>
     <string name="awonar_text_username">Username</string>
     <string name="awonar_text_email">Email</string>
@@ -15,7 +17,6 @@
     <string name="awonar_error_username">Username is invalid!</string>
     <string name="awonar_error_password">Password is invalid! (must be contain only A-Z,a-z,0-9)</string>
     <string name="awonar_text_sent">Sent</string>
-    <string name="awonar_google_server_client_id" translatable="false">365782781588-djb7tev58j6j3og3te6tk2jnuc04cmsv.apps.googleusercontent.com</string>
     <string name="awonar_signin_to_your_account">Sign in to your account</string>
     <string name="awonar_text_link_account">Link Account</string>
 </resources>
