@@ -6,6 +6,7 @@ import androidx.lifecycle.lifecycleScope
 import com.awonar.app.databinding.AwonarActivityLauncherBinding
 import com.awonar.app.ui.auth.AuthViewModel
 import com.awonar.app.ui.auth.AuthenticationActivity
+import com.awonar.app.ui.main.MainActivity
 import com.molysulfur.library.activity.BaseActivity
 import com.molysulfur.library.extension.openActivityAndClearThisActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,7 +29,7 @@ class LauncherActivity : BaseActivity() {
             viewModel.autoSignIn.collect {
                 when (it) {
                     false -> openActivityAndClearThisActivity(AuthenticationActivity::class.java)
-                    true -> openActivityAndClearThisActivity(AuthenticationActivity::class.java)
+                    true -> openActivityAndClearThisActivity(MainActivity::class.java)
                 }
             }
         }

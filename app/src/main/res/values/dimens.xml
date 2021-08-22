@@ -13,4 +13,7 @@
     <dimen name="awonar_size_margin_padding_large">24dp</dimen>
     <dimen name="awonar_size_margin_padding_extra_large">32dp</dimen>
     <dimen name="awonar_size_margin_padding_extra_extra_large">40dp</dimen>
+
+
+    <dimen name="awonar_size_icon">24dp</dimen>
 </resources>

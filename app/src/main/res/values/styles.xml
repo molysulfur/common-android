@@ -74,6 +74,12 @@
         <item name="android:textColor">@color/awonar_color_primary</item>
     </style>
 
+    <style name="Awonar.Button.Icon">
+        <item name="android:scaleType">fitXY</item>
+        <item name="android:background">@drawable/awonar_ripple_icon</item>
+        <item name="android:textColor">@color/awonar_color_primary</item>
+    </style>
+
     <style name="Awonar.Toolbar">
         <item name="android:background">@color/awonar_color_surface</item>
     </style>

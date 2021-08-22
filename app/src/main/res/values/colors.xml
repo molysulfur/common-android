@@ -23,4 +23,5 @@
 
     <color name="awonar_color_green">#2BAC40</color>
     <color name="awonar_color_variant">@color/black</color>
+
 </resources>
