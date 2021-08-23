@@ -2,9 +2,15 @@ package com.awonar.android.shared.repos
 
 import com.awonar.android.model.ExistsEmailResponse
 import com.awonar.android.shared.api.UserService
+import com.facebook.GraphRequest
 import com.molysulfur.library.network.DirectNetworkFlow
 import retrofit2.Response
 import javax.inject.Inject
+import android.os.Bundle
+import com.facebook.AccessToken
+import com.facebook.GraphResponse
+import com.facebook.HttpMethod
+
 
 class UserRepository @Inject constructor(
     private val userService: UserService
@@ -23,5 +29,16 @@ class UserRepository @Inject constructor(
             }
 
         }.asFlow()
+
+    fun getUserInfoFromFacebook(): GraphResponse {
+        val params = Bundle()
+        params.putString("fields", "id,email")
+        return GraphRequest(
+            AccessToken.getCurrentAccessToken(),
+            "/me",
+            params,
+            HttpMethod.GET
+        ).executeAndWait()
+    }
 
 }

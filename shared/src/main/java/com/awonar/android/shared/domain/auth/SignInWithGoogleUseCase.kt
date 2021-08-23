@@ -51,7 +51,7 @@ class SignInWithGoogleUseCase @Inject constructor(
                     }
                     flowCollector.emit(Result.Error(UnAuthenticationException("Email is not registry.")))
                 }
-                is Result.Error  -> {
+                is Result.Error -> {
                     flowCollector.emit(Result.Error(UnAuthenticationIsExistEmailException("Email is not registry.")))
                 }
             }

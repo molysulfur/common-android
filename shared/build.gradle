@@ -4,7 +4,6 @@ plugins {
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
     id 'kotlin-parcelize'
-    id "androidx.navigation.safeargs"
 }
 apply from: "$project.rootDir/buildSrc/config.gradle"
 
@@ -67,4 +66,5 @@ dependencies {
     testImplementation "androidx.arch.core:core-testing:2.1.0"
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.1'
     testImplementation "org.mockito:mockito-core:3.11.2"
+    implementation 'com.facebook.android:facebook-core:11.1.0'
 }

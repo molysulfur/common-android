@@ -1,5 +1,6 @@
 <resources>
-    <string name="awonar_facebook_app_id">634305876943666</string>
+    <string name="awonar_facebook_app_id">174232477996286</string>
+    <string name="awonar_fb_login_protocol_scheme">fb174232477996286</string>
     <string name="awonar_google_server_client_id" translatable="false">365782781588-djb7tev58j6j3og3te6tk2jnuc04cmsv.apps.googleusercontent.com</string>
     <string name="app_name">Awonar</string>
     <string name="awonar_text_username">Username</string>

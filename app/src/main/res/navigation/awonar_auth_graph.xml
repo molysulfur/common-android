@@ -13,15 +13,29 @@
         <action
             android:id="@+id/action_signInFragment_to_signUpFragment"
             app:destination="@id/signUpFragment"
-            app:popUpTo="@+id/signInFragment" />
+            app:enterAnim="@anim/common_anim_right_to_left_in"
+            app:exitAnim="@anim/common_anim_right_to_left_out"
+            app:popEnterAnim="@anim/common_anim_left_to_right_in"
+            app:popExitAnim="@anim/common_anim_left_to_right_out" />
         <action
             android:id="@+id/action_signInFragment_to_forgotPasswordFragment"
             app:destination="@id/forgotPasswordFragment"
-            app:popUpTo="@+id/signInFragment" />
+            app:enterAnim="@anim/common_anim_right_to_left_in"
+            app:exitAnim="@anim/common_anim_right_to_left_out"
+            app:popEnterAnim="@anim/common_anim_left_to_right_in"
+            app:popExitAnim="@anim/common_anim_left_to_right_out" />
         <action
             android:id="@+id/action_signInFragment_to_linkAccountFragment"
             app:destination="@id/linkAccountFragment"
-            app:popUpTo="@+id/signInFragment" />
+            app:enterAnim="@anim/common_anim_right_to_left_in"
+            app:exitAnim="@anim/common_anim_right_to_left_out"
+            app:popEnterAnim="@anim/common_anim_left_to_right_in"
+            app:popExitAnim="@anim/common_anim_left_to_right_out"
+            app:popUpTo="@+id/signInFragment">
+            <argument
+                android:name="email"
+                app:argType="string" />
+        </action>
     </fragment>
 
     <fragment
@@ -40,10 +54,7 @@
         android:name="com.awonar.app.ui.auth.linkaccount.LinkAccountFragment"
         android:label="SignUpFragment"
         tools:layout="@layout/awonar_fragment_link_account">
-        <argument
-            android:name="email"
-            app:argType="string"
-            android:defaultValue="0" />
+
     </fragment>
 
 </navigation>

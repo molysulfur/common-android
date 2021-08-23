@@ -18,7 +18,6 @@ class AutoSignInUseCase @Inject constructor(
 ) : FlowUseCase<Unit, Boolean>(ioDispatcher) {
     override fun execute(parameters: Unit): Flow<Result<Boolean>> = flow {
         repository.autoSignIn().collect { result ->
-            Timber.e("$result")
             emit(Result.Success(result.successOr(null) != null))
         }
 

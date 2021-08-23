@@ -1,9 +1,6 @@
 package com.awonar.android.shared.api
 
-import com.awonar.android.model.Auth
-import com.awonar.android.model.SignInGoogleRequest
-import com.awonar.android.model.SignInRequest
-import com.awonar.android.model.SignOutResponse
+import com.awonar.android.model.*
 import com.awonar.android.shared.constrant.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -23,6 +20,9 @@ interface AuthService {
 
     @POST("api/v1/users/login/google")
     fun signInWithGoogle(@Body signInRequest: SignInGoogleRequest): Call<Auth?>
+
+    @POST("api/v1/users/login/facebook")
+    fun signInWithGoogle(@Body signInRequest: SignInFacebookRequest): Call<Auth?>
 
     @POST("api/v1/users/login/password")
     fun signInWithPassword(@Body signInRequest: SignInRequest): Call<Auth?>
