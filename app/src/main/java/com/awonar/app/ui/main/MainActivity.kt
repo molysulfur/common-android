@@ -5,11 +5,15 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.findNavController
+import coil.load
+import com.awonar.android.model.user.User
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarActivityMainBinding
 import com.awonar.app.databinding.AwonarDrawerHeaderMainBinding
 import com.awonar.app.ui.auth.AuthViewModel
 import com.awonar.app.ui.auth.AuthenticationActivity
+import com.awonar.app.ui.user.UserViewModel
 import com.molysulfur.library.activity.BaseActivity
 import com.molysulfur.library.extension.openActivityAndClearThisActivity
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
@@ -22,6 +26,8 @@ import kotlinx.coroutines.launch
 class MainActivity : BaseActivity() {
 
     private val authViewModel: AuthViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels()
+    private var user: User? = null
 
     private val binding by lazy {
         AwonarActivityMainBinding.inflate(layoutInflater)
@@ -31,12 +37,22 @@ class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        headerBinding = AwonarDrawerHeaderMainBinding.bind(
-            binding.awonarMainDrawerNavigationMain.getHeaderView(0)
-        )
+        setHeaderDrawer()
         setContentView(binding.root)
         obsever()
         init()
+    }
+
+    private fun setHeaderDrawer() {
+        headerBinding = AwonarDrawerHeaderMainBinding.bind(
+            binding.awonarMainDrawerNavigationMain.getHeaderView(0)
+        )
+        headerBinding.awonarDrawerHeaderMainButtonClose.setOnClickListener {
+            binding.awonarMainDrawerSidebar.close()
+        }
+        headerBinding.awinarDrawerHeaderMainImageAvatar.setOnClickListener {
+
+        }
     }
 
     private fun obsever() {
@@ -49,15 +65,27 @@ class MainActivity : BaseActivity() {
                 }
             }
         }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                userViewModel.userState.collect { userInfo ->
+                    if (user != null) {
+                        user = userInfo
+                        updateUser()
+                    }
+                }
+            }
+        }
+
+    }
+
+    private fun updateUser() {
+        headerBinding.awinarDrawerHeaderMainTextName.text = user?.username ?: ""
     }
 
 
     private fun init() {
         binding.awonarMainToolbarHeader.setNavigationOnClickListener {
             binding.awonarMainDrawerSidebar.open()
-        }
-        headerBinding.awonarDrawerHeaderMainButtonClose.setOnClickListener {
-            binding.awonarMainDrawerSidebar.close()
         }
 
         binding.awonarMainDrawerNavigationMain.setNavigationItemSelectedListener { menuItem ->
