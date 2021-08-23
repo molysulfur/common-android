@@ -23,8 +23,8 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@mipmap/ic_launcher" />
+            app:layout_constraintTop_toBottomOf="@+id/awonar_drawer_header_main_button_close"
+            app:srcCompat="@drawable/awonar_placeholder_avatar" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/awinar_drawer_header_main_text_name"
@@ -34,7 +34,7 @@
             android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
             app:layout_constraintBottom_toTopOf="@+id/awinar_drawer_header_main_text_view_profile"
             app:layout_constraintStart_toEndOf="@+id/awinar_drawer_header_main_image_avatar"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/awinar_drawer_header_main_image_avatar"
             tools:text="@string/awonar_example_name" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -46,6 +46,22 @@
             app:layout_constraintStart_toStartOf="@+id/awinar_drawer_header_main_text_name"
             app:layout_constraintTop_toBottomOf="@+id/awinar_drawer_header_main_text_name"
             tools:text="@string/awonar_example_name" />
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            style="@style/Awonar.Button.Default.Green"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableEnd="@drawable/awonar_ic_dropdown_white"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:paddingStart="@dimen/awonar_size_margin_padding_small"
+            android:paddingEnd="@dimen/awonar_size_margin_padding_small"
+            android:text="Real"
+            android:textAllCaps="true"
+            android:textSize="@dimen/awonar_size_text_extra_small"
+            app:layout_constraintEnd_toEndOf="@+id/awonar_drawer_header_main_button_close"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_drawer_header_main_button_close" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:layout_width="match_parent"

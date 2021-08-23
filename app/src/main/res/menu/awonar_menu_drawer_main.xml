@@ -6,25 +6,56 @@
         <item
             android:id="@+id/awonar_menu_drawer_main_watchlist"
             android:checked="true"
+            android:icon="@drawable/awonar_ic_watchlist"
             android:title="Watchlist" />
         <item
             android:id="@+id/awonar_menu_drawer_main_portfolio"
+            android:icon="@drawable/awonar_ic_portfolio"
             android:title="Portfolio" />
         <item
             android:id="@+id/awonar_menu_drawer_main_news_feed"
+            android:icon="@drawable/awonar_ic_news"
             android:title="News Feed" />
 
         <item
             android:id="@+id/awonar_menu_drawer_main_market"
+            android:icon="@drawable/awonar_ic_markets"
             android:title="Market" />
+
+        <item
+            android:id="@+id/awonar_menu_drawer_main_social"
+            android:icon="@drawable/awonar_ic_social"
+            android:title="Social Trade" />
+
+        <item
+            android:id="@+id/awonar_menu_drawer_main_trading"
+            android:icon="@drawable/awonar_ic_trading"
+            android:title="Trading" />
 
         <item
             android:id="@+id/subtitle"
             android:title="Helper and Support">
             <menu>
+
+                <item
+                    android:id="@+id/awonar_menu_drawer_main_announcements"
+                    android:icon="@drawable/awonar_ic_announcements"
+                    android:title="Announcements &amp; Events" />
+
+                <item
+                    android:id="@+id/awonar_menu_drawer_main_withdraw"
+                    android:icon="@drawable/awonar_ic_withdraw"
+                    android:title="Withdraw funds" />
+
+                <item
+                    android:id="@+id/awonar_menu_drawer_main_partner"
+                    android:icon="@drawable/awonar_ic_partner"
+                    android:title="Go To Partner Page" />
                 <item
                     android:id="@+id/awonar_menu_drawer_main_logout"
                     android:title="Logout" />
+
+                <item android:title="" />
 
             </menu>
         </item>

@@ -44,6 +44,13 @@
             android:layout_height="match_parent"
             android:layout_gravity="start"
             app:headerLayout="@layout/awonar_drawer_header_main"
-            app:menu="@menu/awonar_menu_drawer_main" />
+            app:menu="@menu/awonar_menu_drawer_main">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:text="Deposit" />
+        </com.google.android.material.navigation.NavigationView>
     </androidx.drawerlayout.widget.DrawerLayout>
 </layout>

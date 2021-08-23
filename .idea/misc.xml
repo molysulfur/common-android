@@ -4,11 +4,13 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/drawable/awonar_ic_close.xml" value="0.38425925925925924" />
+        <entry key="app/src/main/res/drawable/awonar_ic_dropdown_white.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/awonar_ic_facebook.xml" value="0.24259259259259258" />
         <entry key="app/src/main/res/drawable/awonar_ic_hamburger.xml" value="0.12291666666666666" />
         <entry key="app/src/main/res/drawable/awonar_ic_notification.xml" value="0.2962962962962963" />
         <entry key="app/src/main/res/drawable/awonar_ic_search.xml" value="0.12760416666666666" />
         <entry key="app/src/main/res/drawable/awonar_ic_visibility_off.xml" value="0.2359375" />
+        <entry key="app/src/main/res/drawable/awonar_ic_watchlist.xml" value="0.23489583333333333" />
         <entry key="app/src/main/res/drawable/awonar_ic_writing.xml" value="0.2962962962962963" />
         <entry key="app/src/main/res/drawable/awonar_ripple_green.xml" value="0.17592592592592593" />
         <entry key="app/src/main/res/drawable/awonar_ripple_icon.xml" value="0.2359375" />
