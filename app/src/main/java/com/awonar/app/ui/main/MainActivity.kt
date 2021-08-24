@@ -1,6 +1,7 @@
 package com.awonar.app.ui.main
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Lifecycle
@@ -8,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.findNavController
 import coil.load
+import com.awonar.android.model.user.AccountVerifyType
 import com.awonar.android.model.user.User
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarActivityMainBinding
@@ -84,6 +86,15 @@ class MainActivity : BaseActivity() {
         headerBinding.awonarDrawerHeaderMainConstraintProfile.setOnClickListener {
             openActivity(ProfileActivity::class.java)
         }
+        visibleAccountVerifyType()
+    }
+
+
+    private fun visibleAccountVerifyType() {
+        headerBinding.awonarDrawerHeaderMainButtonVerifyAccount.visibility =
+            if (user?.accountVerifyType == AccountVerifyType.PREPARE || user?.accountVerifyType == AccountVerifyType.REJECT)
+                View.VISIBLE
+            else View.GONE
     }
 
 

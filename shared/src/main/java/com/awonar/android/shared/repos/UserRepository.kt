@@ -66,7 +66,8 @@ class UserRepository @Inject constructor(
                 followerCount = response.totalFollower,
                 followingCount = response.totalFollowing,
                 copiesCount = response.totalTrade,
-                isMe = true
+                isMe = true,
+                accountVerifyType = User.getAccountVerifyType(response.accountVerify)
             )
 
             override fun loadFromDb(): Flow<User?> = flow {
@@ -101,7 +102,8 @@ class UserRepository @Inject constructor(
                 followerCount = response.totalFollower,
                 followingCount = response.totalFollowing,
                 copiesCount = response.totalTrade,
-                isMe = false
+                isMe = false,
+                accountVerifyType = null
             )
 
             override fun onFetchFailed(errorMessage: String) {

@@ -15,5 +15,24 @@ data class User(
     val followerCount: Int,
     val followingCount: Int,
     val copiesCount: Int,
-    val isMe: Boolean
-) : Parcelable
+    val isMe: Boolean,
+    val accountVerifyType: AccountVerifyType?
+) : Parcelable {
+
+    companion object {
+        fun getAccountVerifyType(stringType: String?): AccountVerifyType? = when (stringType) {
+            "prepare" -> AccountVerifyType.PREPARE
+            "pending" -> AccountVerifyType.PENDING
+            "approve" -> AccountVerifyType.APPROVE
+            "reject" -> AccountVerifyType.REJECT
+            else -> null
+        }
+    }
+}
+
+enum class AccountVerifyType {
+    PREPARE,
+    PENDING,
+    APPROVE,
+    REJECT
+}

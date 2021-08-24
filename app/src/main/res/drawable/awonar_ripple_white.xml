@@ -1,0 +1,14 @@
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:color="?android:colorButtonNormal"
+    tools:targetApi="lollipop">
+
+    <!-- Use this to define the shape of the ripple effect (rectangle, oval, ring or line). The color specified here isn't used anyway -->
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="5dp" />
+            <solid android:color="@color/awonar_color_surface" />
+        </shape>
+    </item>
+
+</ripple>

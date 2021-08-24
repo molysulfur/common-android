@@ -36,17 +36,14 @@
             android:id="@+id/subtitle"
             android:title="Helper and Support">
             <menu>
-
                 <item
                     android:id="@+id/awonar_menu_drawer_main_announcements"
                     android:icon="@drawable/awonar_ic_announcements"
                     android:title="Announcements &amp; Events" />
-
                 <item
                     android:id="@+id/awonar_menu_drawer_main_withdraw"
                     android:icon="@drawable/awonar_ic_withdraw"
                     android:title="Withdraw funds" />
-
                 <item
                     android:id="@+id/awonar_menu_drawer_main_partner"
                     android:icon="@drawable/awonar_ic_partner"
@@ -54,9 +51,6 @@
                 <item
                     android:id="@+id/awonar_menu_drawer_main_logout"
                     android:title="Logout" />
-
-                <item android:title="" />
-
             </menu>
         </item>
     </group>
