@@ -16,4 +16,6 @@
 
 
     <dimen name="awonar_size_icon">24dp</dimen>
+    <dimen name="awonar_size_avatar">48dp</dimen>
+    <dimen name="awonar_size_avatar_large">72dp</dimen>
 </resources>

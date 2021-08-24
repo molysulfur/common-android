@@ -2,6 +2,7 @@ package com.awonar.app.ui.main
 
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -13,14 +14,17 @@ import com.awonar.app.databinding.AwonarActivityMainBinding
 import com.awonar.app.databinding.AwonarDrawerHeaderMainBinding
 import com.awonar.app.ui.auth.AuthViewModel
 import com.awonar.app.ui.auth.AuthenticationActivity
+import com.awonar.app.ui.profile.ProfileActivity
 import com.awonar.app.ui.user.UserViewModel
 import com.molysulfur.library.activity.BaseActivity
+import com.molysulfur.library.extension.openActivity
 import com.molysulfur.library.extension.openActivityAndClearThisActivity
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity() {
@@ -50,9 +54,6 @@ class MainActivity : BaseActivity() {
         headerBinding.awonarDrawerHeaderMainButtonClose.setOnClickListener {
             binding.awonarMainDrawerSidebar.close()
         }
-        headerBinding.awinarDrawerHeaderMainImageAvatar.setOnClickListener {
-
-        }
     }
 
     private fun obsever() {
@@ -68,7 +69,7 @@ class MainActivity : BaseActivity() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 userViewModel.userState.collect { userInfo ->
-                    if (user != null) {
+                    if (userInfo != null) {
                         user = userInfo
                         updateUser()
                     }
@@ -79,7 +80,10 @@ class MainActivity : BaseActivity() {
     }
 
     private fun updateUser() {
-        headerBinding.awinarDrawerHeaderMainTextName.text = user?.username ?: ""
+        headerBinding.awonarDrawerHeaderMainTextName.text = user?.username ?: ""
+        headerBinding.awonarDrawerHeaderMainConstraintProfile.setOnClickListener {
+            openActivity(ProfileActivity::class.java)
+        }
     }
 
 
@@ -98,6 +102,8 @@ class MainActivity : BaseActivity() {
             binding.awonarMainDrawerSidebar.close()
             true
         }
+
+        userViewModel.getUser(needFresh = true)
     }
 
 }

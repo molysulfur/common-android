@@ -80,8 +80,17 @@
         <item name="android:textColor">@color/awonar_color_primary</item>
     </style>
 
+    <style name="Awonar.Button.Border">
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:background">@drawable/awonar_ripple_border_gray</item>
+    </style>
+
     <style name="Awonar.Toolbar">
         <item name="android:background">@color/awonar_color_surface</item>
+    </style>
+
+    <style name="Awonar.Avatar">
+        <item name="android:scaleType">centerCrop</item>
     </style>
 
     <style name="Awonar.NavigationView" parent="Widget.MaterialComponents.NavigationView">

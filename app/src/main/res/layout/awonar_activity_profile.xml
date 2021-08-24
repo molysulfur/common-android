@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|snap">
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/awonar_profile_toolbar_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:menu="@menu/awonar_menu_toobar_main"
+                    app:navigationIcon="@drawable/awonar_ic_back" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/awonar_profile_image_avatar"
+                    style="@style/Awonar.Avatar"
+                    android:layout_width="@dimen/awonar_size_avatar_large"
+                    android:layout_height="@dimen/awonar_size_avatar_large"
+                    android:layout_margin="@dimen/awonar_size_margin_padding_large"
+                    app:layout_constraintEnd_toStartOf="@+id/awonar_profile_title_followers"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintHorizontal_chainStyle="spread_inside"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_profile_toolbar_profile"
+                    tools:srcCompat="@drawable/awonar_placeholder_avatar" />
+
+                <com.awonar.app.widget.VerticalTitleView
+                    android:id="@+id/awonar_profile_title_followers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="@+id/awonar_profile_image_avatar"
+                    app:layout_constraintEnd_toStartOf="@+id/awonar_profile_title_following"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/awonar_profile_image_avatar"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_profile_image_avatar"
+                    app:verticalTitleView_setSubTitle="Followers"
+                    app:verticalTitleView_setTitle="0" />
+
+                <com.awonar.app.widget.VerticalTitleView
+                    android:id="@+id/awonar_profile_title_following"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="@+id/awonar_profile_image_avatar"
+                    app:layout_constraintEnd_toStartOf="@+id/awonar_profile_title_copies"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/awonar_profile_title_followers"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_profile_image_avatar"
+                    app:verticalTitleView_setSubTitle="Following"
+                    app:verticalTitleView_setTitle="0" />
+
+                <com.awonar.app.widget.VerticalTitleView
+                    android:id="@+id/awonar_profile_title_copies"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/awonar_size_margin_padding_large"
+                    app:layout_constraintBottom_toBottomOf="@+id/awonar_profile_image_avatar"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/awonar_profile_title_following"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_profile_image_avatar"
+                    app:verticalTitleView_setSubTitle="Copies"
+                    app:verticalTitleView_setTitle="0" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_profile_text_username"
+                    style="@style/Awonar.Title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/awonar_size_margin_padding_small"
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_profile_title_copies"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_profile_image_avatar"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_profile_image_avatar"
+                    tools:text="@string/awonar_text_username" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_profile_text_name"
+                    style="@style/Awonar.Text.Default.Normal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/awonar_size_margin_padding_small"
+                    android:textColor="@color/awonar_color_gray"
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_profile_title_copies"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_profile_image_avatar"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_profile_text_username"
+                    tools:text="@string/awonar_example_name" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_profile_text_about"
+                    style="@style/Awonar.Text.Default.Normal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/awonar_size_margin_padding_small"
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_profile_title_copies"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_profile_image_avatar"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_profile_text_name"
+                    tools:text="@string/awonar_example_name" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/awonar_profile_button_edit_profile"
+                    style="@style/Awonar.Button.Border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/awonar_size_margin_padding_large"
+                    android:text="Edit Profile"
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_profile_text_about"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_profile_text_about"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_profile_text_about" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/awonar_profile_button_follow"
+                    style="@style/Awonar.Button.Default.Primary"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="@dimen/awonar_size_margin_padding_large"
+                    android:layout_marginEnd="@dimen/awonar_size_margin_padding_small"
+                    android:minHeight="0dp"
+                    android:text="Follow"
+                    app:layout_constraintEnd_toStartOf="@+id/awonar_profile_button_copy"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_profile_image_avatar"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_profile_button_edit_profile" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/awonar_profile_button_copy"
+                    style="@style/Awonar.Button.Default.Primary"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="@dimen/awonar_size_margin_padding_small"
+                    android:minHeight="0dp"
+                    android:text="Copy"
+                    app:layout_constraintEnd_toStartOf="@+id/awonar_profile_button_watchlist"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toEndOf="@+id/awonar_profile_button_follow"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_profile_button_follow" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/awonar_profile_button_watchlist"
+                    style="@style/Awonar.Button.Border"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="@dimen/awonar_size_margin_padding_small"
+                    android:padding="@dimen/awonar_size_margin_padding_small"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/awonar_ic_add_list"
+                    app:layout_constraintBottom_toBottomOf="@+id/awonar_profile_button_copy"
+                    app:layout_constraintEnd_toStartOf="@+id/awonar_profile_button_shared"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/awonar_profile_button_copy"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_profile_button_copy" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/awonar_profile_button_shared"
+                    style="@style/Awonar.Button.Border"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:padding="@dimen/awonar_size_margin_padding_small"
+                    android:src="@drawable/awonar_ic_shared"
+                    app:layout_constraintBottom_toBottomOf="@+id/awonar_profile_button_copy"
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_profile_title_copies"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/awonar_profile_button_watchlist"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_profile_button_copy" />
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/awonar_size_margin_padding_large"
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_profile_title_copies"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_profile_image_avatar"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_profile_button_copy"
+                    app:tabIconTint="@color/awonar_selector_tab_primary"
+                    app:tabIndicatorColor="@color/awonar_color_primary">
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:icon="@drawable/awonar_ic_news" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false"
+                        android:icon="@drawable/awonar_ic_news" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:icon="@drawable/awonar_ic_news" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:icon="@drawable/awonar_ic_news" />
+
+                </com.google.android.material.tabs.TabLayout>
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/awonar_profile_group_options"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:constraint_referenced_ids="awonar_profile_button_follow,awonar_profile_button_copy,awonar_profile_button_watchlist,awonar_profile_button_shared" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/awonar_color_background"
+            android:fillViewport="true"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+                    android:background="@drawable/awonar_bg_15_white"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="60dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="96dp"
+                        android:layout_height="96dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/awonar_ic_private"
+                        android:tint="@color/awonar_color_gray" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        style="@style/Awonar.Title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="This in a private profile" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        style="@style/Awonar.Text.Default.Normal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="This user has chosen not to share any trading data. Therefore, this user cannot be copied." />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

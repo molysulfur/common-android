@@ -15,7 +15,10 @@ interface UserService {
     fun isExistsEmail(@Path("username") username: String?): Call<ExistsEmailResponse>
 
     @GET("api/v1/users/profile")
-    fun getMe() : Call<UserResponse>
+    fun getMe(): Call<UserResponse>
+
+    @GET("api/v1/users/profile/{userId}")
+    fun getProfile(@Path("userId") userId: String?): Call<UserResponse>
 
     companion object {
 

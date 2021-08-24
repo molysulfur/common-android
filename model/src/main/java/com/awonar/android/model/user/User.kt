@@ -14,5 +14,6 @@ data class User(
     val about: String?,
     val followerCount: Int,
     val followingCount: Int,
-    val copiesCount: Int
+    val copiesCount: Int,
+    val isMe: Boolean
 ) : Parcelable

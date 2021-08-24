@@ -2,7 +2,12 @@
 <resources>
     <declare-styleable name="TextDividerView">
         <attr name="textDividerView_setText" format="string" />
+    </declare-styleable>
 
-
+    <declare-styleable name="VerticalTitleView">
+        <attr name="verticalTitleView_setTitle" format="string" />
+        <attr name="verticalTitleView_setSubTitle" format="string" />
+        <attr name="verticalTitleView_titleTextColor" format="color" />
+        <attr name="verticalTitleView_subTitleTextColor" format="color" />
     </declare-styleable>
 </resources>

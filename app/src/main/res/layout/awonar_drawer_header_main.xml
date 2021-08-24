@@ -17,38 +17,55 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/awinar_drawer_header_main_image_avatar"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/awonar_drawer_header_main_constraint_profile"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+            android:background="@drawable/awonar_ripple_tranparent"
+            app:layout_constraintEnd_toStartOf="@+id/appCompatButton"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/awonar_drawer_header_main_button_close"
-            app:srcCompat="@drawable/awonar_placeholder_avatar" />
+            app:layout_constraintTop_toBottomOf="@+id/awonar_drawer_header_main_button_close">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/awinar_drawer_header_main_text_name"
-            style="@style/Awonar.Text.Bold.Normal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
-            app:layout_constraintBottom_toTopOf="@+id/awinar_drawer_header_main_text_view_profile"
-            app:layout_constraintStart_toEndOf="@+id/awinar_drawer_header_main_image_avatar"
-            app:layout_constraintTop_toTopOf="@+id/awinar_drawer_header_main_image_avatar"
-            tools:text="@string/awonar_example_name" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/awonar_drawer_header_main_image_avatar"
+                style="@style/Awonar.Avatar"
+                android:layout_width="@dimen/awonar_size_avatar"
+                android:layout_height="@dimen/awonar_size_avatar"
+                android:padding="@dimen/awonar_size_margin_padding_extra_extra_small"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/awonar_placeholder_avatar" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/awinar_drawer_header_main_text_view_profile"
-            style="@style/Awonar.Text.Default.Small"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/awinar_drawer_header_main_image_avatar"
-            app:layout_constraintStart_toStartOf="@+id/awinar_drawer_header_main_text_name"
-            app:layout_constraintTop_toBottomOf="@+id/awinar_drawer_header_main_text_name"
-            tools:text="@string/awonar_example_name" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_drawer_header_main_text_name"
+                style="@style/Awonar.Text.Bold.Normal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
+                android:ellipsize="end"
+                android:lines="1"
+                app:layout_constraintBottom_toTopOf="@+id/awonar_drawer_header_main_text_view_profile"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/awonar_drawer_header_main_image_avatar"
+                app:layout_constraintTop_toTopOf="@+id/awonar_drawer_header_main_image_avatar"
+                tools:text="@string/awonar_example_name" />
 
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_drawer_header_main_text_view_profile"
+                style="@style/Awonar.Text.Default.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="View Profile"
+                app:layout_constraintBottom_toBottomOf="@+id/awonar_drawer_header_main_image_avatar"
+                app:layout_constraintStart_toStartOf="@+id/awonar_drawer_header_main_text_name"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_drawer_header_main_text_name" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/appCompatButton"
             style="@style/Awonar.Button.Default.Green"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -60,15 +77,18 @@
             android:text="Real"
             android:textAllCaps="true"
             android:textSize="@dimen/awonar_size_text_extra_small"
+            app:layout_constraintBottom_toBottomOf="@+id/awonar_drawer_header_main_constraint_profile"
             app:layout_constraintEnd_toEndOf="@+id/awonar_drawer_header_main_button_close"
-            app:layout_constraintTop_toBottomOf="@+id/awonar_drawer_header_main_button_close" />
+            app:layout_constraintTop_toTopOf="@+id/awonar_drawer_header_main_constraint_profile" />
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/appCompatButton2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/awonar_size_margin_padding_large"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/awinar_drawer_header_main_image_avatar"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_drawer_header_main_constraint_profile"
             tools:text="Complete" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

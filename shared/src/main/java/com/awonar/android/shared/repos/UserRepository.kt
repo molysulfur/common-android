@@ -15,6 +15,7 @@ import com.facebook.AccessToken
 import com.facebook.GraphResponse
 import com.facebook.HttpMethod
 import com.molysulfur.library.network.NetworkFlow
+import com.molysulfur.library.result.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -48,37 +49,66 @@ class UserRepository @Inject constructor(
         ).executeAndWait()
     }
 
-    fun getUser(request: UserRequest) = object : NetworkFlow<UserRequest, User?, UserResponse>() {
-        override fun shouldFresh(data: User?): Boolean = data != null || request.needFresh
+    fun getUser(request: UserRequest): Flow<Result<User?>> =
+        object : NetworkFlow<UserRequest, User?, UserResponse>() {
+            override fun shouldFresh(data: User?): Boolean = data != null || request.needFresh
 
-        override fun createCall(): Response<UserResponse> = userService.getMe().execute()
+            override fun createCall(): Response<UserResponse> = userService.getMe().execute()
 
-        override fun convertToResultType(response: UserResponse): User = User(
-            id = response.id,
-            avatar = response.thumbnail,
-            username = response.username,
-            firstName = response.firstName,
-            lastName = response.lastName,
-            middleName = response.middleName,
-            about = response.about,
-            followerCount = response.totalFollower,
-            followingCount = response.totalFollowing,
-            copiesCount = response.totalTrade
-        )
+            override fun convertToResultType(response: UserResponse): User = User(
+                id = response.id,
+                avatar = response.thumbnail,
+                username = response.username,
+                firstName = response.firstName,
+                lastName = response.lastName,
+                middleName = response.middleName,
+                about = response.about,
+                followerCount = response.totalFollower,
+                followingCount = response.totalFollowing,
+                copiesCount = response.totalTrade,
+                isMe = true
+            )
 
-        override fun loadFromDb(): Flow<User?> = flow {
-            emit(preference.get())
-        }
+            override fun loadFromDb(): Flow<User?> = flow {
+                emit(preference.get())
+            }
 
-        override fun saveToDb(data: User?) {
-            if (data != null)
-                preference.save(data)
-        }
+            override fun saveToDb(data: User?) {
+                if (data != null)
+                    preference.save(data)
+            }
 
-        override fun onFetchFailed(errorMessage: String) {
-            println(errorMessage)
-        }
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
 
-    }
+        }.asFlow()
+
+    fun getProfileUser(request: UserRequest): Flow<Result<User?>> =
+        object : DirectNetworkFlow<UserRequest, User?, UserResponse>() {
+
+            override fun createCall(): Response<UserResponse> =
+                userService.getProfile(request.userId).execute()
+
+            override fun convertToResultType(response: UserResponse): User = User(
+                id = response.id,
+                avatar = response.thumbnail,
+                username = response.username,
+                firstName = response.firstName,
+                lastName = response.lastName,
+                middleName = response.middleName,
+                about = response.about,
+                followerCount = response.totalFollower,
+                followingCount = response.totalFollowing,
+                copiesCount = response.totalTrade,
+                isMe = false
+            )
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+
+        }.asFlow()
+
 
 }
