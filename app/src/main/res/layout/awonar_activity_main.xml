@@ -7,7 +7,8 @@
         android:id="@+id/awonar_main_drawer_sidebar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:openDrawer="start">
+        tools:openDrawer="start"
+        >
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
@@ -22,19 +23,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:menu="@menu/awonar_menu_toobar_main"
-                    app:navigationIcon="@drawable/awonar_ic_hamburger"
-                    app:title="Main Activity" />
+                    app:navigationIcon="@drawable/awonar_ic_hamburger" />
 
             </com.google.android.material.appbar.AppBarLayout>
 
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+           <fragment
+               android:name="androidx.navigation.fragment.NavHostFragment"
+               android:id="@+id/awonar_main_drawer_navigation_host_main"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               app:defaultNavHost="true"
+               app:navGraph="@navigation/awonar_main_graph"
+               />
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
         <com.google.android.material.navigation.NavigationView

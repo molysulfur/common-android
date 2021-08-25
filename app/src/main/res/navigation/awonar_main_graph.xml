@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/awonar_main_graph"
+    app:startDestination="@+id/watchListFragment">
+
+    <fragment
+        android:id="@+id/watchListFragment"
+        android:name="com.awonar.app.ui.watchlist.WatchListFragment"
+        android:label="WatchListFragment"
+        tools:layout="@layout/awonar_fragment_watchlist" />
+    <fragment
+        android:id="@+id/portFolioFragment"
+        android:name="com.awonar.app.ui.portfolio.PortFolioFragment"
+        android:label="PortFolioFragment"
+        tools:layout="@layout/awonar_fragment_portfolio" />
+
+
+</navigation>

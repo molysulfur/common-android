@@ -4,12 +4,12 @@
         android:id="@+id/awonar_menu_drawer_main_group"
         android:checkableBehavior="single">
         <item
-            android:id="@+id/awonar_menu_drawer_main_watchlist"
+            android:id="@+id/watchListFragment"
             android:checked="true"
             android:icon="@drawable/awonar_ic_watchlist"
             android:title="Watchlist" />
         <item
-            android:id="@+id/awonar_menu_drawer_main_portfolio"
+            android:id="@+id/portFolioFragment"
             android:icon="@drawable/awonar_ic_portfolio"
             android:title="Portfolio" />
         <item

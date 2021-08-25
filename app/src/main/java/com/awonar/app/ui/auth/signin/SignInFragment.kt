@@ -39,6 +39,7 @@ import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 class SignInFragment : Fragment(), FacebookCallback<LoginResult> {
 
     private lateinit var mCallbackManager: CallbackManager
+    private lateinit var facebookManager: LoginManager
 
     companion object {
         private const val EMAIL = "email"
@@ -60,6 +61,7 @@ class SignInFragment : Fragment(), FacebookCallback<LoginResult> {
         savedInstanceState: Bundle?
     ): View {
         setupGoogleSignIn()
+        setupFacebookSignIn()
         init()
         return binding.root
     }
@@ -69,16 +71,10 @@ class SignInFragment : Fragment(), FacebookCallback<LoginResult> {
         observe()
     }
 
-    private fun setFacebookSignIn() {
+    private fun setupFacebookSignIn() {
         mCallbackManager = CallbackManager.Factory.create()
-        val facebookManager = LoginManager.getInstance()
+        facebookManager = LoginManager.getInstance()
         facebookManager.registerCallback(mCallbackManager, this)
-        facebookManager.logInWithReadPermissions(
-            this, setOf(
-                EMAIL,
-                USER_POSTS
-            )
-        )
 
     }
 
@@ -115,7 +111,6 @@ class SignInFragment : Fragment(), FacebookCallback<LoginResult> {
         }
         launchAndRepeatWithViewLifecycle {
             authViewModel.goToSignUpState.collect { shouldGo ->
-                Timber.e("$shouldGo")
                 if (shouldGo) {
                     findNavController().navigate(R.id.action_signInFragment_to_signUpFragment)
                 }
@@ -167,7 +162,7 @@ class SignInFragment : Fragment(), FacebookCallback<LoginResult> {
             authViewModel.signIn(username = username, password = password)
         }
         binding.awonarSigninButtonFacebook.setOnClickListener {
-            setFacebookSignIn()
+            handleLogInFacebook()
         }
         binding.awonarSigninButtonForgot.setOnClickListener {
             findNavController().navigate(R.id.action_signInFragment_to_forgotPasswordFragment)
@@ -192,6 +187,21 @@ class SignInFragment : Fragment(), FacebookCallback<LoginResult> {
                     }
                 })
             movementMethod = LinkMovementMethod()
+        }
+    }
+
+    private fun handleLogInFacebook() {
+        val accessToken = AccessToken.getCurrentAccessToken()
+        val isLoggedIn = accessToken != null && !accessToken.isExpired
+        if (isLoggedIn) {
+            authViewModel.signInWithFacebook(accessToken?.token, accessToken?.userId)
+        } else {
+            facebookManager.logInWithReadPermissions(
+                this, setOf(
+                    EMAIL,
+                    USER_POSTS
+                )
+            )
         }
     }
 
