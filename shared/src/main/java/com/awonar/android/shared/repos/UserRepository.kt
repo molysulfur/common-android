@@ -62,12 +62,19 @@ class UserRepository @Inject constructor(
                 firstName = response.firstName,
                 lastName = response.lastName,
                 middleName = response.middleName,
+                bio = response.bio,
                 about = response.about,
                 followerCount = response.totalFollower,
                 followingCount = response.totalFollowing,
                 copiesCount = response.totalTrade,
                 isMe = true,
-                accountVerifyType = User.getAccountVerifyType(response.accountVerify)
+                accountVerifyType = User.getAccountVerifyType(response.accountVerify),
+                skill = response.investmentSkills,
+                facebookLink = response.facebook,
+                twitterLink = response.twitter,
+                linkedInLink = response.linkedin,
+                youtubeLink = response.youtube,
+                websiteLink = response.website
             )
 
             override fun loadFromDb(): Flow<User?> = flow {
@@ -98,12 +105,19 @@ class UserRepository @Inject constructor(
                 firstName = response.firstName,
                 lastName = response.lastName,
                 middleName = response.middleName,
+                bio = response.bio,
                 about = response.about,
                 followerCount = response.totalFollower,
                 followingCount = response.totalFollowing,
                 copiesCount = response.totalTrade,
                 isMe = false,
-                accountVerifyType = null
+                accountVerifyType = null,
+                skill = response.investmentSkills,
+                facebookLink = response.facebook,
+                twitterLink = response.twitter,
+                linkedInLink = response.linkedin,
+                youtubeLink = response.youtube,
+                websiteLink = response.website
             )
 
             override fun onFetchFailed(errorMessage: String) {

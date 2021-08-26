@@ -11,12 +11,19 @@ data class User(
     val firstName: String?,
     val lastName: String?,
     val middleName: String?,
+    val bio: String?,
     val about: String?,
     val followerCount: Int,
     val followingCount: Int,
     val copiesCount: Int,
     val isMe: Boolean,
-    val accountVerifyType: AccountVerifyType?
+    val accountVerifyType: AccountVerifyType?,
+    val skill: String?,
+    val facebookLink: String?,
+    val twitterLink: String?,
+    val linkedInLink: String?,
+    val youtubeLink: String?,
+    val websiteLink: String?,
 ) : Parcelable {
 
     companion object {

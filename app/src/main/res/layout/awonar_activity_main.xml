@@ -28,7 +28,7 @@
             </com.google.android.material.appbar.AppBarLayout>
 
 
-           <fragment
+           <androidx.fragment.app.FragmentContainerView
                android:name="androidx.navigation.fragment.NavHostFragment"
                android:id="@+id/awonar_main_drawer_navigation_host_main"
                android:layout_width="match_parent"

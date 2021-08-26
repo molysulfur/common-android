@@ -34,6 +34,8 @@
         <entry key="app/src/main/res/layout/awonar_fragment_link_account.xml" value="0.2833333333333333" />
         <entry key="app/src/main/res/layout/awonar_fragment_portfoilo.xml" value="0.10729166666666666" />
         <entry key="app/src/main/res/layout/awonar_fragment_portfolio.xml" value="0.10729166666666666" />
+        <entry key="app/src/main/res/layout/awonar_fragment_setting.xml" value="0.21029572836801752" />
+        <entry key="app/src/main/res/layout/awonar_fragment_setting_about.xml" value="0.2935560859188544" />
         <entry key="app/src/main/res/layout/awonar_fragment_signin.xml" value="0.28541666666666665" />
         <entry key="app/src/main/res/layout/awonar_fragment_signup.xml" value="0.22436459246275198" />
         <entry key="app/src/main/res/layout/awonar_fragment_watchlist.xml" value="0.10729166666666666" />

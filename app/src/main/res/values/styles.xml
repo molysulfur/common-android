@@ -76,6 +76,14 @@
         <item name="errorEnabled">true</item>
     </style>
 
+    <style name="Awonar.EditText.NoR" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:textColor">@color/awonar_color_text_primary</item>
+        <item name="hintTextColor">@color/awonar_color_primary</item>
+        <item name="boxStrokeColor">@color/awonar_color_primary</item>
+        <item name="android:layout_margin">@dimen/awonar_size_margin_padding_normal</item>
+        <item name="errorEnabled">true</item>
+    </style>
+
     <style name="Awonar.Button.Link">
         <item name="android:padding">@dimen/awonar_size_margin_padding_extra_small</item>
         <item name="android:background">@drawable/awonar_ripple_tranparent</item>

@@ -49,6 +49,10 @@
                     android:icon="@drawable/awonar_ic_partner"
                     android:title="Go To Partner Page" />
                 <item
+                    android:id="@+id/settingFragment"
+                    android:icon="@drawable/awonar_ic_setting_user"
+                    android:title="Setting" />
+                <item
                     android:id="@+id/awonar_menu_drawer_main_logout"
                     android:title="Logout" />
             </menu>
