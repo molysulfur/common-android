@@ -6,28 +6,28 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import com.awonar.app.databinding.AwonarFragmentSettingAboutBinding
-import com.awonar.app.ui.user.UserViewModel
+import com.awonar.app.databinding.AwonarFragmentSettingBinding
+import com.awonar.app.ui.setting.about.AboutMeActivity
+import com.molysulfur.library.extension.openActivity
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
-import timber.log.Timber
 
 class SettingFragment : Fragment() {
 
-    private val viewModel: UserViewModel by activityViewModels()
+    private val viewModel: SettingViewModel by activityViewModels()
 
-    private lateinit var binding: AwonarFragmentSettingAboutBinding
+    private val binding: AwonarFragmentSettingBinding by lazy {
+        AwonarFragmentSettingBinding.inflate(layoutInflater)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = AwonarFragmentSettingAboutBinding.inflate(layoutInflater, container, false)
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewModel = viewModel
+        binding.awonarSettingButtonAbout.setOnClickListener { openActivity(AboutMeActivity::class.java) }
         return binding.root
     }
+
 
 }

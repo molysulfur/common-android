@@ -5,11 +5,7 @@
 
     <data>
 
-        <import type="android.view.View" />
 
-        <variable
-            name="viewModel"
-            type="com.awonar.app.ui.setting.SettingViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,7 +17,6 @@
             android:id="@+id/textview_first"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{viewModel.names}"
             app:layout_constraintBottom_toTopOf="@id/button_first"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -30,8 +25,8 @@
             tools:visibility="visible" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="0dp"
             style="@style/Awonar.EditText"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="94dp"
             app:layout_constraintBottom_toTopOf="@+id/button_first"
@@ -40,8 +35,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@={viewModel.addedName}" />
+                android:layout_height="match_parent" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button

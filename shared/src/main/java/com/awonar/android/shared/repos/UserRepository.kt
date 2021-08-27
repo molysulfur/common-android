@@ -7,6 +7,8 @@ import com.molysulfur.library.network.DirectNetworkFlow
 import retrofit2.Response
 import javax.inject.Inject
 import android.os.Bundle
+import com.awonar.android.model.core.MessageSuccessResponse
+import com.awonar.android.model.user.UpdateAboutMeRequest
 import com.awonar.android.model.user.User
 import com.awonar.android.model.user.UserRequest
 import com.awonar.android.model.user.UserResponse
@@ -119,6 +121,39 @@ class UserRepository @Inject constructor(
                 youtubeLink = response.youtube,
                 websiteLink = response.website
             )
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+
+        }.asFlow()
+
+    fun updateAboutMe(request: User) = object : NetworkFlow<UpdateAboutMeRequest, User?, MessageSuccessResponse>() {
+            override fun shouldFresh(data: User?): Boolean = true
+
+            override fun createCall(): Response<MessageSuccessResponse> = userService.updateAboutMe(
+                UpdateAboutMeRequest(
+                    about = request.about,
+                    bio = request.bio,
+                    facebook = request.facebookLink,
+                    investmentSkills = request.skill,
+                    linkedin = request.linkedInLink,
+                    twitter = request.twitterLink,
+                    youtube = request.youtubeLink,
+                    website = request.websiteLink,
+                )
+            ).execute()
+
+            override fun convertToResultType(response: MessageSuccessResponse): User = request
+
+            override fun loadFromDb(): Flow<User?> = flow {
+                emit(preference.get())
+            }
+
+            override fun saveToDb(data: User?) {
+                if (data != null)
+                    preference.save(data)
+            }
 
             override fun onFetchFailed(errorMessage: String) {
                 println(errorMessage)

@@ -25,7 +25,6 @@ class WatchListFragment : Fragment() {
     ): View {
         _binding = AwonarFragmentWatchlistBinding.inflate(inflater, container, false)
         _binding!!.lifecycleOwner = activity
-        _binding!!.viewModel = viewModel
         return binding.root
 
     }
