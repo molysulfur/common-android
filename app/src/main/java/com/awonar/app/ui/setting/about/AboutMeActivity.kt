@@ -2,6 +2,7 @@ package com.awonar.app.ui.setting.about
 
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.navigation.findNavController
 import com.awonar.app.databinding.AwonarActivityAboutMeBinding
 import com.awonar.app.ui.user.UserViewModel
 import com.molysulfur.library.activity.BaseActivity
@@ -21,6 +22,9 @@ class AboutMeActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
+        binding.awonarSettingAboutToolbarAbout.setNavigationOnClickListener {
+            onBackPressed()
+        }
         setupListener()
         setContentView(binding.root)
         viewModel.getUser(needFresh = false)

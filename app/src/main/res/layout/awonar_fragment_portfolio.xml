@@ -1,8 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.AppCompatTextView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
     android:text="Portfolio">
 
-</androidx.appcompat.widget.AppCompatTextView>
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/awonar_size_margin_padding_normal">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_portfolio_text_title_available"
+                style="@style/Awonar.Text.Default.Normal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Available"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_portfolio_text_title_total_allocate"
+                style="@style/Awonar.Text.Default.Normal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+                android:text="Available"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_portfolio_text_title_available" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_portfolio_text_title_equity"
+                style="@style/Awonar.Text.Default.Normal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Available"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_text_title_total_allocate" />
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_portfolio_text_title_profilt"
+                style="@style/Awonar.Text.Default.Normal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Equity"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_text_title_available" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

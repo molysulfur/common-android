@@ -2,35 +2,28 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-        <variable
-            name="viewModel"
-            type="com.awonar.app.ui.setting.SettingViewModel" />
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/awonar_setting_button_about"
+        <androidx.camera.view.PreviewView
+            android:id="@+id/awonar_camera_preview_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="About Me"
+            android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/awonar_setting_button_bank_account"
-            android:layout_width="match_parent"
+            android:id="@+id/awonar_camera_button_take"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Bank"
+            android:text="Take Photo"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/awonar_setting_button_about" />
+            app:layout_constraintStart_toStartOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

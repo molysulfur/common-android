@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/awonar_size_margin_padding_normal">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/appCompatTextView3"
+        style="@style/Awonar.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Trading Activity"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/appCompatTextView4"
+        style="@style/Awonar.Text.Default.Normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+        android:text="You may keep your holding and stats public, or hide it by switching to private. During so won’t prevent viewing the activity of others"
+        app:layout_constraintStart_toStartOf="@+id/appCompatTextView3"
+        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView3" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/appCompatTextView5"
+        style="@style/Awonar.Text.Default.Normal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/awonar_size_margin_padding_large"
+        android:text="Public Account"
+        app:layout_constraintEnd_toStartOf="@+id/switchMaterial2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView4" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switchMaterial2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/appCompatTextView5" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/appCompatTextView6"
+        style="@style/Awonar.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/awonar_size_margin_padding_large"
+        android:text="Full Name"
+        app:layout_constraintStart_toStartOf="@+id/appCompatTextView5"
+        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView5" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/appCompatTextView7"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+        android:text="Do you want to share your full name? (Recommended)"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/appCompatTextView6"
+        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView6" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/appCompatTextView8"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/awonar_size_margin_padding_large"
+        android:text="To share your full name, please complete our Verification process"
+        app:layout_constraintEnd_toStartOf="@+id/switchMaterial"
+        app:layout_constraintStart_toStartOf="@+id/appCompatTextView7"
+        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView7" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switchMaterial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/appCompatTextView8" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

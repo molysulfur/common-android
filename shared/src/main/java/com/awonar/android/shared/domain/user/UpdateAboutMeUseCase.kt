@@ -5,7 +5,7 @@ import com.awonar.android.shared.di.IoDispatcher
 import com.awonar.android.shared.repos.UserRepository
 import com.molysulfur.library.usecase.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class UpdateAboutMeUseCase @Inject constructor(
@@ -13,7 +13,7 @@ class UpdateAboutMeUseCase @Inject constructor(
     @IoDispatcher ioDispatcher: CoroutineDispatcher
 ) : UseCase<User, User>(ioDispatcher) {
     override suspend fun execute(parameters: User): User {
-        repository.updateAboutMe(parameters).first()
+        repository.updateAboutMe(parameters).collect {  }
         return parameters
     }
 }

@@ -33,4 +33,8 @@
     <string name="awonar_text_about_us">About Us</string>
     <string name="awonar_text_social">Social Media</string>
     <string name="awonar_text_skills">Investment Skills</string>
+    <string name="awonar_text_verify_bank_account">Verify Bank Account</string>
+    <string name="awonar_bank_account_description">It is recommended that you verify at least one bank account. And the bank account name used for verification must match your name only.</string>
+    <string name="awonar_hint_account_name">Account Name</string>
+    <string name="awonar_hint_your_account_no">Your acccount number</string>
 </resources>
