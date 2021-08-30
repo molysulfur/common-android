@@ -15,10 +15,13 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/awonar_setting_button_about"
+            style="@style/Awonar.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/awonar_ripple_white"
+            android:gravity="start"
+            android:padding="@dimen/awonar_size_margin_padding_normal"
             android:text="About Me"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -27,10 +30,27 @@
             android:id="@+id/awonar_setting_button_bank_account"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/awonar_ripple_white"
+            android:drawableEnd="@drawable/awonar_ic_yellow_warning"
+            android:gravity="start"
+            android:padding="@dimen/awonar_size_margin_padding_normal"
             android:text="Bank"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/awonar_setting_button_about" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/awonar_setting_button_privacy"
+            style="@style/Awonar.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/awonar_ripple_white"
+            android:gravity="start"
+            android:padding="@dimen/awonar_size_margin_padding_normal"
+            android:text="Privacy"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_setting_button_bank_account" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

@@ -2,18 +2,19 @@ package com.awonar.android.shared.api
 
 import com.awonar.android.model.ExistsEmailResponse
 import com.awonar.android.model.core.MessageSuccessResponse
+import com.awonar.android.model.tradingactivity.TradingActivityRequest
 import com.awonar.android.model.user.UpdateAboutMeRequest
 import com.awonar.android.model.user.UserResponse
 import com.awonar.android.shared.constrant.BuildConfig
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.PUT
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface UserService {
+
+    @PATCH("api/v1/users/settings")
+    fun updateTradingActivity(@Body tradingActivity: TradingActivityRequest): Call<UserResponse>
 
     @GET("api/v1/users/email/{username}/exists")
     fun isExistsEmail(@Path("username") username: String?): Call<ExistsEmailResponse>
@@ -25,7 +26,7 @@ interface UserService {
     fun getProfile(@Path("userId") userId: String?): Call<UserResponse>
 
     @PUT("api/v1/users/about")
-    fun updateAboutMe(@Body updateAboutMe : UpdateAboutMeRequest): Call<MessageSuccessResponse>
+    fun updateAboutMe(@Body updateAboutMe: UpdateAboutMeRequest): Call<MessageSuccessResponse>
 
     companion object {
 

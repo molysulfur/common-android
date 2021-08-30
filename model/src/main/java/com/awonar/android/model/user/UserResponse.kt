@@ -57,7 +57,31 @@ data class UserResponse(
     @SerializedName("username") val username: String?,
     @SerializedName("website") val website: String?,
     @SerializedName("youtube") val youtube: String?,
-) : Parcelable
+) : Parcelable {
+    fun toUser(): User = User(
+        id = this.id,
+        avatar = this.thumbnail,
+        username = this.username,
+        firstName = this.firstName,
+        lastName = this.lastName,
+        middleName = this.middleName,
+        bio = this.bio,
+        about = this.about,
+        followerCount = this.totalFollower,
+        followingCount = this.totalFollowing,
+        copiesCount = this.totalTrade,
+        isMe = true,
+        accountVerifyType = User.getAccountVerifyType(this.accountVerify),
+        skill = this.investmentSkills,
+        facebookLink = this.facebook,
+        twitterLink = this.twitter,
+        linkedInLink = this.linkedin,
+        youtubeLink = this.youtube,
+        websiteLink = this.website,
+        isPrivate = this.isPrivate,
+        isDisplayFullName = this.isDisplayFullName
+    )
+}
 
 @Parcelize
 data class Address(
@@ -65,7 +89,10 @@ data class Address(
     @SerializedName("city") val city: String?,
     @SerializedName("countryId") val countryId: String?,
     @SerializedName("postalCode") val postalCode: String?,
-) : Parcelable
+) : Parcelable {
+
+
+}
 
 @Parcelize
 data class License(

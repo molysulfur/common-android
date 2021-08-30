@@ -41,7 +41,7 @@ class MainActivity : BaseActivity() {
     private lateinit var mNavController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
 
-    private val binding by lazy {
+    private val binding: AwonarActivityMainBinding by lazy {
         AwonarActivityMainBinding.inflate(layoutInflater)
     }
 

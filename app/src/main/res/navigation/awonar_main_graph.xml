@@ -18,7 +18,8 @@
     <fragment
         android:id="@+id/settingFragment"
         android:name="com.awonar.app.ui.setting.SettingFragment"
-        android:label="SettingFragment" />
+        android:label="SettingFragment"
+        tools:layout="@layout/awonar_fragment_setting" />
 
 
 </navigation>

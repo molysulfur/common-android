@@ -7,8 +7,7 @@
         android:id="@+id/awonar_main_drawer_sidebar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:openDrawer="start"
-        >
+        tools:openDrawer="start">
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
@@ -28,14 +27,14 @@
             </com.google.android.material.appbar.AppBarLayout>
 
 
-           <androidx.fragment.app.FragmentContainerView
-               android:name="androidx.navigation.fragment.NavHostFragment"
-               android:id="@+id/awonar_main_drawer_navigation_host_main"
-               android:layout_width="match_parent"
-               android:layout_height="match_parent"
-               app:defaultNavHost="true"
-               app:navGraph="@navigation/awonar_main_graph"
-               />
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/awonar_main_drawer_navigation_host_main"
+                android:name="androidx.navigation.fragment.NavHostFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:defaultNavHost="true"
+                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+                app:navGraph="@navigation/awonar_main_graph" />
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
         <com.google.android.material.navigation.NavigationView

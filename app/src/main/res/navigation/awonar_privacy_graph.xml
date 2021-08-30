@@ -3,11 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/awonar_privacy_graph"
-    app:startDestination="@id/tradingActivityFragment">
+    app:startDestination="@+id/tradingActivityFragment">
 
     <fragment
         android:id="@+id/tradingActivityFragment"
         android:name="com.awonar.app.ui.privacy.tradingactivity.TradingActivityFragment"
         android:label="TradingActivityFragment"
         tools:layout="@layout/awonar_fragment_trading_activity" />
+
 </navigation>
