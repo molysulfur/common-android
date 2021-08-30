@@ -3,12 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/awonar_privacy_graph"
-    app:startDestination="@+id/tradingActivityFragment">
+    app:startDestination="@+id/privacyMenuFragment">
 
     <fragment
         android:id="@+id/tradingActivityFragment"
         android:name="com.awonar.app.ui.privacy.tradingactivity.TradingActivityFragment"
-        android:label="TradingActivityFragment"
+        android:label="Trading Activity"
         tools:layout="@layout/awonar_fragment_trading_activity" />
+    <fragment
+        android:id="@+id/privacyMenuFragment"
+        android:name="com.awonar.app.ui.privacy.PrivacyMenuFragment"
+        android:label="Privacy"
+        tools:layout="@layout/awonar_fragment_privacy_menu">
+        <action
+            android:id="@+id/action_privacyMenuFragment_to_tradingActivityFragment"
+            app:destination="@id/tradingActivityFragment" />
+    </fragment>
 
 </navigation>

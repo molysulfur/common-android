@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.awonar.android.model.user.User
 import com.awonar.app.databinding.AwonarFragmentTradingActivityBinding
 import com.awonar.app.ui.user.UserViewModel
@@ -29,10 +30,10 @@ class TradingActivityFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding.awonarTradingActivitySwitchPublic.setOnCheckedChangeListener { _, isChecked ->
+        binding.awonarTradingActivitySwitchPublic.setOnCheckedChangeListener { _, _ ->
             onPreferenceChange()
         }
-        binding.awonarTradingActivitySwitchFullname.setOnCheckedChangeListener { _, isChecked ->
+        binding.awonarTradingActivitySwitchFullname.setOnCheckedChangeListener { _, _ ->
             onPreferenceChange()
         }
         observe()
