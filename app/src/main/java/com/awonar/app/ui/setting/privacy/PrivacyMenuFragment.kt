@@ -1,4 +1,4 @@
-package com.awonar.app.ui.privacy
+package com.awonar.app.ui.setting.privacy
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -1,12 +1,9 @@
-package com.awonar.app.ui.privacy
+package com.awonar.app.ui.setting.privacy
 
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarActivityPrivacyBinding

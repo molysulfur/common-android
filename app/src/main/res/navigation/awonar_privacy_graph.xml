@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/tradingActivityFragment"
-        android:name="com.awonar.app.ui.privacy.tradingactivity.TradingActivityFragment"
+        android:name="com.awonar.app.ui.setting.privacy.tradingactivity.TradingActivityFragment"
         android:label="Trading Activity"
         tools:layout="@layout/awonar_fragment_trading_activity" />
     <fragment
         android:id="@+id/privacyMenuFragment"
-        android:name="com.awonar.app.ui.privacy.PrivacyMenuFragment"
+        android:name="com.awonar.app.ui.setting.privacy.PrivacyMenuFragment"
         android:label="Privacy"
         tools:layout="@layout/awonar_fragment_privacy_menu">
         <action

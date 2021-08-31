@@ -9,10 +9,7 @@ import javax.inject.Inject
 import android.os.Bundle
 import com.awonar.android.model.core.MessageSuccessResponse
 import com.awonar.android.model.tradingactivity.TradingActivityRequest
-import com.awonar.android.model.user.UpdateAboutMeRequest
-import com.awonar.android.model.user.User
-import com.awonar.android.model.user.UserRequest
-import com.awonar.android.model.user.UserResponse
+import com.awonar.android.model.user.*
 import com.awonar.android.shared.db.hawk.UserPreferenceManager
 import com.facebook.AccessToken
 import com.facebook.GraphResponse
@@ -26,6 +23,20 @@ class UserRepository @Inject constructor(
     private val userService: UserService,
     private val preference: UserPreferenceManager
 ) {
+
+    fun getPersonalInfo() =
+        object : DirectNetworkFlow<String?, PersonalInfoResponse?, PersonalInfoResponse?>() {
+            override fun createCall(): Response<PersonalInfoResponse?> =
+                userService.getPersonalVerify().execute()
+
+            override fun convertToResultType(response: PersonalInfoResponse?): PersonalInfoResponse? =
+                response
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+
+        }.asFlow()
 
     fun updateTradingActivity(request: TradingActivityRequest) =
         object : NetworkFlow<TradingActivityRequest, User?, UserResponse>() {

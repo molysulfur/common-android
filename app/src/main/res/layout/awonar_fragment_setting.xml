@@ -27,6 +27,20 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/awonar_setting_button_personal_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/awonar_ripple_white"
+            android:drawableEnd="@drawable/awonar_ic_yellow_warning"
+            android:gravity="start"
+            android:padding="@dimen/awonar_size_margin_padding_normal"
+            android:text="Personal Information"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_setting_button_about" />
+
+
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/awonar_setting_button_bank_account"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -37,7 +51,7 @@
             android:text="Bank"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/awonar_setting_button_about" />
+            app:layout_constraintTop_toBottomOf="@+id/awonar_setting_button_personal_info" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/awonar_setting_button_privacy"

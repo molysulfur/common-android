@@ -3,6 +3,7 @@ package com.awonar.android.shared.api
 import com.awonar.android.model.ExistsEmailResponse
 import com.awonar.android.model.core.MessageSuccessResponse
 import com.awonar.android.model.tradingactivity.TradingActivityRequest
+import com.awonar.android.model.user.PersonalInfoResponse
 import com.awonar.android.model.user.UpdateAboutMeRequest
 import com.awonar.android.model.user.UserResponse
 import com.awonar.android.shared.constrant.BuildConfig
@@ -12,6 +13,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
 interface UserService {
+
+    @GET("api/v1/verify/personal")
+    fun getPersonalVerify() : Call<PersonalInfoResponse?>
 
     @PATCH("api/v1/users/settings")
     fun updateTradingActivity(@Body tradingActivity: TradingActivityRequest): Call<UserResponse>

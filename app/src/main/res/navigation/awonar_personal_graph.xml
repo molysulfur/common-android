@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/awonar_personal_graph"
+    app:startDestination="@id/personalInfoStepOneFragment">
+
+    <fragment
+        android:id="@+id/personalInfoStepOneFragment"
+        android:name="com.awonar.app.ui.setting.personal.PersonalInfoStepOneFragment"
+        android:label="PersonalInfoStepOneFragment"
+        tools:layout="@layout/awonar_fragment_personal_step_one" />
+</navigation>

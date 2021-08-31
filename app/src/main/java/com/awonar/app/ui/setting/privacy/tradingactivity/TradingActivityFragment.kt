@@ -1,4 +1,4 @@
-package com.awonar.app.ui.privacy.tradingactivity
+package com.awonar.app.ui.setting.privacy.tradingactivity
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,13 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
 import com.awonar.android.model.user.User
 import com.awonar.app.databinding.AwonarFragmentTradingActivityBinding
+import com.awonar.app.ui.setting.privacy.PrivacyViewModel
 import com.awonar.app.ui.user.UserViewModel
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
-import timber.log.Timber
 
 class TradingActivityFragment : Fragment() {
 
@@ -22,7 +21,7 @@ class TradingActivityFragment : Fragment() {
         AwonarFragmentTradingActivityBinding.inflate(layoutInflater)
     }
 
-    private val viewModel: TradingActivityViewModel by activityViewModels()
+    private val viewModel: PrivacyViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
 
     override fun onCreateView(
