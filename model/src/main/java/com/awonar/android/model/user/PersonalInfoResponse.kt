@@ -19,5 +19,6 @@ data class PersonalInfoResponse(
     @SerializedName("lastName") val lastName: String?,
     @SerializedName("phoneNumber") val phoneNumber: String?,
     @SerializedName("postalCode") val postalCode: String?,
+    @SerializedName("identityNumber") val identityNumber: String?,
     @SerializedName("gender") val gender: Int,
 ) : Parcelable

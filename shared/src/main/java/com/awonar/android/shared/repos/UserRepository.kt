@@ -8,6 +8,7 @@ import retrofit2.Response
 import javax.inject.Inject
 import android.os.Bundle
 import com.awonar.android.model.core.MessageSuccessResponse
+import com.awonar.android.model.privacy.PersonalProfileRequest
 import com.awonar.android.model.tradingactivity.TradingActivityRequest
 import com.awonar.android.model.user.*
 import com.awonar.android.shared.db.hawk.UserPreferenceManager
@@ -152,6 +153,34 @@ class UserRepository @Inject constructor(
                 if (data != null)
                     preference.save(data)
             }
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+
+        }.asFlow()
+
+    fun verifyProfile(request: PersonalProfileRequest) =
+        object : DirectNetworkFlow<String?, PersonalInfoResponse?, PersonalInfoResponse?>() {
+            override fun createCall(): Response<PersonalInfoResponse?> =
+                userService.verifyProfile(request).execute()
+
+            override fun convertToResultType(response: PersonalInfoResponse?): PersonalInfoResponse? =
+                response
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+
+        }.asFlow()
+
+    fun verifyAddress(request: PersonalProfileRequest): Flow<Result<PersonalInfoResponse?>> =
+        object : DirectNetworkFlow<String?, PersonalInfoResponse?, PersonalInfoResponse?>() {
+            override fun createCall(): Response<PersonalInfoResponse?> =
+                userService.verifyProfile(request).execute()
+
+            override fun convertToResultType(response: PersonalInfoResponse?): PersonalInfoResponse? =
+                response
 
             override fun onFetchFailed(errorMessage: String) {
                 println(errorMessage)

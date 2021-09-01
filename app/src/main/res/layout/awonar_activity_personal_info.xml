@@ -7,25 +7,51 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-     <androidx.viewpager2.widget.ViewPager2
-         android:layout_width="match_parent"
-         android:layout_height="match_parent"/>
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/awonar_personal_info_pager_info"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/awonar_personal_info_indicator_page"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/awonar_personal_info_text_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/awonar_ripple_tranparent"
+            android:drawableStart="@drawable/awonar_ic_back"
             android:padding="@dimen/awonar_size_margin_padding_normal"
             android:text="Back"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <com.tbuonomo.viewpagerdotsindicator.SpringDotsIndicator
+            android:id="@+id/awonar_personal_info_indicator_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/awonar_size_text_normal"
+            app:dotsColor="@color/awonar_color_primary"
+            app:dotsCornerRadius="8dp"
+            app:dotsSize="8dp"
+            app:dotsSpacing="4dp"
+            app:dotsWidthFactor="2.5"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/awonar_personal_info_text_continus"
+            app:layout_constraintStart_toEndOf="@+id/awonar_personal_info_text_back"
+            app:layout_constraintTop_toTopOf="@+id/awonar_personal_info_text_back"
+            app:progressMode="true" />
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/awonar_personal_info_text_continus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:drawableEnd="@drawable/awonar_ic_next"
+            android:background="@drawable/awonar_ripple_tranparent"
             android:padding="@dimen/awonar_size_margin_padding_normal"
             android:text="Continus"
+            android:textColor="@color/awonar_color_primary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>

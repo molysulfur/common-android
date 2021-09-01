@@ -3,133 +3,190 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.awonar.app.ui.setting.privacy.PrivacyViewModel" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/materialToolbar"
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:title="Step 1 My Profile" />
+            android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/appCompatTextView3"
-            style="@style/Awonar.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/awonar_size_margin_padding_normal"
-            android:text="My Profile"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/materialToolbar" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout6"
-            style="@style/Awonar.EditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/awonar_hint_name"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView3">
-
-            <com.google.android.material.textfield.TextInputEditText
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/materialToolbar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout7"
-            style="@style/Awonar.EditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/awonar_hint_lastname"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout6">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout8"
-            style="@style/Awonar.EditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/awonar_text_username"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout7">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/appCompatTextView4"
-            style="@style/Awonar.Title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/awonar_text_gender"
-            app:layout_constraintEnd_toEndOf="@+id/textInputLayout8"
-            app:layout_constraintStart_toStartOf="@+id/textInputLayout8"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout8" />
-
-        <RadioGroup
-            android:id="@+id/radioGroup"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="@+id/appCompatTextView4"
-            app:layout_constraintStart_toStartOf="@+id/appCompatTextView4"
-            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView4">
-
-            <com.google.android.material.radiobutton.MaterialRadioButton
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Male" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:title="Step 1 My Profile" />
+        </com.google.android.material.appbar.AppBarLayout>
 
-            <com.google.android.material.radiobutton.MaterialRadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Female" />
-        </RadioGroup>
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/appCompatTextView5"
-            style="@style/Awonar.Title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Your birthday"
-            app:layout_constraintEnd_toEndOf="@+id/radioGroup"
-            app:layout_constraintStart_toStartOf="@+id/radioGroup"
-            app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
-
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Awonar.EditText"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/awonar_format_date"
-            app:endIconTint="@color/black"
-            app:endIconCheckable="true"
-            app:endIconDrawable="@drawable/awonar_ic_calendar"
-            app:layout_constraintEnd_toEndOf="@+id/appCompatTextView5"
-            app:layout_constraintStart_toStartOf="@+id/appCompatTextView5"
-            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView5">
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.textfield.TextInputLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                android:layout_height="match_parent">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_personal_step_one_text_title"
+                    style="@style/Awonar.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/awonar_size_margin_padding_normal"
+                    android:text="My Profile"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/awonar_personal_step_one_input_name"
+                    style="@style/Awonar.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="@{!viewModel.personalState.finish1}"
+                    android:hint="@string/awonar_hint_name"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_personal_step_one_text_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.personalState.firstName}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/awonar_personal_step_one_input_middle"
+                    style="@style/Awonar.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="@{!viewModel.personalState.finish1}"
+                    android:hint="@string/awonar_hint_middle_name"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_personal_step_one_input_name">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.personalState.middleName}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/awonar_personal_step_one_input_lastname"
+                    style="@style/Awonar.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="@{!viewModel.personalState.finish1}"
+                    android:hint="@string/awonar_hint_lastname"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_personal_step_one_input_middle">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.personalState.lastName}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/awonar_personal_step_one_input_username"
+                    style="@style/Awonar.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="@{!viewModel.personalState.finish1}"
+                    android:hint="@string/awonar_text_username"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_personal_step_one_input_lastname">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_personal_step_one_text_title_gender"
+                    style="@style/Awonar.Title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/awonar_text_gender"
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_personal_step_one_input_username"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_personal_step_one_input_username"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_personal_step_one_input_username" />
+
+                <RadioGroup
+                    android:id="@+id/awonar_personal_step_one_text_radio_gender"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_personal_step_one_text_title_gender"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_personal_step_one_text_title_gender"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_personal_step_one_text_title_gender">
+
+                    <com.google.android.material.radiobutton.MaterialRadioButton
+                        android:id="@+id/awonar_personal_step_one_text_radio_male"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:checked="@{viewModel.personalState.gender == 0}"
+                        android:enabled="@{!viewModel.personalState.finish1}"
+                        android:text="Male" />
+
+                    <com.google.android.material.radiobutton.MaterialRadioButton
+                        android:id="@+id/awonar_personal_step_one_text_radio_female"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:checked="@{viewModel.personalState.gender == 1}"
+                        android:enabled="@{!viewModel.personalState.finish1}"
+                        android:text="Female" />
+                </RadioGroup>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_personal_step_one_text_title_birthday"
+                    style="@style/Awonar.Title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Your birthday"
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_personal_step_one_text_radio_gender"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_personal_step_one_text_radio_gender"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_personal_step_one_text_radio_gender" />
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/awonar_personal_step_one_text_input_birthday"
+                    style="@style/Awonar.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="@{!viewModel.personalState.finish1}"
+                    android:hint="@string/awonar_format_date"
+                    app:endIconCheckable="true"
+                    app:endIconDrawable="@drawable/awonar_ic_calendar"
+                    app:endIconTint="@color/black"
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_personal_step_one_text_title_birthday"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_personal_step_one_text_title_birthday"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_personal_step_one_text_title_birthday">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.personalState.birthDate}" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
 </layout>

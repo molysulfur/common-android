@@ -5,12 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.awonar.app.databinding.AwonarFragmentPersonalStepOneBinding
+import com.awonar.app.databinding.AwonarFragmentPersonalStepTwoBinding
+import com.awonar.app.ui.setting.privacy.PrivacyViewModel
 
 class PersonalInfoStepTwoFragment : Fragment() {
 
-    private val binding: AwonarFragmentPersonalStepOneBinding by lazy {
-        AwonarFragmentPersonalStepOneBinding.inflate(layoutInflater)
+    private val viewModel: PrivacyViewModel by activityViewModels()
+
+    private val binding: AwonarFragmentPersonalStepTwoBinding by lazy {
+        AwonarFragmentPersonalStepTwoBinding.inflate(layoutInflater)
+    }
+
+    companion object {
+
+        fun newInstance(): PersonalInfoStepTwoFragment = PersonalInfoStepTwoFragment()
     }
 
     override fun onCreateView(
@@ -18,6 +28,8 @@ class PersonalInfoStepTwoFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 }

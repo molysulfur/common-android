@@ -2,6 +2,8 @@ package com.awonar.android.shared.api
 
 import com.awonar.android.model.ExistsEmailResponse
 import com.awonar.android.model.core.MessageSuccessResponse
+import com.awonar.android.model.privacy.PersonalAddressRequest
+import com.awonar.android.model.privacy.PersonalProfileRequest
 import com.awonar.android.model.tradingactivity.TradingActivityRequest
 import com.awonar.android.model.user.PersonalInfoResponse
 import com.awonar.android.model.user.UpdateAboutMeRequest
@@ -14,8 +16,14 @@ import retrofit2.http.*
 
 interface UserService {
 
+    @POST("api/v1/verify/personal/contact")
+    fun verifyAddress(@Body verify: PersonalAddressRequest): Call<PersonalInfoResponse?>
+
+    @POST("api/v1/verify/personal/info")
+    fun verifyProfile(@Body verify: PersonalProfileRequest): Call<PersonalInfoResponse?>
+
     @GET("api/v1/verify/personal")
-    fun getPersonalVerify() : Call<PersonalInfoResponse?>
+    fun getPersonalVerify(): Call<PersonalInfoResponse?>
 
     @PATCH("api/v1/users/settings")
     fun updateTradingActivity(@Body tradingActivity: TradingActivityRequest): Call<UserResponse>

@@ -98,6 +98,10 @@
         <item name="android:textColor">@color/awonar_color_primary</item>
     </style>
 
+    <style name="Awonar.Button.Link.Red">
+        <item name="android:textColor">@color/awonar_color_orange</item>
+    </style>
+
     <style name="Awonar.Button.Icon">
         <item name="android:scaleType">centerCrop</item>
         <item name="android:background">@drawable/awonar_ripple_icon</item>

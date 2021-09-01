@@ -4,6 +4,7 @@ myModuleList.with {
     add(new Module(name: ":common", path: "./common-android"))
     add(new Module(name: ":model", path: "./model"))
     add(new Module(name: ":shared", path: "./shared"))
+    add(new Module(name: ":camerax", path: "./camerax"))
 
 }
 

@@ -25,13 +25,14 @@
         <entry key="app/src/main/res/drawable/awonar_select_password_visibility.xml" value="0.2359375" />
         <entry key="app/src/main/res/drawable/awonar_selector_navigation.xml" value="0.38425925925925924" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.128125" />
+        <entry key="app/src/main/res/layout-v23/awonar_activity_personal_info.xml" value="0.13020833333333334" />
         <entry key="app/src/main/res/layout/awonar_activity_about_me.xml" value="0.13697916666666668" />
         <entry key="app/src/main/res/layout/awonar_activity_auth.xml" value="0.21979166666666666" />
         <entry key="app/src/main/res/layout/awonar_activity_bank_account.xml" value="0.1796875" />
         <entry key="app/src/main/res/layout/awonar_activity_camera.xml" value="0.1" />
         <entry key="app/src/main/res/layout/awonar_activity_launcher.xml" value="0.16927083333333334" />
         <entry key="app/src/main/res/layout/awonar_activity_main.xml" value="0.28434504792332266" />
-        <entry key="app/src/main/res/layout/awonar_activity_personal_info.xml" value="0.20260416666666667" />
+        <entry key="app/src/main/res/layout/awonar_activity_personal_info.xml" value="0.25" />
         <entry key="app/src/main/res/layout/awonar_activity_privacy.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/awonar_activity_profile.xml" value="0.24537037037037038" />
         <entry key="app/src/main/res/layout/awonar_bottom_sheet_dialog_account_type.xml" value="0.19010416666666666" />
@@ -59,6 +60,19 @@
         <entry key="app/src/main/res/menu/awonar_menu_drawer_main.xml" value="0.3880208333333333" />
         <entry key="app/src/main/res/menu/awonar_menu_toobar_main.xml" value="0.3880208333333333" />
         <entry key="app/src/main/res/menu/awonar_toobar_main_menu.xml" value="0.25555555555555554" />
+        <entry key="camerax/src/main/res/drawable/ic_gallery.xml" value="0.2722222222222222" />
+        <entry key="camerax/src/main/res/drawable/ic_outer_circle.xml" value="0.2722222222222222" />
+        <entry key="camerax/src/main/res/drawable/ic_shutter.xml" value="0.2722222222222222" />
+        <entry key="camerax/src/main/res/drawable/ic_shutter_focused.xml" value="0.2722222222222222" />
+        <entry key="camerax/src/main/res/drawable/ic_shutter_normal.xml" value="0.2722222222222222" />
+        <entry key="camerax/src/main/res/drawable/ic_shutter_pressed.xml" value="0.2722222222222222" />
+        <entry key="camerax/src/main/res/drawable/ic_switch.xml" value="0.2722222222222222" />
+        <entry key="camerax/src/main/res/drawable/select_icon.xml" value="0.13802083333333334" />
+        <entry key="camerax/src/main/res/layout/activity_main.xml" value="0.3098958333333333" />
+        <entry key="camerax/src/main/res/layout/fragment_camera.xml" value="0.3098958333333333" />
+        <entry key="camerax/src/main/res/layout/fragment_camera_gallery.xml" value="0.24375" />
+        <entry key="camerax/src/main/res/layout/item_photo.xml" value="0.121875" />
+        <entry key="camerax/src/main/res/xml/file_paths.xml" value="0.121875" />
       </map>
     </option>
   </component>
