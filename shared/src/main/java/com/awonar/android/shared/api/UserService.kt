@@ -3,6 +3,7 @@ package com.awonar.android.shared.api
 import com.awonar.android.model.ExistsEmailResponse
 import com.awonar.android.model.core.MessageSuccessResponse
 import com.awonar.android.model.privacy.PersonalAddressRequest
+import com.awonar.android.model.privacy.PersonalCardIdRequest
 import com.awonar.android.model.privacy.PersonalProfileRequest
 import com.awonar.android.model.tradingactivity.TradingActivityRequest
 import com.awonar.android.model.user.PersonalInfoResponse
@@ -15,6 +16,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
 interface UserService {
+
+    @POST("api/v1/verify/personal/identity")
+    fun verifyCardId(@Body verify: PersonalCardIdRequest): Call<PersonalInfoResponse?>
 
     @POST("api/v1/verify/personal/contact")
     fun verifyAddress(@Body verify: PersonalAddressRequest): Call<PersonalInfoResponse?>
