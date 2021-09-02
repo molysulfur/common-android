@@ -12,6 +12,7 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/awonar_bank_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:navigationIcon="@drawable/awonar_ic_close"
@@ -30,7 +31,7 @@
 
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/appCompatTextView"
+                    android:id="@+id/awonar_bank_text_description"
                     style="@style/Awonar.Text.Default.Normal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -40,14 +41,14 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputLayout"
+                    android:id="@+id/awonar_bank_input_account_name"
                     style="@style/Awonar.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/awonar_hint_account_name"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/appCompatTextView">
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_bank_text_description">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
@@ -55,14 +56,14 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputLayout2"
+                    android:id="@+id/awonar_bank_input_account_number"
                     style="@style/Awonar.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/awonar_hint_your_account_no"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_bank_input_account_name">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
@@ -74,10 +75,10 @@
                     style="@style/Awonar.AutoComplete"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/awonar_hint_your_account_no"
+                    android:hint="@string/awonar_hint_country"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_bank_input_account_number">
 
                     <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                         android:layout_width="match_parent"
@@ -89,7 +90,7 @@
                     style="@style/Awonar.AutoComplete"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/awonar_hint_your_account_no"
+                    android:hint="@string/awonar_hint_bank"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textInputLayout3">
@@ -104,7 +105,7 @@
                     style="@style/Awonar.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/awonar_hint_your_account_no"
+                    android:hint="@string/awonar_hint_account_type"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textInputLayout4">
@@ -143,6 +144,13 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
+
+        <com.awonar.app.widget.AwonarProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/awonar_color_surface"
+            android:layout_gravity="center"
+            android:indeterminate="true" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
