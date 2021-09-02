@@ -8,6 +8,8 @@ import retrofit2.Response
 import javax.inject.Inject
 import android.os.Bundle
 import com.awonar.android.model.core.MessageSuccessResponse
+import com.awonar.android.model.privacy.PersonalAddressRequest
+import com.awonar.android.model.privacy.PersonalCardIdRequest
 import com.awonar.android.model.privacy.PersonalProfileRequest
 import com.awonar.android.model.tradingactivity.TradingActivityRequest
 import com.awonar.android.model.user.*
@@ -161,7 +163,8 @@ class UserRepository @Inject constructor(
         }.asFlow()
 
     fun verifyProfile(request: PersonalProfileRequest) =
-        object : DirectNetworkFlow<String?, PersonalInfoResponse?, PersonalInfoResponse?>() {
+        object :
+            DirectNetworkFlow<PersonalProfileRequest, PersonalInfoResponse?, PersonalInfoResponse?>() {
             override fun createCall(): Response<PersonalInfoResponse?> =
                 userService.verifyProfile(request).execute()
 
@@ -174,10 +177,11 @@ class UserRepository @Inject constructor(
 
         }.asFlow()
 
-    fun verifyAddress(request: PersonalProfileRequest): Flow<Result<PersonalInfoResponse?>> =
-        object : DirectNetworkFlow<String?, PersonalInfoResponse?, PersonalInfoResponse?>() {
+    fun verifyAddress(request: PersonalAddressRequest): Flow<Result<PersonalInfoResponse?>> =
+        object :
+            DirectNetworkFlow<PersonalAddressRequest, PersonalInfoResponse?, PersonalInfoResponse?>() {
             override fun createCall(): Response<PersonalInfoResponse?> =
-                userService.verifyProfile(request).execute()
+                userService.verifyAddress(request).execute()
 
             override fun convertToResultType(response: PersonalInfoResponse?): PersonalInfoResponse? =
                 response
@@ -188,5 +192,19 @@ class UserRepository @Inject constructor(
 
         }.asFlow()
 
+    fun verifyCardId(request: PersonalCardIdRequest) =
+        object :
+            DirectNetworkFlow<PersonalCardIdRequest, PersonalInfoResponse?, PersonalInfoResponse?>() {
+            override fun createCall(): Response<PersonalInfoResponse?> =
+                userService.verifyCardId(request).execute()
+
+            override fun convertToResultType(response: PersonalInfoResponse?): PersonalInfoResponse? =
+                response
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+
+        }.asFlow()
 
 }

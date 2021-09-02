@@ -1,5 +1,6 @@
 package com.awonar.android.shared.domain.personal
 
+import com.awonar.android.model.privacy.PersonalAddressRequest
 import com.awonar.android.model.privacy.PersonalProfileRequest
 import com.awonar.android.model.user.PersonalInfoResponse
 import com.awonar.android.shared.di.IoDispatcher
@@ -13,7 +14,7 @@ import javax.inject.Inject
 class UpdateVerifyAddressUseCase @Inject constructor(
     private val userRepository: UserRepository,
     @IoDispatcher val ioDispatcher: CoroutineDispatcher
-) : FlowUseCase<PersonalProfileRequest, PersonalInfoResponse?>(ioDispatcher) {
-    override fun execute(parameters: PersonalProfileRequest): Flow<Result<PersonalInfoResponse?>> =
+) : FlowUseCase<PersonalAddressRequest, PersonalInfoResponse?>(ioDispatcher) {
+    override fun execute(parameters: PersonalAddressRequest): Flow<Result<PersonalInfoResponse?>> =
         userRepository.verifyAddress(parameters)
 }

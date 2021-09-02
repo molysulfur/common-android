@@ -13,6 +13,7 @@ import com.awonar.app.databinding.AwonarActivityPersonalInfoBinding
 import com.awonar.app.ui.setting.privacy.PrivacyViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.molysulfur.library.activity.BaseActivity
+import com.molysulfur.library.extension.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -41,6 +42,9 @@ class PersonalInfoActivity : BaseActivity() {
 
     private fun setListenner() {
         binding.awonarPersonalInfoTextBack.setOnClickListener {
+            if (currentItem == 0) {
+                finish()
+            }
             currentItem--
             binding.awonarPersonalInfoPagerInfo.currentItem = currentItem
         }
@@ -50,8 +54,8 @@ class PersonalInfoActivity : BaseActivity() {
                     if (info?.finish1 != true) {
                         MaterialAlertDialogBuilder(this).setTitle("Confirm")
                             .setMessage("Sending for information")
-                            .setNegativeButton("Cancel") { dialog, which ->
-                            }.setPositiveButton("OK") { dialog, which ->
+                            .setNegativeButton("Cancel") { _, _ ->
+                            }.setPositiveButton("OK") { _, _ ->
                                 currentItem++
                                 binding.awonarPersonalInfoPagerInfo.currentItem = currentItem
                                 personalViewModel.onPageChange(currentItem)
@@ -90,6 +94,9 @@ class PersonalInfoActivity : BaseActivity() {
                         binding.awonarPersonalInfoPagerInfo.currentItem = currentItem
                     }
                 }
+                else -> {
+                    finish()
+                }
             }
 
             personalViewModel.onPageChange(currentItem + 1)
@@ -117,6 +124,16 @@ class PersonalInfoActivity : BaseActivity() {
                             }
                             binding.awonarPersonalInfoPagerInfo.setCurrentItem(currentItem, false)
                         }
+                    }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.toastMessageState.collect { message ->
+                    if (!message.isNullOrBlank()) {
+                        toast(message)
                     }
                 }
             }

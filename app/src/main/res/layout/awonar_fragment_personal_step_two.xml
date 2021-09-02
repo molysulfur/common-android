@@ -19,7 +19,7 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/materialToolbar"
+                android:id="@+id/awonar_personal_step_two_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -39,17 +39,17 @@
                 android:layout_height="match_parent">
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/appCompatTextView3"
+                    android:id="@+id/awonar_personal_step_two_text_title_address"
                     style="@style/Awonar.Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/awonar_size_margin_padding_normal"
                     android:text="Address"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/materialToolbar" />
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_personal_step_two_toolbar" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputLayout6"
+                    android:id="@+id/awonar_personal_step_two_input_country"
                     style="@style/Awonar.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
                     android:hint="@string/awonar_hint_country"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/appCompatTextView3">
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_personal_step_two_text_title_address">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
@@ -66,7 +66,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputLayout7"
+                    android:id="@+id/awonar_personal_step_two_input_city"
                     style="@style/Awonar.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
                     android:hint="@string/awonar_hint_city"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textInputLayout6">
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_personal_step_two_input_country">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
@@ -83,7 +83,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputLayout8"
+                    android:id="@+id/awonar_personal_step_two_input_postal"
                     style="@style/Awonar.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -91,13 +91,31 @@
                     android:hint="@string/awonar_hint_postal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textInputLayout7">
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_personal_step_two_input_city">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="number"
                         android:text="@{viewModel.personalState.postalCode}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/awonar_personal_step_two_input_address"
+                    style="@style/Awonar.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="@{!viewModel.personalState.finish2}"
+                    android:hint="@string/awonar_hint_address"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_personal_step_two_input_postal">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:text="@{viewModel.personalState.address}" />
                 </com.google.android.material.textfield.TextInputLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>

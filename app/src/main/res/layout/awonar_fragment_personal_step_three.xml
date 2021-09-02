@@ -19,7 +19,7 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/materialToolbar"
+                android:id="@+id/awonar_personal_step_three_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -28,7 +28,6 @@
                 app:title="Step 3 Card ID" />
 
         </com.google.android.material.appbar.AppBarLayout>
-
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -40,9 +39,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/appCompatTextView3"
+                    android:id="@+id/awonar_personal_step_three_text_title_id_card"
                     style="@style/Awonar.Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -53,35 +51,42 @@
 
 
                 <RadioGroup
-                    android:id="@+id/radioGroup2"
+                    android:id="@+id/awonar_personal_step_three_radio_id_type"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
                     android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
-                    android:enabled="@{!viewModel.personalState.finish3}"
+                    android:checkedButton="@+id/awonar_personal_step_three_radio_password"
+
                     android:orientation="vertical"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/appCompatTextView3">
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_personal_step_three_text_title_id_card">
 
                     <com.google.android.material.radiobutton.MaterialRadioButton
+                        android:id="@+id/awonar_personal_step_three_radio_passport"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:enabled="@{!viewModel.personalState.finish3}"
                         android:text="Passport" />
 
                     <com.google.android.material.radiobutton.MaterialRadioButton
+                        android:id="@+id/awonar_personal_step_three_radio_card_id"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:enabled="@{!viewModel.personalState.finish3}"
                         android:text="Card ID" />
 
                     <com.google.android.material.radiobutton.MaterialRadioButton
+                        android:id="@+id/awonar_personal_step_three_radio_license"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:enabled="@{!viewModel.personalState.finish3}"
                         android:text="Drever's lisense" />
                 </RadioGroup>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputLayout6"
+                    android:id="@+id/awonar_personal_step_three_input_number"
                     style="@style/Awonar.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -89,7 +94,7 @@
                     android:hint="@string/awonar_text_card_no"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/radioGroup2">
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_personal_step_three_radio_id_type">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
@@ -98,56 +103,62 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/appCompatTextView6"
+                    android:id="@+id/awonar_personal_step_three_text_description"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Please take a picture of your identity document. And make sure your documents meets the following requirements.
-
+                    android:text="Please take a picture of your identity document. And make sure your documents meets the following requirements
  • Legible
-
  • All 4 corners of the document must be in the image.
-
  • Documents must be submitted both front and back (if applocable)."
-                    app:layout_constraintEnd_toEndOf="@+id/textInputLayout6"
-                    app:layout_constraintStart_toStartOf="@+id/textInputLayout6"
-                    app:layout_constraintTop_toBottomOf="@+id/textInputLayout6" />
-
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_personal_step_three_input_number"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_personal_step_three_input_number"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_personal_step_three_input_number" />
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/appCompatButton2"
+                    android:id="@+id/awonar_personal_step_three_button_take_front"
                     style="@style/Awonar.Button.Border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
                     android:enabled="@{!viewModel.personalState.finish3}"
                     android:text="upload"
-                    app:layout_constraintEnd_toEndOf="@+id/appCompatTextView6"
-                    app:layout_constraintStart_toStartOf="@+id/appCompatTextView6"
-                    app:layout_constraintTop_toBottomOf="@+id/appCompatTextView6" />
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_personal_step_three_text_description"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_personal_step_three_text_description"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_personal_step_three_text_description" />
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/awonar_personal_step_three_text_help_front"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="File size cannot exceed 8MB. File type .JPG .PNG .PDF"
-                    app:layout_constraintEnd_toEndOf="@+id/appCompatButton2"
-                    app:layout_constraintTop_toBottomOf="@+id/appCompatButton2" />
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_personal_step_three_button_take_front"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_personal_step_three_button_take_front" />
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/appCompatButton3"
+                    android:id="@+id/awonar_personal_step_three_button_take_back"
                     style="@style/Awonar.Button.Border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
                     android:text="upload"
-                    app:layout_constraintEnd_toEndOf="@+id/appCompatTextView6"
-                    app:layout_constraintStart_toStartOf="@+id/appCompatTextView6"
-                    app:layout_constraintTop_toBottomOf="@+id/textView" />
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_personal_step_three_button_take_front"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_personal_step_three_button_take_front"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_personal_step_three_text_help_front" />
 
                 <TextView
+                    android:id="@+id/awonar_personal_step_three_text_help_back"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="File size cannot exceed 8MB. File type .JPG .PNG .PDF"
-                    app:layout_constraintEnd_toEndOf="@+id/appCompatButton3"
-                    app:layout_constraintTop_toBottomOf="@+id/appCompatButton3" />
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_personal_step_three_button_take_back"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_personal_step_three_button_take_back" />
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/awonar_personal_step_three_constraint_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:constraint_referenced_ids="awonar_personal_step_three_button_take_back,awonar_personal_step_three_text_help_back" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
