@@ -23,14 +23,19 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.io.File
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.util.Base64
+import android.widget.Toast
 import java.io.ByteArrayOutputStream
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class CameraFragment : Fragment() {
 
     companion object {
-        private const val TAG = "CameraXBasic"
+        private const val TAG = "CameraFragment"
+        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
     }
@@ -77,32 +82,29 @@ class CameraFragment : Fragment() {
     }
 
     private fun bindTakePhoto() {
+        val photoFile = File(
+            outputDirectory,
+            SimpleDateFormat(
+                FILENAME_FORMAT, Locale.US
+            ).format(System.currentTimeMillis()) + ".jpg"
+        )
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+
         binding.cameraCaptureButton.setOnClickListener {
             imageCapture?.let { imageCapture ->
-                imageCapture.takePicture(cameraExecutor,
-                    object : ImageCapture.OnImageCapturedCallback() {
-                        override fun onCaptureSuccess(image: ImageProxy) {
-                            super.onCaptureSuccess(image)
-                            val byteBuffer: ByteBuffer = image.planes[0].buffer
-                            val bytes = ByteArray(byteBuffer.capacity())
-                            byteBuffer[bytes]
-                            val bitmap: Bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-                            val baos = ByteArrayOutputStream()
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-                            val imageBytes: ByteArray = baos.toByteArray()
-                            val imgString: String =
-                                Base64.encodeToString(imageBytes, Base64.DEFAULT)
-                            Log.e(TAG, imgString)
-                            activity?.run {
-                                setResult(Activity.RESULT_OK, Intent().apply {
-                                    putExtra(CameraActivity.EXTRA_IMAGE, imgString)
-                                })
+                imageCapture.takePicture(outputOptions, cameraExecutor,
+                    object : ImageCapture.OnImageSavedCallback {
+                        override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                            val result = Intent()
+                            result.data = Uri.fromFile(photoFile)
+                            Log.d(TAG, result.data.toString())
+                            activity?.apply {
+                                setResult(Activity.RESULT_OK, result)
                                 finish()
                             }
                         }
 
                         override fun onError(exception: ImageCaptureException) {
-                            super.onError(exception)
                             Log.e(TAG, "Photo capture failed: ${exception.message}", exception)
                         }
                     })

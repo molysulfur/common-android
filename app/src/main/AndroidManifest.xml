@@ -50,10 +50,11 @@
 
         <activity android:name=".ui.profile.ProfileActivity" />
         <activity android:name=".ui.setting.about.AboutMeActivity" />
-        <activity android:name=".ui.camera.CameraActivity" />
         <activity android:name=".ui.setting.bank.BankAccountActivity" />
         <activity android:name="com.awonar.app.ui.setting.privacy.PrivacyActivity" />
-        <activity android:name=".ui.setting.personal.PersonalInfoActivity" android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ui.setting.personal.PersonalInfoActivity"
+            android:windowSoftInputMode="adjustPan" />
 
     </application>
 

@@ -1,6 +1,7 @@
 package com.molysulfur.example.camerax
 
 import android.content.Context
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import java.io.File
@@ -8,7 +9,7 @@ import java.io.File
 class CameraActivity : AppCompatActivity() {
 
     companion object {
-        const val EXTRA_IMAGE ="com.molysulfur.library.camerax.extra.image"
+
         /** Use external media if it is available, our app's file directory otherwise */
         fun getOutputDirectory(context: Context): File {
             val appContext = context.applicationContext
@@ -17,6 +18,14 @@ class CameraActivity : AppCompatActivity() {
             }
             return if (mediaDir != null && mediaDir.exists())
                 mediaDir else appContext.filesDir
+        }
+    }
+
+    override fun onBackPressed() {
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
+            finishAfterTransition()
+        } else {
+            super.onBackPressed()
         }
     }
 

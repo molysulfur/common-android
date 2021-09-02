@@ -54,6 +54,7 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':common')
+    implementation project(path: ':camerax')
     implementation project(path: ':model')
     implementation project(path: ':shared')
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -69,6 +70,7 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$versions.androidxNavigation"
     implementation "androidx.navigation:navigation-ui-ktx:$versions.androidxNavigation"
     implementation "androidx.navigation:navigation-dynamic-features-fragment:$versions.androidxNavigation"
+    implementation project(path: ':camerax')
     androidTestImplementation "androidx.navigation:navigation-testing:$versions.androidxNavigation"
 
     implementation "androidx.multidex:multidex:$versions.androidxMultidex"
