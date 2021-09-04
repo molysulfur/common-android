@@ -49,4 +49,6 @@
     <string name="awonar_hint_address">Address</string>
     <string name="awonar_hint_bank">Bank</string>
     <string name="awonar_hint_account_type">Account Type</string>
+    <string name="awonar_text_upload">Upload</string>
+    <string name="awonar_text_required">This Field is Required.</string>
 </resources>

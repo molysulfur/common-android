@@ -9,7 +9,7 @@ import java.io.File
 class CameraActivity : AppCompatActivity() {
 
     companion object {
-
+        const val CAMERA_REQUEST = 200
         /** Use external media if it is available, our app's file directory otherwise */
         fun getOutputDirectory(context: Context): File {
             val appContext = context.applicationContext

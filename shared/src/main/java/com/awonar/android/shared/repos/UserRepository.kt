@@ -7,6 +7,8 @@ import com.molysulfur.library.network.DirectNetworkFlow
 import retrofit2.Response
 import javax.inject.Inject
 import android.os.Bundle
+import com.awonar.android.model.bookbank.BookBank
+import com.awonar.android.model.bookbank.BookBankRequest
 import com.awonar.android.model.core.MessageSuccessResponse
 import com.awonar.android.model.privacy.PersonalAddressRequest
 import com.awonar.android.model.privacy.PersonalCardIdRequest
@@ -26,6 +28,34 @@ class UserRepository @Inject constructor(
     private val userService: UserService,
     private val preference: UserPreferenceManager
 ) {
+
+    fun getBookBank() = object :
+        DirectNetworkFlow<BookBankRequest, BookBank?, BookBank?>() {
+        override fun createCall(): Response<BookBank?> =
+            userService.getBookBank().execute()
+
+        override fun convertToResultType(response: BookBank?): BookBank? =
+            response
+
+        override fun onFetchFailed(errorMessage: String) {
+            println(errorMessage)
+        }
+
+    }.asFlow()
+
+    fun updateBookBank(request: BookBankRequest) = object :
+        DirectNetworkFlow<BookBankRequest, BookBank?, BookBank?>() {
+        override fun createCall(): Response<BookBank?> =
+            userService.verifyBookBank(request).execute()
+
+        override fun convertToResultType(response: BookBank?): BookBank? =
+            response
+
+        override fun onFetchFailed(errorMessage: String) {
+            println(errorMessage)
+        }
+
+    }.asFlow()
 
     fun getPersonalInfo() =
         object : DirectNetworkFlow<String?, PersonalInfoResponse?, PersonalInfoResponse?>() {

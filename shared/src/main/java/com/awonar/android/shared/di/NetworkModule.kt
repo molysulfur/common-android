@@ -3,6 +3,7 @@ package com.awonar.android.shared.di
 import android.app.Application
 import com.awonar.android.shared.api.AuthService
 import com.awonar.android.shared.api.NetworkClient
+import com.awonar.android.shared.api.RemoteConfigService
 import com.awonar.android.shared.api.UserService
 import com.awonar.android.shared.db.hawk.AccessTokenManager
 import com.awonar.android.shared.utils.HawkUtil
@@ -35,5 +36,11 @@ class NetworkModule {
     @Provides
     fun provideUserService(client: NetworkClient): UserService {
         return UserService.create(client)
+    }
+
+    @Singleton
+    @Provides
+    fun provideRemoteConfigService(client: NetworkClient): RemoteConfigService {
+        return RemoteConfigService.create(client)
     }
 }

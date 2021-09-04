@@ -2,16 +2,21 @@ package com.awonar.app.ui.setting.privacy
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.awonar.android.model.bookbank.BookBank
+import com.awonar.android.model.bookbank.BookBankRequest
 import com.awonar.android.model.privacy.PersonalAddressRequest
 import com.awonar.android.model.privacy.PersonalCardIdRequest
 import com.awonar.android.model.privacy.PersonalProfileRequest
 import com.awonar.android.model.tradingactivity.TradingActivityRequest
 import com.awonar.android.model.user.PersonalInfoResponse
+import com.awonar.android.shared.domain.bookbank.GetBookBankUseCase
+import com.awonar.android.shared.domain.bookbank.UpdateVerifyBookBankUseCase
 import com.awonar.android.shared.domain.personal.GetPersonalInfoUseCase
 import com.awonar.android.shared.domain.personal.UpdateVerifyAddressUseCase
 import com.awonar.android.shared.domain.personal.UpdateVerifyCardIdUseCase
 import com.awonar.android.shared.domain.personal.UpdateVerifyProfileUseCase
 import com.awonar.android.shared.domain.tradingactivity.UpdateTradingActivityUseCase
+import com.awonar.android.shared.utils.WhileViewSubscribed
 import com.molysulfur.library.result.Result
 import com.molysulfur.library.result.data
 import com.molysulfur.library.result.succeeded
@@ -26,10 +31,17 @@ import javax.inject.Inject
 class PrivacyViewModel @Inject constructor(
     private val updateTradingActivityUseCase: UpdateTradingActivityUseCase,
     private val getPersonalInfoUseCase: GetPersonalInfoUseCase,
+    private val getBookBankUseCase: GetBookBankUseCase,
     private val updateVerifyProfileUseCase: UpdateVerifyProfileUseCase,
     private val updateVerifyAddressUseCase: UpdateVerifyAddressUseCase,
     private val updateVerifyCardIdUseCase: UpdateVerifyCardIdUseCase,
+    private val updateVerifyBookBankUseCase: UpdateVerifyBookBankUseCase
 ) : ViewModel() {
+
+    val bookBankState: StateFlow<BookBank?> = getBookBankUseCase(Unit).map { result ->
+        result.data
+    }.stateIn(viewModelScope, WhileViewSubscribed, null)
+
     private val _personalState: MutableStateFlow<PersonalInfoResponse?> = MutableStateFlow(null)
     val personalState: StateFlow<PersonalInfoResponse?> = _personalState
 
@@ -105,6 +117,32 @@ class PrivacyViewModel @Inject constructor(
                     _personalState.value = it.data
                 } else if (it is Result.Error) {
                     _toastMessageState.value = it.exception.message
+                }
+            }
+        }
+    }
+
+    fun uploadBookBank(
+        accountName: String,
+        accountNumber: String,
+        country: String,
+        bank: String,
+        accountType: String,
+        image: String
+    ) {
+        viewModelScope.launch {
+            updateVerifyBookBankUseCase(
+                BookBankRequest(
+                    bank = bank,
+                    bookBankImage = arrayListOf(image),
+                    countryId = country,
+                    name = accountName,
+                    number = accountNumber,
+                    type = accountType
+                )
+            ).collect {
+                if (it.succeeded) {
+                    _toastMessageState.value = "Upload is Finished."
                 }
             }
         }

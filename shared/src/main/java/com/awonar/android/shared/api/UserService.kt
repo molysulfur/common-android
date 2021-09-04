@@ -1,6 +1,8 @@
 package com.awonar.android.shared.api
 
 import com.awonar.android.model.ExistsEmailResponse
+import com.awonar.android.model.bookbank.BookBank
+import com.awonar.android.model.bookbank.BookBankRequest
 import com.awonar.android.model.core.MessageSuccessResponse
 import com.awonar.android.model.privacy.PersonalAddressRequest
 import com.awonar.android.model.privacy.PersonalCardIdRequest
@@ -16,6 +18,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
 interface UserService {
+
+    @GET("api/v1/verify/bank")
+    fun getBookBank(): Call<BookBank?>
+
+    @POST("api/v1/verify/bank")
+    fun verifyBookBank(@Body verify: BookBankRequest): Call<BookBank?>
 
     @POST("api/v1/verify/personal/identity")
     fun verifyCardId(@Body verify: PersonalCardIdRequest): Call<PersonalInfoResponse?>

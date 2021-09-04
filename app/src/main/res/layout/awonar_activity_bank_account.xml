@@ -3,6 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.awonar.app.ui.setting.privacy.PrivacyViewModel" />
+
+        <variable
+            name="remote"
+            type="com.awonar.app.ui.RemoteConfigViewModel" />
+    </data>
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -29,7 +41,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/awonar_bank_text_description"
                     style="@style/Awonar.Text.Default.Normal"
@@ -45,6 +56,7 @@
                     style="@style/Awonar.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="@{viewModel.bookBankState == null}"
                     android:hint="@string/awonar_hint_account_name"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -52,7 +64,8 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.bookBankState.accountName}" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -60,6 +73,7 @@
                     style="@style/Awonar.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="@{viewModel.bookBankState == null}"
                     android:hint="@string/awonar_hint_your_account_no"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -67,14 +81,17 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.bookBankState.accountNumber}" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputLayout3"
+                    android:id="@+id/awonar_bank_input_country"
                     style="@style/Awonar.AutoComplete"
+                    setCountries="@{remote.countryState}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="@{viewModel.bookBankState == null}"
                     android:hint="@string/awonar_hint_country"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -86,14 +103,16 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputLayout4"
+                    android:id="@+id/awonar_bank_input_bank"
                     style="@style/Awonar.AutoComplete"
+                    setBanks="@{remote.bankState}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="@{viewModel.bookBankState == null}"
                     android:hint="@string/awonar_hint_bank"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textInputLayout3">
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_bank_input_country">
 
                     <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                         android:layout_width="match_parent"
@@ -101,46 +120,65 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputLayout5"
-                    style="@style/Awonar.EditText"
+                    android:id="@+id/awonar_bank_input_account_type"
+                    style="@style/Awonar.AutoComplete"
+                    setAccountType="@{remote.accountTypeState}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="@{viewModel.bookBankState == null}"
                     android:hint="@string/awonar_hint_account_type"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textInputLayout4">
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_bank_input_bank">
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:text="@{viewModel.bookBankState.type}" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/appCompatTextView2"
+                    android:id="@+id/awonar_bank_text_upload_description"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Please take a picture of your identity document. And make sure your documents meets the following requirements."
-                    app:layout_constraintEnd_toEndOf="@+id/textInputLayout5"
-                    app:layout_constraintStart_toStartOf="@+id/textInputLayout5"
-                    app:layout_constraintTop_toBottomOf="@+id/textInputLayout5" />
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_bank_input_account_type"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_bank_input_account_type"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_bank_input_account_type" />
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/appCompatButton"
+                    android:id="@+id/awonar_bank_button_upload_bank"
                     style="@style/Awonar.Button.Border"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
-                    android:text="submit"
-                    app:layout_constraintEnd_toEndOf="@+id/appCompatTextView2"
-                    app:layout_constraintStart_toStartOf="@+id/appCompatTextView2"
-                    app:layout_constraintTop_toBottomOf="@+id/appCompatTextView2" />
+                    android:enabled="@{viewModel.bookBankState == null}"
+                    android:text="@string/awonar_text_upload"
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_bank_text_upload_description"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_bank_text_upload_description"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_bank_text_upload_description" />
 
                 <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_bank_text_help_uplaod_bank"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="File size cannot exceed 8MB. File type .JPG .PNG .PDF"
-                    app:layout_constraintEnd_toEndOf="@+id/appCompatButton"
-                    app:layout_constraintTop_toBottomOf="@+id/appCompatButton" />
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_bank_button_upload_bank"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_bank_button_upload_bank" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/awonar_bank_button_submit"
+                    style="@style/Awonar.Button.Border"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+                    android:enabled="@{viewModel.bookBankState == null}"
+                    android:text="@string/awonar_text_submit"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_bank_button_upload_bank"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_bank_button_upload_bank"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_bank_text_help_uplaod_bank" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
@@ -148,9 +186,10 @@
         <com.awonar.app.widget.AwonarProgressBar
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/awonar_color_surface"
             android:layout_gravity="center"
-            android:indeterminate="true" />
+            android:background="@color/awonar_color_surface"
+            android:indeterminate="true"
+            android:visibility="invisible" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
