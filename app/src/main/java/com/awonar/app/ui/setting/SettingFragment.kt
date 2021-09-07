@@ -9,6 +9,7 @@ import com.awonar.app.databinding.AwonarFragmentSettingBinding
 import com.awonar.app.ui.setting.privacy.PrivacyActivity
 import com.awonar.app.ui.setting.about.AboutMeActivity
 import com.awonar.app.ui.setting.bank.BankAccountActivity
+import com.awonar.app.ui.setting.experience.ExperienceActivity
 import com.awonar.app.ui.setting.personal.PersonalInfoActivity
 import com.molysulfur.library.extension.openActivity
 
@@ -27,6 +28,7 @@ class SettingFragment : Fragment() {
         binding.awonarSettingButtonPersonalInfo.setOnClickListener { openActivity(PersonalInfoActivity::class.java) }
         binding.awonarSettingButtonBankAccount.setOnClickListener { openActivity(BankAccountActivity::class.java) }
         binding.awonarSettingButtonPrivacy.setOnClickListener { openActivity(PrivacyActivity::class.java) }
+        binding.awonarSettingButtonExperience.setOnClickListener { openActivity(ExperienceActivity::class.java) }
         return binding.root
     }
 

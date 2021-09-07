@@ -4,6 +4,7 @@ import com.awonar.android.model.ExistsEmailResponse
 import com.awonar.android.model.bookbank.BookBank
 import com.awonar.android.model.bookbank.BookBankRequest
 import com.awonar.android.model.core.MessageSuccessResponse
+import com.awonar.android.model.experience.ExperienceResponse
 import com.awonar.android.model.privacy.PersonalAddressRequest
 import com.awonar.android.model.privacy.PersonalCardIdRequest
 import com.awonar.android.model.privacy.PersonalProfileRequest
@@ -18,6 +19,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
 interface UserService {
+
+    @GET("api/v1/questionnaires/experience")
+    fun getExperience(): Call<ExperienceResponse?>
 
     @GET("api/v1/verify/bank")
     fun getBookBank(): Call<BookBank?>

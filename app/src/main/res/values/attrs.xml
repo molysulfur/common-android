@@ -10,4 +10,10 @@
         <attr name="verticalTitleView_titleTextColor" format="color" />
         <attr name="verticalTitleView_subTitleTextColor" format="color" />
     </declare-styleable>
+
+    <declare-styleable name="ImageCheckBoxView">
+        <attr name="imageCheckBoxView_setText" format="string" />
+        <attr name="imageCheckBoxView_setIcon" format="reference" />
+        <attr name="imageCheckBoxView_isCheck" format="boolean" />
+    </declare-styleable>
 </resources>

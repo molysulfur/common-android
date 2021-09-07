@@ -10,6 +10,7 @@ import android.os.Bundle
 import com.awonar.android.model.bookbank.BookBank
 import com.awonar.android.model.bookbank.BookBankRequest
 import com.awonar.android.model.core.MessageSuccessResponse
+import com.awonar.android.model.experience.ExperienceResponse
 import com.awonar.android.model.privacy.PersonalAddressRequest
 import com.awonar.android.model.privacy.PersonalCardIdRequest
 import com.awonar.android.model.privacy.PersonalProfileRequest
@@ -28,6 +29,20 @@ class UserRepository @Inject constructor(
     private val userService: UserService,
     private val preference: UserPreferenceManager
 ) {
+
+    fun getExperience() =
+        object : DirectNetworkFlow<Unit, ExperienceResponse?, ExperienceResponse?>() {
+            override fun createCall(): Response<ExperienceResponse?> =
+                userService.getExperience().execute()
+
+            override fun convertToResultType(response: ExperienceResponse?): ExperienceResponse? =
+                response
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+
+        }.asFlow()
 
     fun getBookBank() = object :
         DirectNetworkFlow<BookBankRequest, BookBank?, BookBank?>() {
