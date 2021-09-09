@@ -17,6 +17,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/awonar_experience_question_container"
             setQuestions="@{viewModel.experienceItem}"
+            viewModel="@{viewModel}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"

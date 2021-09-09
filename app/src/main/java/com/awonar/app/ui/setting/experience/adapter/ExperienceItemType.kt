@@ -5,4 +5,5 @@ object ExperienceItemType {
     const val EXPERIENCE_SUBTITLE = 1
     const val EXPERIENCE_RADIO = 2
     const val EXPERIENCE_CHECKBOX = 3
+    const val EXPERIENCE_BLANK = 4
 }

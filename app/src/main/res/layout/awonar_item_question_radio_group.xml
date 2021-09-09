@@ -6,13 +6,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.awonar.app.widget.ImageCheckBoxView
-            android:id="@+id/awonar_item_checkbox_question_checkbox_item"
+        <RadioGroup
+            android:id="@+id/awonar_item_radio_question_radio_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

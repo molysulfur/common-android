@@ -8,7 +8,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.awonar.android.model.experience.ExperienceResponse
 import com.awonar.app.databinding.AwonarActivityExperienceBinding
-import com.awonar.app.ui.setting.personal.PersonalInfoAdapter
 import com.molysulfur.library.activity.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -27,6 +26,21 @@ class ExperienceActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         observe()
+        binding.awonarExperiencePagerContainer.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                viewModel.experienceQuestion.value.let { questionnaire ->
+                    if (questionnaire?.id != null) {
+                        viewModel.createRequest(
+                            questionnaireId = questionnaire.id!!,
+                            data = questionnaire.topics?.get(position),
+                            position = position
+                        )
+                    }
+                }
+            }
+        })
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
     }
@@ -48,8 +62,8 @@ class ExperienceActivity : BaseActivity() {
             binding.awonarExperiencePagerContainer.apply {
                 this.adapter = adapter
                 orientation = ViewPager2.ORIENTATION_HORIZONTAL
-//                isUserInputEnabled = false
             }
+
         }
     }
 }

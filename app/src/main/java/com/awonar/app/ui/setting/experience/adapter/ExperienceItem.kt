@@ -7,6 +7,9 @@ import kotlinx.parcelize.Parcelize
 sealed class ExperienceItem(val type: Int) : Parcelable {
 
     @Parcelize
+    class Blank : ExperienceItem(ExperienceItemType.EXPERIENCE_BLANK)
+
+    @Parcelize
     data class Title(val title: String) : ExperienceItem(ExperienceItemType.EXPERIENCE_TITLE)
 
     @Parcelize
@@ -15,14 +18,20 @@ sealed class ExperienceItem(val type: Int) : Parcelable {
 
     @Parcelize
     data class RadioQuestion(
-        val title: String,
-        val subTitle: String,
-        val option: List<QuestionOption?>
+        val questionId: String,
+        val topicId: String,
+        val option: List<QuestionOption?>?,
+        val enable: Boolean = true
     ) :
         ExperienceItem(ExperienceItemType.EXPERIENCE_RADIO)
 
     @Parcelize
-    data class CheckBoxQuestion(val title: String, val subTitle: String, val option: List<QuestionOption?>) :
+    data class CheckBoxQuestion(
+        val questionId: String,
+        val topicId: String,
+        val option: List<QuestionOption?>?,
+        var enable: Boolean = true
+    ) :
         ExperienceItem(ExperienceItemType.EXPERIENCE_CHECKBOX)
 
 }

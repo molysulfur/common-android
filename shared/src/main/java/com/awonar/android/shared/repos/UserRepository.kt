@@ -10,6 +10,8 @@ import android.os.Bundle
 import com.awonar.android.model.bookbank.BookBank
 import com.awonar.android.model.bookbank.BookBankRequest
 import com.awonar.android.model.core.MessageSuccessResponse
+import com.awonar.android.model.experience.ExperienceAnswerResponse
+import com.awonar.android.model.experience.ExperienceRequest
 import com.awonar.android.model.experience.ExperienceResponse
 import com.awonar.android.model.privacy.PersonalAddressRequest
 import com.awonar.android.model.privacy.PersonalCardIdRequest
@@ -252,4 +254,17 @@ class UserRepository @Inject constructor(
 
         }.asFlow()
 
+    fun updateExperience(request: ExperienceRequest) = object :
+        DirectNetworkFlow<ExperienceRequest, ExperienceAnswerResponse?, ExperienceAnswerResponse?>() {
+        override fun createCall(): Response<ExperienceAnswerResponse?> =
+            userService.updateExperience(request).execute()
+
+        override fun convertToResultType(response: ExperienceAnswerResponse?): ExperienceAnswerResponse? =
+            response
+
+        override fun onFetchFailed(errorMessage: String) {
+            println(errorMessage)
+        }
+
+    }.asFlow()
 }

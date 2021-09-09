@@ -6,13 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.awonar.android.model.experience.Topic
 import com.awonar.app.databinding.AwonarFragmentExperienceBinding
 import com.awonar.app.ui.setting.experience.ExperienceViewModel
+import com.awonar.app.ui.setting.experience.adapter.QuestionAdapter
+import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 
 class TradingKnowledgeExperienceFragment : Fragment() {
     private var topic: Topic? = null
-
     private val viewModel: ExperienceViewModel by activityViewModels()
 
     companion object {
@@ -48,7 +50,8 @@ class TradingKnowledgeExperienceFragment : Fragment() {
             viewModel.convertExperienceItem(
                 title = "Trading Knowledge (Choose more than one)",
                 subTitle = "What’s your investment education experience regarding leveraged products?(CFDs, Futures, Options, Forex, Margin trade and ETF)",
-                topic = it
+                topic = it,
+                isNoExpShow = true
             )
         }
     }

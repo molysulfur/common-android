@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/awonar_size_margin_padding_small"
+    android:layout_marginBottom="@dimen/awonar_size_margin_padding_small"
     android:gravity="center"
     android:orientation="horizontal">
 
@@ -15,7 +17,8 @@
         android:id="@+id/awonar_image_checkbox_image_icon"
         android:layout_width="@dimen/awonar_size_avatar_large"
         android:layout_height="@dimen/awonar_size_avatar_large"
-        tools:srcCompat="@drawable/awonar_ic_full_logo" />
+        android:scaleType="centerCrop"
+        tools:srcCompat="@drawable/awonar_placeholder_avatar" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/awonar_image_checkbox_text_description"

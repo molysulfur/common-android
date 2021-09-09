@@ -12,6 +12,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.widget.ImageViewCompat
 import androidx.core.widget.TextViewCompat
 import coil.load
+import com.awonar.android.shared.constrant.BuildConfig
 import com.awonar.app.R
 import com.molysulfur.library.extension.readBooleanUsingCompat
 import com.molysulfur.library.extension.writeBooleanUsingCompat
@@ -24,6 +25,7 @@ class ImageCheckBoxView : BaseViewGroup {
     lateinit var imageView: ImageView
 
     private var isCheck: Boolean = false
+    private var enable: Boolean = true
     private var icon: String? = null
     private var iconRes: Int = 0
     private var text: String? = null
@@ -41,6 +43,16 @@ class ImageCheckBoxView : BaseViewGroup {
         updateText()
         updateIcon()
         updateChecked()
+        updateEnable()
+    }
+
+    fun setEnable(enable: Boolean) {
+        this.enable = enable
+        updateEnable()
+    }
+
+    private fun updateEnable() {
+        checkBoxView.isEnabled = enable
     }
 
     fun isChecked(isChecked: Boolean) {
@@ -61,9 +73,17 @@ class ImageCheckBoxView : BaseViewGroup {
     private fun updateIcon() {
         when {
             icon != null -> {
-            }
+                imageView.load(BuildConfig.BASE_IMAGE_URL + icon)
+                imageView.visibility = VISIBLE
 
-            iconRes > 0 -> imageView.setImageResource(iconRes)
+            }
+            iconRes > 0 -> {
+                imageView.setImageResource(iconRes)
+                imageView.visibility = VISIBLE
+            }
+            else -> {
+                imageView.visibility = GONE
+            }
         }
     }
 
@@ -106,6 +126,7 @@ class ImageCheckBoxView : BaseViewGroup {
 
     override fun saveInstanceState(state: Parcelable?): Parcelable? {
         val ss = state?.let { SavedState(it) }
+        ss?.enable = enable
         ss?.isCheck = isCheck
         ss?.text = text
         ss?.textRes = textRes
@@ -117,6 +138,7 @@ class ImageCheckBoxView : BaseViewGroup {
     override fun restoreInstanceState(state: Parcelable) {
         val ss = state as SavedState
         isCheck = ss.isCheck
+        enable = ss.enable
         text = ss.text
         textRes = ss.textRes
         icon = ss.icon
@@ -124,11 +146,13 @@ class ImageCheckBoxView : BaseViewGroup {
         updateText()
         updateIcon()
         updateChecked()
+        updateEnable()
     }
 
     private class SavedState : ChildSavedState {
 
         var isCheck: Boolean = false
+        var enable: Boolean = true
         var icon: String? = null
         var iconRes: Int = 0
         var text: String? = null
@@ -138,6 +162,7 @@ class ImageCheckBoxView : BaseViewGroup {
 
         constructor(parcel: Parcel, classLoader: ClassLoader) : super(parcel, classLoader) {
             isCheck = parcel.readBooleanUsingCompat()
+            enable = parcel.readBooleanUsingCompat()
             icon = parcel.readString()
             iconRes = parcel.readInt()
             text = parcel.readString()
@@ -147,6 +172,7 @@ class ImageCheckBoxView : BaseViewGroup {
         override fun writeToParcel(out: Parcel, flags: Int) {
             super.writeToParcel(out, flags)
             out.writeBooleanUsingCompat(isCheck)
+            out.writeBooleanUsingCompat(enable)
             out.writeString(icon)
             out.writeInt(iconRes)
             out.writeString(text)

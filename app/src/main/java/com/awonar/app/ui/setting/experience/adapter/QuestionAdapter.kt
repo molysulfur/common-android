@@ -3,14 +3,9 @@ package com.awonar.app.ui.setting.experience.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.awonar.app.databinding.AwonarItemDescriptionBinding
-import com.awonar.app.databinding.AwonarItemQuestionCheckboxBinding
-import com.awonar.app.databinding.AwonarItemQuestionRadioBinding
-import com.awonar.app.databinding.AwonarItemTitleBinding
-import com.awonar.app.ui.setting.experience.adapter.holder.CheckBoxQuestionViewHolder
-import com.awonar.app.ui.setting.experience.adapter.holder.RadioQuestionViewHolder
-import com.awonar.app.ui.setting.experience.adapter.holder.SubTitleQuestionViewHolder
-import com.awonar.app.ui.setting.experience.adapter.holder.TitleQuestionViewHolder
+import com.awonar.android.model.experience.Answer
+import com.awonar.app.databinding.*
+import com.awonar.app.ui.setting.experience.adapter.holder.*
 
 class QuestionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -19,6 +14,9 @@ class QuestionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             field = value
             notifyDataSetChanged()
         }
+
+
+    var onAnswer: ((String?, Answer?) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
@@ -40,7 +38,7 @@ class QuestionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 )
             ExperienceItemType.EXPERIENCE_RADIO ->
                 RadioQuestionViewHolder(
-                    AwonarItemQuestionRadioBinding.inflate(
+                    AwonarItemQuestionRadioGroupBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
                         false
@@ -48,12 +46,19 @@ class QuestionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 )
             ExperienceItemType.EXPERIENCE_CHECKBOX ->
                 CheckBoxQuestionViewHolder(
-                    AwonarItemQuestionCheckboxBinding.inflate(
+                    AwonarItemQuestionRadioGroupBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
                         false
                     )
                 )
+            ExperienceItemType.EXPERIENCE_BLANK -> BlankViewHolder(
+                AwonarItemDividerBlankBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
             else -> throw Error("Exception is not found $viewType")
 
         }
@@ -63,8 +68,14 @@ class QuestionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         when (holder) {
             is TitleQuestionViewHolder -> holder.bind(item as ExperienceItem.Title)
             is SubTitleQuestionViewHolder -> holder.bind(item as ExperienceItem.SubTitle)
-            is RadioQuestionViewHolder -> holder.bind(item as ExperienceItem.RadioQuestion)
-            is CheckBoxQuestionViewHolder -> holder.bind(item as ExperienceItem.CheckBoxQuestion)
+            is RadioQuestionViewHolder -> holder.bind(
+                item as ExperienceItem.RadioQuestion,
+                onAnswer
+            )
+            is CheckBoxQuestionViewHolder -> holder.bind(
+                item as ExperienceItem.CheckBoxQuestion,
+                onAnswer
+            )
         }
     }
 

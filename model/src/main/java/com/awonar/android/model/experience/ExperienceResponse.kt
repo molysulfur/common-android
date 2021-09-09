@@ -16,7 +16,7 @@ data class ExperienceResponse(
 @Parcelize
 data class Topic(
     @SerializedName("id") val id: String?,
-    @SerializedName("questionnaireId") val topicId: String?,
+    @SerializedName("questionnaireId") val questionId: String?,
     @SerializedName("title") val title: String?,
     @SerializedName("description") val description: String?,
     @SerializedName("questions") val questions: List<Question?>?
