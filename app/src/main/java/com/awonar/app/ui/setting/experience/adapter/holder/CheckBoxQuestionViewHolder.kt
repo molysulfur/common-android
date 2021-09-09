@@ -6,21 +6,18 @@ import com.awonar.android.model.experience.QuestionOption
 import com.awonar.app.databinding.AwonarItemQuestionRadioGroupBinding
 import com.awonar.app.ui.setting.experience.adapter.ExperienceItem
 import com.awonar.app.widget.ImageCheckBoxView
+import timber.log.Timber
 
 class CheckBoxQuestionViewHolder constructor(private val binding: AwonarItemQuestionRadioGroupBinding) :
     RecyclerView.ViewHolder(binding.root) {
-    fun bind(item: ExperienceItem.CheckBoxQuestion, onAnswer: ((String?, Answer?) -> Unit)?) {
-        addOption(item.option ?: emptyList(), onAnswer, item.topicId)
-    }
 
-    private fun addOption(
-        options: List<QuestionOption?>,
-        onAnswer: ((String?, Answer?) -> Unit)?,
-        topicId: String
-    ) {
-        options.forEach { option ->
+    private var checkedList = arrayListOf<Answer>()
+
+    fun bind(item: ExperienceItem.CheckBoxQuestion, onAnswer: ((String?, List<Answer>) -> Unit)?) {
+        item.option?.forEachIndexed { index, option ->
             val radioButton = ImageCheckBoxView(binding.root.context).apply {
                 setText(option?.text ?: "")
+                id = index
                 tag = option?.id ?: "NONE"
                 setEnable(true)
                 option?.image?.let {
@@ -28,6 +25,7 @@ class CheckBoxQuestionViewHolder constructor(private val binding: AwonarItemQues
                 }
                 setOnCheckChangeListener = { isChecked ->
                     if (this.tag == "NONE") {
+                        checkedList = arrayListOf()
                         val childCount = binding.awonarItemRadioQuestionRadioGroup.childCount
                         for (i in 0 until childCount - 1) {
                             (binding.awonarItemRadioQuestionRadioGroup.getChildAt(i) as ImageCheckBoxView)
@@ -38,14 +36,14 @@ class CheckBoxQuestionViewHolder constructor(private val binding: AwonarItemQues
                                     )
                                 }
                         }
-                    }
-                    if (option?.id == null) {
-                        onAnswer?.invoke(topicId, Answer(id = null))
                     } else {
-                        option.id?.let {
-                            onAnswer?.invoke(topicId, Answer(id = it))
+                        if (checkedList.findLast { it.id == tag } == null) {
+                            checkedList.add(Answer(id = tag.toString()))
+                        } else {
+                            checkedList = checkedList.filter { it.id != tag } as ArrayList<Answer>
                         }
                     }
+                    onAnswer?.invoke(option?.questionId, checkedList)
                 }
             }
             binding.awonarItemRadioQuestionRadioGroup.addView(radioButton)

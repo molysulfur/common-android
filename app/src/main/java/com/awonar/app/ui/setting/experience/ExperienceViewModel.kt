@@ -20,6 +20,8 @@ class ExperienceViewModel @Inject constructor(
     private val updateQuestionnaireUseCase: UpdateQuestionnaireUseCase
 ) : ViewModel() {
 
+    private val _currentPageState = MutableStateFlow(0)
+
     val experienceAnswer: MutableStateFlow<ArrayList<ExperienceRequest?>> = MutableStateFlow(
         arrayListOf()
     )
@@ -115,9 +117,8 @@ class ExperienceViewModel @Inject constructor(
     }
 
     fun addAnswer(questionId: String?, answer: Answer?) {
-        Timber.e("$questionId $answer")
         if (answer != null) {
-            experienceAnswer.value[0]?.questionAnswers?.forEach {
+            experienceAnswer.value[_currentPageState.value]?.questionAnswers?.forEach {
                 if (questionId == it.questionId) {
                     it.answers.add(answer)
                 }
@@ -125,7 +126,21 @@ class ExperienceViewModel @Inject constructor(
         }
     }
 
+    fun addAnswer(questionId: String?, answer: List<Answer>) {
+        Timber.e("$questionId $answer")
+        experienceAnswer.value[_currentPageState.value]?.questionAnswers?.forEach {
+            if (questionId == it.questionId) {
+                it.answers = answer as ArrayList<Answer>
+            }
+        }
+        Timber.e("${experienceAnswer.value[_currentPageState.value]}")
+    }
+
     fun createRequest(questionnaireId: String, data: Topic?, position: Int) {
+        var experience: ExperienceRequest? = null
+        if (experienceAnswer.value.size > position) {
+            experience = experienceAnswer.value[position]
+        }
         val questionAnswers = arrayListOf<QuestionAnswer>()
         data?.questions?.forEach { question ->
             questionAnswers.add(
@@ -135,24 +150,26 @@ class ExperienceViewModel @Inject constructor(
                 )
             )
         }
-
-        experienceAnswer.value.add(
-            ExperienceRequest(
-                questionnaireId = questionnaireId,
-                topicId = data?.id,
-                questionAnswers = questionAnswers
-            )
+        val newExperience = ExperienceRequest(
+            questionnaireId = questionnaireId,
+            topicId = data?.id,
+            questionAnswers = questionAnswers
         )
-
+        if (experience == null) {
+            experienceAnswer.value.add(newExperience)
+        } else {
+            experienceAnswer.value[position] = newExperience
+        }
+        _currentPageState.value = position
     }
 
     fun submit() {
         viewModelScope.launch {
-            experienceAnswer.value.let {
-                it[0]?.let { it1 -> updateQuestionnaireUseCase(it1).collect {
+            experienceAnswer.value[_currentPageState.value]?.let { request ->
+                Timber.e("$request")
+                updateQuestionnaireUseCase(request).collect {
 
-                } }
-
+                }
             }
         }
     }

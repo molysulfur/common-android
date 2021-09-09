@@ -16,7 +16,10 @@ fun setQuestionAdapter(
         adapter = QuestionAdapter()
         (adapter as QuestionAdapter).apply {
             onAnswer = { questionId, answer ->
-                viewModel.addAnswer(questionId = questionId, answer= answer)
+                viewModel.addAnswer(questionId = questionId, answer = answer)
+            }
+            onCheckboxChange = { questionId, answers ->
+                viewModel.addAnswer(questionId = questionId, answer = answers)
             }
         }
         recycler.apply {

@@ -17,6 +17,7 @@ class QuestionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
     var onAnswer: ((String?, Answer?) -> Unit)? = null
+    var onCheckboxChange: ((String?, List<Answer>) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
@@ -74,7 +75,7 @@ class QuestionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             )
             is CheckBoxQuestionViewHolder -> holder.bind(
                 item as ExperienceItem.CheckBoxQuestion,
-                onAnswer
+                onCheckboxChange
             )
         }
     }

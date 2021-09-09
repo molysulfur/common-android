@@ -13,12 +13,12 @@ data class ExperienceRequest(
 
 @Parcelize
 data class QuestionAnswer(
-    @SerializedName("id") val questionId: String?,
-    @SerializedName("options") val answers: ArrayList<Answer>
+    @SerializedName("id") var questionId: String?,
+    @SerializedName("options") var answers: ArrayList<Answer>
 ) : Parcelable
 
 @Parcelize
 data class Answer(
-    @SerializedName("id") val id: String?,
-    @SerializedName("answer") val answer: String? = null
+    @SerializedName("id") var id: String?,
+    @SerializedName("answer") var answer: String? = null
 ) : Parcelable
