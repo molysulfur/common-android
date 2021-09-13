@@ -5,10 +5,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.awonar.android.model.experience.ExperienceResponse
-import com.awonar.app.ui.setting.experience.page.TradingExperienceFragment
-import com.awonar.app.ui.setting.experience.page.PlannedInvestmentsExperienceFragment
-import com.awonar.app.ui.setting.experience.page.TradingKnowledgeExperienceFragment
-import com.awonar.app.ui.setting.experience.page.PurposeTradingExperienceFragment
+import com.awonar.app.ui.setting.experience.page.*
 import java.lang.Error
 
 class ExperienceAdapter constructor(
@@ -24,7 +21,7 @@ class ExperienceAdapter constructor(
         1 -> TradingKnowledgeExperienceFragment.newInstance(questions.topics?.get(position))
         2 -> PlannedInvestmentsExperienceFragment.newInstance(questions.topics?.get(position))
         3 -> PurposeTradingExperienceFragment.newInstance(questions.topics?.get(position))
-        4 -> PurposeTradingExperienceFragment.newInstance(questions.topics?.get(position))
+        4 -> FinancialStatusExperienceFragment.newInstance(questions.topics?.get(position))
         else -> throw Error("View Pager is not found with position $position")
     }
 }

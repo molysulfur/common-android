@@ -3,7 +3,7 @@
 
     <style name="Awonar" />
 
-    <style name="Awonar.Default"></style>
+    <style name="Awonar.Default" />
 
     <style name="Awonar.Text">
         <item name="android:textColor">@color/awonar_color_variant</item>

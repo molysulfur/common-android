@@ -34,4 +34,5 @@ sealed class ExperienceItem(val type: Int) : Parcelable {
     ) :
         ExperienceItem(ExperienceItemType.EXPERIENCE_CHECKBOX)
 
+
 }

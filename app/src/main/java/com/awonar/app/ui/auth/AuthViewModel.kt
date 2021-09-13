@@ -27,7 +27,7 @@ class AuthViewModel @Inject constructor(
     private val signOutUseCase: SignOutUseCase
 ) : ViewModel() {
 
-    val _navigation = Channel<String>(capacity = Channel.CONFLATED)
+    private val _navigation = Channel<String>(capacity = Channel.CONFLATED)
     val navigation get() = _navigation.receiveAsFlow()
     private val _goToSignUpState = MutableStateFlow(false)
     val goToSignUpState: StateFlow<Boolean> get() = _goToSignUpState

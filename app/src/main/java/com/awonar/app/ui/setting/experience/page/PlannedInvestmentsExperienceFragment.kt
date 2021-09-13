@@ -40,6 +40,7 @@ class PlannedInvestmentsExperienceFragment : Fragment() {
             topic = it.getParcelable(EXTRA_TOPIC)
         }
         binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 

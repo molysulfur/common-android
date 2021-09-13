@@ -77,6 +77,7 @@ class QuestionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 item as ExperienceItem.CheckBoxQuestion,
                 onCheckboxChange
             )
+
         }
     }
 

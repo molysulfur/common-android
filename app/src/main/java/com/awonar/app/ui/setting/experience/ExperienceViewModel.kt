@@ -20,6 +20,9 @@ class ExperienceViewModel @Inject constructor(
     private val updateQuestionnaireUseCase: UpdateQuestionnaireUseCase
 ) : ViewModel() {
 
+    private val _financialSourceIncomeState = MutableStateFlow<ArrayList<String>>(arrayListOf())
+    val financialSourceIncomeState: StateFlow<ArrayList<String>> get() = _financialSourceIncomeState
+
     private val _currentPageState = MutableStateFlow(0)
 
     val experienceAnswer: MutableStateFlow<ArrayList<ExperienceRequest?>> = MutableStateFlow(
@@ -52,68 +55,77 @@ class ExperienceViewModel @Inject constructor(
         topic.questions?.forEach { question ->
             when (question?.type) {
                 QuestionType.CHOICE -> {
-                    if (question.multiple) {
-                        itemList.add(ExperienceItem.Title(question.title ?: ""))
-                        itemList.add(ExperienceItem.SubTitle(question.description ?: ""))
-                        val questionList = ArrayList(question.questionOption)
-                        if (isNoExpShow) {
-                            questionList.add(
-                                QuestionOption(
-                                    null,
-                                    null,
-                                    "I do not have any knowledge of finance.",
-                                    "0",
-                                    "0",
-                                    null,
-                                    null,
-                                    null
-                                )
-                            )
-                        }
-                        if (!question.id.isNullOrBlank() && !topic.id.isNullOrBlank()) {
-                            itemList.add(
-                                ExperienceItem.CheckBoxQuestion(
-                                    questionId = question.id!!,
-                                    topicId = topic.id!!,
-                                    option = questionList
-                                )
-                            )
-                        }
-
-                    } else {
-                        itemList.add(ExperienceItem.Title(question.title ?: ""))
-                        itemList.add(ExperienceItem.SubTitle(question.description ?: ""))
-                        val questionList = ArrayList(question.questionOption)
-                        if (isNoExpShow) {
-                            questionList.add(
-                                QuestionOption(
-                                    null,
-                                    null,
-                                    "I do not have any knowledge of finance.",
-                                    "0",
-                                    "0",
-                                    null,
-                                    null,
-                                    null
-                                )
-                            )
-                        }
-                        if (!question.id.isNullOrBlank() && !topic.id.isNullOrBlank()) {
-                            itemList.add(
-                                ExperienceItem.RadioQuestion(
-                                    questionId = question.id!!,
-                                    topicId = topic.id!!,
-                                    option = questionList
-                                )
-                            )
-                        }
-
-                    }
+                    convertChoiceType(question, itemList, isNoExpShow, topic)
                 }
             }
 
         }
         _experienceItem.value = itemList
+    }
+
+    private fun convertChoiceType(
+        question: Question,
+        itemList: ArrayList<ExperienceItem>,
+        isNoExpShow: Boolean,
+        topic: Topic
+    ) {
+        if (question.multiple) {
+            itemList.add(ExperienceItem.Title(question.title ?: ""))
+            itemList.add(ExperienceItem.SubTitle(question.description ?: ""))
+            val questionList = ArrayList(question.questionOption)
+            if (isNoExpShow) {
+                questionList.add(
+                    QuestionOption(
+                        null,
+                        null,
+                        "I do not have any knowledge of finance.",
+                        "0",
+                        "0",
+                        null,
+                        null,
+                        null
+                    )
+                )
+            }
+            if (!question.id.isNullOrBlank() && !topic.id.isNullOrBlank()) {
+                itemList.add(
+                    ExperienceItem.CheckBoxQuestion(
+                        questionId = question.id!!,
+                        topicId = topic.id!!,
+                        option = questionList
+                    )
+                )
+            }
+
+        } else {
+            itemList.add(ExperienceItem.Title(question.title ?: ""))
+            itemList.add(ExperienceItem.SubTitle(question.description ?: ""))
+            val questionList = ArrayList(question.questionOption)
+            if (isNoExpShow) {
+                questionList.add(
+                    QuestionOption(
+                        null,
+                        null,
+                        "I do not have any knowledge of finance.",
+                        "0",
+                        "0",
+                        null,
+                        null,
+                        null
+                    )
+                )
+            }
+            if (!question.id.isNullOrBlank() && !topic.id.isNullOrBlank()) {
+                itemList.add(
+                    ExperienceItem.RadioQuestion(
+                        questionId = question.id!!,
+                        topicId = topic.id!!,
+                        option = questionList
+                    )
+                )
+            }
+
+        }
     }
 
     fun addAnswer(questionId: String?, answer: Answer?) {
@@ -127,13 +139,11 @@ class ExperienceViewModel @Inject constructor(
     }
 
     fun addAnswer(questionId: String?, answer: List<Answer>) {
-        Timber.e("$questionId $answer")
         experienceAnswer.value[_currentPageState.value]?.questionAnswers?.forEach {
             if (questionId == it.questionId) {
                 it.answers = answer as ArrayList<Answer>
             }
         }
-        Timber.e("${experienceAnswer.value[_currentPageState.value]}")
     }
 
     fun createRequest(questionnaireId: String, data: Topic?, position: Int) {
@@ -166,11 +176,25 @@ class ExperienceViewModel @Inject constructor(
     fun submit() {
         viewModelScope.launch {
             experienceAnswer.value[_currentPageState.value]?.let { request ->
-                Timber.e("$request")
                 updateQuestionnaireUseCase(request).collect {
 
                 }
             }
+        }
+    }
+
+    fun addFinancialIncome(source: String) {
+        viewModelScope.launch {
+            val sourceIncomes = _financialSourceIncomeState.value
+            var newList: ArrayList<String> = arrayListOf()
+            if (sourceIncomes.contains(source)) {
+                newList =
+                    sourceIncomes.filter { it.lowercase() != source.lowercase() } as ArrayList<String>
+            } else {
+                newList.addAll(sourceIncomes)
+                newList.add(source)
+            }
+            _financialSourceIncomeState.value = newList
         }
     }
 
