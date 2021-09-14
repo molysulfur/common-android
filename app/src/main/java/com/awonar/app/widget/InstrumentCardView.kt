@@ -20,11 +20,6 @@ class InstrumentCardView : BaseViewGroup {
 
     private lateinit var binding: AwonarWidgetCardViewInstrumentBinding
 
-    private lateinit var logoImage: ImageView
-    private lateinit var titleTextView: TextView
-    private lateinit var subTitleTextView: TextView
-    private lateinit var priceTextView: TextView
-    private lateinit var changeTextView: TextView
     private var image: String? = null
     private var imageRes: Int = 0
     private var title: String? = null
@@ -36,11 +31,6 @@ class InstrumentCardView : BaseViewGroup {
     private var percentChange: Float = 0f
 
     override fun setup() {
-        logoImage = findViewById(R.id.awonar_instrument_card_view_image_logo)
-        titleTextView = findViewById(R.id.awonar_instrument_card_view_text_title)
-        subTitleTextView = findViewById(R.id.awonar_instrument_card_view_text_subtitle)
-        priceTextView = findViewById(R.id.awonar_instrument_card_view_text_price)
-        changeTextView = findViewById(R.id.awonar_instrument_card_view_text_change)
         updateChange()
         updatePrice()
         updateSubTitle()
