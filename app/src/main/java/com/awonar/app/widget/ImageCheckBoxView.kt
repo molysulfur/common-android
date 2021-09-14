@@ -5,6 +5,8 @@ import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.view.View
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
@@ -14,11 +16,15 @@ import androidx.core.widget.TextViewCompat
 import coil.load
 import com.awonar.android.shared.constrant.BuildConfig
 import com.awonar.app.R
+import com.awonar.app.databinding.AwonarWidgetGoogleBinding
+import com.awonar.app.databinding.AwonarWidgetImageCheckboxBinding
 import com.molysulfur.library.extension.readBooleanUsingCompat
 import com.molysulfur.library.extension.writeBooleanUsingCompat
 import com.molysulfur.library.widget.BaseViewGroup
 
 class ImageCheckBoxView : BaseViewGroup {
+
+    private lateinit var binding: AwonarWidgetImageCheckboxBinding
 
     lateinit var checkBoxView: CheckBox
     lateinit var textView: TextView
@@ -112,7 +118,10 @@ class ImageCheckBoxView : BaseViewGroup {
         updateText()
     }
 
-    override fun getLayoutResource(): Int = R.layout.awonar_widget_image_checkbox
+    override fun getLayoutResource(): View {
+        binding = AwonarWidgetImageCheckboxBinding.inflate(LayoutInflater.from(context))
+        return binding.root
+    }
 
     override fun setupStyleables(attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) {
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.ImageCheckBoxView)

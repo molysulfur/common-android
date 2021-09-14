@@ -88,7 +88,6 @@ class MainActivity : BaseActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Timber.e("$item")
         return super.onOptionsItemSelected(item)
     }
 

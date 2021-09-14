@@ -4,11 +4,15 @@ import android.content.Context
 import android.os.Build
 import android.os.Parcelable
 import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.view.View
 import androidx.annotation.RequiresApi
-import com.awonar.app.R
 import com.molysulfur.library.widget.BaseViewGroup
+import com.awonar.app.databinding.AwonarWidgetProgressBinding
 
 class AwonarProgressBar : BaseViewGroup {
+
+    private lateinit var binding: AwonarWidgetProgressBinding
 
 
     constructor(context: Context) : super(context)
@@ -32,7 +36,10 @@ class AwonarProgressBar : BaseViewGroup {
     override fun setup() {
     }
 
-    override fun getLayoutResource(): Int = R.layout.awonar_widget_progress
+    override fun getLayoutResource(): View {
+        binding = AwonarWidgetProgressBinding.inflate(LayoutInflater.from(context))
+        return binding.root
+    }
 
     override fun setupStyleables(attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) {
     }

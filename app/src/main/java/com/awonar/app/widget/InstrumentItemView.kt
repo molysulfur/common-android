@@ -8,89 +8,95 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.RequiresApi
-import androidx.appcompat.widget.AppCompatTextView
-import com.awonar.app.R
+import com.awonar.app.databinding.AwonarWidgetCardViewInstrumentBinding
+import com.awonar.app.databinding.AwonarWidgetInstrumentItemViewBinding
 import com.molysulfur.library.widget.BaseViewGroup
-import com.awonar.app.databinding.AwonarWidgetTextDividerBinding
 
-class TextDividerView : BaseViewGroup {
+class InstrumentItemView : BaseViewGroup {
 
-    private lateinit var binding: AwonarWidgetTextDividerBinding
+    private var image: String? = null
+    private var imageRes: Int = 0
+    private var title: String? = null
+    private var titleRes: Int = 0
+    private var ask: Float = 0f
+    private var bid: Float = 0f
+    private var change: Float = 0f
+    private var percentChange: Float = 0f
 
-    private lateinit var textView: AppCompatTextView
-    private var text: String? = null
-    private var textRes: Int = 0
-
-    fun setText(text: String) {
-        this.text = text
-        textRes = 0
-        updateText()
-    }
-
-    fun setText(textRes: Int) {
-        this.textRes = textRes
-        text = null
-        updateText()
-    }
+    private lateinit var binding: AwonarWidgetInstrumentItemViewBinding
 
     override fun setup() {
-        textView = findViewById(R.id.awonar_text_divider_text_title)
-        updateText()
     }
 
     override fun getLayoutResource(): View {
-        binding = AwonarWidgetTextDividerBinding.inflate(LayoutInflater.from(context))
+        binding = AwonarWidgetInstrumentItemViewBinding.inflate(LayoutInflater.from(context))
         return binding.root
     }
 
-    override fun setupStyleables(attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) {
-        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.TextDividerView)
-        text = typedArray.getString(R.styleable.TextDividerView_textDividerView_setText)
-        typedArray.recycle()
 
+    override fun setupStyleables(attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) {
     }
 
     override fun saveInstanceState(state: Parcelable?): Parcelable? {
         val ss = state?.let { SavedState(it) }
-        ss?.text = text
-        ss?.textRes = textRes
+        ss?.image = image
+        ss?.imageRes = imageRes
+        ss?.title = title
+        ss?.titleRes = titleRes
+        ss?.ask = ask
+        ss?.bid = bid
+        ss?.change = change
+        ss?.percentChange = percentChange
         return ss
     }
 
     override fun restoreInstanceState(state: Parcelable) {
         val ss = state as SavedState
-        text = ss.text
-        textRes = ss.textRes
-        updateText()
-    }
-
-    private fun updateText() {
-        when {
-            !text.isNullOrBlank() -> {
-                textView.text = text
-            }
-            textRes > 0 -> {
-                textView.setText(textRes)
-            }
-        }
+        image = ss.image
+        imageRes = ss.imageRes
+        title = ss.title
+        titleRes = ss.titleRes
+        ask = ss.ask
+        bid = ss.bid
+        change = ss.change
+        percentChange = ss.percentChange
     }
 
     private class SavedState : ChildSavedState {
 
-        var text: String? = null
-        var textRes: Int = 0
+        var image: String? = null
+        var imageRes: Int = 0
+        var title: String? = null
+        var titleRes: Int = 0
+        var ask: Float = 0f
+        var bid: Float = 0f
+        var change: Float = 0f
+        var percentChange: Float = 0f
 
         constructor(superState: Parcelable) : super(superState)
 
         constructor(parcel: Parcel, classLoader: ClassLoader) : super(parcel, classLoader) {
-            text = parcel.readString()
-            textRes = parcel.readInt()
+            image = parcel.readString()
+            imageRes = parcel.readInt()
+            title = parcel.readString()
+            titleRes = parcel.readInt()
+            ask = parcel.readFloat()
+            bid = parcel.readFloat()
+            change = parcel.readFloat()
+            percentChange = parcel.readFloat()
+
         }
 
         override fun writeToParcel(out: Parcel, flags: Int) {
             super.writeToParcel(out, flags)
-            out.writeString(text)
-            out.writeInt(textRes)
+            out.writeString(image)
+            out.writeInt(imageRes)
+            out.writeString(title)
+            out.writeInt(titleRes)
+            out.writeFloat(ask)
+            out.writeFloat(bid)
+            out.writeFloat(change)
+            out.writeFloat(percentChange)
         }
 
         companion object {
@@ -111,7 +117,6 @@ class TextDividerView : BaseViewGroup {
                 }
         }
     }
-
 
     constructor(context: Context) : super(context)
 

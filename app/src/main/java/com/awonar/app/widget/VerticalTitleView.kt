@@ -5,13 +5,18 @@ import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import com.awonar.app.R
+import com.awonar.app.databinding.AwonarWidgetVerticalTitleBinding
 import com.molysulfur.library.widget.BaseViewGroup
 
 class VerticalTitleView : BaseViewGroup {
+
+    private lateinit var binding: AwonarWidgetVerticalTitleBinding
 
     private lateinit var titleTextView: AppCompatTextView
     private lateinit var subTitleTextView: AppCompatTextView
@@ -102,7 +107,10 @@ class VerticalTitleView : BaseViewGroup {
         updateSubTitleTextColor()
     }
 
-    override fun getLayoutResource(): Int = R.layout.awonar_widget_vertical_title
+    override fun getLayoutResource(): View {
+        binding = AwonarWidgetVerticalTitleBinding.inflate(LayoutInflater.from(context))
+        return binding.root
+    }
 
     override fun setupStyleables(attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) {
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.VerticalTitleView)
