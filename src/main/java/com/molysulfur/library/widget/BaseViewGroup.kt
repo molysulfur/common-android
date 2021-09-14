@@ -49,7 +49,7 @@ abstract class BaseViewGroup : FrameLayout {
     }
 
     private fun inflateLayout() {
-        View.inflate(context, getLayoutResource(), this)
+        addView(getLayoutResource())
     }
 
     override fun dispatchSaveInstanceState(container: SparseArray<Parcelable>) {
@@ -121,7 +121,7 @@ abstract class BaseViewGroup : FrameLayout {
         }
     }
 
-    abstract fun getLayoutResource(): Int
+    abstract fun getLayoutResource(): View
 
     abstract fun setupStyleables(attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int)
 
