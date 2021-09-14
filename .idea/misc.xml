@@ -62,10 +62,12 @@
         <entry key="app/src/main/res/layout/awonar_item_description.xml" value="0.20625" />
         <entry key="app/src/main/res/layout/awonar_item_divider_blank.xml" value="0.109375" />
         <entry key="app/src/main/res/layout/awonar_item_instrument_card.xml" value="0.28541666666666665" />
+        <entry key="app/src/main/res/layout/awonar_item_instrument_list.xml" value="0.121875" />
         <entry key="app/src/main/res/layout/awonar_item_list.xml" value="0.12239583333333333" />
         <entry key="app/src/main/res/layout/awonar_item_question_checkbox.xml" value="0.1140625" />
         <entry key="app/src/main/res/layout/awonar_item_question_radio.xml" value="0.37222222222222223" />
         <entry key="app/src/main/res/layout/awonar_item_question_radio_group.xml" value="0.20625" />
+        <entry key="app/src/main/res/layout/awonar_item_recycler.xml" value="0.121875" />
         <entry key="app/src/main/res/layout/awonar_item_selector_with_other_choice.xml" value="0.11354166666666667" />
         <entry key="app/src/main/res/layout/awonar_item_title.xml" value="0.20625" />
         <entry key="app/src/main/res/layout/awonar_widget_card_view_instrument.xml" value="0.4123314065510597" />
