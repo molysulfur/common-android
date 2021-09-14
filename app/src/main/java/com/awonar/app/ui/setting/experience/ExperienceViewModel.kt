@@ -198,4 +198,18 @@ class ExperienceViewModel @Inject constructor(
         }
     }
 
+    fun addOtherAnswer(questionId: String?, answerId: String?, text: String?) {
+        Timber.e("$questionId, $answerId $text ${experienceAnswer.value[_currentPageState.value]?.questionAnswers}")
+        experienceAnswer.value[_currentPageState.value]?.questionAnswers?.forEach { questionAnswer ->
+            if (questionId == questionAnswer.questionId) {
+                questionAnswer.answers.mapIndexed { index, answer ->
+                    if (answer.id == answerId) {
+                        questionAnswer.answers[index].answer = text
+                    }
+                }
+            }
+        }
+    }
+
+
 }

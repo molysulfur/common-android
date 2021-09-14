@@ -62,6 +62,7 @@ class ExperienceActivity : BaseActivity() {
             binding.awonarExperiencePagerContainer.apply {
                 this.adapter = adapter
                 orientation = ViewPager2.ORIENTATION_HORIZONTAL
+                binding.awonarExperienceIndicatorPage.setViewPager2(this)
             }
 
         }

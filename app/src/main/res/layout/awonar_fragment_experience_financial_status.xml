@@ -100,7 +100,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/awonar_item_question_autocomplete_input_income"
-                style="@style/Awonar.EditText"
+                style="@style/Awonar.AutoComplete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Your net annual income"
@@ -108,14 +108,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/awonar_item_question_autocomplete_input_company">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/awonar_item_question_autocomplete_input_assets"
-                style="@style/Awonar.EditText"
+                style="@style/Awonar.AutoComplete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Your total cash and liquid assets"
@@ -123,7 +123,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/awonar_item_question_autocomplete_input_income">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
