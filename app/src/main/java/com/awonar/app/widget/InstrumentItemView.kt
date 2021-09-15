@@ -8,6 +8,8 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.RequiresApi
+import coil.load
+import com.awonar.android.shared.constrant.BuildConfig
 import com.awonar.app.databinding.AwonarWidgetCardViewInstrumentBinding
 import com.awonar.app.databinding.AwonarWidgetInstrumentItemViewBinding
 import com.molysulfur.library.widget.BaseViewGroup
@@ -26,11 +28,87 @@ class InstrumentItemView : BaseViewGroup {
     private lateinit var binding: AwonarWidgetInstrumentItemViewBinding
 
     override fun setup() {
+        updateImage()
+        updateAsk()
+        updateBid()
+        updateChange()
+        updateTitle()
     }
 
     override fun getLayoutResource(): View {
         binding = AwonarWidgetInstrumentItemViewBinding.inflate(LayoutInflater.from(context))
         return binding.root
+    }
+
+    fun setAsk(ask: Float) {
+        this.ask = ask
+        updateAsk()
+    }
+
+    private fun updateAsk() {
+        binding.awonarInstrumentItemTextAsk.text = "$ask"
+    }
+
+    fun setBid(bid: Float) {
+        this.bid = bid
+        updateBid()
+    }
+
+    private fun updateBid() {
+        binding.awonarInstrumentItemTextBid.text = "$bid"
+    }
+
+    private fun updateImage() {
+        when {
+            image != null -> binding.awonarInstrumentItemImageLogo.load(BuildConfig.BASE_IMAGE_URL + image)
+            imageRes > 0 -> binding.awonarInstrumentItemImageLogo.setImageResource(imageRes)
+        }
+    }
+
+    private fun updateTitle() {
+        when {
+            title != null -> binding.awonarInstrumentItemTextTitle.text = title
+            titleRes > 0 -> binding.awonarInstrumentItemTextTitle.setText(titleRes)
+        }
+    }
+
+    private fun updateChange() {
+        binding.awonarInstrumentItemTextChange.text = "$change ($percentChange%)"
+    }
+
+    fun setPercentChange(percentChange: Float) {
+        this.percentChange = percentChange
+        updateChange()
+    }
+
+    fun setChange(change: Float) {
+        this.change = change
+        updateChange()
+    }
+
+
+    fun setTitle(titleRes: Int) {
+        this.titleRes = titleRes
+        title = null
+        updateTitle()
+    }
+
+    fun setTitle(title: String) {
+        this.title = title
+        titleRes = 0
+        updateTitle()
+    }
+
+    fun setImage(imageUrl: String) {
+        image = imageUrl
+        imageRes = 0
+        updateImage()
+    }
+
+    fun setImage(imageRes: Int) {
+        this.imageRes = imageRes
+        image = null
+        updateImage()
     }
 
 
@@ -60,6 +138,11 @@ class InstrumentItemView : BaseViewGroup {
         bid = ss.bid
         change = ss.change
         percentChange = ss.percentChange
+        updateImage()
+        updateAsk()
+        updateBid()
+        updateChange()
+        updateTitle()
     }
 
     private class SavedState : ChildSavedState {

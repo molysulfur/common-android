@@ -18,7 +18,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/awonar_instrument_item_text_title"
-            style="@style/Awonar.Title"
+            style="@style/Awonar.SubTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
@@ -30,7 +30,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/awonar_instrument_item_text_change"
-            style="@style/Awonar.SubTitle"
+            style="@style/Awonar.Description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/awonar_size_margin_padding_small"

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,23 +20,19 @@ class MarketFragment : Fragment() {
         AwonarFragmentMarketBinding.inflate(layoutInflater)
     }
 
+    private val viewModel: MarketViewModel by activityViewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val adapter = ConcatAdapter(
-            InstrumentHorizontalWrapperAdapter(InstrumentHorizontalAdapter()),
-            InstrumentListAdapter()
-        )
-        binding.awonarMarketRecyclerInstrument.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        }
-        binding.awonarMarketRecyclerInstrument.adapter = adapter
     }
 }

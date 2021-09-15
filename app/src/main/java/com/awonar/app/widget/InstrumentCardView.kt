@@ -69,7 +69,7 @@ class InstrumentCardView : BaseViewGroup {
     }
 
     private fun updateChange() {
-        binding.awonarInstrumentCardViewTextChange.text = "$price ($percentChange%)"
+        binding.awonarInstrumentCardViewTextChange.text = "$change ($percentChange%)"
     }
 
     fun setPercentChange(percentChange: Float) {

@@ -3,11 +3,19 @@ package com.awonar.app.ui.market.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.awonar.android.model.market.Instrument
 import com.awonar.app.databinding.AwonarItemInstrumentCardBinding
 import com.awonar.app.ui.market.holder.InstrumentCardViewHolder
 
-class InstrumentHorizontalAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
+class InstrumentHorizontalAdapter : RecyclerView.Adapter<InstrumentCardViewHolder>() {
+
+    var itemList: List<Instrument> = emptyList()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InstrumentCardViewHolder =
         InstrumentCardViewHolder(
             AwonarItemInstrumentCardBinding.inflate(
                 LayoutInflater.from(parent.context),
@@ -16,8 +24,9 @@ class InstrumentHorizontalAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder
             )
         )
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: InstrumentCardViewHolder, position: Int) {
+        holder.bind(itemList[position])
     }
 
-    override fun getItemCount(): Int = 10
+    override fun getItemCount(): Int = itemList.size
 }

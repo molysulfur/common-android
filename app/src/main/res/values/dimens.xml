@@ -22,4 +22,6 @@
     <dimen name="awonar_radius_size_large">30dp</dimen>
     <dimen name="awonar_radius_size_normal">15dp</dimen>
     <dimen name="awonar_radius_size_small">5dp</dimen>
+
+    <dimen name="awonar_elevation_normal">4dp</dimen>
 </resources>

@@ -7,7 +7,7 @@ import com.awonar.app.databinding.AwonarItemRecyclerBinding
 import com.awonar.app.ui.market.holder.InstrumentWrapperViewHolder
 
 class InstrumentHorizontalWrapperAdapter(
-    private val adapter: InstrumentHorizontalAdapter
+    val adapter: InstrumentHorizontalAdapter
 ) : RecyclerView.Adapter<InstrumentWrapperViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InstrumentWrapperViewHolder =
         InstrumentWrapperViewHolder(
