@@ -23,6 +23,7 @@ class ConvertInstrumentToItemUseCase @Inject constructor(
         takeInstrumentWithCategory(instruments, "stocks").forEachIndexed { index, instrument ->
             addInstrument(itemList, index, instrument)
         }
+        itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.InstrumentViewMoreItem("Stocks"))
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Currencies"))
@@ -30,6 +31,7 @@ class ConvertInstrumentToItemUseCase @Inject constructor(
         takeInstrumentWithCategory(instruments, "currencies").forEachIndexed { index, instrument ->
             addInstrument(itemList, index, instrument)
         }
+        itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.InstrumentViewMoreItem("Currencies"))
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Crypto"))
@@ -37,6 +39,7 @@ class ConvertInstrumentToItemUseCase @Inject constructor(
         takeInstrumentWithCategory(instruments, "crypto").forEachIndexed { index, instrument ->
             addInstrument(itemList, index, instrument)
         }
+        itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.InstrumentViewMoreItem("Crypto"))
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Technology"))
@@ -44,6 +47,7 @@ class ConvertInstrumentToItemUseCase @Inject constructor(
         takeInstrumentWithSector(instruments, "technology").forEachIndexed { index, instrument ->
             addInstrument(itemList, index, instrument)
         }
+        itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.InstrumentViewMoreItem("Technology"))
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Healthcare"))
@@ -51,6 +55,7 @@ class ConvertInstrumentToItemUseCase @Inject constructor(
         takeInstrumentWithSector(instruments, "healthcare").forEachIndexed { index, instrument ->
             addInstrument(itemList, index, instrument)
         }
+        itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.InstrumentViewMoreItem("Healthcare"))
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Financial Service"))
@@ -61,6 +66,7 @@ class ConvertInstrumentToItemUseCase @Inject constructor(
         ).forEachIndexed { index, instrument ->
             addInstrument(itemList, index, instrument)
         }
+        itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.InstrumentViewMoreItem("Financial Service"))
         return itemList
     }
