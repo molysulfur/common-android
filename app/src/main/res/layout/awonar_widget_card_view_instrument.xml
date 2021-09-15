@@ -45,7 +45,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/awonar_instrument_card_view_text_price"
-                    style="@style/Awonar.Title"
+                    style="@style/Awonar.Text.Bold.Large"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
@@ -56,7 +56,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/awonar_instrument_card_view_text_change"
-                    style="@style/Awonar.SubTitle"
+                    style="@style/Awonar.Description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/awonar_size_margin_padding_small"
@@ -67,7 +67,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/awonar_instrument_card_view_text_subtitle"
-                    style="@style/Awonar.SubTitle"
+                    style="@style/Awonar.Description"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/awonar_size_margin_padding_extra_small"

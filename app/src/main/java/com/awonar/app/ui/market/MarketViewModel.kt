@@ -10,10 +10,8 @@ import com.awonar.app.ui.market.adapter.InstrumentItem
 import com.molysulfur.library.result.data
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -23,6 +21,8 @@ class MarketViewModel @Inject constructor(
     private val getInstrumentListUseCase: GetInstrumentListUseCase,
     private val convertInstrumentToItemUseCase: ConvertInstrumentToItemUseCase
 ) : ViewModel() {
+    private val _marketTabState = MutableSharedFlow<MarketFragment.Companion.MarketTabSelectedState>(replay = 0)
+    val marketTabState: SharedFlow<MarketFragment.Companion.MarketTabSelectedState> = _marketTabState
 
     private val _instrumentItem =
         MutableStateFlow<List<InstrumentItem>>(arrayListOf(InstrumentItem.LoadingItem()))
@@ -36,6 +36,12 @@ class MarketViewModel @Inject constructor(
         viewModelScope.launch {
             _instrumentItem.value =
                 convertInstrumentToItemUseCase(instruments).data ?: arrayListOf()
+        }
+    }
+
+    fun tabMarketStateChange(tabSelected: MarketFragment.Companion.MarketTabSelectedState) {
+        viewModelScope.launch {
+            _marketTabState.emit(tabSelected)
         }
     }
 }

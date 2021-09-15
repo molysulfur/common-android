@@ -13,8 +13,18 @@ import com.awonar.app.databinding.AwonarFragmentMarketBinding
 import com.awonar.app.ui.market.adapter.InstrumentHorizontalAdapter
 import com.awonar.app.ui.market.adapter.InstrumentHorizontalWrapperAdapter
 import com.awonar.app.ui.market.adapter.InstrumentListAdapter
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 
-class MarketFragment : Fragment() {
+class MarketFragment : Fragment(), TabLayout.OnTabSelectedListener {
+
+    companion object {
+        enum class MarketTabSelectedState {
+            TAB_SELECTED,
+            TAB_UNSELECTED,
+            TAB_RESELECTED
+        }
+    }
 
     private val binding: AwonarFragmentMarketBinding by lazy {
         AwonarFragmentMarketBinding.inflate(layoutInflater)
@@ -34,5 +44,26 @@ class MarketFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.awonarMarketTabCategory.addOnTabSelectedListener(this)
+        binding.awonarMarketViewPagerInstrument.adapter = MarketPagerViewAdapter(this)
+        TabLayoutMediator(
+            binding.awonarMarketTabCategory,
+            binding.awonarMarketViewPagerInstrument
+        ) { tab, position ->
+            tab.text = MarketPagerViewAdapter.tabLists[position]
+        }.attach()
     }
+
+    override fun onTabSelected(tab: TabLayout.Tab?) {
+        viewModel.tabMarketStateChange(MarketTabSelectedState.TAB_SELECTED)
+    }
+
+    override fun onTabUnselected(tab: TabLayout.Tab?) {
+        viewModel.tabMarketStateChange(MarketTabSelectedState.TAB_UNSELECTED)
+    }
+
+    override fun onTabReselected(tab: TabLayout.Tab?) {
+        viewModel.tabMarketStateChange(MarketTabSelectedState.TAB_RESELECTED)
+    }
+
 }

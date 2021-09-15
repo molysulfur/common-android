@@ -4,7 +4,9 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.awonar.android.model.market.Instrument
+import com.awonar.app.ui.market.MarketPagerViewAdapter
 import com.awonar.app.ui.market.MarketViewModel
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
