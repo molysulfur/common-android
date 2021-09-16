@@ -44,8 +44,13 @@ class MarketFragment : Fragment(), TabLayout.OnTabSelectedListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initViewPager()
+    }
+
+    fun initViewPager() {
         binding.awonarMarketTabCategory.addOnTabSelectedListener(this)
         binding.awonarMarketViewPagerInstrument.adapter = MarketPagerViewAdapter(this)
+        binding.awonarMarketViewPagerInstrument.isUserInputEnabled = false
         TabLayoutMediator(
             binding.awonarMarketTabCategory,
             binding.awonarMarketViewPagerInstrument

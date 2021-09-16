@@ -14,6 +14,6 @@ class MarketPagerViewAdapter(fragment: Fragment) : FragmentStateAdapter(fragment
 
     override fun createFragment(position: Int): Fragment = when (position) {
         0 -> RecommendedMarketFragment()
-        else -> RecommendedMarketFragment()
+        else -> CategoriesMarketFragment()
     }
 }

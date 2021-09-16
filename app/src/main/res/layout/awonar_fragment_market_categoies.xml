@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.awonar.app.ui.market.MarketViewModel" />
+    </data>
+
+    <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+        categoryItem="@{viewModel.instrumentItem}"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/awonar_size_margin_padding_normal"
+        tools:listitem="@layout/awonar_item_instrument_list" />
+
+</layout>

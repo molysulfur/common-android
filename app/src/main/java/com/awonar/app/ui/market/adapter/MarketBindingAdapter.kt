@@ -33,10 +33,20 @@ fun setRecommended(
     }
     ((recyclerView.adapter as ConcatAdapter).adapters[0] as InstrumentHorizontalWrapperAdapter).adapter.itemList =
         instrument.filter { it.recommend }
-    viewModel?.convertInstrumentToItem(instrument)
+    viewModel?.convertInstrumentToItem()
 }
 
-@BindingAdapter("setInstrumentItem")
+@BindingAdapter("categoryItem")
+fun setInstrumentCategoryItem(recyclerView: RecyclerView, instrument: List<InstrumentItem>) {
+    if (recyclerView.adapter == null) {
+        recyclerView.layoutManager =
+            LinearLayoutManager(recyclerView.context, LinearLayoutManager.VERTICAL, false)
+        recyclerView.adapter = InstrumentListAdapter()
+    }
+    (recyclerView.adapter as InstrumentListAdapter).itemList = instrument
+}
+
+@BindingAdapter("recommenedItem")
 fun setInstrumentItem(recyclerView: RecyclerView, instrument: List<InstrumentItem>) {
     if (recyclerView.adapter != null) {
         ((recyclerView.adapter as ConcatAdapter).adapters[1] as InstrumentListAdapter).itemList =

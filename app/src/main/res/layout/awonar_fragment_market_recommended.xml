@@ -7,12 +7,13 @@
         <variable
             name="viewModel"
             type="com.awonar.app.ui.market.MarketViewModel" />
+
     </data>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/awonar_market_recycler_instrument"
         marketViewModel="@{viewModel}"
-        setInstrumentItem="@{viewModel.instrumentItem}"
+        recommenedItem="@{viewModel.instrumentItem}"
         setMarketAdapter="@{viewModel.instruments}"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
