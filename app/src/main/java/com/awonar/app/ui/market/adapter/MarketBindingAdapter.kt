@@ -46,6 +46,16 @@ fun setInstrumentCategoryItem(recyclerView: RecyclerView, instrument: List<Instr
     (recyclerView.adapter as InstrumentListAdapter).itemList = instrument
 }
 
+@BindingAdapter("instrumentListItem")
+fun setInstrumentListITem(recyclerView: RecyclerView, instrument: List<InstrumentItem>) {
+    if (recyclerView.adapter == null) {
+        recyclerView.layoutManager =
+            LinearLayoutManager(recyclerView.context, LinearLayoutManager.VERTICAL, false)
+        recyclerView.adapter = InstrumentListAdapter()
+    }
+    (recyclerView.adapter as InstrumentListAdapter).itemList = instrument
+}
+
 @BindingAdapter("recommenedItem")
 fun setInstrumentItem(recyclerView: RecyclerView, instrument: List<InstrumentItem>) {
     if (recyclerView.adapter != null) {

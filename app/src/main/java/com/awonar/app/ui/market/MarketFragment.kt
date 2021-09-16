@@ -9,12 +9,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.awonar.app.databinding.AwonarFragmentMarketBinding
 import com.awonar.app.ui.market.adapter.InstrumentHorizontalAdapter
 import com.awonar.app.ui.market.adapter.InstrumentHorizontalWrapperAdapter
 import com.awonar.app.ui.market.adapter.InstrumentListAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import timber.log.Timber
 
 class MarketFragment : Fragment(), TabLayout.OnTabSelectedListener {
 
@@ -49,8 +51,23 @@ class MarketFragment : Fragment(), TabLayout.OnTabSelectedListener {
 
     fun initViewPager() {
         binding.awonarMarketTabCategory.addOnTabSelectedListener(this)
-        binding.awonarMarketViewPagerInstrument.adapter = MarketPagerViewAdapter(this)
-        binding.awonarMarketViewPagerInstrument.isUserInputEnabled = false
+        binding.awonarMarketViewPagerInstrument.apply {
+            adapter = MarketPagerViewAdapter(this@MarketFragment)
+            isUserInputEnabled = false
+            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    when (position) {
+                        1 -> viewModel.convertInstrumentCategoryToItem()
+                        2 -> viewModel.convertInstrumentCryptoToItem()
+                        3 -> viewModel.convertInstrumentCurrenciesToItem()
+                        4 -> viewModel.convertInstrumentETFsToItem()
+                        5 -> viewModel.convertInstrumentCommodityToItem()
+                    }
+                }
+            })
+        }
+
         TabLayoutMediator(
             binding.awonarMarketTabCategory,
             binding.awonarMarketViewPagerInstrument

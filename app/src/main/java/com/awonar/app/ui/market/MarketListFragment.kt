@@ -6,13 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.awonar.app.databinding.AwonarFragmentMarketCategoiesBinding
+import com.awonar.app.databinding.AwonarFragmentMarketListBinding
+import timber.log.Timber
 
-class CategoriesMarketFragment : Fragment() {
+class MarketListFragment constructor() : Fragment() {
 
-
-    private val binding: AwonarFragmentMarketCategoiesBinding by lazy {
-        AwonarFragmentMarketCategoiesBinding.inflate(layoutInflater)
+    private val binding: AwonarFragmentMarketListBinding by lazy {
+        AwonarFragmentMarketListBinding.inflate(layoutInflater)
     }
 
     private val viewModel: MarketViewModel by activityViewModels()
@@ -29,5 +29,7 @@ class CategoriesMarketFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
     }
+
 }

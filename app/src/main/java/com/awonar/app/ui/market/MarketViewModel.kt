@@ -5,23 +5,24 @@ import androidx.lifecycle.viewModelScope
 import com.awonar.android.model.market.Instrument
 import com.awonar.android.shared.domain.market.GetInstrumentListUseCase
 import com.awonar.android.shared.utils.WhileViewSubscribed
-import com.awonar.app.domain.ConvertInstrumentCategoryToItemUseCase
-import com.awonar.app.domain.ConvertInstrumentToItemUseCase
+import com.awonar.app.domain.*
 import com.awonar.app.ui.market.adapter.InstrumentItem
 import com.molysulfur.library.result.data
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class MarketViewModel @Inject constructor(
     private val getInstrumentListUseCase: GetInstrumentListUseCase,
     private val convertInstrumentToItemUseCase: ConvertInstrumentToItemUseCase,
-    private val convertInstrumentCategoryToItemUseCase: ConvertInstrumentCategoryToItemUseCase
+    private val convertInstrumentStockToItemUseCase: ConvertInstrumentStockToItemUseCase,
+    private val convertInstrumentCryptoToItemUseCase: ConvertInstrumentCryptoToItemUseCase,
+    private val convertInstrumentCurrenciesToItemUseCase: ConvertInstrumentCurrenciesToItemUseCase,
+    private val convertInstrumentETFsToItemUseCase: ConvertInstrumentETFsToItemUseCase,
+    private val convertInstrumentCommodityToItemUseCase: ConvertInstrumentCommodityToItemUseCase
 ) : ViewModel() {
     private val _marketTabState =
         MutableSharedFlow<MarketFragment.Companion.MarketTabSelectedState>(replay = 0)
@@ -46,7 +47,35 @@ class MarketViewModel @Inject constructor(
     fun convertInstrumentCategoryToItem() {
         viewModelScope.launch {
             _instrumentItem.value =
-                convertInstrumentCategoryToItemUseCase(instruments.value).data ?: arrayListOf()
+                convertInstrumentStockToItemUseCase(instruments.value).data ?: arrayListOf()
+        }
+    }
+
+    fun convertInstrumentCryptoToItem() {
+        viewModelScope.launch {
+            _instrumentItem.value =
+                convertInstrumentCryptoToItemUseCase(instruments.value).data ?: arrayListOf()
+        }
+    }
+
+    fun convertInstrumentCurrenciesToItem() {
+        viewModelScope.launch {
+            _instrumentItem.value =
+                convertInstrumentCurrenciesToItemUseCase(instruments.value).data ?: arrayListOf()
+        }
+    }
+
+    fun convertInstrumentETFsToItem() {
+        viewModelScope.launch {
+            _instrumentItem.value =
+                convertInstrumentETFsToItemUseCase(instruments.value).data ?: arrayListOf()
+        }
+    }
+
+    fun convertInstrumentCommodityToItem() {
+        viewModelScope.launch {
+            _instrumentItem.value =
+                convertInstrumentCommodityToItemUseCase(instruments.value).data ?: arrayListOf()
         }
     }
 

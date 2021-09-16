@@ -7,7 +7,7 @@ import com.molysulfur.library.usecase.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
-class ConvertInstrumentCategoryToItemUseCase @Inject constructor(
+class ConvertInstrumentStockToItemUseCase @Inject constructor(
     @MainDispatcher dispatcher: CoroutineDispatcher
 ) : UseCase<List<Instrument>, List<InstrumentItem>>(dispatcher) {
 

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.awonar.app.ui.market.MarketViewModel" />
+
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/awonar_market_list_layout_column"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/awonar_color_light_gray"
+            android:orientation="horizontal"
+            android:padding="@dimen/awonar_size_margin_padding_normal"
+            android:weightSum="6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/Awonar.Text.Bold.Normal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Market" />
+
+            <FrameLayout
+                style="@style/Awonar.Text.Bold.Normal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/Awonar.Text.Bold.Normal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="Sell" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/Awonar.Text.Bold.Normal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="Buy" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/awonar_market_list_recycler_items"
+            instrumentListItem="@{viewModel.instrumentItem}"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:padding="@dimen/awonar_size_margin_padding_normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_market_list_layout_column"
+            tools:listitem="@layout/awonar_item_instrument_list" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
