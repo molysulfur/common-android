@@ -19,6 +19,7 @@ import android.widget.Button
 import coil.load
 import com.molysulfur.library.extension.readBooleanUsingCompat
 import com.molysulfur.library.extension.writeBooleanUsingCompat
+import timber.log.Timber
 
 
 class InstrumentItemView : BaseViewGroup {
@@ -36,6 +37,12 @@ class InstrumentItemView : BaseViewGroup {
     private var bidUp: Boolean = true
 
     private lateinit var binding: AwonarWidgetInstrumentItemViewBinding
+    val anim: Animation = AlphaAnimation(0.5f, 1.0f)
+
+    init {
+        anim.duration = 1000 //You can manage the blinking time with this parameter
+        anim.startOffset = 10
+    }
 
     override fun setup() {
         updateImage()
@@ -56,11 +63,11 @@ class InstrumentItemView : BaseViewGroup {
     }
 
     fun setAsk(ask: Float) {
-        if (this.ask != ask) {
+        if (this.ask != ask && ask > 0f) {
             val isUp = this.ask <= ask
-            if (isUp != askUp) {
+            if (askUp != isUp) {
                 askUp = isUp
-                blinkColor(binding.awonarInstrumentItemTextAsk, this.ask, ask)
+                blinkColor(binding.awonarInstrumentItemTextAsk, askUp)
             }
         }
         this.ask = ask
@@ -69,15 +76,14 @@ class InstrumentItemView : BaseViewGroup {
 
     private fun updateAsk() {
         binding.awonarInstrumentItemTextAsk.text = "$ask"
-
     }
 
     fun setBid(bid: Float) {
-        if (this.bid != bid) {
+        if (this.bid != bid && bid > 0f) {
             val isUp = this.bid <= bid
-            if (isUp != bidUp) {
+            if (bidUp != isUp) {
                 bidUp = isUp
-                blinkColor(binding.awonarInstrumentItemTextBid, this.bid, bid)
+                blinkColor(binding.awonarInstrumentItemTextBid, bidUp)
             }
         }
         this.bid = bid
@@ -131,23 +137,16 @@ class InstrumentItemView : BaseViewGroup {
         }
     }
 
-    private fun blinkColor(view: View, oldValue: Float, newValue: Float) {
-        val anim: Animation = AlphaAnimation(0.5f, 1.0f)
-        anim.duration = 1000 //You can manage the blinking time with this parameter
+    private fun blinkColor(view: View, isUp: Boolean) {
         anim.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) {
-                when {
-                    newValue > oldValue -> (view as Button).background =
+                when (isUp) {
+                    true -> (view as Button).background =
                         ContextCompat.getDrawable(
                             context,
                             R.drawable.awonar_ripple_green
                         )
-                    newValue == oldValue -> (view as Button).background =
-                        ContextCompat.getDrawable(
-                            context,
-                            R.drawable.awonar_ripple_light_gray
-                        )
-                    newValue < oldValue -> (view as Button).background =
+                    false -> (view as Button).background =
                         ContextCompat.getDrawable(
                             context,
                             R.drawable.awonar_ripple_orange
@@ -166,6 +165,7 @@ class InstrumentItemView : BaseViewGroup {
             }
 
         })
+
         view.startAnimation(anim)
     }
 

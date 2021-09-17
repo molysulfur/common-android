@@ -56,6 +56,10 @@
         <item name="android:textSize">@dimen/awonar_size_text_small</item>
     </style>
 
+    <style name="Awonar.Button.Default.Small.Gray">
+        <item name="android:background">@drawable/awonar_ripple_light_gray</item>
+    </style>
+
     <style name="Awonar.Button.Default.Green">
         <item name="android:textColor">@color/white</item>
         <item name="android:background">@drawable/awonar_ripple_green</item>

@@ -47,11 +47,12 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/awonar_instrument_item_text_bid"
-            style="@style/Awonar.Button.Default.Small"
+            style="@style/Awonar.Button.Default.Small.Gray"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/awonar_size_margin_padding_extra_large"
             android:minHeight="0dp"
+            android:padding="@dimen/awonar_size_margin_padding_small"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/awonar_instrument_item_text_ask"
             app:layout_constraintTop_toTopOf="parent"
@@ -59,10 +60,11 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/awonar_instrument_item_text_ask"
-            style="@style/Awonar.Button.Default.Small"
+            style="@style/Awonar.Button.Default.Small.Gray"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="0dp"
+            android:padding="@dimen/awonar_size_margin_padding_small"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

@@ -8,6 +8,7 @@ import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.market.adapter.InstrumentItem
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class InstrumentItemViewHolder constructor(private val binding: AwonarItemInstrumentListBinding) :
     RecyclerView.ViewHolder(binding.root) {
