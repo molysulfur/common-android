@@ -61,6 +61,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/awonar_market_list_recycler_items"
             instrumentListItem="@{viewModel.instrumentItem}"
+            viewModel="@{viewModel}"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:padding="@dimen/awonar_size_margin_padding_normal"

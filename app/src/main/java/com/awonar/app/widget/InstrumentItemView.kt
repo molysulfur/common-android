@@ -8,11 +8,18 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.RequiresApi
-import coil.load
+import androidx.core.content.ContextCompat
 import com.awonar.android.shared.constrant.BuildConfig
-import com.awonar.app.databinding.AwonarWidgetCardViewInstrumentBinding
+import com.awonar.app.R
 import com.awonar.app.databinding.AwonarWidgetInstrumentItemViewBinding
 import com.molysulfur.library.widget.BaseViewGroup
+import android.view.animation.Animation
+import android.view.animation.AlphaAnimation
+import android.widget.Button
+import coil.load
+import com.molysulfur.library.extension.readBooleanUsingCompat
+import com.molysulfur.library.extension.writeBooleanUsingCompat
+
 
 class InstrumentItemView : BaseViewGroup {
 
@@ -24,6 +31,9 @@ class InstrumentItemView : BaseViewGroup {
     private var bid: Float = 0f
     private var change: Float = 0f
     private var percentChange: Float = 0f
+    private var digit: Int = 4
+    private var askUp: Boolean = true
+    private var bidUp: Boolean = true
 
     private lateinit var binding: AwonarWidgetInstrumentItemViewBinding
 
@@ -40,16 +50,36 @@ class InstrumentItemView : BaseViewGroup {
         return binding.root
     }
 
+    fun setDigit(digit: Int) {
+        this.digit = digit
+        updateChange()
+    }
+
     fun setAsk(ask: Float) {
+        if (this.ask != ask) {
+            val isUp = this.ask <= ask
+            if (isUp != askUp) {
+                askUp = isUp
+                blinkColor(binding.awonarInstrumentItemTextAsk, this.ask, ask)
+            }
+        }
         this.ask = ask
         updateAsk()
     }
 
     private fun updateAsk() {
         binding.awonarInstrumentItemTextAsk.text = "$ask"
+
     }
 
     fun setBid(bid: Float) {
+        if (this.bid != bid) {
+            val isUp = this.bid <= bid
+            if (isUp != bidUp) {
+                bidUp = isUp
+                blinkColor(binding.awonarInstrumentItemTextBid, this.bid, bid)
+            }
+        }
         this.bid = bid
         updateBid()
     }
@@ -73,8 +103,72 @@ class InstrumentItemView : BaseViewGroup {
     }
 
     private fun updateChange() {
-        binding.awonarInstrumentItemTextChange.text = "$change ($percentChange%)"
+        binding.awonarInstrumentItemTextChange.text =
+            "%.${digit}f (%.2f%s)".format(change, percentChange, "%")
+        updateChangeColor()
     }
+
+    private fun updateChangeColor() {
+        when {
+            change > 0f -> binding.awonarInstrumentItemTextChange.setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    R.color.awonar_color_green
+                )
+            )
+            change == 0f -> binding.awonarInstrumentItemTextChange.setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    R.color.awonar_color_gray
+                )
+            )
+            change < 0f -> binding.awonarInstrumentItemTextChange.setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    R.color.awonar_color_orange
+                )
+            )
+        }
+    }
+
+    private fun blinkColor(view: View, oldValue: Float, newValue: Float) {
+        val anim: Animation = AlphaAnimation(0.5f, 1.0f)
+        anim.duration = 1000 //You can manage the blinking time with this parameter
+        anim.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {
+                when {
+                    newValue > oldValue -> (view as Button).background =
+                        ContextCompat.getDrawable(
+                            context,
+                            R.drawable.awonar_ripple_green
+                        )
+                    newValue == oldValue -> (view as Button).background =
+                        ContextCompat.getDrawable(
+                            context,
+                            R.drawable.awonar_ripple_light_gray
+                        )
+                    newValue < oldValue -> (view as Button).background =
+                        ContextCompat.getDrawable(
+                            context,
+                            R.drawable.awonar_ripple_orange
+                        )
+                }
+            }
+
+            override fun onAnimationEnd(animation: Animation?) {
+                view.background = ContextCompat.getDrawable(
+                    context,
+                    R.drawable.awonar_ripple_light_gray
+                )
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {
+            }
+
+        })
+        view.startAnimation(anim)
+    }
+
 
     fun setPercentChange(percentChange: Float) {
         this.percentChange = percentChange
@@ -125,12 +219,16 @@ class InstrumentItemView : BaseViewGroup {
         ss?.bid = bid
         ss?.change = change
         ss?.percentChange = percentChange
+        ss?.digit = digit
+        ss?.bidUp = bidUp
+        ss?.askUp = askUp
         return ss
     }
 
     override fun restoreInstanceState(state: Parcelable) {
         val ss = state as SavedState
         image = ss.image
+        digit = ss.digit
         imageRes = ss.imageRes
         title = ss.title
         titleRes = ss.titleRes
@@ -138,6 +236,8 @@ class InstrumentItemView : BaseViewGroup {
         bid = ss.bid
         change = ss.change
         percentChange = ss.percentChange
+        bidUp = ss.bidUp
+        askUp = ss.askUp
         updateImage()
         updateAsk()
         updateBid()
@@ -155,6 +255,9 @@ class InstrumentItemView : BaseViewGroup {
         var bid: Float = 0f
         var change: Float = 0f
         var percentChange: Float = 0f
+        var digit: Int = 4
+        var askUp: Boolean = true
+        var bidUp: Boolean = true
 
         constructor(superState: Parcelable) : super(superState)
 
@@ -167,6 +270,9 @@ class InstrumentItemView : BaseViewGroup {
             bid = parcel.readFloat()
             change = parcel.readFloat()
             percentChange = parcel.readFloat()
+            digit = parcel.readInt()
+            askUp = parcel.readBooleanUsingCompat()
+            bidUp = parcel.readBooleanUsingCompat()
 
         }
 
@@ -180,6 +286,9 @@ class InstrumentItemView : BaseViewGroup {
             out.writeFloat(bid)
             out.writeFloat(change)
             out.writeFloat(percentChange)
+            out.writeInt(digit)
+            out.writeBooleanUsingCompat(askUp)
+            out.writeBooleanUsingCompat(bidUp)
         }
 
         companion object {

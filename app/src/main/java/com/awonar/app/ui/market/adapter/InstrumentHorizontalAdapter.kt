@@ -5,9 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.market.Instrument
 import com.awonar.app.databinding.AwonarItemInstrumentCardBinding
+import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.market.holder.InstrumentCardViewHolder
 
-class InstrumentHorizontalAdapter : RecyclerView.Adapter<InstrumentCardViewHolder>() {
+class InstrumentHorizontalAdapter constructor(private val viewModel: MarketViewModel?) :
+    RecyclerView.Adapter<InstrumentCardViewHolder>() {
 
     var itemList: List<Instrument> = emptyList()
         set(value) {
@@ -25,7 +27,7 @@ class InstrumentHorizontalAdapter : RecyclerView.Adapter<InstrumentCardViewHolde
         )
 
     override fun onBindViewHolder(holder: InstrumentCardViewHolder, position: Int) {
-        holder.bind(itemList[position])
+        holder.bind(itemList[position],viewModel)
     }
 
     override fun getItemCount(): Int = itemList.size

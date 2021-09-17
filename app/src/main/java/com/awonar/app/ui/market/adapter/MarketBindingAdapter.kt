@@ -19,8 +19,8 @@ fun setRecommended(
     viewModel: MarketViewModel?
 ) {
     if (recyclerView.adapter == null) {
-        val horizontalAdapter = InstrumentHorizontalAdapter()
-        val instrumentAdapter = InstrumentListAdapter()
+        val horizontalAdapter = InstrumentHorizontalAdapter(viewModel)
+        val instrumentAdapter = InstrumentListAdapter(viewModel)
         val adapter = ConcatAdapter(
             InstrumentHorizontalWrapperAdapter(horizontalAdapter),
             instrumentAdapter
@@ -36,22 +36,26 @@ fun setRecommended(
     viewModel?.convertInstrumentToItem()
 }
 
-@BindingAdapter("categoryItem")
-fun setInstrumentCategoryItem(recyclerView: RecyclerView, instrument: List<InstrumentItem>) {
+@BindingAdapter("categoryItem","viewModel")
+fun setInstrumentCategoryItem(
+    recyclerView: RecyclerView,
+    instrument: List<InstrumentItem>,
+    viewModel: MarketViewModel?
+) {
     if (recyclerView.adapter == null) {
         recyclerView.layoutManager =
             LinearLayoutManager(recyclerView.context, LinearLayoutManager.VERTICAL, false)
-        recyclerView.adapter = InstrumentListAdapter()
+        recyclerView.adapter = InstrumentListAdapter(viewModel)
     }
     (recyclerView.adapter as InstrumentListAdapter).itemList = instrument
 }
 
-@BindingAdapter("instrumentListItem")
-fun setInstrumentListITem(recyclerView: RecyclerView, instrument: List<InstrumentItem>) {
+@BindingAdapter("instrumentListItem","viewModel")
+fun setInstrumentListITem(recyclerView: RecyclerView, instrument: List<InstrumentItem>,viewModel: MarketViewModel?) {
     if (recyclerView.adapter == null) {
         recyclerView.layoutManager =
             LinearLayoutManager(recyclerView.context, LinearLayoutManager.VERTICAL, false)
-        recyclerView.adapter = InstrumentListAdapter()
+        recyclerView.adapter = InstrumentListAdapter(viewModel)
     }
     (recyclerView.adapter as InstrumentListAdapter).itemList = instrument
 }

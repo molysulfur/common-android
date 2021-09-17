@@ -6,7 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.ConcatAdapter
 import com.awonar.app.databinding.AwonarFragmentMarketListBinding
+import com.awonar.app.ui.market.adapter.InstrumentHorizontalWrapperAdapter
+import com.awonar.app.ui.market.adapter.InstrumentItem
+import com.awonar.app.ui.market.adapter.InstrumentListAdapter
+import com.awonar.app.ui.market.holder.InstrumentItemViewHolder
+import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
+import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
 class MarketListFragment constructor() : Fragment() {

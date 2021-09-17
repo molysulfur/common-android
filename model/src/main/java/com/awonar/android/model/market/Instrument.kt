@@ -18,12 +18,13 @@ data class Instrument(
     @SerializedName("companyName") val companyName: String?,
     @SerializedName("type") val type: String?,
     @SerializedName("sector") val sector: String?,
-    @SerializedName("assetBase") val base: String?,
-    @SerializedName("assetQuote") val quote: String?,
-    @SerializedName("digit") val digit: String?,
+    @SerializedName("assetBase") val assetBase: String?,
+    @SerializedName("assetQuote") val assetQuote: String?,
+    @SerializedName("digit") val digit: Int,
     @SerializedName("categories") val categories: List<String>?,
     @SerializedName("picture") val logo: String?,
     @SerializedName("industry") val industry: String?,
     @SerializedName("recommend") val recommend: Boolean,
+    var quote: Quote? = null,
 ) : Parcelable
 

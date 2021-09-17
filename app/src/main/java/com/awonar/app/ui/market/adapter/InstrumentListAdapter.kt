@@ -4,9 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.app.databinding.*
+import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.market.holder.*
 
-class InstrumentListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class InstrumentListAdapter constructor(private val viewModel: MarketViewModel?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var itemList: List<InstrumentItem> = emptyList()
         set(value) {
@@ -69,7 +70,7 @@ class InstrumentListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         when (holder) {
             is InstrumentTitleViewHolder -> holder.bind(item as InstrumentItem.TitleItem)
             is InstrumentViewMoreViewHolder -> holder.bind(item as InstrumentItem.InstrumentViewMoreItem)
-            is InstrumentItemViewHolder -> holder.bind(item as InstrumentItem.InstrumentListItem)
+            is InstrumentItemViewHolder -> holder.bind(item as InstrumentItem.InstrumentListItem,viewModel)
         }
     }
 

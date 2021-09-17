@@ -10,14 +10,23 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.awonar.android.shared.steaming.QuoteSteamingManager
 import com.awonar.app.databinding.AwonarFragmentMarketBinding
 import com.awonar.app.ui.market.adapter.InstrumentHorizontalAdapter
 import com.awonar.app.ui.market.adapter.InstrumentHorizontalWrapperAdapter
 import com.awonar.app.ui.market.adapter.InstrumentListAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.scopes.FragmentScoped
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import timber.log.Timber
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MarketFragment : Fragment(), TabLayout.OnTabSelectedListener {
 
     companion object {
@@ -39,6 +48,11 @@ class MarketFragment : Fragment(), TabLayout.OnTabSelectedListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        launchAndRepeatWithViewLifecycle {
+            viewModel.instrumentItem.collect {
+                viewModel.subscribe()
+            }
+        }
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
@@ -47,6 +61,10 @@ class MarketFragment : Fragment(), TabLayout.OnTabSelectedListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViewPager()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
     }
 
     fun initViewPager() {
@@ -67,7 +85,6 @@ class MarketFragment : Fragment(), TabLayout.OnTabSelectedListener {
                 }
             })
         }
-
         TabLayoutMediator(
             binding.awonarMarketTabCategory,
             binding.awonarMarketViewPagerInstrument

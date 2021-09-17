@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import coil.load
 import com.awonar.android.shared.constrant.BuildConfig
 import com.awonar.app.R
@@ -29,6 +30,7 @@ class InstrumentCardView : BaseViewGroup {
     private var price: Float = 0f
     private var change: Float = 0f
     private var percentChange: Float = 0f
+    private var digit: Int = 4
 
     override fun setup() {
         updateChange()
@@ -41,6 +43,12 @@ class InstrumentCardView : BaseViewGroup {
     override fun getLayoutResource(): View {
         binding = AwonarWidgetCardViewInstrumentBinding.inflate(LayoutInflater.from(context))
         return binding.root
+    }
+
+    fun setDigit(digit: Int) {
+        this.digit = digit
+        updatePrice()
+        updateChange()
     }
 
     private fun updateImage() {
@@ -65,11 +73,36 @@ class InstrumentCardView : BaseViewGroup {
     }
 
     private fun updatePrice() {
-        binding.awonarInstrumentCardViewTextPrice.text = "$price"
+        binding.awonarInstrumentCardViewTextPrice.text = "%.${digit}f".format(price)
     }
 
     private fun updateChange() {
-        binding.awonarInstrumentCardViewTextChange.text = "$change ($percentChange%)"
+        binding.awonarInstrumentCardViewTextChange.text =
+            "%.${digit}f (%.2f%s)".format(change, percentChange, "%")
+        updateChangeColor()
+    }
+
+    private fun updateChangeColor() {
+        when {
+            change > 0f -> binding.awonarInstrumentCardViewTextChange.setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    R.color.awonar_color_green
+                )
+            )
+            change == 0f -> binding.awonarInstrumentCardViewTextChange.setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    R.color.awonar_color_gray
+                )
+            )
+            change < 0f -> binding.awonarInstrumentCardViewTextChange.setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    R.color.awonar_color_orange
+                )
+            )
+        }
     }
 
     fun setPercentChange(percentChange: Float) {
@@ -155,6 +188,7 @@ class InstrumentCardView : BaseViewGroup {
         ss?.price = price
         ss?.change = change
         ss?.percentChange = percentChange
+        ss?.digit = digit
         return ss
     }
 
@@ -169,7 +203,9 @@ class InstrumentCardView : BaseViewGroup {
         price = ss.price
         change = ss.change
         percentChange = ss.percentChange
+        digit = ss.digit
     }
+
 
     private class SavedState : ChildSavedState {
 
@@ -182,6 +218,7 @@ class InstrumentCardView : BaseViewGroup {
         var price: Float = 0f
         var change: Float = 0f
         var percentChange: Float = 0f
+        var digit: Int = 4
 
         constructor(superState: Parcelable) : super(superState)
 
@@ -195,6 +232,7 @@ class InstrumentCardView : BaseViewGroup {
             price = parcel.readFloat()
             change = parcel.readFloat()
             percentChange = parcel.readFloat()
+            digit = parcel.readInt()
 
         }
 
@@ -209,6 +247,7 @@ class InstrumentCardView : BaseViewGroup {
             out.writeFloat(price)
             out.writeFloat(change)
             out.writeFloat(percentChange)
+            out.writeInt(digit)
         }
 
         companion object {

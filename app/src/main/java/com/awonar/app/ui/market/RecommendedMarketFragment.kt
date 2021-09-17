@@ -13,6 +13,7 @@ import com.awonar.app.databinding.AwonarFragmentMarketBinding
 import com.awonar.app.databinding.AwonarFragmentMarketRecommendedBinding
 import com.awonar.app.ui.market.adapter.InstrumentHorizontalAdapter
 import com.awonar.app.ui.market.adapter.InstrumentHorizontalWrapperAdapter
+import com.awonar.app.ui.market.adapter.InstrumentItem
 import com.awonar.app.ui.market.adapter.InstrumentListAdapter
 import com.google.android.material.tabs.TabLayout
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
