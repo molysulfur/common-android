@@ -127,25 +127,17 @@ class MarketViewModel @Inject constructor(
         }
     }
 
-    override fun onCleared() {
+    fun unsubscribe() {
         viewModelScope.launch {
-            _instrumentItem.collect { list ->
-                list.forEach { item ->
-                    when (item) {
-                        is InstrumentItem.InstrumentCardItem -> quoteSteamingManager.send(
-                            QuoteSteamingEvent.unsubscribe,
-                            "${item.instrument.id}"
-                        )
-                        is InstrumentItem.InstrumentListItem -> quoteSteamingManager.send(
-                            QuoteSteamingEvent.unsubscribe,
-                            "${item.instrument.id}"
-                        )
-                        else -> {
-                        }
-                    }
+            instruments.collect { instruments ->
+                instruments.forEach { instrument ->
+                    quoteSteamingManager.send(
+                        QuoteSteamingEvent.subscribe,
+                        "${instrument.id}"
+                    )
                 }
+
             }
         }
-        super.onCleared()
     }
 }

@@ -3,6 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.awonar.app.ui.marketprofile.MarketProfileViewModel" />
+    </data>
+
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -18,7 +26,7 @@
                 app:layout_scrollFlags="scroll|snap">
 
                 <com.google.android.material.appbar.MaterialToolbar
-                    android:id="@+id/awonar_profile_toolbar_profile"
+                    android:id="@+id/awonar_market_profile_toolbar_profile"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -28,8 +36,9 @@
                     app:navigationIcon="@drawable/awonar_ic_back" />
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/awonar_profile_image_avatar"
+                    android:id="@+id/awonar_market_profile_image_avatar"
                     style="@style/Awonar.Avatar"
+                    marketProfileAvatar="@{viewModel.instrumentState.picture}"
                     android:layout_width="@dimen/awonar_size_avatar_large"
                     android:layout_height="@dimen/awonar_size_avatar_large"
                     android:layout_margin="@dimen/awonar_size_margin_padding_large"
@@ -37,90 +46,92 @@
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/awonar_profile_toolbar_profile"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_market_profile_toolbar_profile"
                     tools:srcCompat="@drawable/awonar_placeholder_avatar" />
 
                 <com.awonar.app.widget.VerticalTitleView
                     android:id="@+id/awonar_profile_title_followers"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="@+id/awonar_profile_image_avatar"
-                    app:layout_constraintEnd_toStartOf="@+id/awonar_profile_title_following"
+                    app:layout_constraintBottom_toBottomOf="@+id/awonar_market_profile_image_avatar"
+                    app:layout_constraintEnd_toStartOf="@+id/awonar_profile_title_investors"
                     app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/awonar_profile_image_avatar"
-                    app:layout_constraintTop_toTopOf="@+id/awonar_profile_image_avatar"
+                    app:layout_constraintStart_toEndOf="@+id/awonar_market_profile_image_avatar"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_market_profile_image_avatar"
                     app:verticalTitleView_setSubTitle="Followers"
                     app:verticalTitleView_setTitle="0" />
 
                 <com.awonar.app.widget.VerticalTitleView
-                    android:id="@+id/awonar_profile_title_following"
+                    android:id="@+id/awonar_profile_title_investors"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="@+id/awonar_profile_image_avatar"
-                    app:layout_constraintEnd_toStartOf="@+id/awonar_profile_title_copies"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/awonar_profile_title_followers"
-                    app:layout_constraintTop_toTopOf="@+id/awonar_profile_image_avatar"
-                    app:verticalTitleView_setSubTitle="Following"
-                    app:verticalTitleView_setTitle="0" />
-
-                <com.awonar.app.widget.VerticalTitleView
-                    android:id="@+id/awonar_profile_title_copies"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/awonar_size_margin_padding_large"
-                    app:layout_constraintBottom_toBottomOf="@+id/awonar_profile_image_avatar"
+                    android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+                    app:layout_constraintBottom_toBottomOf="@+id/awonar_market_profile_image_avatar"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/awonar_profile_title_following"
-                    app:layout_constraintTop_toTopOf="@+id/awonar_profile_image_avatar"
-                    app:verticalTitleView_setSubTitle="Copies"
+                    app:layout_constraintStart_toEndOf="@+id/awonar_profile_title_followers"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_market_profile_image_avatar"
+                    app:verticalTitleView_setSubTitle="Investors"
                     app:verticalTitleView_setTitle="0" />
 
+
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/awonar_profile_text_username"
+                    android:id="@+id/awonar_market_profile_text_symbol"
                     style="@style/Awonar.Title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/awonar_size_margin_padding_small"
-                    app:layout_constraintEnd_toEndOf="@+id/awonar_profile_title_copies"
-                    app:layout_constraintStart_toStartOf="@+id/awonar_profile_image_avatar"
-                    app:layout_constraintTop_toBottomOf="@+id/awonar_profile_image_avatar"
+                    android:text="@{viewModel.instrumentState.symbol}"
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_profile_title_investors"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_market_profile_image_avatar"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_market_profile_image_avatar"
                     tools:text="@string/awonar_text_username" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/awonar_profile_text_name"
+                    android:id="@+id/awonar_market_profile_text_name"
                     style="@style/Awonar.Text.Default.Normal"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/awonar_size_margin_padding_small"
+                    android:text="@{viewModel.instrumentState.name}"
                     android:textColor="@color/awonar_color_gray"
-                    app:layout_constraintEnd_toEndOf="@+id/awonar_profile_title_copies"
-                    app:layout_constraintStart_toStartOf="@+id/awonar_profile_image_avatar"
-                    app:layout_constraintTop_toBottomOf="@+id/awonar_profile_text_username"
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_profile_title_investors"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_market_profile_image_avatar"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_market_profile_text_symbol"
                     tools:text="@string/awonar_example_name" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/awonar_profile_text_about"
+                    android:id="@+id/awonar_market_profile_text_pricing"
+                    style="@style/Awonar.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/awonar_size_margin_padding_small"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_market_profile_image_avatar"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_market_profile_text_name"
+                    tools:text="@string/awonar_example_name" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_market_profile_text_change"
+                    style="@style/Awonar.Description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
+                    app:layout_constraintBottom_toBottomOf="@+id/awonar_market_profile_text_pricing"
+                    app:layout_constraintStart_toEndOf="@+id/awonar_market_profile_text_pricing"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_market_profile_text_pricing"
+                    tools:text="@string/awonar_example_name" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_market_profile_text_about"
                     style="@style/Awonar.Text.Default.Normal"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/awonar_size_margin_padding_small"
-                    app:layout_constraintEnd_toEndOf="@+id/awonar_profile_title_copies"
-                    app:layout_constraintStart_toStartOf="@+id/awonar_profile_image_avatar"
-                    app:layout_constraintTop_toBottomOf="@+id/awonar_profile_text_name"
+                    android:text="@{viewModel.instrumentState.shortDescription}"
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_profile_title_investors"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_market_profile_image_avatar"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_market_profile_text_pricing"
                     tools:text="@string/awonar_example_name" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/awonar_profile_button_edit_profile"
-                    style="@style/Awonar.Button.Border"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/awonar_size_margin_padding_large"
-                    android:text="Edit Profile"
-                    app:layout_constraintEnd_toEndOf="@+id/awonar_profile_text_about"
-                    app:layout_constraintStart_toStartOf="@+id/awonar_profile_text_about"
-                    app:layout_constraintTop_toBottomOf="@+id/awonar_profile_text_about" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/awonar_profile_button_follow"
@@ -134,8 +145,8 @@
                     app:layout_constraintEnd_toStartOf="@+id/awonar_profile_button_copy"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintHorizontal_weight="1"
-                    app:layout_constraintStart_toStartOf="@+id/awonar_profile_image_avatar"
-                    app:layout_constraintTop_toBottomOf="@+id/awonar_profile_button_edit_profile" />
+                    app:layout_constraintStart_toStartOf="@+id/awonar_market_profile_text_name"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_market_profile_text_about" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/awonar_profile_button_copy"
@@ -174,7 +185,7 @@
                     android:padding="@dimen/awonar_size_margin_padding_small"
                     android:src="@drawable/awonar_ic_shared"
                     app:layout_constraintBottom_toBottomOf="@+id/awonar_profile_button_copy"
-                    app:layout_constraintEnd_toEndOf="@+id/awonar_profile_title_copies"
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_market_profile_text_name"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/awonar_profile_button_watchlist"
                     app:layout_constraintTop_toTopOf="@+id/awonar_profile_button_copy" />

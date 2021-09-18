@@ -12,7 +12,11 @@ import timber.log.Timber
 
 class InstrumentCardViewHolder constructor(private val binding: AwonarItemInstrumentCardBinding) :
     RecyclerView.ViewHolder(binding.root) {
-    fun bind(instrument: Instrument, viewModel: MarketViewModel?) {
+    fun bind(
+        instrument: Instrument,
+        viewModel: MarketViewModel?,
+        onInstrumentClick: ((Int) -> Unit)?
+    ) {
         viewModel?.viewModelScope?.launch {
             viewModel.quoteSteamingState.collect { quotes ->
                 val quote = quotes.findLast { quote ->
@@ -34,15 +38,9 @@ class InstrumentCardViewHolder constructor(private val binding: AwonarItemInstru
         binding.awonarInstrumentCardItem.setDigit(instrument.digit)
         binding.awonarInstrumentCardItem.setSubTitle(instrument.name ?: "")
         binding.awonarInstrumentCardItem.setImage(instrument.logo ?: "")
-//        binding.awonarInstrumentCardItem.setChange(
-//            (instrument.quote?.close ?: 0f) - (instrument.quote?.previous ?: 0f)
-//        )
-//        binding.awonarInstrumentCardItem.setPrice(instrument.quote?.close ?: 0f)
-//        var percent: Float = ConverterQuoteUtil.percentChange(
-//            oldPrice = instrument.quote?.previous ?: 0f,
-//            newPrice = instrument.quote?.close ?: 0f
-//        )
-//        binding.awonarInstrumentCardItem.setPercentChange(percent)
+        binding.awonarInstrumentCardItem.setOnClickListener {
+            onInstrumentClick?.invoke(instrument.id)
+        }
     }
 
 }

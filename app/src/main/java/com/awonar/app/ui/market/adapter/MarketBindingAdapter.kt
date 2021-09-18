@@ -1,5 +1,6 @@
 package com.awonar.app.ui.market.adapter
 
+import android.content.Intent
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -8,6 +9,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.awonar.android.model.market.Instrument
 import com.awonar.app.ui.market.MarketPagerViewAdapter
 import com.awonar.app.ui.market.MarketViewModel
+import com.awonar.app.ui.marketprofile.MarketProfileActivity
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
@@ -21,6 +23,16 @@ fun setRecommended(
     if (recyclerView.adapter == null) {
         val horizontalAdapter = InstrumentHorizontalAdapter(viewModel)
         val instrumentAdapter = InstrumentListAdapter(viewModel)
+        horizontalAdapter.onInstrumentClick = {
+            val newIntent = Intent(recyclerView.context, MarketProfileActivity::class.java)
+            newIntent.putExtra(MarketProfileActivity.INSTRUMENT_EXTRA, it)
+            recyclerView.context.startActivity(newIntent)
+        }
+        instrumentAdapter.onInstrumentClick = {
+            val newIntent = Intent(recyclerView.context, MarketProfileActivity::class.java)
+            newIntent.putExtra(MarketProfileActivity.INSTRUMENT_EXTRA, it)
+            recyclerView.context.startActivity(newIntent)
+        }
         val adapter = ConcatAdapter(
             InstrumentHorizontalWrapperAdapter(horizontalAdapter),
             instrumentAdapter
@@ -36,7 +48,7 @@ fun setRecommended(
     viewModel?.convertInstrumentToItem()
 }
 
-@BindingAdapter("categoryItem","viewModel")
+@BindingAdapter("categoryItem", "viewModel")
 fun setInstrumentCategoryItem(
     recyclerView: RecyclerView,
     instrument: List<InstrumentItem>,
@@ -50,8 +62,12 @@ fun setInstrumentCategoryItem(
     (recyclerView.adapter as InstrumentListAdapter).itemList = instrument
 }
 
-@BindingAdapter("instrumentListItem","viewModel")
-fun setInstrumentListITem(recyclerView: RecyclerView, instrument: List<InstrumentItem>,viewModel: MarketViewModel?) {
+@BindingAdapter("instrumentListItem", "viewModel")
+fun setInstrumentListITem(
+    recyclerView: RecyclerView,
+    instrument: List<InstrumentItem>,
+    viewModel: MarketViewModel?
+) {
     if (recyclerView.adapter == null) {
         recyclerView.layoutManager =
             LinearLayoutManager(recyclerView.context, LinearLayoutManager.VERTICAL, false)

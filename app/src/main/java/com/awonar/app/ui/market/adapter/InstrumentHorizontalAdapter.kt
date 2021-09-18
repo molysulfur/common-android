@@ -17,6 +17,8 @@ class InstrumentHorizontalAdapter constructor(private val viewModel: MarketViewM
             notifyDataSetChanged()
         }
 
+    var onInstrumentClick: ((Int) -> Unit)? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InstrumentCardViewHolder =
         InstrumentCardViewHolder(
             AwonarItemInstrumentCardBinding.inflate(
@@ -27,7 +29,7 @@ class InstrumentHorizontalAdapter constructor(private val viewModel: MarketViewM
         )
 
     override fun onBindViewHolder(holder: InstrumentCardViewHolder, position: Int) {
-        holder.bind(itemList[position],viewModel)
+        holder.bind(itemList[position],viewModel,onInstrumentClick)
     }
 
     override fun getItemCount(): Int = itemList.size
