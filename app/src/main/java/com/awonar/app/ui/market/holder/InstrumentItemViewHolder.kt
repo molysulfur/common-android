@@ -22,8 +22,24 @@ class InstrumentItemViewHolder constructor(private val binding: AwonarItemInstru
                 binding.awonarInstrumentItemList.setChange(
                     (quote?.close ?: 0f) - (quote?.previous ?: 0f)
                 )
-                binding.awonarInstrumentItemList.setBid(quote?.bid ?: 0f)
-                binding.awonarInstrumentItemList.setAsk(quote?.ask ?: 0f)
+                // Validate Bid for anim
+                quote?.bid?.let {
+                    if (it != item.bid) {
+                        item.bid = it
+                        Timber.e("$item , ${item.instrument} ${item.bid} ${item.ask}")
+                        binding.awonarInstrumentItemList.startAnimationBid(item.bid)
+                        binding.awonarInstrumentItemList.setBid(item.bid)
+                    }
+                }
+                // Validate Ask for anim
+                quote?.ask?.let {
+                    if (it != item.ask) {
+                        item.ask = it
+                        binding.awonarInstrumentItemList.startAnimationAsk(item.ask)
+                        binding.awonarInstrumentItemList.setAsk(item.ask)
+                    }
+                }
+
                 val percent: Float = ConverterQuoteUtil.percentChange(
                     oldPrice = quote?.previous ?: 0f,
                     newPrice = quote?.close ?: 0f

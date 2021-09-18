@@ -15,7 +15,11 @@ sealed class InstrumentItem(val type: Int) : Parcelable {
         InstrumentItem(InstrumentType.INSTRUMENT_TITLE_TYPE)
 
     @Parcelize
-    data class InstrumentListItem(val instrument: Instrument) :
+    data class InstrumentListItem(
+        val instrument: Instrument,
+        var bid: Float = 0f,
+        var ask: Float = 0f
+    ) :
         InstrumentItem(InstrumentType.INSTRUMENT_LIST_ITEM_TYPE)
 
     @Parcelize

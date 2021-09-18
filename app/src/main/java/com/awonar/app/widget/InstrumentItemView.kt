@@ -37,10 +37,10 @@ class InstrumentItemView : BaseViewGroup {
     private var bidUp: Boolean = true
 
     private lateinit var binding: AwonarWidgetInstrumentItemViewBinding
-    val anim: Animation = AlphaAnimation(0.5f, 1.0f)
+    private val anim: Animation = AlphaAnimation(0.5f, 1.0f)
 
     init {
-        anim.duration = 1000 //You can manage the blinking time with this parameter
+        anim.duration = 400 //You can manage the blinking time with this parameter
         anim.startOffset = 10
     }
 
@@ -63,13 +63,6 @@ class InstrumentItemView : BaseViewGroup {
     }
 
     fun setAsk(ask: Float) {
-        if (this.ask != ask && ask > 0f) {
-            val isUp = this.ask <= ask
-            if (askUp != isUp) {
-                askUp = isUp
-                blinkColor(binding.awonarInstrumentItemTextAsk, askUp)
-            }
-        }
         this.ask = ask
         updateAsk()
     }
@@ -79,19 +72,63 @@ class InstrumentItemView : BaseViewGroup {
     }
 
     fun setBid(bid: Float) {
-        if (this.bid != bid && bid > 0f) {
-            val isUp = this.bid <= bid
-            if (bidUp != isUp) {
-                bidUp = isUp
-                blinkColor(binding.awonarInstrumentItemTextBid, bidUp)
-            }
-        }
         this.bid = bid
         updateBid()
     }
 
     private fun updateBid() {
         binding.awonarInstrumentItemTextBid.text = "$bid"
+    }
+
+    fun startAnimationBid(newBid: Float) {
+        if (newBid != bid) {
+            val isUp = bid <= newBid
+            if (isUp != bidUp) {
+                bidUp = isUp
+                blinkColor(binding.awonarInstrumentItemTextBid, bidUp)
+            }
+        }
+    }
+
+    fun startAnimationAsk(newAsk: Float) {
+        if (newAsk != ask) {
+            val isUp = ask <= newAsk
+            if (isUp != askUp) {
+                askUp = isUp
+                blinkColor(binding.awonarInstrumentItemTextAsk, askUp)
+            }
+        }
+    }
+
+    private fun blinkColor(view: View, isUp: Boolean) {
+        anim.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {
+                when (isUp) {
+                    true -> (view as Button).background =
+                        ContextCompat.getDrawable(
+                            context,
+                            R.drawable.awonar_ripple_green
+                        )
+                    false -> (view as Button).background =
+                        ContextCompat.getDrawable(
+                            context,
+                            R.drawable.awonar_ripple_orange
+                        )
+                }
+            }
+
+            override fun onAnimationEnd(animation: Animation?) {
+                view.background = ContextCompat.getDrawable(
+                    context,
+                    R.drawable.awonar_ripple_light_gray
+                )
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {
+            }
+
+        })
+        view.startAnimation(anim)
     }
 
     private fun updateImage() {
@@ -135,38 +172,6 @@ class InstrumentItemView : BaseViewGroup {
                 )
             )
         }
-    }
-
-    private fun blinkColor(view: View, isUp: Boolean) {
-        anim.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation?) {
-                when (isUp) {
-                    true -> (view as Button).background =
-                        ContextCompat.getDrawable(
-                            context,
-                            R.drawable.awonar_ripple_green
-                        )
-                    false -> (view as Button).background =
-                        ContextCompat.getDrawable(
-                            context,
-                            R.drawable.awonar_ripple_orange
-                        )
-                }
-            }
-
-            override fun onAnimationEnd(animation: Animation?) {
-                view.background = ContextCompat.getDrawable(
-                    context,
-                    R.drawable.awonar_ripple_light_gray
-                )
-            }
-
-            override fun onAnimationRepeat(animation: Animation?) {
-            }
-
-        })
-
-        view.startAnimation(anim)
     }
 
 
