@@ -40,7 +40,7 @@ class InstrumentItemView : BaseViewGroup {
     private val anim: Animation = AlphaAnimation(0.5f, 1.0f)
 
     init {
-        anim.duration = 400 //You can manage the blinking time with this parameter
+        anim.duration = 1000
         anim.startOffset = 10
     }
 
@@ -104,20 +104,32 @@ class InstrumentItemView : BaseViewGroup {
         anim.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) {
                 when (isUp) {
-                    true -> (view as Button).background =
-                        ContextCompat.getDrawable(
-                            context,
-                            R.drawable.awonar_ripple_green
-                        )
-                    false -> (view as Button).background =
-                        ContextCompat.getDrawable(
-                            context,
-                            R.drawable.awonar_ripple_orange
-                        )
+                    true -> (view as Button).apply {
+                        setTextColor(ContextCompat.getColor(context, R.color.white))
+                        background =
+                            ContextCompat.getDrawable(
+                                context,
+                                R.drawable.awonar_ripple_green
+                            )
+                    }
+                    false -> (view as Button).apply {
+                        setTextColor(ContextCompat.getColor(context, R.color.white))
+                        background =
+                            ContextCompat.getDrawable(
+                                context,
+                                R.drawable.awonar_ripple_orange
+                            )
+                    }
                 }
             }
 
             override fun onAnimationEnd(animation: Animation?) {
+                (view as Button).setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        R.color.awonar_color_text_primary
+                    )
+                )
                 view.background = ContextCompat.getDrawable(
                     context,
                     R.drawable.awonar_ripple_light_gray
