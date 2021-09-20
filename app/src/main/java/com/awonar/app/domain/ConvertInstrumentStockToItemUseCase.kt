@@ -27,7 +27,7 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem("Financial Service"))
+        itemList.add(InstrumentItem.InstrumentViewMoreItem("financial-services"))
 
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Healthcare"))
@@ -39,7 +39,7 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem("Healthcare"))
+        itemList.add(InstrumentItem.InstrumentViewMoreItem("healthcare"))
 
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Technology"))
@@ -51,7 +51,7 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem("Technology"))
+        itemList.add(InstrumentItem.InstrumentViewMoreItem("technology"))
 
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Industrials"))
@@ -63,7 +63,7 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem("Industrials"))
+        itemList.add(InstrumentItem.InstrumentViewMoreItem("industrials"))
 
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Consumer Cyclical"))
@@ -75,7 +75,7 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem("Consumer Cyclical"))
+        itemList.add(InstrumentItem.InstrumentViewMoreItem( "consumer-cyclical"))
 
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Real Estate"))
@@ -87,7 +87,7 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem("Real Estate"))
+        itemList.add(InstrumentItem.InstrumentViewMoreItem("real-estate"))
 
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Energy"))
@@ -99,7 +99,7 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem("Energy"))
+        itemList.add(InstrumentItem.InstrumentViewMoreItem("energy"))
 
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Basic Materials"))
@@ -111,7 +111,7 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem("Basic Materials"))
+        itemList.add(InstrumentItem.InstrumentViewMoreItem("basic-materials"))
 
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Consumer Defensive"))
@@ -123,7 +123,7 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem("Consumer Defensive"))
+        itemList.add(InstrumentItem.InstrumentViewMoreItem("consumer-defensive"))
 
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Unility"))
@@ -135,7 +135,7 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem("Unility"))
+        itemList.add(InstrumentItem.InstrumentViewMoreItem("utilities"))
 
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Communication Services"))
@@ -147,7 +147,7 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem("Communication Services"))
+        itemList.add(InstrumentItem.InstrumentViewMoreItem( "communication-services"))
         return itemList
     }
 

@@ -18,6 +18,7 @@ class InstrumentListAdapter constructor(private val viewModel: MarketViewModel?)
 
 
     var onInstrumentClick: ((Int) -> Unit)? = null
+    var onViewMoreClick: ((String) -> Unit)? = null
 
     override fun getItemViewType(position: Int): Int = itemList[position].type
 
@@ -72,7 +73,7 @@ class InstrumentListAdapter constructor(private val viewModel: MarketViewModel?)
         val item = itemList[position]
         when (holder) {
             is InstrumentTitleViewHolder -> holder.bind(item as InstrumentItem.TitleItem)
-            is InstrumentViewMoreViewHolder -> holder.bind(item as InstrumentItem.InstrumentViewMoreItem)
+            is InstrumentViewMoreViewHolder -> holder.bind(item as InstrumentItem.InstrumentViewMoreItem,onViewMoreClick)
             is InstrumentItemViewHolder -> holder.bind(
                 item as InstrumentItem.InstrumentListItem,
                 viewModel,

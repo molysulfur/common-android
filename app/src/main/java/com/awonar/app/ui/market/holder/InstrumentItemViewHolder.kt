@@ -36,7 +36,6 @@ class InstrumentItemViewHolder constructor(
                 )
                 // Validate Bid for anim
                 quote?.bid.let {
-                    Timber.e("$it ${item.instrument.symbol}")
                     if (it != item.bid) {
                         item.bid = it ?: 0f
                         binding.awonarInstrumentItemList.startAnimationBid(item.bid)

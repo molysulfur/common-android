@@ -4,15 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
+import com.awonar.android.model.market.Quote
+import com.awonar.android.shared.steaming.QuoteSteamingListener
+import com.awonar.android.shared.steaming.QuoteSteamingManager
+import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentMarketBinding
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
+import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MarketFragment : Fragment(), TabLayout.OnTabSelectedListener {
@@ -41,9 +50,26 @@ class MarketFragment : Fragment(), TabLayout.OnTabSelectedListener {
                 viewModel.subscribe()
             }
         }
+        launchAndRepeatWithViewLifecycle {
+            viewModel.viewMoreState.collect { instrumentType ->
+                instrumentType?.let {
+                    findNavController().navigate(
+                        R.id.action_marketFragment_to_marketViewMoreFragment,
+                        bundleOf(
+                            "instrumentType" to it
+                        )
+                    )
+                }
+            }
+        }
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.setNewQuoteListener()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

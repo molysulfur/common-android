@@ -38,7 +38,6 @@ class MainActivity : BaseActivity() {
 
     private val authViewModel: AuthViewModel by viewModels()
     private val userViewModel: UserViewModel by viewModels()
-    private val marketViewModel: MarketViewModel by viewModels()
     private var user: User? = null
     private lateinit var mNavController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -148,12 +147,6 @@ class MainActivity : BaseActivity() {
         }
 
         userViewModel.getUser(needFresh = true)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Timber.e("Destory")
-        marketViewModel.unsubscribe()
     }
 
 }

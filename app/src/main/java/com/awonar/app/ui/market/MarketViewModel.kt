@@ -1,6 +1,5 @@
 package com.awonar.app.ui.market
 
-import android.service.autofill.Validators.or
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.awonar.android.model.market.Instrument
@@ -18,24 +17,23 @@ import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class MarketViewModel @Inject constructor(
     private val getInstrumentListUseCase: GetInstrumentListUseCase,
-    private val convertInstrumentToItemUseCase: ConvertInstrumentToItemUseCase,
+    private val convertRememberToItemUseCase: ConvertRememberToItemUseCase,
     private val convertInstrumentStockToItemUseCase: ConvertInstrumentStockToItemUseCase,
-    private val convertInstrumentCryptoToItemUseCase: ConvertInstrumentCryptoToItemUseCase,
-    private val convertInstrumentCurrenciesToItemUseCase: ConvertInstrumentCurrenciesToItemUseCase,
-    private val convertInstrumentETFsToItemUseCase: ConvertInstrumentETFsToItemUseCase,
-    private val convertInstrumentCommodityToItemUseCase: ConvertInstrumentCommodityToItemUseCase,
+    private val convertInstrumentToItemUseCase: ConvertInstrumentToItemUseCase,
     private val getQuoteSteamingUseCase: GetQuoteSteamingUseCase,
     private val quoteSteamingManager: QuoteSteamingManager
 ) : ViewModel() {
 
+    private val _viewMoreState = MutableStateFlow<String?>(null)
+    val viewMoreState: StateFlow<String?> get() = _viewMoreState
+
     private val _quoteSteamingState = MutableStateFlow<Array<Quote>>(emptyArray())
-    val quoteSteamingState: StateFlow<Array<Quote>> get() = _quoteSteamingState
+    val quoteSteamingState: SharedFlow<Array<Quote>> get() = _quoteSteamingState
 
     private val _marketTabState =
         MutableSharedFlow<MarketFragment.Companion.MarketTabSelectedState>(replay = 0)
@@ -51,24 +49,24 @@ class MarketViewModel @Inject constructor(
         list
     }.stateIn(viewModelScope, WhileViewSubscribed, emptyList())
 
-    val listener = object : QuoteSteamingListener {
+    private val listener = object : QuoteSteamingListener {
         override fun marketStatusCallback(event: String, data: Any) {
         }
 
         override fun marketQuoteCallback(event: String, data: Array<Quote>) {
             _quoteSteamingState.value = data
         }
-
     }
 
-    init {
+
+    fun setNewQuoteListener() {
         quoteSteamingManager.setListener(listener)
     }
 
     fun convertInstrumentToItem() {
         viewModelScope.launch {
             _instrumentItem.value =
-                convertInstrumentToItemUseCase(instruments.value).data ?: arrayListOf()
+                convertRememberToItemUseCase(instruments.value).data ?: arrayListOf()
         }
     }
 
@@ -81,29 +79,36 @@ class MarketViewModel @Inject constructor(
 
     fun convertInstrumentCryptoToItem() {
         viewModelScope.launch {
+            val instrumentList =
+                instruments.value.filter { it.categories?.contains("crypto") == true }
             _instrumentItem.value =
-                convertInstrumentCryptoToItemUseCase(instruments.value).data ?: arrayListOf()
+                convertInstrumentToItemUseCase(instruments.value).data ?: arrayListOf()
         }
     }
 
     fun convertInstrumentCurrenciesToItem() {
         viewModelScope.launch {
+            val instrumentList =
+                instruments.value.filter { it.categories?.contains("currencies") == true }
             _instrumentItem.value =
-                convertInstrumentCurrenciesToItemUseCase(instruments.value).data ?: arrayListOf()
+                convertInstrumentToItemUseCase(instrumentList).data ?: arrayListOf()
         }
     }
 
     fun convertInstrumentETFsToItem() {
         viewModelScope.launch {
+            val instrumentList = instruments.value.filter { it.categories?.contains("etf") == true }
             _instrumentItem.value =
-                convertInstrumentETFsToItemUseCase(instruments.value).data ?: arrayListOf()
+                convertInstrumentToItemUseCase(instrumentList).data ?: arrayListOf()
         }
     }
 
     fun convertInstrumentCommodityToItem() {
         viewModelScope.launch {
+            val instrumentList =
+                instruments.value.filter { it.categories?.contains("commodity") == true }
             _instrumentItem.value =
-                convertInstrumentCommodityToItemUseCase(instruments.value).data ?: arrayListOf()
+                convertInstrumentToItemUseCase(instrumentList).data ?: arrayListOf()
         }
     }
 
@@ -111,6 +116,13 @@ class MarketViewModel @Inject constructor(
         viewModelScope.launch {
             _marketTabState.emit(tabSelected)
         }
+    }
+
+    fun subscribe(id: Int) {
+        quoteSteamingManager.send(
+            QuoteSteamingEvent.subscribe,
+            "$id"
+        )
     }
 
     fun subscribe() {
@@ -136,8 +148,20 @@ class MarketViewModel @Inject constructor(
                         "${instrument.id}"
                     )
                 }
-
             }
         }
     }
+
+    fun instrumentWithSector(sector: String) {
+        viewModelScope.launch {
+            val instrumentList = instruments.value.filter { it.sector?.equals(sector) ?: false }
+            _instrumentItem.value =
+                convertInstrumentToItemUseCase(instrumentList).data ?: arrayListOf()
+        }
+    }
+
+    fun onViewMore(it: String) {
+        _viewMoreState.value = it
+    }
+
 }

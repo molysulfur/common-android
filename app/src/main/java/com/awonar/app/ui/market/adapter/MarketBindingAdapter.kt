@@ -13,7 +13,6 @@ import com.awonar.app.ui.marketprofile.MarketProfileActivity
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
-
 @BindingAdapter("setMarketAdapter", "marketViewModel")
 fun setRecommended(
     recyclerView: RecyclerView,
@@ -32,6 +31,9 @@ fun setRecommended(
             val newIntent = Intent(recyclerView.context, MarketProfileActivity::class.java)
             newIntent.putExtra(MarketProfileActivity.INSTRUMENT_EXTRA, it)
             recyclerView.context.startActivity(newIntent)
+        }
+        instrumentAdapter.onViewMoreClick = {
+            viewModel?.onViewMore(it)
         }
         val adapter = ConcatAdapter(
             InstrumentHorizontalWrapperAdapter(horizontalAdapter),
@@ -57,7 +59,11 @@ fun setInstrumentCategoryItem(
     if (recyclerView.adapter == null) {
         recyclerView.layoutManager =
             LinearLayoutManager(recyclerView.context, LinearLayoutManager.VERTICAL, false)
-        recyclerView.adapter = InstrumentListAdapter(viewModel)
+        recyclerView.adapter = InstrumentListAdapter(viewModel).apply {
+            onViewMoreClick = {
+                viewModel?.instrumentWithSector(it)
+            }
+        }
     }
     (recyclerView.adapter as InstrumentListAdapter).itemList = instrument
 }
