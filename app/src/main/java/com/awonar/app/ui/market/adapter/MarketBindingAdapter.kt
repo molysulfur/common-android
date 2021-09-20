@@ -1,17 +1,16 @@
 package com.awonar.app.ui.market.adapter
 
 import android.content.Intent
+import android.view.View
+import android.widget.ProgressBar
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import com.awonar.android.model.market.Instrument
-import com.awonar.app.ui.market.MarketPagerViewAdapter
 import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.marketprofile.MarketProfileActivity
-import kotlinx.coroutines.flow.collect
-import timber.log.Timber
+import io.supercharge.shimmerlayout.ShimmerLayout
 
 @BindingAdapter("setMarketAdapter", "marketViewModel")
 fun setRecommended(
@@ -34,7 +33,6 @@ fun setRecommended(
         }
         instrumentAdapter.onViewMoreClick = { arg ->
             viewModel?.onViewMore(arg)
-
         }
         val adapter = ConcatAdapter(
             InstrumentHorizontalWrapperAdapter(horizontalAdapter),
@@ -44,8 +42,8 @@ fun setRecommended(
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
         recyclerView.adapter = adapter
-
     }
+
     ((recyclerView.adapter as ConcatAdapter).adapters[0] as InstrumentHorizontalWrapperAdapter).adapter.itemList =
         instrument.filter { it.recommend }
     viewModel?.convertInstrumentToItem()
@@ -89,4 +87,12 @@ fun setInstrumentItem(recyclerView: RecyclerView, instrument: List<InstrumentIte
         ((recyclerView.adapter as ConcatAdapter).adapters[1] as InstrumentListAdapter).itemList =
             instrument
     }
+}
+
+@BindingAdapter("startLoading")
+fun setLoading(progress: ShimmerLayout, isStart: Boolean) {
+    if (isStart)
+        progress.startShimmerAnimation()
+    else
+        progress.stopShimmerAnimation()
 }
