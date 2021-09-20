@@ -1,6 +1,7 @@
 package com.awonar.app.domain
 
 import com.awonar.android.model.market.Instrument
+import com.awonar.android.model.market.MarketViewMoreArg
 import com.awonar.android.shared.di.MainDispatcher
 import com.awonar.app.ui.market.adapter.InstrumentItem
 import com.molysulfur.library.usecase.UseCase
@@ -27,7 +28,14 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem("financial-services"))
+        itemList.add(
+            InstrumentItem.InstrumentViewMoreItem(
+                MarketViewMoreArg(
+                    "financial-services",
+                    "sector"
+                )
+            )
+        )
 
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Healthcare"))
@@ -39,7 +47,14 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem("healthcare"))
+        itemList.add(
+            InstrumentItem.InstrumentViewMoreItem(
+                MarketViewMoreArg(
+                    "healthcare",
+                    "sector"
+                )
+            )
+        )
 
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Technology"))
@@ -51,7 +66,14 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem("technology"))
+        itemList.add(
+            InstrumentItem.InstrumentViewMoreItem(
+                MarketViewMoreArg(
+                    "technology",
+                    "sector"
+                )
+            )
+        )
 
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Industrials"))
@@ -63,7 +85,14 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem("industrials"))
+        itemList.add(
+            InstrumentItem.InstrumentViewMoreItem(
+                MarketViewMoreArg(
+                    "industrials",
+                    "sector"
+                )
+            )
+        )
 
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Consumer Cyclical"))
@@ -75,7 +104,14 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem( "consumer-cyclical"))
+        itemList.add(
+            InstrumentItem.InstrumentViewMoreItem(
+                MarketViewMoreArg(
+                    "consumer-cyclical",
+                    "sector"
+                )
+            )
+        )
 
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Real Estate"))
@@ -87,7 +123,14 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem("real-estate"))
+        itemList.add(
+            InstrumentItem.InstrumentViewMoreItem(
+                MarketViewMoreArg(
+                    "real-estate",
+                    "sector"
+                )
+            )
+        )
 
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Energy"))
@@ -99,7 +142,7 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem("energy"))
+        itemList.add(InstrumentItem.InstrumentViewMoreItem(MarketViewMoreArg("energy", "sector")))
 
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Basic Materials"))
@@ -111,7 +154,14 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem("basic-materials"))
+        itemList.add(
+            InstrumentItem.InstrumentViewMoreItem(
+                MarketViewMoreArg(
+                    "basic-materials",
+                    "sector"
+                )
+            )
+        )
 
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Consumer Defensive"))
@@ -123,7 +173,14 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem("consumer-defensive"))
+        itemList.add(
+            InstrumentItem.InstrumentViewMoreItem(
+                MarketViewMoreArg(
+                    "consumer-defensive",
+                    "sector"
+                )
+            )
+        )
 
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Unility"))
@@ -135,7 +192,14 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem("utilities"))
+        itemList.add(
+            InstrumentItem.InstrumentViewMoreItem(
+                MarketViewMoreArg(
+                    "utilities",
+                    "sector"
+                )
+            )
+        )
 
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Communication Services"))
@@ -147,7 +211,14 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem( "communication-services"))
+        itemList.add(
+            InstrumentItem.InstrumentViewMoreItem(
+                MarketViewMoreArg(
+                    "communication-services",
+                    "sector"
+                )
+            )
+        )
         return itemList
     }
 

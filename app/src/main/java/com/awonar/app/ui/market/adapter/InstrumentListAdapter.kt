@@ -3,6 +3,7 @@ package com.awonar.app.ui.market.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.awonar.android.model.market.MarketViewMoreArg
 import com.awonar.app.databinding.*
 import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.market.holder.*
@@ -18,7 +19,7 @@ class InstrumentListAdapter constructor(private val viewModel: MarketViewModel?)
 
 
     var onInstrumentClick: ((Int) -> Unit)? = null
-    var onViewMoreClick: ((String) -> Unit)? = null
+    var onViewMoreClick: ((MarketViewMoreArg) -> Unit)? = null
 
     override fun getItemViewType(position: Int): Int = itemList[position].type
 
@@ -73,7 +74,10 @@ class InstrumentListAdapter constructor(private val viewModel: MarketViewModel?)
         val item = itemList[position]
         when (holder) {
             is InstrumentTitleViewHolder -> holder.bind(item as InstrumentItem.TitleItem)
-            is InstrumentViewMoreViewHolder -> holder.bind(item as InstrumentItem.InstrumentViewMoreItem,onViewMoreClick)
+            is InstrumentViewMoreViewHolder -> holder.bind(
+                item as InstrumentItem.InstrumentViewMoreItem,
+                onViewMoreClick
+            )
             is InstrumentItemViewHolder -> holder.bind(
                 item as InstrumentItem.InstrumentListItem,
                 viewModel,

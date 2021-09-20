@@ -2,6 +2,7 @@ package com.awonar.app.ui.market.adapter
 
 import android.os.Parcelable
 import com.awonar.android.model.market.Instrument
+import com.awonar.android.model.market.MarketViewMoreArg
 import kotlinx.parcelize.Parcelize
 
 sealed class InstrumentItem(val type: Int) : Parcelable {
@@ -23,7 +24,7 @@ sealed class InstrumentItem(val type: Int) : Parcelable {
         InstrumentItem(InstrumentType.INSTRUMENT_LIST_ITEM_TYPE)
 
     @Parcelize
-    data class InstrumentViewMoreItem(val viewMoreType: String) :
+    data class InstrumentViewMoreItem(val arg: MarketViewMoreArg) :
         InstrumentItem(InstrumentType.INSTRUMENT_VIEW_MORE_TYPE)
 
     @Parcelize

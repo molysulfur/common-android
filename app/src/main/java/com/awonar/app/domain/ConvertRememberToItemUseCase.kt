@@ -1,6 +1,7 @@
 package com.awonar.app.domain
 
 import com.awonar.android.model.market.Instrument
+import com.awonar.android.model.market.MarketViewMoreArg
 import com.awonar.android.shared.di.MainDispatcher
 import com.awonar.app.ui.market.adapter.InstrumentItem
 import com.molysulfur.library.usecase.UseCase
@@ -24,7 +25,7 @@ class ConvertRememberToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem("stocks"))
+        itemList.add(InstrumentItem.InstrumentViewMoreItem(MarketViewMoreArg("stocks", "category")))
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Currencies"))
         itemList.add(InstrumentItem.BlankItem())
@@ -32,7 +33,14 @@ class ConvertRememberToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem("currencies"))
+        itemList.add(
+            InstrumentItem.InstrumentViewMoreItem(
+                MarketViewMoreArg(
+                    "currencies",
+                    "category"
+                )
+            )
+        )
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Crypto"))
         itemList.add(InstrumentItem.BlankItem())
@@ -40,7 +48,7 @@ class ConvertRememberToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem("crypto"))
+        itemList.add(InstrumentItem.InstrumentViewMoreItem(MarketViewMoreArg("crypto", "category")))
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Technology"))
         itemList.add(InstrumentItem.BlankItem())
@@ -48,7 +56,14 @@ class ConvertRememberToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem("technology"))
+        itemList.add(
+            InstrumentItem.InstrumentViewMoreItem(
+                MarketViewMoreArg(
+                    "technology",
+                    "sector"
+                )
+            )
+        )
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Healthcare"))
         itemList.add(InstrumentItem.BlankItem())
@@ -56,7 +71,14 @@ class ConvertRememberToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem("healthcare"))
+        itemList.add(
+            InstrumentItem.InstrumentViewMoreItem(
+                MarketViewMoreArg(
+                    "healthcare",
+                    "sector"
+                )
+            )
+        )
         itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Financial Service"))
         itemList.add(InstrumentItem.BlankItem())
@@ -67,7 +89,14 @@ class ConvertRememberToItemUseCase @Inject constructor(
             addInstrument(itemList, index, instrument)
         }
         itemList.add(InstrumentItem.BlankItem())
-        itemList.add(InstrumentItem.InstrumentViewMoreItem("financial-services"))
+        itemList.add(
+            InstrumentItem.InstrumentViewMoreItem(
+                MarketViewMoreArg(
+                    "financial-services",
+                    "sector"
+                )
+            )
+        )
         return itemList
     }
 

@@ -16,6 +16,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/awonar_market_view_more_button_sector"
+            style="@style/Awonar.Button.Link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/awonar_ic_back"
+            android:textColor="@color/awonar_color_gray"
+            app:layout_constraintStart_toStartOf="@+id/awonar_market_list_layout_column"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/awonar_market_list_layout_column"
             android:layout_width="match_parent"
@@ -26,7 +36,7 @@
             android:weightSum="6"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@+id/awonar_market_view_more_button_sector">
 
             <androidx.appcompat.widget.AppCompatTextView
                 style="@style/Awonar.Text.Bold.Normal"

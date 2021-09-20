@@ -32,8 +32,9 @@ fun setRecommended(
             newIntent.putExtra(MarketProfileActivity.INSTRUMENT_EXTRA, it)
             recyclerView.context.startActivity(newIntent)
         }
-        instrumentAdapter.onViewMoreClick = {
-            viewModel?.onViewMore(it)
+        instrumentAdapter.onViewMoreClick = { arg ->
+            viewModel?.onViewMore(arg)
+
         }
         val adapter = ConcatAdapter(
             InstrumentHorizontalWrapperAdapter(horizontalAdapter),
@@ -60,8 +61,8 @@ fun setInstrumentCategoryItem(
         recyclerView.layoutManager =
             LinearLayoutManager(recyclerView.context, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = InstrumentListAdapter(viewModel).apply {
-            onViewMoreClick = {
-                viewModel?.instrumentWithSector(it)
+            onViewMoreClick = { arg ->
+                viewModel?.onViewMore(arg)
             }
         }
     }

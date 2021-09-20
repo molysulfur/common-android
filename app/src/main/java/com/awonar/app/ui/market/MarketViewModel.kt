@@ -3,6 +3,7 @@ package com.awonar.app.ui.market
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.awonar.android.model.market.Instrument
+import com.awonar.android.model.market.MarketViewMoreArg
 import com.awonar.android.model.market.Quote
 import com.awonar.android.shared.domain.market.GetInstrumentListUseCase
 import com.awonar.android.shared.domain.market.GetQuoteSteamingUseCase
@@ -15,6 +16,7 @@ import com.awonar.app.ui.market.adapter.InstrumentItem
 import com.molysulfur.library.result.data
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,8 +31,8 @@ class MarketViewModel @Inject constructor(
     private val quoteSteamingManager: QuoteSteamingManager
 ) : ViewModel() {
 
-    private val _viewMoreState = MutableStateFlow<String?>(null)
-    val viewMoreState: StateFlow<String?> get() = _viewMoreState
+    private val _viewMoreState = Channel<MarketViewMoreArg?>(capacity = Channel.CONFLATED)
+    val viewMoreState = _viewMoreState.receiveAsFlow()
 
     private val _quoteSteamingState = MutableStateFlow<Array<Quote>>(emptyArray())
     val quoteSteamingState: SharedFlow<Array<Quote>> get() = _quoteSteamingState
@@ -160,8 +162,19 @@ class MarketViewModel @Inject constructor(
         }
     }
 
-    fun onViewMore(it: String) {
-        _viewMoreState.value = it
+    fun onViewMore(it: MarketViewMoreArg) {
+        viewModelScope.launch {
+            _viewMoreState.send(it)
+        }
+    }
+
+    fun instrumentWithCategory(instrumentType: String?) {
+        viewModelScope.launch {
+            val instrumentList =
+                instruments.value.filter { it.categories?.contains(instrumentType) ?: false }
+            _instrumentItem.value =
+                convertInstrumentToItemUseCase(instrumentList).data ?: arrayListOf()
+        }
     }
 
 }

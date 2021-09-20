@@ -9,7 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
+import com.awonar.android.model.market.MarketViewMoreArg
 import com.awonar.android.model.market.Quote
 import com.awonar.android.shared.steaming.QuoteSteamingListener
 import com.awonar.android.shared.steaming.QuoteSteamingManager
@@ -56,7 +58,8 @@ class MarketFragment : Fragment(), TabLayout.OnTabSelectedListener {
                     findNavController().navigate(
                         R.id.action_marketFragment_to_marketViewMoreFragment,
                         bundleOf(
-                            "instrumentType" to it
+                            "instrumentType" to instrumentType.instrumentType,
+                            "filterType" to instrumentType.filterType
                         )
                     )
                 }
@@ -80,6 +83,7 @@ class MarketFragment : Fragment(), TabLayout.OnTabSelectedListener {
     fun initViewPager() {
         binding.awonarMarketTabCategory.addOnTabSelectedListener(this)
         binding.awonarMarketViewPagerInstrument.apply {
+            isSaveEnabled = false
             adapter = MarketPagerViewAdapter(this@MarketFragment)
             isUserInputEnabled = false
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {

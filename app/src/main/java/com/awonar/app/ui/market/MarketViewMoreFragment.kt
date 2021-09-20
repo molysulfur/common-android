@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.awonar.app.databinding.AwonarFragmentMarketViewmoreBinding
 
 class MarketViewMoreFragment : Fragment() {
@@ -29,9 +30,18 @@ class MarketViewMoreFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         arguments?.let {
-            it.getString("instrumentType")?.let { instrumentType ->
-                viewModel.instrumentWithSector(instrumentType)
+            val instrumentType = it.getString("instrumentType")
+            val filterType = it.getString("filterType")
+            if (instrumentType != null) {
+                binding.awonarMarketViewMoreButtonSector.text = instrumentType
+                when (filterType) {
+                    "category" -> viewModel.instrumentWithCategory(instrumentType)
+                    "sector" -> viewModel.instrumentWithSector(instrumentType)
+                }
             }
+        }
+        binding.awonarMarketViewMoreButtonSector.setOnClickListener {
+            findNavController().popBackStack()
         }
     }
 
