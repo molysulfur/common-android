@@ -17,7 +17,7 @@ before_script:
   # move to the archive at ANDROID_HOME
   - unzip -d cmdline-tools cmdline-tools.zip
   - export ANDROID_HOME=$PWD/android-sdk-linux
-  - export PATH=$PATH:$PWD/cmdline-tools/bin/
+  - export PATH=$PATH:$PWD/cmdline-tools/cmdline-tools/bin/
   - ls
   # Nothing fancy here, just checking sdkManager version
   - sdkmanager --version
