@@ -45,7 +45,7 @@ build:
     paths:
     - app/build/outputs/
   only:
-    - tags
+    - master
 
 deploy:
   stage: deploy
@@ -62,4 +62,4 @@ deploy:
   dependencies:
     - build
   only:
-    - tags
+    - master
