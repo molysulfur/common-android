@@ -32,46 +32,44 @@ class SettingViewModel @Inject constructor(
     private val _settingItemState = MutableStateFlow<List<SettingItem>>(emptyList())
     val settingItemState: StateFlow<List<SettingItem>> get() = _settingItemState
 
-    fun convertUserToSettingItem(user: User?) {
-        if (user != null) {
-            val settingItemList = arrayListOf<SettingItem>()
-            settingItemList.add(
-                SettingItem(
-                    buttonTextRes = R.string.awonar_text_about_me,
-                    isAlert = false,
-                    navigation = AboutMeActivity::class.java
-                )
+    fun convertUserToSettingItem(user: User) {
+        val settingItemList = arrayListOf<SettingItem>()
+        settingItemList.add(
+            SettingItem(
+                buttonTextRes = R.string.awonar_text_about_me,
+                isAlert = false,
+                navigation = AboutMeActivity::class.java
             )
-            settingItemList.add(
-                SettingItem(
-                    buttonText = "Personal Information",
-                    isAlert = user.accountVerifyType != AccountVerifyType.APPROVE,
-                    navigation = PersonalInfoActivity::class.java
-                )
+        )
+        settingItemList.add(
+            SettingItem(
+                buttonText = "Personal Information",
+                isAlert = user.accountVerifyType != AccountVerifyType.APPROVE,
+                navigation = PersonalInfoActivity::class.java
             )
-            settingItemList.add(
-                SettingItem(
-                    buttonText = "Bank",
-                    isAlert = user.bankVerify != "approve",
-                    navigation = PersonalInfoActivity::class.java
-                )
+        )
+        settingItemList.add(
+            SettingItem(
+                buttonText = "Bank",
+                isAlert = user.bankVerify != "approve",
+                navigation = PersonalInfoActivity::class.java
             )
-            settingItemList.add(
-                SettingItem(
-                    buttonText = "Privacy",
-                    isAlert = false,
-                    navigation = PrivacyActivity::class.java
-                )
+        )
+        settingItemList.add(
+            SettingItem(
+                buttonText = "Privacy",
+                isAlert = false,
+                navigation = PrivacyActivity::class.java
             )
-            settingItemList.add(
-                SettingItem(
-                    buttonText = "Experience",
-                    isAlert = false,
-                    navigation = ExperienceActivity::class.java
-                )
+        )
+        settingItemList.add(
+            SettingItem(
+                buttonText = "Experience",
+                isAlert = false,
+                navigation = ExperienceActivity::class.java
             )
-            _settingItemState.value = settingItemList
-        }
+        )
+        _settingItemState.value = settingItemList
     }
 
 

@@ -32,12 +32,16 @@ class SettingFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         launchAndRepeatWithViewLifecycle {
-            userViewModel.userState.collect {
-                settingViewModel.convertUserToSettingItem(it)
+            userViewModel.userState.collect { user ->
+                if (user != null) {
+                    settingViewModel.convertUserToSettingItem(user)
+                } else {
+                    userViewModel.getUser(needFresh = false)
+                }
             }
         }
-
         binding.viewModel = settingViewModel
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 

@@ -12,7 +12,6 @@ class SettingMenuViewHolder @Inject constructor(private val binding: AwonarItemB
             settingItem.buttonTextRes > 0 -> binding.text =
                 binding.root.context.getString(settingItem.buttonTextRes)
         }
-
-
+        binding.isAlert = settingItem.isAlert
     }
 }
