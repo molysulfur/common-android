@@ -52,8 +52,8 @@ deploy:
   script:
     - |
       curl \
-        -F token="xoxb-554937001718-968050533234-vWNkU9E9PlTZp7hYcm2XaH8h" \
-        -F channels="C02EPDRPPNK" \
+        -F token="${SLACK_CHANNEL_ACCESS_TOKEN}" \
+        -F channels="${SLACK_CHANNEL_ID}" \
         -F initial_comment="Hello team! Here is the latest APK" \
         -F "file=@$(find app/build/outputs/apk/debug -name 'MyApp*')" \
         https://slack.com/api/files.upload
