@@ -14,11 +14,11 @@ before_script:
     - unzip -q android-sdk.zip -d android-sdk-linux
     # setup environment
     - export ANDROID_HOME=$PWD/android-sdk-linux
-    - export PATH=$PATH:$PWD/android-sdk-linux/bin/
+    - export PATH=$PATH:$PWD/android-sdk-linux/cmdline-tools/bin/
     - chmod +x ./gradlew
     # add license accpetion
     - set +o pipefail
-    - yes | android-sdk-linux/bin/sdkmanager --licenses
+    - yes | android-sdk-linux/cmdline-tools/bin/sdkmanager --licenses
     - set -o pipefail
 
 stages:
