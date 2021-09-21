@@ -50,8 +50,7 @@ build:
 deploy:
   stage: deploy
   script:
-    - |
-      curl \
+    - curl \
         -F token="${SLACK_CHANNEL_ACCESS_TOKEN}" \
         -F channels="${SLACK_CHANNEL_ID}" \
         -F initial_comment="Hello team! Here is the latest APK" \
