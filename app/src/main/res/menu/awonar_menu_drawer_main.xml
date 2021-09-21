@@ -18,7 +18,7 @@
             android:title="News Feed" />
 
         <item
-            android:id="@+id/awonar_menu_drawer_main_market"
+            android:id="@+id/marketFragment"
             android:icon="@drawable/awonar_ic_markets"
             android:title="Market" />
 

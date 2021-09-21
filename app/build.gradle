@@ -72,7 +72,7 @@ dependencies {
     implementation "androidx.navigation:navigation-dynamic-features-fragment:$versions.androidxNavigation"
     implementation project(path: ':camerax')
     androidTestImplementation "androidx.navigation:navigation-testing:$versions.androidxNavigation"
-
+    implementation "androidx.recyclerview:recyclerview:1.2.1"
     implementation "androidx.multidex:multidex:$versions.androidxMultidex"
     androidTestImplementation "androidx.test.ext:junit:$versions.junitExt"
     androidTestImplementation "androidx.test.espresso:espresso-core:$versions.expresso"
@@ -102,6 +102,7 @@ dependencies {
     implementation "androidx.camera:camera-lifecycle:$camerax_version"
 // CameraX View class
     implementation "androidx.camera:camera-view:1.0.0-alpha28"
-
+    implementation 'com.ethanhua:skeleton:1.1.2'
+    implementation 'io.supercharge:shimmerlayout:2.1.0'
 
 }

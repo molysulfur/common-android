@@ -30,6 +30,7 @@ import timber.log.Timber
 
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.NavigationUI.onNavDestinationSelected
+import com.awonar.app.ui.market.MarketViewModel
 
 
 @AndroidEntryPoint
@@ -88,7 +89,6 @@ class MainActivity : BaseActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Timber.e("$item")
         return super.onOptionsItemSelected(item)
     }
 

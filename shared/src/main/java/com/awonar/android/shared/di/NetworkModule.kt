@@ -1,11 +1,9 @@
 package com.awonar.android.shared.di
 
 import android.app.Application
-import com.awonar.android.shared.api.AuthService
-import com.awonar.android.shared.api.NetworkClient
-import com.awonar.android.shared.api.RemoteConfigService
-import com.awonar.android.shared.api.UserService
+import com.awonar.android.shared.api.*
 import com.awonar.android.shared.db.hawk.AccessTokenManager
+import com.awonar.android.shared.steaming.QuoteSteamingManager
 import com.awonar.android.shared.utils.HawkUtil
 import dagger.Module
 import dagger.Provides
@@ -25,6 +23,18 @@ class NetworkModule {
     @Provides
     fun provideNetworkClient(accessTokenManager: AccessTokenManager) =
         NetworkClient(accessTokenManager)
+
+    @Singleton
+    @Provides
+    fun provideInstrumentService(client: NetworkClient): InstrumentService {
+        return InstrumentService.create(client)
+    }
+
+    @Singleton
+    @Provides
+    fun provideQuoteSteaming(client: NetworkClient): QuoteSteamingManager {
+        return QuoteSteamingManager(client)
+    }
 
     @Singleton
     @Provides

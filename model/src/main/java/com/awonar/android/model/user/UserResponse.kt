@@ -71,6 +71,7 @@ data class UserResponse(
         followingCount = this.totalFollowing,
         copiesCount = this.totalTrade,
         isMe = true,
+        bankVerify = this.bankVerify,
         accountVerifyType = User.getAccountVerifyType(this.accountVerify),
         skill = this.investmentSkills,
         facebookLink = this.facebook,

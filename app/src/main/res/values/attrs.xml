@@ -16,4 +16,13 @@
         <attr name="imageCheckBoxView_setIcon" format="reference" />
         <attr name="imageCheckBoxView_isCheck" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="InstrumentCardView">
+        <attr name="instrumentCardView_setImage" format="reference" />
+        <attr name="instrumentCardView_setTitle" format="string" />
+        <attr name="instrumentCardView_setSubTitle" format="string" />
+        <attr name="instrumentCardView_setPrice" format="float" />
+        <attr name="instrumentCardView_setChange" format="float" />
+        <attr name="instrumentCardView_setPercentChange" format="float" />
+    </declare-styleable>
 </resources>

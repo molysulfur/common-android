@@ -15,7 +15,8 @@
 
             <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"
-                android:layout_height="56dp">
+                android:layout_height="56dp"
+                android:elevation="0dp">
 
                 <com.google.android.material.appbar.MaterialToolbar
                     android:id="@+id/awonar_main_toolbar_header"

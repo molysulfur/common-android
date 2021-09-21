@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/awonar_ripple_tranparent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/awonar_instrument_item_image_logo"
+            android:layout_width="@dimen/awonar_size_avatar"
+            android:layout_height="@dimen/awonar_size_avatar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/awonar_placeholder_avatar" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_instrument_item_text_title"
+            style="@style/Awonar.SubTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
+            android:ellipsize="end"
+            android:lines="1"
+            app:layout_constraintBottom_toTopOf="@+id/awonar_instrument_item_text_change"
+            app:layout_constraintEnd_toStartOf="@+id/awonar_instrument_item_text_bid"
+            app:layout_constraintStart_toEndOf="@+id/awonar_instrument_item_image_logo"
+            app:layout_constraintTop_toTopOf="@+id/awonar_instrument_item_image_logo"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_instrument_item_text_change"
+            style="@style/Awonar.Description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/awonar_size_margin_padding_small"
+            android:ellipsize="end"
+            android:lines="1"
+            app:layout_constraintBottom_toBottomOf="@+id/awonar_instrument_item_image_logo"
+            app:layout_constraintEnd_toStartOf="@+id/awonar_instrument_item_text_bid"
+            app:layout_constraintStart_toStartOf="@+id/awonar_instrument_item_text_title"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_instrument_item_text_title"
+            tools:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/awonar_instrument_item_text_bid"
+            style="@style/Awonar.Button.Default.Small.Gray"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/awonar_size_margin_padding_extra_large"
+            android:minHeight="0dp"
+            android:padding="@dimen/awonar_size_margin_padding_small"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/awonar_instrument_item_text_ask"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="131.88" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/awonar_instrument_item_text_ask"
+            style="@style/Awonar.Button.Default.Small.Gray"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="0dp"
+            android:padding="@dimen/awonar_size_margin_padding_small"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="131.88" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

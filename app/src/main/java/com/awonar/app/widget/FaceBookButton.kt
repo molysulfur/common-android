@@ -2,21 +2,28 @@ package com.awonar.app.widget
 
 import android.content.Context
 import android.os.Build
-import android.os.Parcel
 import android.os.Parcelable
 import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.view.View
 import androidx.annotation.RequiresApi
-import androidx.appcompat.widget.AppCompatTextView
-import com.awonar.app.R
+import com.awonar.app.databinding.AwonarWidgetFacebookBinding
+
 import com.molysulfur.library.widget.BaseViewGroup
 
 class FaceBookButton : BaseViewGroup {
 
+    private lateinit var binding: AwonarWidgetFacebookBinding
 
     override fun setup() {
     }
 
-    override fun getLayoutResource(): Int = R.layout.awonar_widget_facebook
+    override fun getLayoutResource(): View {
+        binding = AwonarWidgetFacebookBinding.inflate(
+            LayoutInflater.from(context)
+        )
+        return binding.root
+    }
 
     override fun setupStyleables(attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) {
 

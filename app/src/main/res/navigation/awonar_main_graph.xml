@@ -10,16 +10,46 @@
         android:name="com.awonar.app.ui.watchlist.WatchListFragment"
         android:label="WatchListFragment"
         tools:layout="@layout/awonar_fragment_watchlist" />
+
     <fragment
         android:id="@+id/portFolioFragment"
         android:name="com.awonar.app.ui.portfolio.PortFolioFragment"
         android:label="PortFolioFragment"
         tools:layout="@layout/awonar_fragment_portfolio" />
+
     <fragment
         android:id="@+id/settingFragment"
         android:name="com.awonar.app.ui.setting.SettingFragment"
         android:label="SettingFragment"
         tools:layout="@layout/awonar_fragment_setting" />
+
+    <fragment
+        android:id="@+id/marketViewMoreFragment"
+        android:name="com.awonar.app.ui.market.MarketViewMoreFragment"
+        android:label="MarketViewMoreFragment" />
+
+    <fragment
+        android:id="@+id/marketFragment"
+        android:name="com.awonar.app.ui.market.MarketFragment"
+        android:label="MarketFragment"
+        tools:layout="@layout/awonar_fragment_market">
+        <action
+            android:id="@+id/action_marketFragment_to_marketViewMoreFragment"
+            app:destination="@id/marketViewMoreFragment"
+            app:enterAnim="@anim/common_anim_right_to_left_in"
+            app:exitAnim="@anim/common_anim_right_to_left_out"
+            app:popEnterAnim="@anim/common_anim_left_to_right_in"
+            app:popExitAnim="@anim/common_anim_left_to_right_out"
+            app:popUpTo="@+id/marketViewMoreFragment">
+            <argument
+                android:name="instrumentType"
+                app:argType="string" />
+
+            <argument
+                android:name="filterType"
+                app:argType="string" />
+        </action>
+    </fragment>
 
 
 </navigation>

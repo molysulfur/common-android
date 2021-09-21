@@ -5,12 +5,17 @@ import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatTextView
 import com.awonar.app.R
 import com.molysulfur.library.widget.BaseViewGroup
+import com.awonar.app.databinding.AwonarWidgetTextDividerBinding
 
 class TextDividerView : BaseViewGroup {
+
+    private lateinit var binding: AwonarWidgetTextDividerBinding
 
     private lateinit var textView: AppCompatTextView
     private var text: String? = null
@@ -33,7 +38,10 @@ class TextDividerView : BaseViewGroup {
         updateText()
     }
 
-    override fun getLayoutResource(): Int = R.layout.awonar_widget_text_divider
+    override fun getLayoutResource(): View {
+        binding = AwonarWidgetTextDividerBinding.inflate(LayoutInflater.from(context))
+        return binding.root
+    }
 
     override fun setupStyleables(attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) {
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.TextDividerView)

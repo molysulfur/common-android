@@ -18,4 +18,10 @@
     <dimen name="awonar_size_icon">24dp</dimen>
     <dimen name="awonar_size_avatar">48dp</dimen>
     <dimen name="awonar_size_avatar_large">72dp</dimen>
+
+    <dimen name="awonar_radius_size_large">30dp</dimen>
+    <dimen name="awonar_radius_size_normal">15dp</dimen>
+    <dimen name="awonar_radius_size_small">5dp</dimen>
+
+    <dimen name="awonar_elevation_normal">4dp</dimen>
 </resources>
