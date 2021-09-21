@@ -49,9 +49,6 @@ build:
 #  Build apk
     # - ./gradlew assembleRelease
     - ./gradlew assembleDebug
-    
-#  Change file name
-    - mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/$FILE_NAME
   artifacts:
     paths:
     - app/build/outputs/
