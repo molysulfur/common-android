@@ -1,11 +1,15 @@
 package com.awonar.app.ui.setting
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import coil.load
+import com.awonar.android.model.user.User
+import com.awonar.android.shared.constrant.BuildConfig
 import com.awonar.app.databinding.AwonarFragmentSettingBinding
 import com.awonar.app.ui.setting.privacy.PrivacyActivity
 import com.awonar.app.ui.setting.about.AboutMeActivity
@@ -22,6 +26,8 @@ class SettingFragment : Fragment() {
     private val userViewModel: UserViewModel by activityViewModels()
     private val settingViewModel: SettingViewModel by activityViewModels()
 
+    private var user: User? = null
+
     private val binding: AwonarFragmentSettingBinding by lazy {
         AwonarFragmentSettingBinding.inflate(layoutInflater)
     }
@@ -33,8 +39,10 @@ class SettingFragment : Fragment() {
     ): View {
         launchAndRepeatWithViewLifecycle {
             userViewModel.userState.collect { user ->
+                this@SettingFragment.user = user
                 if (user != null) {
                     settingViewModel.convertUserToSettingItem(user)
+                    updateHeaderSetting()
                 } else {
                     userViewModel.getUser(needFresh = false)
                 }
@@ -43,6 +51,16 @@ class SettingFragment : Fragment() {
         binding.viewModel = settingViewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun updateHeaderSetting() {
+        if (user != null) {
+            binding.awonarSettingImageAvatar.load(BuildConfig.BASE_IMAGE_URL + user?.avatar)
+            binding.awonarSettingTextTitle.text =
+                "${user?.firstName} ${user?.middleName} ${user?.lastName}"
+            binding.awonarSettingTextDescription.text = "${user?.username}"
+        }
     }
 
 

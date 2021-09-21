@@ -8,5 +8,5 @@ data class SettingItem(
     val buttonText: String? = null,
     val buttonTextRes: Int = 0,
     val isAlert: Boolean = false,
-    val navigation: Class<*>?
+    val navigation: Class<*>
 ) : Parcelable

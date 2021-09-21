@@ -14,6 +14,7 @@
 
     <androidx.appcompat.widget.AppCompatButton xmlns:android="http://schemas.android.com/apk/res/android"
         style="@style/Awonar.Button.Link"
+        android:id="@+id/awonar_button_item_button_list"
         setAlertIcon="@{isAlert}"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

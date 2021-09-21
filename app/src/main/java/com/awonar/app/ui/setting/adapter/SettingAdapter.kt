@@ -13,6 +13,8 @@ class SettingAdapter : RecyclerView.Adapter<SettingMenuViewHolder>() {
             notifyDataSetChanged()
         }
 
+    var onClick: ((Class<*>) -> Unit)? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SettingMenuViewHolder =
         SettingMenuViewHolder(
             AwonarItemButtonItemBinding.inflate(
@@ -23,7 +25,7 @@ class SettingAdapter : RecyclerView.Adapter<SettingMenuViewHolder>() {
         )
 
     override fun onBindViewHolder(holder: SettingMenuViewHolder, position: Int) {
-        holder.bind(itemLists[position])
+        holder.bind(itemLists[position],onClick)
     }
 
     override fun getItemCount(): Int = itemLists.size

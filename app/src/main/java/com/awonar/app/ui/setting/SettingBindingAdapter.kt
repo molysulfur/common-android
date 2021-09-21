@@ -1,7 +1,7 @@
 package com.awonar.app.ui.setting
 
+import android.content.Intent
 import android.widget.Button
-import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +14,11 @@ import com.awonar.app.ui.setting.adapter.SettingItem
 fun setSettingAdapter(recyclerView: RecyclerView, listItem: List<SettingItem>?) {
     if (recyclerView.adapter == null) {
         recyclerView.adapter = SettingAdapter()
+        (recyclerView.adapter as SettingAdapter).apply {
+            onClick = { activity ->
+                recyclerView.context.startActivity(Intent(recyclerView.context, activity))
+            }
+        }
         recyclerView.layoutManager =
             LinearLayoutManager(recyclerView.context, LinearLayoutManager.VERTICAL, false)
     }
