@@ -10,6 +10,9 @@ before_script:
   - apt-get --quiet update --yes
   - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
 
+  # get submodule
+  - git submodule sync --recursive
+  - git submodule update --init --recursive
   # Here we are installing androidSDK tools from official source,
   # (the key thing here is the url from where you are downloading these sdk tool for command line, so please do note this url pattern there and here as well)
   # after that unzipping those tools and
