@@ -57,23 +57,9 @@ deploy:
         -F initial_comment="Hello team! Here is the latest APK" \
         -F "file=@$(find app/build/outputs/apk/debug -name 'MyApp*')" \
         https://slack.com/api/files.upload
-#  Installing node and firebase
-    - curl -sL https://deb.nodesource.com/setup_9.x | bash
-    - apt-get install -y nodejs
-    - npm install -g --unsafe firebase-tools
-    - firebase init database
-    - firebase use --token $FIREBASE_DEPLOY_KEY production
-
-    - export APP_VERSION=V.${CI_BUILD_TAG}
-    - export FILE_NAME=app-$APP_VERSION.apk
-    - echo $FILE_NAME
-
-#  Uploading apk to S3
-    - ./gradlew uploadApk
-    
-#  Updating value on firebase realtime database
-    - echo "\"$APK_LINK/production/release/$FILE_NAME\"" | firebase database:set /config/app/test/stable/url --confirm
-    - echo "\"$APP_VERSION\"" | firebase database:set /config/app/test/stable/version --confirm
+  artifacts:
+    paths:
+      - app/build/outputs/apk/release
   dependencies:
     - build
   only:
