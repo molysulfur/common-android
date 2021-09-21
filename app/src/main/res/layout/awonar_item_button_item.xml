@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="isAlert"
+            type="Boolean" />
+
+        <variable
+            name="text"
+            type="String" />
+    </data>
+
+    <androidx.appcompat.widget.AppCompatButton xmlns:android="http://schemas.android.com/apk/res/android"
+        style="@style/Awonar.Button.Link"
+        android:id="@+id/awonar_button_item_button_list"
+        setAlertIcon="@{isAlert}"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left|center"
+        android:padding="@dimen/awonar_size_margin_padding_normal"
+        android:text="@{text}"
+        android:textColor="@color/awonar_color_text_primary"
+        tools:text="@string/awonar_example_name">
+
+    </androidx.appcompat.widget.AppCompatButton>
+
+</layout>

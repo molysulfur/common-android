@@ -18,6 +18,7 @@ data class User(
     var copiesCount: Int,
     var isMe: Boolean,
     var accountVerifyType: AccountVerifyType?,
+    var bankVerify: String?,
     var skill: String?,
     var facebookLink: String?,
     var twitterLink: String?,
