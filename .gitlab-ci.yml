@@ -1,0 +1,80 @@
+image: openjdk:8-jdk
+
+variables:
+  ANDROID_COMPILE_SDK: "30"
+  ANDROID_BUILD_TOOLS: "30.0.23"
+  ANDROID_SDK_TOOLS: "26.1.1"
+
+before_script:
+#  Installing package
+  - apt-get --quiet update --yes
+  - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
+
+#  Installing Android SDK
+  - wget --quiet --output-document=android-sdk.tgz https://dl.google.com/android/android-sdk_r${ANDROID_SDK_TOOLS}-linux.tgz
+  - tar --extract --gzip --file=android-sdk.tgz
+  - echo y | android-sdk-linux/tools/android --silent update sdk --no-ui --all --filter android-${ANDROID_COMPILE_SDK}
+  - echo y | android-sdk-linux/tools/android --silent update sdk --no-ui --all --filter platform-tools
+  - echo y | android-sdk-linux/tools/android --silent update sdk --no-ui --all --filter build-tools-${ANDROID_BUILD_TOOLS}
+  - echo y | android-sdk-linux/tools/android --silent update sdk --no-ui --all --filter extra-android-m2repository
+  - echo y | android-sdk-linux/tools/android --silent update sdk --no-ui --all --filter extra-google-google_play_services
+  - echo y | android-sdk-linux/tools/android --silent update sdk --no-ui --all --filter extra-google-m2repository
+
+#  Setting the environment
+  - export ANDROID_HOME=$PWD/android-sdk-linux
+  - export PATH=$PATH:$PWD/android-sdk-linux/platform-tools/
+  - chmod +x ./gradlew
+
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  script:
+#  Creating variable
+    - export APP_VERSION=V.${CI_BUILD_TAG}
+    - export FILE_NAME=app-$APP_VERSION.apk
+    
+#  Build apk
+    - ./gradlew assembleRelease
+    
+#  Change file name
+    - mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/$FILE_NAME
+  artifacts:
+    paths:
+    - app/build/outputs/
+  only:
+    - tags
+
+deploy:
+  stage: deploy
+  script:
+    - |
+      curl \
+        -F token="xoxb-554937001718-968050533234-vWNkU9E9PlTZp7hYcm2XaH8h" \
+        -F channels="C02EPDRPPNK" \
+        -F initial_comment="Hello team! Here is the latest APK" \
+        -F "file=@$(find app/build/outputs/apk/debug -name 'MyApp*')" \
+        https://slack.com/api/files.upload
+#  Installing node and firebase
+    - curl -sL https://deb.nodesource.com/setup_9.x | bash
+    - apt-get install -y nodejs
+    - npm install -g --unsafe firebase-tools
+    - firebase init database
+    - firebase use --token $FIREBASE_DEPLOY_KEY production
+
+    - export APP_VERSION=V.${CI_BUILD_TAG}
+    - export FILE_NAME=app-$APP_VERSION.apk
+    - echo $FILE_NAME
+
+#  Uploading apk to S3
+    - ./gradlew uploadApk
+    
+#  Updating value on firebase realtime database
+    - echo "\"$APK_LINK/production/release/$FILE_NAME\"" | firebase database:set /config/app/test/stable/url --confirm
+    - echo "\"$APP_VERSION\"" | firebase database:set /config/app/test/stable/version --confirm
+  dependencies:
+    - build
+  only:
+    - tags
