@@ -28,7 +28,6 @@ class RadioQuestionViewHolder constructor(private val binding: AwonarItemQuestio
 
     private fun addOption(options: List<QuestionOption?>, questionAnswer: QuestionAnswer?) {
         options.forEachIndexed { index, option ->
-            Timber.e("${option?.id} ${questionAnswer?.answers} ")
             val radioButton = RadioButton(binding.root.context).apply {
                 id = index
                 tag = option?.id ?: ""

@@ -69,6 +69,7 @@ class ExperienceViewModel @Inject constructor(
         isNoExpShow: Boolean,
         topic: Topic
     ) {
+        val questionAnswer = question.questionAnswer
         if (question.multiple) {
             itemList.add(ExperienceItem.Title(question.title ?: ""))
             itemList.add(ExperienceItem.SubTitle(question.description ?: ""))
@@ -93,6 +94,7 @@ class ExperienceViewModel @Inject constructor(
                         questionId = question.id!!,
                         topicId = topic.id!!,
                         option = questionList,
+                        questionAnswer = questionAnswer
                     )
                 )
             }
@@ -116,7 +118,6 @@ class ExperienceViewModel @Inject constructor(
                 )
             }
             if (!question.id.isNullOrBlank() && !topic.id.isNullOrBlank()) {
-                val questionAnswer = question.questionAnswer
                 itemList.add(
                     ExperienceItem.RadioQuestion(
                         questionId = question.id!!,

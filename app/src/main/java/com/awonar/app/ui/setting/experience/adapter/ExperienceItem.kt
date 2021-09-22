@@ -32,7 +32,8 @@ sealed class ExperienceItem(val type: Int) : Parcelable {
         val questionId: String,
         val topicId: String,
         val option: List<QuestionOption?>?,
-        var enable: Boolean = true
+        var enable: Boolean = true,
+        var questionAnswer: QuestionAnswer?
     ) :
         ExperienceItem(ExperienceItemType.EXPERIENCE_CHECKBOX)
 
