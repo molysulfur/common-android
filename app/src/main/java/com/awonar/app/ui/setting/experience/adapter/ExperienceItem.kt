@@ -1,6 +1,7 @@
 package com.awonar.app.ui.setting.experience.adapter
 
 import android.os.Parcelable
+import com.awonar.android.model.experience.QuestionAnswer
 import com.awonar.android.model.experience.QuestionOption
 import kotlinx.parcelize.Parcelize
 
@@ -21,6 +22,7 @@ sealed class ExperienceItem(val type: Int) : Parcelable {
         val questionId: String,
         val topicId: String,
         val option: List<QuestionOption?>?,
+        val questionAnswer: QuestionAnswer?,
         val enable: Boolean = true
     ) :
         ExperienceItem(ExperienceItemType.EXPERIENCE_RADIO)

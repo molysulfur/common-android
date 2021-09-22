@@ -26,9 +26,8 @@ class GetExperienceQuestionUseCase @Inject constructor(
                 repository.getUserAnswerExperience("${exp.id}").collect { result ->
                     if (result.succeeded) {
                         exp = mapAnswerInQuestion(exp, (result as Result.Success).data)
+                        this.emit(Result.Success(exp))
                     }
-                    Timber.e("$exp")
-                    this.emit(Result.Success(exp))
                 }
             } else {
                 this.emit(Result.Success(exp))
