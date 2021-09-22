@@ -32,7 +32,8 @@ data class Question(
     @SerializedName("multiple") val multiple: Boolean,
     @SerializedName("required") val required: Boolean,
     @SerializedName("questionOption") val questionOption: List<QuestionOption?>?,
-    @SerializedName("compatibleOptions") val compatibleOptions: List<String?>?
+    @SerializedName("compatibleOptions") val compatibleOptions: List<String?>?,
+    var questionAnswer: QuestionAnswer? = null,
 ) : Parcelable
 
 @Parcelize

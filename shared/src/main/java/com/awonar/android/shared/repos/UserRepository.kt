@@ -267,4 +267,18 @@ class UserRepository @Inject constructor(
         }
 
     }.asFlow()
+
+    fun getUserAnswerExperience(questionnaireId: String) = object :
+        DirectNetworkFlow<String, ExperienceAnswerResponse?, ExperienceAnswerResponse?>() {
+        override fun createCall(): Response<ExperienceAnswerResponse?> =
+            userService.getUserAnswer(questionnaireId = questionnaireId).execute()
+
+        override fun convertToResultType(response: ExperienceAnswerResponse?): ExperienceAnswerResponse? =
+            response
+
+        override fun onFetchFailed(errorMessage: String) {
+            println(errorMessage)
+        }
+
+    }.asFlow()
 }
