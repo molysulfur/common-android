@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <com.google.android.material.button.MaterialButtonToggleGroup
         android:id="@+id/awonar_dialog_order_toggle_order_type"
         android:layout_width="wrap_content"
@@ -13,7 +12,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/awonar_dialog_order_image_icon_close"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/awonar_dialog_order_image_icon_close">
+        app:layout_constraintTop_toTopOf="@+id/awonar_dialog_order_image_icon_close"
+        app:singleSelection="true">
 
         <Button
             style="?attr/materialButtonOutlinedStyle"
@@ -114,6 +114,7 @@
         app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_order_text_market_status" />
 
     <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/awonar_dialog_order_text_title_rate"
         style="@style/Awonar.Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -122,5 +123,83 @@
         android:text="@string/awonar_dialog_order_text_title_set_rate"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_order_divider_header" />
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/awonar_dialog_order_toggle_order_rate_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+        app:layout_constraintBottom_toBottomOf="@+id/awonar_dialog_order_text_title_rate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/awonar_dialog_order_text_title_rate"
+        app:singleSelection="true">
+
+        <Button
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SELL" />
+
+        <Button
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BUY" />
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    <com.awonar.app.widget.NumberPickerEditText
+        android:id="@+id/numberPickerEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_order_toggle_order_rate_type" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/awonar_dialog_order_text_title_amount"
+        style="@style/Awonar.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
+        android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+        android:text="@string/awonar_dialog_order_text_title_amount"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/numberPickerEditText" />
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/awonar_dialog_order_toggle_order_amount_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+        app:layout_constraintBottom_toBottomOf="@+id/awonar_dialog_order_text_title_amount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/awonar_dialog_order_text_title_amount"
+        app:singleSelection="true">
+
+        <Button
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SELL" />
+
+        <Button
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BUY" />
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    <com.awonar.app.widget.NumberPickerEditText
+        android:id="@+id/numberPickerEditText2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_order_toggle_order_amount_type" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

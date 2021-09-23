@@ -53,4 +53,5 @@
     <string name="awonar_text_required">This Field is Required.</string>
     <string name="awonar_text_experience">Experience</string>
     <string name="awonar_dialog_order_text_title_set_rate">Set Rate</string>
+    <string name="awonar_dialog_order_text_title_amount">Amount</string>
 </resources>
