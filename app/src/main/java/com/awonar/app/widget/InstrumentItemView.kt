@@ -37,6 +37,9 @@ class InstrumentItemView : BaseViewGroup {
     private var bidUp: Boolean = true
 
     private lateinit var binding: AwonarWidgetInstrumentItemViewBinding
+
+    var onOpenOrder: ((String) -> Unit)? = null
+
     private val anim: Animation = AlphaAnimation(0.5f, 1.0f)
 
     init {
@@ -45,6 +48,12 @@ class InstrumentItemView : BaseViewGroup {
     }
 
     override fun setup() {
+        binding.awonarInstrumentItemTextBid.setOnClickListener {
+            onOpenOrder?.invoke("bid")
+        }
+        binding.awonarInstrumentItemTextAsk.setOnClickListener {
+            onOpenOrder?.invoke("ask")
+        }
         updateImage()
         updateAsk()
         updateBid()

@@ -1,53 +1,11 @@
 package com.awonar.app.ui.market.adapter
 
-import android.content.Intent
-import android.view.View
-import android.widget.ProgressBar
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.awonar.android.model.market.Instrument
 import com.awonar.app.ui.market.MarketViewModel
-import com.awonar.app.ui.marketprofile.MarketProfileActivity
 import io.supercharge.shimmerlayout.ShimmerLayout
-
-@BindingAdapter("setMarketAdapter", "marketViewModel")
-fun setRecommended(
-    recyclerView: RecyclerView,
-    instrument: List<Instrument>,
-    viewModel: MarketViewModel?
-) {
-    if (recyclerView.adapter == null) {
-        val horizontalAdapter = InstrumentHorizontalAdapter(viewModel)
-        val instrumentAdapter = InstrumentListAdapter(viewModel)
-        horizontalAdapter.onInstrumentClick = {
-            val newIntent = Intent(recyclerView.context, MarketProfileActivity::class.java)
-            newIntent.putExtra(MarketProfileActivity.INSTRUMENT_EXTRA, it)
-            recyclerView.context.startActivity(newIntent)
-        }
-        instrumentAdapter.onInstrumentClick = {
-            val newIntent = Intent(recyclerView.context, MarketProfileActivity::class.java)
-            newIntent.putExtra(MarketProfileActivity.INSTRUMENT_EXTRA, it)
-            recyclerView.context.startActivity(newIntent)
-        }
-        instrumentAdapter.onViewMoreClick = { arg ->
-            viewModel?.onViewMore(arg)
-        }
-        val adapter = ConcatAdapter(
-            InstrumentHorizontalWrapperAdapter(horizontalAdapter),
-            instrumentAdapter
-        )
-        recyclerView.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        }
-        recyclerView.adapter = adapter
-    }
-
-    ((recyclerView.adapter as ConcatAdapter).adapters[0] as InstrumentHorizontalWrapperAdapter).adapter.itemList =
-        instrument.filter { it.recommend }
-    viewModel?.convertInstrumentToItem()
-}
 
 @BindingAdapter("categoryItem", "viewModel")
 fun setInstrumentCategoryItem(

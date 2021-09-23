@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/awonar_dialog_order_toggle_order_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/awonar_dialog_order_image_icon_close"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/awonar_dialog_order_image_icon_close">
+
+        <Button
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SELL" />
+
+        <Button
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BUY" />
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/awonar_dialog_order_image_icon_close"
+        style="@style/Awonar.Button.Icon"
+        android:layout_width="@dimen/awonar_size_icon"
+        android:layout_height="@dimen/awonar_size_icon"
+        android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/awonar_ic_close" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/awonar_dialog_order_image_avatar"
+        android:layout_width="@dimen/awonar_size_avatar"
+        android:layout_height="@dimen/awonar_size_avatar"
+        android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
+        android:layout_marginTop="@dimen/awonar_size_margin_padding_large"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_order_toggle_order_type"
+        app:srcCompat="@drawable/awonar_placeholder_avatar" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/awonar_dialog_order_text_title"
+        style="@style/Awonar.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
+        app:layout_constraintStart_toEndOf="@+id/awonar_dialog_order_image_avatar"
+        app:layout_constraintTop_toTopOf="@+id/awonar_dialog_order_image_avatar"
+        tools:text="@string/awonar_example_name" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/awonar_dialog_order_text_price"
+        style="@style/Awonar.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/awonar_size_margin_padding_small"
+        app:layout_constraintStart_toStartOf="@+id/awonar_dialog_order_text_title"
+        app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_order_text_title"
+        tools:text="@string/awonar_example_name" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/awonar_dialog_order_text_change"
+        style="@style/Awonar.Description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
+        app:layout_constraintBottom_toBottomOf="@+id/awonar_dialog_order_text_price"
+        app:layout_constraintStart_toEndOf="@+id/awonar_dialog_order_text_price"
+        tools:text="@string/awonar_example_name" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/awonar_dialog_order_text_description"
+        style="@style/Awonar.Description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/awonar_size_margin_padding_small"
+        app:layout_constraintStart_toStartOf="@+id/awonar_dialog_order_text_price"
+        app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_order_text_price"
+        tools:text="@string/awonar_example_name" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/awonar_dialog_order_text_market_status"
+        style="@style/Awonar.Description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/awonar_size_margin_padding_small"
+        android:drawableStart="@drawable/awonar_ic_time"
+        android:drawablePadding="@dimen/awonar_size_margin_padding_normal"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="@+id/awonar_dialog_order_text_description"
+        app:layout_constraintStart_toEndOf="@+id/awonar_dialog_order_text_description"
+        app:layout_constraintTop_toTopOf="@+id/awonar_dialog_order_text_description"
+        tools:text="@string/awonar_example_name" />
+
+    <FrameLayout
+        android:id="@+id/awonar_dialog_order_divider_header"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+        android:background="@color/awonar_color_light_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_order_text_market_status" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/Awonar.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
+        android:layout_marginTop="@dimen/awonar_size_margin_padding_extra_extra_large"
+        android:text="@string/awonar_dialog_order_text_title_set_rate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_order_divider_header" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

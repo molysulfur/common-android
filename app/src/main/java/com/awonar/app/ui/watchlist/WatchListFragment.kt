@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.awonar.app.databinding.AwonarFragmentWatchlistBinding
+import com.awonar.app.ui.dialog.OrderDialog
 import com.awonar.app.ui.setting.SettingViewModel
 
 class WatchListFragment : Fragment() {
@@ -26,11 +28,16 @@ class WatchListFragment : Fragment() {
         _binding = AwonarFragmentWatchlistBinding.inflate(inflater, container, false)
         _binding!!.lifecycleOwner = activity
         return binding.root
+    }
 
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+
     }
 }

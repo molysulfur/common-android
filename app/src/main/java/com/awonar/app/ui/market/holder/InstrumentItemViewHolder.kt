@@ -2,6 +2,7 @@ package com.awonar.app.ui.market.holder
 
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
+import com.awonar.android.model.market.Instrument
 import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.app.databinding.AwonarItemInstrumentListBinding
 import com.awonar.app.ui.market.MarketViewModel
@@ -17,8 +18,12 @@ class InstrumentItemViewHolder constructor(
     fun bind(
         item: InstrumentItem.InstrumentListItem,
         viewModel: MarketViewModel?,
-        onInstrumentClick: ((Int) -> Unit)?
+        onInstrumentClick: ((Int) -> Unit)?,
+        onOpenOrder: ((Instrument, String) -> Unit)?
     ) {
+        binding.awonarInstrumentItemList.onOpenOrder = {
+            onOpenOrder?.invoke(item.instrument, it)
+        }
         binding.awonarInstrumentItemList.setImage(item.instrument.logo ?: "")
         binding.awonarInstrumentItemList.setTitle(item.instrument.symbol ?: "")
         binding.awonarInstrumentItemList.setDigit(item.instrument.digit)
