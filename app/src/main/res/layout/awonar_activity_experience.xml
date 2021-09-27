@@ -72,11 +72,11 @@
                 android:background="@drawable/awonar_ripple_tranparent"
                 android:drawableEnd="@drawable/awonar_ic_next"
                 android:padding="@dimen/awonar_size_margin_padding_normal"
-                android:onClick="@{()-> viewModel.submit()}"
                 android:text="Continus"
                 android:textColor="@color/awonar_color_primary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
