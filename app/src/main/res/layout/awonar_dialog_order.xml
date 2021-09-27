@@ -9,22 +9,28 @@
         android:id="@+id/awonar_dialog_order_toggle_order_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:checkedButton="@+id/awonar_dialog_order_button_type_sell"
         app:layout_constraintBottom_toBottomOf="@+id/awonar_dialog_order_image_icon_close"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/awonar_dialog_order_image_icon_close"
+        app:selectionRequired="true"
         app:singleSelection="true">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/awonar_dialog_order_button_type_sell"
             style="?attr/materialButtonOutlinedStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/awonar_selector_toggle_button"
             android:text="SELL" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/awonar_dialog_order_button_type_buy"
             style="?attr/materialButtonOutlinedStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/awonar_selector_toggle_button"
             android:text="BUY" />
 
     </com.google.android.material.button.MaterialButtonToggleGroup>
@@ -138,12 +144,14 @@
             style="?attr/materialButtonOutlinedStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/awonar_selector_toggle_button"
             android:text="SELL" />
 
         <Button
             style="?attr/materialButtonOutlinedStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/awonar_selector_toggle_button"
             android:text="BUY" />
 
     </com.google.android.material.button.MaterialButtonToggleGroup>

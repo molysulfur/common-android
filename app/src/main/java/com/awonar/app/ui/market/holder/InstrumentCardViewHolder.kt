@@ -33,7 +33,7 @@ class InstrumentCardViewHolder constructor(private val binding: AwonarItemInstru
                 binding.awonarInstrumentCardItem.setPercentChange(percent)
             }
         }
-
+        viewModel?.subscribe(instrument.id)
         binding.awonarInstrumentCardItem.setTitle(instrument.symbol ?: "")
         binding.awonarInstrumentCardItem.setDigit(instrument.digit)
         binding.awonarInstrumentCardItem.setSubTitle(instrument.name ?: "")

@@ -61,6 +61,7 @@ class InstrumentListAdapter constructor(private val viewModel: MarketViewModel?)
                     parent,
                     false
                 ),
+                viewModel
             )
             InstrumentType.INSTRUMENT_LOADING_TYPE -> InstrumentLoadingViewHolder(
                 AwonarItemListBinding.inflate(
@@ -82,7 +83,6 @@ class InstrumentListAdapter constructor(private val viewModel: MarketViewModel?)
             )
             is InstrumentItemViewHolder -> holder.bind(
                 item as InstrumentItem.InstrumentListItem,
-                viewModel,
                 onInstrumentClick,
                 onOpenOrder
             )
