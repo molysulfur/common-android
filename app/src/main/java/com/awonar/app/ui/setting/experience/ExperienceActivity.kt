@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 class ExperienceActivity : BaseActivity() {
 
     private val viewModel: ExperienceViewModel by viewModels()
+    private var currentPage: Int = 0
 
     private val binding: AwonarActivityExperienceBinding by lazy {
         AwonarActivityExperienceBinding.inflate(layoutInflater)
@@ -26,10 +27,28 @@ class ExperienceActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         observe()
+        binding.awonarExperienceTextBack.setOnClickListener {
+            if (currentPage == 0) {
+                finish()
+            } else {
+                currentPage--
+                binding.awonarExperiencePagerContainer.setCurrentItem(currentPage, true)
+            }
+        }
+        binding.awonarExperienceTextContinus.setOnClickListener {
+            viewModel.submit()
+            if (currentPage == 4) {
+                finish()
+            } else {
+                currentPage++
+                binding.awonarExperiencePagerContainer.setCurrentItem(currentPage, true)
+            }
+        }
         binding.awonarExperiencePagerContainer.registerOnPageChangeCallback(object :
             ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
+                currentPage = position
                 viewModel.experienceQuestion.value.let { questionnaire ->
                     if (questionnaire?.id != null) {
                         viewModel.createRequest(
@@ -63,6 +82,7 @@ class ExperienceActivity : BaseActivity() {
                 this.adapter = adapter
                 orientation = ViewPager2.ORIENTATION_HORIZONTAL
                 binding.awonarExperienceIndicatorPage.setViewPager2(this)
+                isUserInputEnabled = false
             }
 
         }
