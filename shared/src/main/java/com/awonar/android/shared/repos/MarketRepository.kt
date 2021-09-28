@@ -4,16 +4,45 @@ import com.awonar.android.model.market.Instrument
 import com.awonar.android.model.market.InstrumentProfile
 import com.awonar.android.model.market.InstrumentResponse
 import com.awonar.android.shared.api.InstrumentService
+import com.awonar.android.shared.db.room.TradingData
+import com.awonar.android.shared.db.room.TradingDataDao
 import com.molysulfur.library.network.DirectNetworkFlow
 import com.molysulfur.library.network.NetworkFlow
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import retrofit2.Response
 import timber.log.Timber
 import javax.inject.Inject
 
 class MarketRepository @Inject constructor(
-    private val instrumentService: InstrumentService
+    private val instrumentService: InstrumentService,
+    private val tradingDataDao: TradingDataDao
 ) {
+
+    fun getTradingData(needFresh: Boolean) =
+        object : NetworkFlow<Boolean, List<TradingData>, List<TradingData>>() {
+            override fun shouldFresh(data: List<TradingData>?): Boolean = needFresh || data == null
+
+            override fun createCall(): Response<List<TradingData>> =
+                instrumentService.getTradingData().execute()
+
+            override fun convertToResultType(response: List<TradingData>): List<TradingData> =
+                response
+
+            override fun loadFromDb(): Flow<List<TradingData>> = flow {
+                emit(tradingDataDao.getAll())
+            }
+
+
+            override fun saveToDb(data: List<TradingData>) {
+                tradingDataDao.insertAll(data)
+            }
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+
+        }.asFlow()
 
     fun getInstrument(id: Int) =
         object : DirectNetworkFlow<Int, InstrumentProfile?, InstrumentProfile?>() {

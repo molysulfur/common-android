@@ -67,4 +67,15 @@ dependencies {
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.1'
     testImplementation "org.mockito:mockito-core:3.11.2"
     implementation 'com.facebook.android:facebook-core:11.1.0'
+
+    def room_version = "2.3.0"
+    // Room components
+
+    kapt "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+    implementation "androidx.room:room-runtime:$room_version"
+
+    androidTestImplementation "androidx.room:room-testing:$room_version"
+    testImplementation("androidx.room:room-testing:$room_version")
+
 }
