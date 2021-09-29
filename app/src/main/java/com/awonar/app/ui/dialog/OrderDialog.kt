@@ -30,11 +30,11 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     private val marketViewModel: MarketViewModel by activityViewModels()
     private val orderViewModel: OrderViewModel by activityViewModels()
 
+    private lateinit var leverageAdapter: LeverageAdapter
     private val binding: AwonarDialogOrderBinding by lazy {
         AwonarDialogOrderBinding.inflate(layoutInflater)
     }
 
-    private val leverage = arrayListOf("X1", "X2", "X5", "X10", "X20", "X30", "X50", "X100", "X400")
     private var orderType: String = "buy"
     private val currentLeverage = "X1"
     private var quote: Quote? = null
@@ -75,6 +75,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                 marketViewModel.tradingDataState.collect {
                     if (it != null) {
                         tradingData = it
+                        leverageAdapter.leverageString = tradingData?.leverages ?: emptyList()
                     }
                 }
             }
@@ -108,7 +109,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         binding.awonarDialogOrderImageIconClose.setOnClickListener {
             dismiss()
         }
-        val adapter = LeverageAdapter().apply {
+        leverageAdapter = LeverageAdapter().apply {
             onClick = { text ->
                 binding.awonarDialogOrderCollapseLeverage.setDescription(text)
             }
@@ -121,8 +122,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             updateCurrentPrice()
         }
         binding.awonarDialogOrderCollapseLeverage.setTitle(getString(R.string.awonar_text_leverage))
-        binding.awonarDialogOrderCollapseLeverage.setAdapter(adapter)
-        adapter.leverageString = leverage
+        binding.awonarDialogOrderCollapseLeverage.setAdapter(leverageAdapter)
         binding.awonarDialogOrderNumberPickerInputRate.setPlaceholder("At Market")
         binding.awonarDialogOrderNumberPickerInputRate.doAfterFocusChange = { rate, hasFocus ->
             if (!hasFocus) {

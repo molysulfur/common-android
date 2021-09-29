@@ -7,7 +7,7 @@ class LeverageViewHolder(private val binding: AwonarItemButtonItemBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(text: String, onClick: ((String) -> Unit)?) {
-        binding.text = text
+        binding.text = "X$text"
         binding.awonarButtonItemButtonList.setOnClickListener {
             onClick?.invoke(text)
         }
