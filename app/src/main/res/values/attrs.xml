@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <declare-styleable name="NumberPickerEditText">
+        <attr name="numberPickerEditText_setPrefix" format="string" />
+        <attr name="numberPickerEditText_setNumber" format="float" />
+        <attr name="numberPickerEditText_setHelper" format="string" />
+        <attr name="numberPickerEditText_setPlaceHolder" format="string" />
+        <attr name="numberPickerEditText_setEnablePlaceHolder" format="boolean" />
+    </declare-styleable>
+
     <declare-styleable name="TextDividerView">
         <attr name="textDividerView_setText" format="string" />
     </declare-styleable>

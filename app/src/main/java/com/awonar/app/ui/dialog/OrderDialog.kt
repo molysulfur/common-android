@@ -37,7 +37,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         AwonarDialogOrderBinding.inflate(layoutInflater)
     }
 
-    private var orderType: String = "buy"
+    private var orderType: String? = "buy"
     private var currentLeverage: Int = 1
     private var quote: Quote? = null
 
@@ -108,6 +108,22 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     }
 
     private fun initValueWithTradingData() {
+        if (tradingData?.allowSell == false) {
+            binding.awonarDialogOrderButtonTypeSell.isEnabled = tradingData?.allowSell == false
+            orderType = if (orderType == "sell") "buy" else orderType
+        }
+
+        if (tradingData?.allowBuy == false) {
+            binding.awonarDialogOrderButtonTypeBuy.isEnabled = tradingData?.allowBuy == false
+            orderType = if (orderType == "buy") null else orderType
+        }
+        when (orderType) {
+            "buy" -> binding.awonarDialogOrderToggleOrderType.check(R.id.awonar_dialog_order_button_type_buy)
+            "sell" -> binding.awonarDialogOrderToggleOrderType.check(R.id.awonar_dialog_order_button_type_sell)
+            else -> {
+            }
+        }
+
         leverageAdapter.leverageString = tradingData?.leverages ?: emptyList()
         binding.awonarDialogOrderCollapseLeverage.setDescription("X$currentLeverage")
     }
@@ -115,7 +131,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         instrument = arguments?.getParcelable(EXTRA_INSTRUMENT)
-        orderType = arguments?.getParcelable(EXTRA_ORDER_TYPE) ?: "buy"
+        orderType = arguments?.getString(EXTRA_ORDER_TYPE)
         instrument?.let {
             binding.awonarDialogOrderImageAvatar.load(BuildConfig.BASE_IMAGE_URL + it.logo)
             binding.awonarDialogOrderTextTitle.text = it.symbol
@@ -182,10 +198,8 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             }
             updateCurrentPrice()
         }
-        binding.awonarDialogOrderToggleOrderType.check(if (orderType == "buy") R.id.awonar_dialog_order_button_type_buy else R.id.awonar_dialog_order_button_type_sell)
         binding.awonarDialogOrderCollapseLeverage.setTitle(getString(R.string.awonar_text_leverage))
         binding.awonarDialogOrderCollapseLeverage.setAdapter(leverageAdapter)
-        binding.awonarDialogOrderNumberPickerInputRate.setPlaceholder("At Market")
     }
 
     private fun updateCurrentPrice() {

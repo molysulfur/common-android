@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.core.widget.doAfterTextChanged
+import com.awonar.app.R
 import com.awonar.app.databinding.AwonarWidgetEditNumberPickerBinding
 import com.molysulfur.library.extension.readBooleanUsingCompat
 import com.molysulfur.library.extension.writeBooleanUsingCompat
@@ -19,10 +20,10 @@ class NumberPickerEditText : BaseViewGroup {
 
     private var prefix: String = "$"
     private var number: Float = 0f
-    private var helper: String = "Monimun position size is $5.00"
+    private var helper: String = "Minimun position size is $5.00"
     private var placeholder: String? = null
     private var placeholderRes: Int = 0
-    private var isEnablePlaceholder: Boolean = true
+    private var isEnablePlaceholder: Boolean = false
     private lateinit var binding: AwonarWidgetEditNumberPickerBinding
 
     var doAfterFocusChange: ((Float, Boolean) -> Unit)? = null
@@ -30,7 +31,6 @@ class NumberPickerEditText : BaseViewGroup {
     override fun setup() {
         updatePlaceHolder()
         updatePlaceHolderEnable()
-        binding.awonarEditNumberPickerEditNumber.helperText = helper
         binding.awonarEditNumberPickerEditNumber.editText?.setOnFocusChangeListener { v, hasFocus ->
             doAfterFocusChange?.invoke(number, hasFocus)
         }
@@ -101,6 +101,13 @@ class NumberPickerEditText : BaseViewGroup {
     }
 
     override fun setupStyleables(attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) {
+        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.NumberPickerEditText)
+        prefix = typedArray.getString(R.styleable.NumberPickerEditText_numberPickerEditText_setPrefix)?:""
+        number = typedArray.getFloat(R.styleable.NumberPickerEditText_numberPickerEditText_setNumber,0f)
+        helper = typedArray.getString(R.styleable.NumberPickerEditText_numberPickerEditText_setHelper)?:""
+        placeholder = typedArray.getString(R.styleable.NumberPickerEditText_numberPickerEditText_setPlaceHolder)?:""
+        isEnablePlaceholder = typedArray.getBoolean(R.styleable.NumberPickerEditText_numberPickerEditText_setEnablePlaceHolder,false)
+        typedArray.recycle()
     }
 
     override fun saveInstanceState(state: Parcelable?): Parcelable? {
@@ -135,7 +142,7 @@ class NumberPickerEditText : BaseViewGroup {
         var helper: String? = "Monimun position size is $5.00"
         var placeholder: String? = null
         var placeholderRes: Int = 0
-        var isEnablePlaceholder = true
+        var isEnablePlaceholder = false
 
         constructor(superState: Parcelable) : super(superState)
 

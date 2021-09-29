@@ -9,7 +9,6 @@
         android:id="@+id/awonar_dialog_order_toggle_order_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:checkedButton="@+id/awonar_dialog_order_button_type_buy"
         app:layout_constraintBottom_toBottomOf="@+id/awonar_dialog_order_image_icon_close"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -148,7 +147,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/awonar_selector_toggle_button_primary"
-            android:text="@string/awonar_text_amount" />
+            android:text="Market" />
 
         <Button
             android:id="@+id/awonar_dialog_order_button_rate_unit"
@@ -167,7 +166,9 @@
         android:layout_margin="@dimen/awonar_size_margin_padding_normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_order_toggle_order_rate_type" />
+        app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_order_toggle_order_rate_type"
+        app:numberPickerEditText_setEnablePlaceHolder="true"
+        app:numberPickerEditText_setPlaceHolder="At Market" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/awonar_dialog_order_text_title_amount"

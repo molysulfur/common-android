@@ -69,7 +69,7 @@ dependencies {
     implementation 'com.facebook.android:facebook-core:11.1.0'
     kapt "androidx.room:room-compiler:$versions.androidxRoom"
     implementation "androidx.room:room-ktx:$versions.androidxRoom"
-    implementation "androidx.room:room-runtime:$versions.androidxRoom"
+    api "androidx.room:room-runtime:$versions.androidxRoom"
     androidTestImplementation "androidx.room:room-testing:$versions.androidxRoom"
     testImplementation "androidx.room:room-testing:$versions.androidxRoom"
 
