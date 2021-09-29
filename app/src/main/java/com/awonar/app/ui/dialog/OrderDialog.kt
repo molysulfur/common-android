@@ -80,10 +80,14 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             }
 
             launch {
-                orderViewModel.rateErrorMessageState.collect { message ->
-                    Timber.e("$message")
-                    if (message != null) {
-                        toast(message)
+                orderViewModel.minRateState.collect { rate ->
+                    rate?.let {
+                        binding.awonarDialogOrderNumberPickerInputRate.setNumber(it)
+                    }
+                }
+                orderViewModel.maxRateState.collect { rate ->
+                    rate?.let {
+                        binding.awonarDialogOrderNumberPickerInputRate.setNumber(it)
                     }
                 }
             }
@@ -120,17 +124,20 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         binding.awonarDialogOrderCollapseLeverage.setAdapter(adapter)
         adapter.leverageString = leverage
         binding.awonarDialogOrderNumberPickerInputRate.setPlaceholder("At Market")
-        binding.awonarDialogOrderNumberPickerInputRate.onNumberChange = { rate ->
-            quote?.let {
-                val price: Float = when (orderType) {
-                    "buy" -> {
-                        if (currentLeverage != "X1") it.ask else it.askSpread
+        binding.awonarDialogOrderNumberPickerInputRate.doAfterFocusChange = { rate, hasFocus ->
+            if (!hasFocus) {
+                quote?.let {
+                    val price: Float = when (orderType) {
+                        "buy" -> {
+                            if (currentLeverage != "X1") it.ask else it.askSpread
+                        }
+                        else -> {
+                            it.bidSpread
+                        }
                     }
-                    else -> {
-                        it.bidSpread
-                    }
+                    orderViewModel.calculateMinRate(rate, price)
+                    orderViewModel.calculateMaxRate(rate, price)
                 }
-                orderViewModel.calculateMinRate(rate, price)
             }
         }
         binding.awonarDialogOrderToggleOrderRateType.addOnButtonCheckedListener { _, checkedId, _ ->

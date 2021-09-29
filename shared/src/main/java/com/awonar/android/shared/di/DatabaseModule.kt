@@ -1,5 +1,6 @@
 package com.awonar.android.shared.di
 
+import android.app.Application
 import android.content.Context
 import com.awonar.android.shared.db.room.AppDatabase
 import com.awonar.android.shared.db.room.TradingDataDao
@@ -17,8 +18,8 @@ class DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
-        return AppDatabase.getInstance(context)
+    fun provideAppDatabase(app: Application): AppDatabase {
+        return AppDatabase.getInstance(app.applicationContext)
     }
 
     @Provides

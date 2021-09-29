@@ -2,7 +2,7 @@ package com.awonar.android.exception
 
 import java.lang.Exception
 
-class MinRateException(
+class RateException(
     override val message: String?,
-    val minRate: Float
+    val rate: Float
 ) : Exception(message)

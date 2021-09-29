@@ -25,12 +25,15 @@ class NumberPickerEditText : BaseViewGroup {
     private var isEnablePlaceholder: Boolean = true
     private lateinit var binding: AwonarWidgetEditNumberPickerBinding
 
-    var onNumberChange: ((Float) -> Unit)? = null
+    var doAfterFocusChange: ((Float, Boolean) -> Unit)? = null
 
     override fun setup() {
         updatePlaceHolder()
         updatePlaceHolderEnable()
         binding.awonarEditNumberPickerEditNumber.helperText = helper
+        binding.awonarEditNumberPickerEditNumber.editText?.setOnFocusChangeListener { v, hasFocus ->
+            doAfterFocusChange?.invoke(number, hasFocus)
+        }
         binding.awonarEditNumberPickerEditNumber.editText?.doAfterTextChanged {
             val numberText = it.toString().replace(prefix, "")
             number = if (!numberText.isNullOrBlank()) {
@@ -38,7 +41,6 @@ class NumberPickerEditText : BaseViewGroup {
             } else {
                 0f
             }
-            onNumberChange?.invoke(number)
         }
         binding.awonarEditNumberPickerImageMinus.setOnClickListener {
             number--
