@@ -25,7 +25,7 @@ class InstrumentItemViewHolder constructor(
                 }
                 quote?.run {
                     binding.awonarInstrumentItemList.setChange(
-                        close - previous
+                        ConverterQuoteUtil.change(close, previous)
                     )
                     // Validate Bid for anim
                     bid.let {

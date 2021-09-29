@@ -17,6 +17,7 @@ import android.view.animation.Animation
 import android.view.animation.AlphaAnimation
 import android.widget.Button
 import coil.load
+import com.awonar.app.utils.ColorChangingUtil
 import com.molysulfur.library.extension.readBooleanUsingCompat
 import com.molysulfur.library.extension.writeBooleanUsingCompat
 import timber.log.Timber
@@ -173,26 +174,7 @@ class InstrumentItemView : BaseViewGroup {
     }
 
     private fun updateChangeColor() {
-        when {
-            change > 0f -> binding.awonarInstrumentItemTextChange.setTextColor(
-                ContextCompat.getColor(
-                    context,
-                    R.color.awonar_color_green
-                )
-            )
-            change == 0f -> binding.awonarInstrumentItemTextChange.setTextColor(
-                ContextCompat.getColor(
-                    context,
-                    R.color.awonar_color_gray
-                )
-            )
-            change < 0f -> binding.awonarInstrumentItemTextChange.setTextColor(
-                ContextCompat.getColor(
-                    context,
-                    R.color.awonar_color_orange
-                )
-            )
-        }
+        binding.awonarInstrumentItemTextChange.setTextColor(ColorChangingUtil.getTextColorChange(context,change))
     }
 
 
