@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <declare-styleable name="NumberPickerCollapsibleView">
+        <attr name="numberPickerCollapsibleView_setTitle" format="string" />
+        <attr name="numberPickerCollapsibleView_setDescription" format="string" />
+    </declare-styleable>
+
     <declare-styleable name="NumberPickerEditText">
         <attr name="numberPickerEditText_setPrefix" format="string" />
         <attr name="numberPickerEditText_setNumber" format="float" />

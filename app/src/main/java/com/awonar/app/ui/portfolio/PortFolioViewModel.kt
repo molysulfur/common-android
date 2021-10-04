@@ -1,9 +1,9 @@
-package com.awonar.app.ui.launcher
+package com.awonar.app.ui.portfolio
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.awonar.android.model.tradingdata.TradingData
-import com.awonar.android.shared.domain.order.GetTradingDataUseCase
+import com.awonar.android.model.portfolio.Portfolio
+import com.awonar.android.shared.domain.portfolio.GetMyPortFolioUseCase
 import com.awonar.android.shared.utils.WhileViewSubscribed
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,15 +14,13 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class LauncherViewModel @Inject constructor(
-    private val getTradingDataUseCase: GetTradingDataUseCase
+class PortFolioViewModel @Inject constructor(
+    private val getMyPortFolioUseCase: GetMyPortFolioUseCase
 ) : ViewModel() {
 
-    val loadTradingData: StateFlow<List<TradingData>?> = flow {
-        getTradingDataUseCase(Unit).collect {
-            val isAuth = it.successOr(emptyList())
-            emit(isAuth)
+    val portfolioState: StateFlow<Portfolio?> = flow {
+        getMyPortFolioUseCase(true).collect {
+            this.emit(it.successOr(null))
         }
     }.stateIn(viewModelScope, WhileViewSubscribed, null)
-
 }

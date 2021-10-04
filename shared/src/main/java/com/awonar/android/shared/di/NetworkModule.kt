@@ -53,4 +53,16 @@ class NetworkModule {
     fun provideRemoteConfigService(client: NetworkClient): RemoteConfigService {
         return RemoteConfigService.create(client)
     }
+
+    @Singleton
+    @Provides
+    fun providePortFolioService(client: NetworkClient): PortfolioService {
+        return PortfolioService.create(client)
+    }
+
+    @Singleton
+    @Provides
+    fun provideCurrenciesService(client: NetworkClient): CurrenciesService {
+        return CurrenciesService.create(client)
+    }
 }

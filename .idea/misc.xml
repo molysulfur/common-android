@@ -91,6 +91,7 @@
         <entry key="app/src/main/res/layout/awonar_skeleton_item.xml" value="0.2682291666666667" />
         <entry key="app/src/main/res/layout/awonar_widget_card_view_instrument.xml" value="0.14322916666666666" />
         <entry key="app/src/main/res/layout/awonar_widget_collapsible_leverage.xml" value="0.23618090452261306" />
+        <entry key="app/src/main/res/layout/awonar_widget_collapsible_numberpicker.xml" value="0.109375" />
         <entry key="app/src/main/res/layout/awonar_widget_edit_number_picker.xml" value="0.1" />
         <entry key="app/src/main/res/layout/awonar_widget_facebook.xml" value="0.1" />
         <entry key="app/src/main/res/layout/awonar_widget_google.xml" value="0.14166666666666666" />

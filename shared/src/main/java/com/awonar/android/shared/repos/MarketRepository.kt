@@ -4,14 +4,13 @@ import com.awonar.android.model.market.Instrument
 import com.awonar.android.model.market.InstrumentProfile
 import com.awonar.android.model.market.InstrumentResponse
 import com.awonar.android.shared.api.InstrumentService
-import com.awonar.android.shared.db.room.TradingData
-import com.awonar.android.shared.db.room.TradingDataDao
+import com.awonar.android.model.tradingdata.TradingData
+import com.awonar.android.shared.db.room.trading.TradingDataDao
 import com.molysulfur.library.network.DirectNetworkFlow
 import com.molysulfur.library.network.NetworkFlow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.Response
-import timber.log.Timber
 import javax.inject.Inject
 
 class MarketRepository @Inject constructor(

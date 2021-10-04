@@ -5,9 +5,13 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.awonar.android.model.Conversion
+import com.awonar.android.model.tradingdata.TradingData
+import com.awonar.android.shared.db.room.conversionrate.ConversionRateDao
+import com.awonar.android.shared.db.room.trading.TradingDataDao
 
 @Database(
-    entities = [TradingData::class],
+    entities = [TradingData::class,Conversion::class],
     version = 1,
     exportSchema = false
 )
@@ -17,6 +21,7 @@ import androidx.room.TypeConverters
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun tradingDataDao(): TradingDataDao
+    abstract fun conversionDao(): ConversionRateDao
 
     companion object {
 

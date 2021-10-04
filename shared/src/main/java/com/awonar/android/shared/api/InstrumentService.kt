@@ -1,10 +1,9 @@
 package com.awonar.android.shared.api
 
-import com.awonar.android.model.market.Instrument
 import com.awonar.android.model.market.InstrumentProfile
 import com.awonar.android.model.market.InstrumentResponse
 import com.awonar.android.shared.constrant.BuildConfig
-import com.awonar.android.shared.db.room.TradingData
+import com.awonar.android.model.tradingdata.TradingData
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

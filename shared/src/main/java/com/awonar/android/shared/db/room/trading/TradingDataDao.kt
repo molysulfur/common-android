@@ -1,7 +1,8 @@
-package com.awonar.android.shared.db.room
+package com.awonar.android.shared.db.room.trading
 
 import androidx.room.*
 import androidx.room.OnConflictStrategy.REPLACE
+import com.awonar.android.model.tradingdata.TradingData
 
 
 @Dao

@@ -59,4 +59,6 @@
     <string name="awonar_text_units">Units</string>
     <string name="awonar_text_sell">SELL</string>
     <string name="awonar_text_buy">BUY</string>
+    <string name="awonar_text_rate">Rate</string>
+    <string name="awonar_text_market">Market</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.awonar.android.shared.db.room
+package com.awonar.android.model.tradingdata
 
 import android.os.Parcelable
 import androidx.room.ColumnInfo

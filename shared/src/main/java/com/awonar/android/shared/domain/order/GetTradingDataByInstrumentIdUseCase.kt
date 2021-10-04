@@ -1,7 +1,7 @@
 package com.awonar.android.shared.domain.order
 
-import com.awonar.android.shared.db.room.TradingData
-import com.awonar.android.shared.db.room.TradingDataDao
+import com.awonar.android.model.tradingdata.TradingData
+import com.awonar.android.shared.db.room.trading.TradingDataDao
 import com.awonar.android.shared.di.IoDispatcher
 import com.molysulfur.library.result.Result
 import com.molysulfur.library.usecase.FlowUseCase

@@ -11,34 +11,38 @@ import com.akexorcist.library.dialoginteractor.InteractorDialog
 import com.akexorcist.library.dialoginteractor.createBundle
 import com.awonar.android.model.market.Instrument
 import com.awonar.android.model.market.Quote
+import com.awonar.android.model.portfolio.Portfolio
 import com.awonar.android.shared.constrant.BuildConfig
-import com.awonar.android.shared.db.room.TradingData
+import com.awonar.android.model.tradingdata.TradingData
 import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarDialogOrderBinding
 import com.awonar.app.ui.market.MarketViewModel
+import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.awonar.app.utils.ColorChangingUtil
-import com.molysulfur.library.extension.toast
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogViewModel>() {
 
-    private var instrument: Instrument? = null
-    private var tradingData: TradingData? = null
 
     private val marketViewModel: MarketViewModel by activityViewModels()
     private val orderViewModel: OrderViewModel by activityViewModels()
+    private val portfolioViewModel: PortFolioViewModel by activityViewModels()
 
-    private lateinit var leverageAdapter: LeverageAdapter
     private val binding: AwonarDialogOrderBinding by lazy {
         AwonarDialogOrderBinding.inflate(layoutInflater)
     }
 
+    private lateinit var leverageAdapter: LeverageAdapter
+    private var instrument: Instrument? = null
+    private var tradingData: TradingData? = null
+    private var portfolio: Portfolio? = null
     private var orderType: String? = "buy"
     private var currentLeverage: Int = 1
+    private var amount: Float = 0f
+    private var unit: Int = 0
     private var quote: Quote? = null
 
     companion object {
@@ -74,6 +78,24 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     ): View {
         launchAndRepeatWithViewLifecycle {
             launch {
+                orderViewModel.getUnitState.collect {
+                    binding.awonarDialogOrderNumberPickerInputAmount.setNumber(it.toFloat())
+                }
+            }
+            launch {
+                orderViewModel.getAmountState.collect {
+                    binding.awonarDialogOrderNumberPickerInputAmount.setNumber(it)
+                }
+            }
+            launch {
+                portfolioViewModel.portfolioState.collect {
+                    if (it != null) {
+                        portfolio = it
+                        updateAmountUnit()
+                    }
+                }
+            }
+            launch {
                 marketViewModel.quoteSteamingState.collect { quotes ->
                     quote = quotes.find { it.id == instrument?.id }
                     updateCurrentPrice()
@@ -105,6 +127,13 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
 
         }
         return binding.root
+    }
+
+    private fun updateAmountUnit() {
+        portfolio?.let {
+            amount = it.available.times(0.05f)
+            binding.awonarDialogOrderNumberPickerInputAmount.setNumber(amount)
+        }
     }
 
     private fun initValueWithTradingData() {
@@ -182,7 +211,33 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         }
 
         binding.awonarDialogOrderToggleOrderAmountType.addOnButtonCheckedListener { _, checkedId, _ ->
-            //TODO("Calculate Here")
+            when (checkedId) {
+                R.id.awonar_dialog_order_button_amount_amount -> {
+                }
+                R.id.awonar_dialog_order_button_amount_unit -> {
+                    quote?.let { quote ->
+                        instrument?.let {
+                            val price: Float = when (orderType) {
+                                "buy" -> {
+                                    if (currentLeverage > 1) quote.ask else quote.askSpread
+                                }
+                                else -> {
+                                    quote.bidSpread
+                                }
+                            }
+                            orderViewModel.getUnit(
+                                instrumentId = it.id,
+                                price = price,
+                                unit = unit,
+                                amount = amount,
+                                leverage = currentLeverage
+                            )
+                        }
+
+                    }
+
+                }
+            }
         }
         leverageAdapter = LeverageAdapter().apply {
             onClick = { text ->
