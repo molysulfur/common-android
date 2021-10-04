@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 import javax.inject.Inject
 
-class GetUnitUseCase @Inject constructor(
+class GetAmountUseCase @Inject constructor(
     private val currencyRepository: CurrenciesRepository,
     @IoDispatcher dispatcher: CoroutineDispatcher
 ) : UseCase<CalAmountUnitRequest, Float>(dispatcher) {
@@ -21,9 +21,10 @@ class GetUnitUseCase @Inject constructor(
             Timber.e(
                 """$parameters"""
             )
-            return parameters.amount.times(conversionRate.rateAsk).times(parameters.leverage)
-                .div(parameters.price)
+            return parameters.amount.times(parameters.price).div(parameters.leverage)
+                .div(conversionRate.rateAsk)
         }
         throw NullPointerException()
     }
 }
+

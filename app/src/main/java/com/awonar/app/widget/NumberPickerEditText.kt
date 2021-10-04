@@ -27,6 +27,7 @@ class NumberPickerEditText : BaseViewGroup {
     private lateinit var binding: AwonarWidgetEditNumberPickerBinding
 
     var doAfterFocusChange: ((Float, Boolean) -> Unit)? = null
+    var doAfterTextChange: ((Float) -> Unit)? = null
 
     override fun setup() {
         updatePlaceHolder()
@@ -41,6 +42,7 @@ class NumberPickerEditText : BaseViewGroup {
             } else {
                 0f
             }
+            doAfterTextChange?.invoke(number)
         }
         binding.awonarEditNumberPickerImageMinus.setOnClickListener {
             number--
@@ -97,7 +99,12 @@ class NumberPickerEditText : BaseViewGroup {
     }
 
     private fun updateNumber() {
-        binding.awonarEditNumberPickerEditNumber.editText?.setText("$prefix $number")
+        binding.awonarEditNumberPickerEditNumber.editText?.setText(
+            "%s %.2f".format(
+                prefix,
+                number
+            )
+        )
     }
 
     override fun getLayoutResource(): View {

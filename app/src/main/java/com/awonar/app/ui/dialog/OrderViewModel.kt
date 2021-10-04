@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.awonar.android.exception.RateException
 import com.awonar.android.model.order.CalAmountUnitRequest
 import com.awonar.android.model.order.ValidateRateRequest
+import com.awonar.android.shared.domain.order.GetAmountUseCase
 import com.awonar.android.shared.domain.order.GetUnitUseCase
 import com.awonar.android.shared.domain.order.ValidateMaxRateUseCase
 import com.awonar.android.shared.domain.order.ValidateMinRateUseCase
@@ -20,11 +21,9 @@ import javax.inject.Inject
 class OrderViewModel @Inject constructor(
     private val validateMinRateUseCase: ValidateMinRateUseCase,
     private val validateMaxRateUseCase: ValidateMaxRateUseCase,
-    private val getUnitUseCase: GetUnitUseCase
+    private val getUnitUseCase: GetUnitUseCase,
+    private val getAmountUseCase: GetAmountUseCase
 ) : ViewModel() {
-
-    private val _getUnitState: MutableSharedFlow<Int> = MutableSharedFlow()
-    val getUnitState: SharedFlow<Int> get() = _getUnitState
 
     private val _getAmountState: MutableSharedFlow<Float> = MutableSharedFlow()
     val getAmountState: SharedFlow<Float> get() = _getAmountState
@@ -65,7 +64,7 @@ class OrderViewModel @Inject constructor(
         }
     }
 
-    fun getUnit(instrumentId: Int, price: Float, unit: Int, amount: Float, leverage: Int) {
+    fun getUnit(instrumentId: Int, price: Float, amount: Float, leverage: Int) {
         viewModelScope.launch {
             val result = getUnitUseCase(
                 CalAmountUnitRequest(
@@ -73,11 +72,23 @@ class OrderViewModel @Inject constructor(
                     leverage = leverage,
                     price = price,
                     amount = amount,
-                    unit = unit
                 )
             )
-            Timber.e("$result")
-            _getUnitState.emit(result.successOr(0))
+            _getAmountState.emit(result.successOr(0f))
+        }
+    }
+
+    fun getAmount(instrumentId: Int, price: Float, amount: Float, leverage: Int) {
+        viewModelScope.launch {
+            val result = getAmountUseCase(
+                CalAmountUnitRequest(
+                    instrumentId = instrumentId,
+                    leverage = leverage,
+                    price = price,
+                    amount = amount
+                )
+            )
+            _getAmountState.emit(result.successOr(0f))
         }
     }
 }

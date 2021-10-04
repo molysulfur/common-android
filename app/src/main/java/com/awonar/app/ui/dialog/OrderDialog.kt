@@ -42,8 +42,8 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     private var portfolio: Portfolio? = null
     private var orderType: String? = "buy"
     private var currentLeverage: Int = 1
+    private var amountType: String = "amount"
     private var amount: Float = 0f
-    private var unit: Int = 0
     private var quote: Quote? = null
 
     companion object {
@@ -79,15 +79,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     ): View {
         launchAndRepeatWithViewLifecycle {
             launch {
-                orderViewModel.getUnitState.collect {
-                    Timber.e("$it")
-                    binding.awonarDialogOrderNumberPickerInputAmount.setPrefix("")
-                    binding.awonarDialogOrderNumberPickerInputAmount.setNumber(it.toFloat())
-                }
-            }
-            launch {
                 orderViewModel.getAmountState.collect {
-                    binding.awonarDialogOrderNumberPickerInputAmount.setPrefix("$")
                     binding.awonarDialogOrderNumberPickerInputAmount.setNumber(it)
                 }
             }
@@ -110,7 +102,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                 marketViewModel.tradingDataState.collect {
                     if (it != null) {
                         tradingData = it
-                        Timber.e("$tradingData")
                         currentLeverage = tradingData?.defaultLeverage ?: 1
                         initValueWithTradingData()
                     }
@@ -193,9 +184,11 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         }
         binding.awonarDialogOrderToggleOrderRateType.addOnButtonCheckedListener { _, checkedId, _ ->
             when (checkedId) {
-                R.id.awonar_dialog_order_button_rate_amount -> binding.awonarDialogOrderNumberPickerInputRate.setPlaceHolderEnable(
-                    true
-                )
+                R.id.awonar_dialog_order_button_rate_amount -> {
+                    binding.awonarDialogOrderNumberPickerInputRate.setPlaceHolderEnable(
+                        true
+                    )
+                }
                 R.id.awonar_dialog_order_button_rate_unit -> {
                     binding.awonarDialogOrderNumberPickerInputRate.setPlaceHolderEnable(false)
                     quote?.let {
@@ -214,33 +207,56 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                 }
             }
         }
-
-        binding.awonarDialogOrderToggleOrderAmountType.addOnButtonCheckedListener { _, checkedId, _ ->
-            when (checkedId) {
-                R.id.awonar_dialog_order_button_amount_amount -> {
-                }
-                R.id.awonar_dialog_order_button_amount_unit -> {
-                    quote?.let { quote ->
-                        instrument?.let {
-                            val price: Float = when (orderType) {
-                                "buy" -> {
-                                    if (currentLeverage > 1) quote.ask else quote.askSpread
+        binding.awonarDialogOrderNumberPickerInputAmount.doAfterTextChange = { number ->
+            amount = number
+        }
+        binding.awonarDialogOrderToggleOrderAmountType.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (isChecked) {
+                when (checkedId) {
+                    R.id.awonar_dialog_order_button_amount_amount -> {
+                        quote?.let { quote ->
+                            instrument?.let {
+                                val price: Float = when (orderType) {
+                                    "buy" -> {
+                                        if (currentLeverage > 1) quote.ask else quote.askSpread
+                                    }
+                                    else -> {
+                                        quote.bidSpread
+                                    }
                                 }
-                                else -> {
-                                    quote.bidSpread
-                                }
+                                binding.awonarDialogOrderNumberPickerInputAmount.setPrefix("$")
+                                orderType = "amount"
+                                orderViewModel.getAmount(
+                                    instrumentId = it.id,
+                                    price = price,
+                                    amount = amount,
+                                    leverage = currentLeverage
+                                )
                             }
-                            orderViewModel.getUnit(
-                                instrumentId = it.id,
-                                price = price,
-                                unit = unit,
-                                amount = amount,
-                                leverage = currentLeverage
-                            )
                         }
-
                     }
-
+                    R.id.awonar_dialog_order_button_amount_unit -> {
+                        quote?.let { quote ->
+                            instrument?.let {
+                                val price: Float = when (orderType) {
+                                    "buy" -> {
+                                        if (currentLeverage > 1) quote.ask else quote.askSpread
+                                    }
+                                    else -> {
+                                        quote.bidSpread
+                                    }
+                                }
+                                binding.awonarDialogOrderNumberPickerInputAmount.setPrefix("")
+                                orderType = "unit"
+                                orderViewModel.getUnit(
+                                    instrumentId = it.id,
+                                    price = price,
+                                    amount = amount,
+                                    leverage = currentLeverage
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
