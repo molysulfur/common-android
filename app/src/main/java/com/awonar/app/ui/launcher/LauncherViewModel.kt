@@ -2,7 +2,9 @@ package com.awonar.app.ui.launcher
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.awonar.android.model.Conversion
 import com.awonar.android.model.tradingdata.TradingData
+import com.awonar.android.shared.domain.order.GetConversionsUseCase
 import com.awonar.android.shared.domain.order.GetTradingDataUseCase
 import com.awonar.android.shared.utils.WhileViewSubscribed
 import com.molysulfur.library.result.successOr
@@ -15,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LauncherViewModel @Inject constructor(
-    private val getTradingDataUseCase: GetTradingDataUseCase
+    private val getTradingDataUseCase: GetTradingDataUseCase,
+    private val getConversionUseCase: GetConversionsUseCase
 ) : ViewModel() {
 
     val loadTradingData: StateFlow<List<TradingData>?> = flow {
@@ -24,5 +27,11 @@ class LauncherViewModel @Inject constructor(
             emit(isAuth)
         }
     }.stateIn(viewModelScope, WhileViewSubscribed, null)
+
+    val loadConversionState: StateFlow<List<Conversion>> = flow {
+        getConversionUseCase(Unit).collect {
+            emit(it.successOr(emptyList()))
+        }
+    }.stateIn(viewModelScope, WhileViewSubscribed, emptyList())
 
 }

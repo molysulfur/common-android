@@ -86,6 +86,11 @@ class NumberPickerEditText : BaseViewGroup {
         }
     }
 
+    fun setPrefix(prefix: String) {
+        this.prefix = prefix
+        updateNumber()
+    }
+
     fun setNumber(number: Float) {
         this.number = number
         updateNumber()
@@ -102,11 +107,21 @@ class NumberPickerEditText : BaseViewGroup {
 
     override fun setupStyleables(attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) {
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.NumberPickerEditText)
-        prefix = typedArray.getString(R.styleable.NumberPickerEditText_numberPickerEditText_setPrefix)?:""
-        number = typedArray.getFloat(R.styleable.NumberPickerEditText_numberPickerEditText_setNumber,0f)
-        helper = typedArray.getString(R.styleable.NumberPickerEditText_numberPickerEditText_setHelper)?:""
-        placeholder = typedArray.getString(R.styleable.NumberPickerEditText_numberPickerEditText_setPlaceHolder)?:""
-        isEnablePlaceholder = typedArray.getBoolean(R.styleable.NumberPickerEditText_numberPickerEditText_setEnablePlaceHolder,false)
+        prefix =
+            typedArray.getString(R.styleable.NumberPickerEditText_numberPickerEditText_setPrefix)
+                ?: ""
+        number =
+            typedArray.getFloat(R.styleable.NumberPickerEditText_numberPickerEditText_setNumber, 0f)
+        helper =
+            typedArray.getString(R.styleable.NumberPickerEditText_numberPickerEditText_setHelper)
+                ?: ""
+        placeholder =
+            typedArray.getString(R.styleable.NumberPickerEditText_numberPickerEditText_setPlaceHolder)
+                ?: ""
+        isEnablePlaceholder = typedArray.getBoolean(
+            R.styleable.NumberPickerEditText_numberPickerEditText_setEnablePlaceHolder,
+            false
+        )
         typedArray.recycle()
     }
 

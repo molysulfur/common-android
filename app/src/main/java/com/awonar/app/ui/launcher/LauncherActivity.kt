@@ -29,15 +29,18 @@ class LauncherActivity : BaseActivity() {
         setContentView(binding.root)
         lifecycleScope.launchWhenStarted {
             launch {
-                launcherViewModel.loadTradingData.collect { tradingData ->
-                    if (tradingData != null) {
-                        viewModel.autoSignIn.collect {
-                            when (it) {
-                                false -> openActivityAndClearThisActivity(AuthenticationActivity::class.java)
-                                true -> openActivityAndClearThisActivity(MainActivity::class.java)
+                launcherViewModel.loadConversionState.collect { _ ->
+                    launcherViewModel.loadTradingData.collect { tradingData ->
+                        if (tradingData != null) {
+                            viewModel.autoSignIn.collect {
+                                when (it) {
+                                    false -> openActivityAndClearThisActivity(AuthenticationActivity::class.java)
+                                    true -> openActivityAndClearThisActivity(MainActivity::class.java)
+                                }
                             }
                         }
                     }
+
                 }
             }
         }

@@ -8,6 +8,7 @@ import com.molysulfur.library.usecase.FlowUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import timber.log.Timber
 import javax.inject.Inject
 
 class GetTradingDataByInstrumentIdUseCase @Inject constructor(

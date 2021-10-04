@@ -13,6 +13,7 @@ import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -66,7 +67,7 @@ class OrderViewModel @Inject constructor(
 
     fun getUnit(instrumentId: Int, price: Float, unit: Int, amount: Float, leverage: Int) {
         viewModelScope.launch {
-            val unit = getUnitUseCase(
+            val result = getUnitUseCase(
                 CalAmountUnitRequest(
                     instrumentId = instrumentId,
                     leverage = leverage,
@@ -75,7 +76,8 @@ class OrderViewModel @Inject constructor(
                     unit = unit
                 )
             )
-            _getUnitState.emit(unit.successOr(0))
+            Timber.e("$result")
+            _getUnitState.emit(result.successOr(0))
         }
     }
 }

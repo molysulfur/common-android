@@ -23,6 +23,7 @@ import com.awonar.app.utils.ColorChangingUtil
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogViewModel>() {
 
@@ -79,11 +80,14 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         launchAndRepeatWithViewLifecycle {
             launch {
                 orderViewModel.getUnitState.collect {
+                    Timber.e("$it")
+                    binding.awonarDialogOrderNumberPickerInputAmount.setPrefix("")
                     binding.awonarDialogOrderNumberPickerInputAmount.setNumber(it.toFloat())
                 }
             }
             launch {
                 orderViewModel.getAmountState.collect {
+                    binding.awonarDialogOrderNumberPickerInputAmount.setPrefix("$")
                     binding.awonarDialogOrderNumberPickerInputAmount.setNumber(it)
                 }
             }
@@ -106,6 +110,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                 marketViewModel.tradingDataState.collect {
                     if (it != null) {
                         tradingData = it
+                        Timber.e("$tradingData")
                         currentLeverage = tradingData?.defaultLeverage ?: 1
                         initValueWithTradingData()
                     }

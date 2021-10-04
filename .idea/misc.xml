@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.16458333333333333" />
         <entry key="app/src/main/res/drawable/awonar_bg_15_gray.xml" value="0.17708333333333334" />
         <entry key="app/src/main/res/drawable/awonar_bg_15_green.xml" value="0.17708333333333334" />
         <entry key="app/src/main/res/drawable/awonar_bg_15_light_gray.xml" value="0.10416666666666667" />
