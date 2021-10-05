@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.awonar.android.exception.PositionExposureException
 import com.awonar.android.exception.RateException
+import com.awonar.android.model.order.Amount
 import com.awonar.android.model.order.CalAmountUnitRequest
 import com.awonar.android.model.order.ExposureRequest
 import com.awonar.android.model.order.ValidateRateRequest
@@ -26,11 +27,15 @@ class OrderViewModel @Inject constructor(
     private val validateExposureUseCase: ValidateExposureUseCase
 ) : ViewModel() {
 
-    private val _validateExposureErrorState: MutableStateFlow<String?> = MutableStateFlow(null)
-    val validateExposureErrorState: StateFlow<String?> get() = _validateExposureErrorState
+    private val _validateExposureErrorState: MutableSharedFlow<String?> = MutableSharedFlow()
+    val validateExposureErrorState: MutableSharedFlow<String?> get() = _validateExposureErrorState
 
-    private val _getAmountState: MutableSharedFlow<Float> = MutableSharedFlow()
-    val getAmountState: SharedFlow<Float> get() = _getAmountState
+    private val _exposureState: MutableSharedFlow<Float> = MutableSharedFlow()
+    val exposureState: MutableSharedFlow<Float> get() = _exposureState
+
+
+    private val _getAmountState: MutableSharedFlow<Amount> = MutableSharedFlow()
+    val getAmountState: SharedFlow<Amount> get() = _getAmountState
 
     private val _rateErrorMessageState: MutableSharedFlow<String?> = MutableSharedFlow()
     val rateErrorMessageState: SharedFlow<String?> get() = _rateErrorMessageState
@@ -71,48 +76,44 @@ class OrderViewModel @Inject constructor(
     fun getAmountOrUnit(
         instrumentId: Int,
         price: Float,
-        amount: Float,
-        leverage: Int,
-        type: String
+        amount: Amount,
+        leverage: Int
     ) {
         viewModelScope.launch {
             val request = CalAmountUnitRequest(
                 instrumentId = instrumentId,
                 leverage = leverage,
                 price = price,
-                amount = amount
+                amount = if (amount.type == "amount") amount.amount else amount.unit
             )
-            val result = when (type) {
+            when (amount.type) {
                 "amount" -> {
-                    getAmountUseCase(request)
+                    val result = getAmountUseCase(request)
+                    amount.amount = result.successOr(amount.amount)
                 }
-                else -> getUnitUseCase(request)
+                else -> {
+                    val result = getUnitUseCase(request)
+                    amount.unit = result.successOr(amount.unit)
+                }
             }
-            _getAmountState.emit(result.successOr(0f))
+            _getAmountState.emit(amount)
         }
     }
 
     fun validatePositionExposure(
         id: Int,
-        number: Float,
-        leverage: Int,
-        type: String,
-        price: Float
+        amount: Float,
+        leverage: Int
     ) {
         viewModelScope.launch {
-            var amount = number
-            if (type == "unit") {
-                val request = CalAmountUnitRequest(
-                    instrumentId = id,
-                    leverage = leverage,
-                    price = price,
-                    amount = number
-                )
-                amount = (getAmountUseCase(request) as Result.Success).data
-            }
             val result = validateExposureUseCase(ExposureRequest(id, amount, leverage))
             if (result is Result.Error) {
-                _validateExposureErrorState.emit((result.exception as PositionExposureException).errorMessage)
+                val exception: PositionExposureException =
+                    (result.exception as PositionExposureException)
+                _exposureState.emit(exception.value)
+                _validateExposureErrorState.emit(exception.errorMessage)
+            } else {
+                _validateExposureErrorState.emit("")
             }
 
         }

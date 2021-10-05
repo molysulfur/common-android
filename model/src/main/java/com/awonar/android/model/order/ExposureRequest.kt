@@ -8,4 +8,8 @@ class ExposureRequest(
     val instrumentId: Int,
     val amount: Float,
     val leverage: Int
-) : Parcelable
+) : Parcelable {
+    override fun toString(): String {
+        return "instrumentId: $instrumentId,amount: $amount,leverage: $leverage"
+    }
+}

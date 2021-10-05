@@ -15,30 +15,31 @@ class ValidateExposureUseCase @Inject constructor(
 ) : UseCase<ExposureRequest, Boolean>(dispatcher) {
     override suspend fun execute(parameters: ExposureRequest): Boolean {
         val trading = marketRepository.getTradingDataById(parameters.instrumentId)
-        val exposure = parameters.amount.times(parameters.leverage)
-        val minPositionExposure = if (parameters.leverage <= trading.minLeverage) {
-            trading.minPositionExposure
+        Timber.e("$trading")
+        val exposure =
+            if (parameters.leverage < trading.minLeverage) parameters.amount.times(parameters.leverage) else parameters.amount
+        val leverage = if (parameters.leverage < trading.minLeverage) parameters.leverage else 1
+        var minPositionExposure = 1
+        var maxPositionExposure = 1
+        if (parameters.leverage < trading.minLeverage) {
+            minPositionExposure = trading.minPositionExposure
+            maxPositionExposure = trading.maxPositionExposure
+
         } else {
-            trading.minPositionAmount
+            minPositionExposure = trading.minPositionAmount
+            maxPositionExposure = trading.maxPositionAmount
         }
-        val maxPositionExposure = if (parameters.leverage <= trading.minLeverage) {
-            trading.maxPositionExposure
-        } else {
-            trading.maxPositionAmount
-        }
-        Timber.e("$exposure $minPositionExposure $maxPositionExposure")
+
         if (exposure > maxPositionExposure) {
+            val maximun = maxPositionExposure.div(leverage).toFloat()
             throw PositionExposureException(
-                "Maximun position size is $%.2f".format(
-                    maxPositionExposure.toFloat()
-                )
+                "Maximun position size is $%.2f".format(maximun), maximun
             )
         }
         if (exposure < minPositionExposure) {
+            val minimum = minPositionExposure.div(leverage).toFloat()
             throw PositionExposureException(
-                "Minimun position size is $%.2f".format(
-                    minPositionExposure.toFloat()
-                )
+                "Minimun position size is $%.2f".format(minimum), minimum
             )
         }
         return true

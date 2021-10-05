@@ -109,7 +109,7 @@ class NumberPickerEditText : BaseViewGroup {
 
     private fun updateNumber() {
         binding.awonarEditNumberPickerEditNumber.editText?.setText(
-            "%s %.2f".format(
+            "%s%.2f".format(
                 prefix,
                 number
             )
