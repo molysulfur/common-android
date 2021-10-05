@@ -20,7 +20,7 @@ class NumberPickerEditText : BaseViewGroup {
 
     private var prefix: String = "$"
     private var number: Float = 0f
-    private var helper: String = "Minimun position size is $5.00"
+    private var helper: String = ""
     private var placeholder: String? = null
     private var placeholderRes: Int = 0
     private var isEnablePlaceholder: Boolean = false
@@ -53,6 +53,15 @@ class NumberPickerEditText : BaseViewGroup {
             number++
             updateNumber()
         }
+    }
+
+    fun setHelp(help: String) {
+        this.helper = help
+        updateHepler()
+    }
+
+    private fun updateHepler() {
+        binding.awonarEditNumberPickerEditNumber.helperText = helper
     }
 
     fun setPlaceHolderEnable(placeholderEnable: Boolean) {

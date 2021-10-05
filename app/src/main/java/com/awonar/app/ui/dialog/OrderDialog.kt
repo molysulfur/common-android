@@ -79,6 +79,14 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     ): View {
         launchAndRepeatWithViewLifecycle {
             launch {
+                orderViewModel.validateExposureErrorState.collect { message ->
+                    message?.let {
+                        binding.awonarDialogOrderNumberPickerInputAmount.setHelp(it)
+                    }
+
+                }
+            }
+            launch {
                 orderViewModel.getAmountState.collect {
                     binding.awonarDialogOrderNumberPickerInputAmount.setNumber(it)
                 }
@@ -87,7 +95,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                 portfolioViewModel.portfolioState.collect {
                     if (it != null) {
                         portfolio = it
-                        updateAmountUnit()
+                        initAmount()
                     }
                 }
             }
@@ -125,7 +133,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         return binding.root
     }
 
-    private fun updateAmountUnit() {
+    private fun initAmount() {
         portfolio?.let {
             amount = it.available.times(0.05f)
             binding.awonarDialogOrderNumberPickerInputAmount.setNumber(amount)
@@ -207,6 +215,13 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                 }
             }
         }
+        binding.awonarDialogOrderNumberPickerInputAmount.doAfterFocusChange = { number, hasFocus ->
+            if (!hasFocus) {
+                instrument?.let {
+                    validateExposure()
+                }
+            }
+        }
         binding.awonarDialogOrderNumberPickerInputAmount.doAfterTextChange = { number ->
             amount = number
         }
@@ -214,48 +229,14 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             if (isChecked) {
                 when (checkedId) {
                     R.id.awonar_dialog_order_button_amount_amount -> {
-                        quote?.let { quote ->
-                            instrument?.let {
-                                val price: Float = when (orderType) {
-                                    "buy" -> {
-                                        if (currentLeverage > 1) quote.ask else quote.askSpread
-                                    }
-                                    else -> {
-                                        quote.bidSpread
-                                    }
-                                }
-                                binding.awonarDialogOrderNumberPickerInputAmount.setPrefix("$")
-                                orderType = "amount"
-                                orderViewModel.getAmount(
-                                    instrumentId = it.id,
-                                    price = price,
-                                    amount = amount,
-                                    leverage = currentLeverage
-                                )
-                            }
-                        }
+                        binding.awonarDialogOrderNumberPickerInputAmount.setPrefix("$")
+                        amountType = "amount"
+                        updateAmountInput()
                     }
                     R.id.awonar_dialog_order_button_amount_unit -> {
-                        quote?.let { quote ->
-                            instrument?.let {
-                                val price: Float = when (orderType) {
-                                    "buy" -> {
-                                        if (currentLeverage > 1) quote.ask else quote.askSpread
-                                    }
-                                    else -> {
-                                        quote.bidSpread
-                                    }
-                                }
-                                binding.awonarDialogOrderNumberPickerInputAmount.setPrefix("")
-                                orderType = "unit"
-                                orderViewModel.getUnit(
-                                    instrumentId = it.id,
-                                    price = price,
-                                    amount = amount,
-                                    leverage = currentLeverage
-                                )
-                            }
-                        }
+                        binding.awonarDialogOrderNumberPickerInputAmount.setPrefix("")
+                        amountType = "unit"
+                        updateAmountInput()
                     }
                 }
             }
@@ -264,6 +245,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             onClick = { text ->
                 val newLeverage: Int = text.replace("X", "").toInt()
                 currentLeverage = newLeverage
+                validateExposure()
                 binding.awonarDialogOrderCollapseLeverage.setDescription("X$newLeverage")
             }
         }
@@ -276,6 +258,49 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         }
         binding.awonarDialogOrderCollapseLeverage.setTitle(getString(R.string.awonar_text_leverage))
         binding.awonarDialogOrderCollapseLeverage.setAdapter(leverageAdapter)
+    }
+
+    private fun updateAmountInput() {
+        quote?.let { quote ->
+            instrument?.let {
+                val price: Float = when (orderType) {
+                    "buy" -> {
+                        if (currentLeverage > 1) quote.ask else quote.askSpread
+                    }
+                    else -> {
+                        quote.bidSpread
+                    }
+                }
+                orderViewModel.getAmountOrUnit(
+                    instrumentId = it.id,
+                    price = price,
+                    amount = amount,
+                    leverage = currentLeverage,
+                    type = amountType
+                )
+            }
+        }
+    }
+
+    private fun validateExposure() {
+        quote?.let { quote ->
+            instrument?.let {
+                orderViewModel.validatePositionExposure(
+                    id = it.id,
+                    number = amount,
+                    leverage = currentLeverage,
+                    type = amountType,
+                    price = when (orderType) {
+                        "buy" -> {
+                            if (currentLeverage > 1) quote.ask else quote.askSpread
+                        }
+                        else -> {
+                            quote.bidSpread
+                        }
+                    }
+                )
+            }
+        }
     }
 
     private fun updateCurrentPrice() {

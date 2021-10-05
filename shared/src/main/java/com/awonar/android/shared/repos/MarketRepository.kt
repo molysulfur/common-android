@@ -18,6 +18,10 @@ class MarketRepository @Inject constructor(
     private val tradingDataDao: TradingDataDao
 ) {
 
+    fun getTradingDataById(id: Int): TradingData {
+        return tradingDataDao.loadById(id)
+    }
+
     fun getTradingData(needFresh: Boolean) =
         object : NetworkFlow<Boolean, List<TradingData>, List<TradingData>>() {
             override fun shouldFresh(data: List<TradingData>?): Boolean = needFresh || data == null
