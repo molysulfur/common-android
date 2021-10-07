@@ -29,16 +29,34 @@ class NumberPickerCollapsibleView : BaseViewGroup {
     private var description: String? = null
     private var descriptionRes: Int = 0
     private var expanded = false
+    private var isNoSet = true
     private val toggle: Transition = TransitionInflater.from(context)
         .inflateTransition(R.transition.awonar_transition_list_toggle)
 
-
+    var doAfterFocusChange: ((Float, Boolean) -> Unit)? = null
+    var doAfterTextChange: ((Float) -> Unit)? = null
     override fun setup() {
         binding.awonarNumberpickerCollapsibleLayoutCollapse.setOnClickListener {
             toggleExpanded()
         }
+        binding.awonarNumberpickerCollapsibleButtonNoSet.setOnClickListener {
+            isNoSet = !isNoSet
+            setDescription("No set")
+            updateNoSet()
+        }
+        binding.awonarNumberpickerCollapsibleInputNumber.doAfterFocusChange = { number, hasFocus ->
+            doAfterFocusChange?.invoke(number, hasFocus)
+        }
+        binding.awonarNumberpickerCollapsibleInputNumber.doAfterTextChange =
+            this.doAfterTextChange
+        binding.awonarNumberpickerCollapsibleInputNumber.setPlaceholder("No set")
+        updateNoSet()
         updateTitle()
         updateDescription()
+    }
+
+    private fun updateNoSet() {
+        binding.awonarNumberpickerCollapsibleInputNumber.setPlaceHolderEnable(isNoSet)
     }
 
     fun setDescription(descriptionRes: Int) {

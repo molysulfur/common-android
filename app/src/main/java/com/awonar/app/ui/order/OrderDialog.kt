@@ -1,4 +1,4 @@
-package com.awonar.app.ui.dialog
+package com.awonar.app.ui.order
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +9,7 @@ import coil.load
 import com.akexorcist.library.dialoginteractor.DialogLauncher
 import com.akexorcist.library.dialoginteractor.InteractorDialog
 import com.akexorcist.library.dialoginteractor.createBundle
+import com.awonar.android.constrant.MarketOrderType
 import com.awonar.android.model.market.Instrument
 import com.awonar.android.model.market.Quote
 import com.awonar.android.model.order.Amount
@@ -28,7 +29,6 @@ import timber.log.Timber
 
 class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogViewModel>() {
 
-
     private val marketViewModel: MarketViewModel by activityViewModels()
     private val orderViewModel: OrderViewModel by activityViewModels()
     private val portfolioViewModel: PortFolioViewModel by activityViewModels()
@@ -42,13 +42,14 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     private var tradingData: TradingData? = null
     private var portfolio: Portfolio? = null
     private var orderType: String? = "buy"
+    private var marketOrderType: MarketOrderType = MarketOrderType.OPEN_ORDER
     private var currentLeverage: Int = 1
-    private var amount: Amount = Amount(0f, 0f, "amount")
+    private var amount: Amount = Amount(0f, 1f, "amount")
     private var quote: Quote? = null
 
     companion object {
-        const val EXTRA_INSTRUMENT = "com.awonar.app.ui.dialog.order.extra.instrument"
-        const val EXTRA_ORDER_TYPE = "com.awonar.app.ui.dialog.order.extra.order_type"
+        private const val EXTRA_INSTRUMENT = "com.awonar.app.ui.dialog.order.extra.instrument"
+        private const val EXTRA_ORDER_TYPE = "com.awonar.app.ui.dialog.order.extra.order_type"
 
         private fun newInstance(
             instrument: Instrument?,
@@ -145,33 +146,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         return binding.root
     }
 
-    private fun initAmount() {
-        portfolio?.let {
-            amount.amount = it.available.times(0.05f)
-            binding.awonarDialogOrderNumberPickerInputAmount.setNumber(amount.amount)
-        }
-    }
-
-    private fun initValueWithTradingData() {
-        if (tradingData?.allowSell == false) {
-            binding.awonarDialogOrderButtonTypeSell.isEnabled = tradingData?.allowSell == false
-            orderType = if (orderType == "sell") "buy" else orderType
-        }
-
-        if (tradingData?.allowBuy == false) {
-            binding.awonarDialogOrderButtonTypeBuy.isEnabled = tradingData?.allowBuy == false
-            orderType = if (orderType == "buy") null else orderType
-        }
-        when (orderType) {
-            "buy" -> binding.awonarDialogOrderToggleOrderType.check(R.id.awonar_dialog_order_button_type_buy)
-            "sell" -> binding.awonarDialogOrderToggleOrderType.check(R.id.awonar_dialog_order_button_type_sell)
-            else -> {
-            }
-        }
-
-        leverageAdapter.leverageString = tradingData?.leverages ?: emptyList()
-        binding.awonarDialogOrderCollapseLeverage.setDescription("X$currentLeverage")
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -183,6 +157,33 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             binding.awonarDialogOrderTextDescription.text = it.industry
             marketViewModel.getTradingData(it.id)
         }
+        binding.awonarDialogOrderViewNumberpickerCollapsibleSl.doAfterFocusChange =
+            { number, hasFocus ->
+                if (!hasFocus) {
+                    instrument?.let {
+                        quote?.let { quote ->
+                            orderViewModel.calculateStopLoss(
+                                instrumentId = it.id,
+                                number = number,
+                                openPrice = when (orderType) {
+                                    "buy" -> {
+                                        if (currentLeverage > 1) quote.ask else quote.askSpread
+                                    }
+                                    else -> {
+                                        quote.bidSpread
+                                    }
+                                },
+                                unitOrder = amount.unit,
+                                type = marketOrderType,
+                                orderType = amount.type
+                            )
+                        }
+
+                    }
+
+                }
+
+            }
         binding.awonarDialogOrderImageIconClose.setOnClickListener {
             dismiss()
         }
@@ -246,6 +247,52 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         initLeverageAdapter()
         initListenerInputAmount()
 
+    }
+
+    private fun initAmount() {
+        portfolio?.let {
+            amount.amount = it.available.times(0.05f)
+            binding.awonarDialogOrderNumberPickerInputAmount.setNumber(amount.amount)
+            instrument?.let { instrument ->
+                quote?.let { quote ->
+                    orderViewModel.getAmountOrUnit(
+                        instrumentId = instrument.id,
+                        price = when (orderType) {
+                            "buy" -> {
+                                if (currentLeverage > 1) quote.ask else quote.askSpread
+                            }
+                            else -> {
+                                quote.bidSpread
+                            }
+                        },
+                        amount = amount,
+                        leverage = currentLeverage
+                    )
+                }
+            }
+
+        }
+    }
+
+    private fun initValueWithTradingData() {
+        if (tradingData?.allowSell == false) {
+            binding.awonarDialogOrderButtonTypeSell.isEnabled = tradingData?.allowSell == false
+            orderType = if (orderType == "sell") "buy" else orderType
+        }
+
+        if (tradingData?.allowBuy == false) {
+            binding.awonarDialogOrderButtonTypeBuy.isEnabled = tradingData?.allowBuy == false
+            orderType = if (orderType == "buy") null else orderType
+        }
+        when (orderType) {
+            "buy" -> binding.awonarDialogOrderToggleOrderType.check(R.id.awonar_dialog_order_button_type_buy)
+            "sell" -> binding.awonarDialogOrderToggleOrderType.check(R.id.awonar_dialog_order_button_type_sell)
+            else -> {
+            }
+        }
+
+        leverageAdapter.leverageString = tradingData?.leverages ?: emptyList()
+        binding.awonarDialogOrderCollapseLeverage.setDescription("X$currentLeverage")
     }
 
     private fun initLeverageAdapter() {

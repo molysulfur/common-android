@@ -1,4 +1,4 @@
-package com.awonar.app.ui.dialog
+package com.awonar.app.ui.order
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

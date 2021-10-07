@@ -1,4 +1,4 @@
-package com.awonar.app.ui.dialog
+package com.awonar.app.ui.order
 
 import android.os.Bundle
 import com.akexorcist.library.dialoginteractor.DialogEvent

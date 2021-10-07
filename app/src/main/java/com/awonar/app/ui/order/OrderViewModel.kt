@@ -1,17 +1,16 @@
-package com.awonar.app.ui.dialog
+package com.awonar.app.ui.order
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.awonar.android.constrant.MarketOrderType
 import com.awonar.android.exception.PositionExposureException
 import com.awonar.android.exception.RateException
-import com.awonar.android.model.order.Amount
-import com.awonar.android.model.order.CalAmountUnitRequest
-import com.awonar.android.model.order.ExposureRequest
-import com.awonar.android.model.order.ValidateRateRequest
+import com.awonar.android.model.order.*
 import com.awonar.android.shared.domain.order.*
 import com.molysulfur.library.result.Result
+import com.molysulfur.library.result.data
+import com.molysulfur.library.result.succeeded
 import com.molysulfur.library.result.successOr
-import com.molysulfur.library.result.updateOnSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -24,7 +23,8 @@ class OrderViewModel @Inject constructor(
     private val validateMaxRateUseCase: ValidateMaxRateUseCase,
     private val getUnitUseCase: GetUnitUseCase,
     private val getAmountUseCase: GetAmountUseCase,
-    private val validateExposureUseCase: ValidateExposureUseCase
+    private val validateExposureUseCase: ValidateExposureUseCase,
+    private val calculateAmountStopLossWithBuyUseCase: CalculateAmountStopLossWithBuyUseCase
 ) : ViewModel() {
 
     private val _validateExposureErrorState: MutableSharedFlow<String?> = MutableSharedFlow()
@@ -32,7 +32,6 @@ class OrderViewModel @Inject constructor(
 
     private val _exposureState: MutableSharedFlow<Float> = MutableSharedFlow()
     val exposureState: MutableSharedFlow<Float> get() = _exposureState
-
 
     private val _getAmountState: MutableSharedFlow<Amount> = MutableSharedFlow()
     val getAmountState: SharedFlow<Amount> get() = _getAmountState
@@ -84,19 +83,21 @@ class OrderViewModel @Inject constructor(
                 instrumentId = instrumentId,
                 leverage = leverage,
                 price = price,
-                amount = if (amount.type == "amount") amount.amount else amount.unit
+                amount = if (amount.type == "amount") amount.unit else amount.amount
             )
-            when (amount.type) {
+            val newAmount = when (amount.type) {
                 "amount" -> {
                     val result = getAmountUseCase(request)
                     amount.amount = result.successOr(amount.amount)
+                    amount
                 }
                 else -> {
                     val result = getUnitUseCase(request)
                     amount.unit = result.successOr(amount.unit)
+                    amount
                 }
             }
-            _getAmountState.emit(amount)
+            _getAmountState.emit(newAmount)
         }
     }
 
@@ -116,6 +117,32 @@ class OrderViewModel @Inject constructor(
                 _validateExposureErrorState.emit("")
             }
 
+        }
+    }
+
+    fun calculateStopLoss(
+        instrumentId: Int,
+        number: Float,
+        openPrice: Float,
+        unitOrder: Float,
+        type: MarketOrderType,
+        orderType: String
+    ) {
+        val request = AmountStopLossRequest(
+            instrumentId = instrumentId,
+            stopLoss = number,
+            openPrice = openPrice,
+            unit = unitOrder
+        )
+        calculateAmountStopLossWithBuy(request)
+    }
+
+    private fun calculateAmountStopLossWithBuy(request: AmountStopLossRequest) {
+        viewModelScope.launch {
+            val result = calculateAmountStopLossWithBuyUseCase(request)
+            if (result.succeeded) {
+                Timber.e("${result.data}")
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.awonar.app.ui.dialog
+package com.awonar.app.ui.order
 
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.app.databinding.AwonarItemButtonItemBinding

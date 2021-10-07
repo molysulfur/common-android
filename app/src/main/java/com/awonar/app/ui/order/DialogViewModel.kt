@@ -1,4 +1,4 @@
-package com.awonar.app.ui.dialog
+package com.awonar.app.ui.order
 
 import androidx.lifecycle.ViewModel
 import com.akexorcist.library.dialoginteractor.DialogLauncher

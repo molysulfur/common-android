@@ -10,10 +10,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.awonar.app.databinding.AwonarFragmentMarketRecommendedBinding
-import com.awonar.app.ui.dialog.OrderDialog
+import com.awonar.app.ui.order.OrderDialog
 import com.awonar.app.ui.market.adapter.InstrumentHorizontalAdapter
 import com.awonar.app.ui.market.adapter.InstrumentHorizontalWrapperAdapter
-import com.awonar.app.ui.market.adapter.InstrumentItem
 import com.awonar.app.ui.market.adapter.InstrumentListAdapter
 import com.awonar.app.ui.marketprofile.MarketProfileActivity
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
