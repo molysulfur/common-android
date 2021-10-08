@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,11 +24,11 @@ import com.molysulfur.library.widget.BaseViewGroup
 class NumberPickerCollapsibleView : BaseViewGroup {
 
     private lateinit var binding: AwonarWidgetCollapsibleNumberpickerBinding
-
     private var title: String? = null
     private var titleRes: Int = 0
     private var description: String? = null
     private var descriptionRes: Int = 0
+    private var descriptionColor: Int = 0
     private var expanded = false
     private var isNoSet = true
     private val toggle: Transition = TransitionInflater.from(context)
@@ -35,7 +36,20 @@ class NumberPickerCollapsibleView : BaseViewGroup {
 
     var doAfterFocusChange: ((Float, Boolean) -> Unit)? = null
     var doAfterTextChange: ((Float) -> Unit)? = null
+    var onTypeChange: ((String) -> Unit)? = null
     override fun setup() {
+        binding.awonarNumberpickerCollapsibleToggleOrderAmountType.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (isChecked) {
+                when (checkedId) {
+                    R.id.awonar_numberpicker_collapsible_button_amount_amount -> onTypeChange?.invoke(
+                        "amount"
+                    )
+                    R.id.awonar_numberpicker_collapsible_button_amount_rate -> onTypeChange?.invoke(
+                        "rate"
+                    )
+                }
+            }
+        }
         binding.awonarNumberpickerCollapsibleLayoutCollapse.setOnClickListener {
             toggleExpanded()
         }
@@ -47,16 +61,36 @@ class NumberPickerCollapsibleView : BaseViewGroup {
         binding.awonarNumberpickerCollapsibleInputNumber.doAfterFocusChange = { number, hasFocus ->
             doAfterFocusChange?.invoke(number, hasFocus)
         }
-        binding.awonarNumberpickerCollapsibleInputNumber.doAfterTextChange =
-            this.doAfterTextChange
+        binding.awonarNumberpickerCollapsibleInputNumber.doAfterTextChange = {
+            doAfterTextChange?.invoke(it)
+        }
         binding.awonarNumberpickerCollapsibleInputNumber.setPlaceholder("No set")
         updateNoSet()
         updateTitle()
         updateDescription()
     }
 
+    fun setNumber(number: Float) {
+        binding.awonarNumberpickerCollapsibleInputNumber.setNumber(number)
+    }
+
     private fun updateNoSet() {
         binding.awonarNumberpickerCollapsibleInputNumber.setPlaceHolderEnable(isNoSet)
+    }
+
+    fun setDescriptionColor(color: Int) {
+        this.descriptionColor = color
+        updateDescriptionColor()
+    }
+
+    private fun updateDescriptionColor() {
+        if (descriptionColor > 0)
+            binding.awonarNumberpickerCollapsibleTextDescription.setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    descriptionColor
+                )
+            )
     }
 
     fun setDescription(descriptionRes: Int) {

@@ -1,7 +1,8 @@
 package com.awonar.android.shared.domain.order
 
-import com.awonar.android.model.order.AmountStopLossRequest
+import com.awonar.android.model.order.Price
 import com.awonar.android.model.order.RateStopLossRequest
+import com.awonar.android.model.order.StopLossRequest
 import com.awonar.android.shared.di.IoDispatcher
 import com.awonar.android.shared.repos.CurrenciesRepository
 import com.molysulfur.library.usecase.UseCase
@@ -14,11 +15,14 @@ import javax.inject.Inject
 class CalculateRateStopLossWithBuyUseCase @Inject constructor(
     private val repository: CurrenciesRepository,
     @IoDispatcher dispatcher: CoroutineDispatcher
-) : UseCase<RateStopLossRequest, Float>(dispatcher) {
+) : UseCase<StopLossRequest, Price>(dispatcher) {
 
-    override suspend fun execute(parameters: RateStopLossRequest): Float {
+    override suspend fun execute(parameters: StopLossRequest): Price {
+        val stopLoss = parameters.stopLoss
         val conversion = repository.getConversionByInstrumentId(parameters.instrumentId)
-        return parameters.amountStopLoss.times(conversion.rateBid).div(parameters.unit)
+        val rate = stopLoss.amount.times(conversion.rateBid).div(parameters.unit)
             .plus(parameters.openPrice)
+        stopLoss.unit = rate
+        return  stopLoss
     }
 }

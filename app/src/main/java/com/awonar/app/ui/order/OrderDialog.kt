@@ -12,7 +12,7 @@ import com.akexorcist.library.dialoginteractor.createBundle
 import com.awonar.android.constrant.MarketOrderType
 import com.awonar.android.model.market.Instrument
 import com.awonar.android.model.market.Quote
-import com.awonar.android.model.order.Amount
+import com.awonar.android.model.order.Price
 import com.awonar.android.model.portfolio.Portfolio
 import com.awonar.android.shared.constrant.BuildConfig
 import com.awonar.android.model.tradingdata.TradingData
@@ -44,8 +44,12 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     private var orderType: String? = "buy"
     private var marketOrderType: MarketOrderType = MarketOrderType.OPEN_ORDER
     private var currentLeverage: Int = 1
-    private var amount: Amount = Amount(0f, 1f, "amount")
+    private var amount: Price = Price(0f, 1f, "amount")
     private var quote: Quote? = null
+    private var price: Float = 0f
+
+    private var stoploss: Price = Price(amount = 0f, unit = 1f, "rate")
+    private var takeProfit: Price = Price(amount = 0f, unit = 1f, "rate")
 
     companion object {
         private const val EXTRA_INSTRUMENT = "com.awonar.app.ui.dialog.order.extra.instrument"
@@ -80,6 +84,21 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     ): View {
         launchAndRepeatWithViewLifecycle {
             launch {
+                orderViewModel.stopLossState.collect { amount ->
+                    stoploss = amount
+                    val number = when (stoploss.type) {
+                        "rate" -> stoploss.unit
+                        else -> stoploss.amount
+                    }
+                    binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setNumber(number)
+                    binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setDescription(
+                        "$%.2f".format(
+                            number
+                        )
+                    )
+                }
+            }
+            launch {
                 orderViewModel.exposureState.collect {
                     binding.awonarDialogOrderNumberPickerInputAmount.setNumber(it)
                 }
@@ -93,14 +112,19 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                 }
             }
             launch {
-                orderViewModel.getAmountState.collect {
+                orderViewModel.getPriceState.collect {
                     amount = it
                     when (amount.type) {
                         "amount" -> binding.awonarDialogOrderNumberPickerInputAmount.setNumber(
                             amount.amount
                         )
                         "unit" -> binding.awonarDialogOrderNumberPickerInputAmount.setNumber(amount.unit)
-
+                    }
+                    instrument?.let { instrument ->
+                        orderViewModel.getDefaultStopLoss(
+                            instrumentId = instrument.id,
+                            amount = amount
+                        )
                     }
                 }
             }
@@ -157,50 +181,43 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             binding.awonarDialogOrderTextDescription.text = it.industry
             marketViewModel.getTradingData(it.id)
         }
+        binding.awonarDialogOrderViewNumberpickerCollapsibleSl.onTypeChange = { type ->
+            stoploss.type = type
+            instrument?.let { instrument ->
+                orderViewModel.calculateStopLoss(
+                    instrumentId = instrument.id,
+                    stoploss = stoploss,
+                    openPrice = price,
+                    orderType = orderType,
+                    unitOrder = amount.unit
+                )
+            }
+            updateStopLoss()
+        }
+        binding.awonarDialogOrderViewNumberpickerCollapsibleSl.doAfterTextChange = {
+            stoploss.apply {
+                when (type) {
+                    "amount" -> this.amount = it
+                    "rate" -> this.unit = it
+                }
+            }
+            Timber.e("$stoploss")
+
+//            updateStopLoss()
+        }
         binding.awonarDialogOrderViewNumberpickerCollapsibleSl.doAfterFocusChange =
             { number, hasFocus ->
                 if (!hasFocus) {
-                    instrument?.let {
-                        quote?.let { quote ->
-                            orderViewModel.calculateStopLoss(
-                                instrumentId = it.id,
-                                number = number,
-                                openPrice = when (orderType) {
-                                    "buy" -> {
-                                        if (currentLeverage > 1) quote.ask else quote.askSpread
-                                    }
-                                    else -> {
-                                        quote.bidSpread
-                                    }
-                                },
-                                unitOrder = amount.unit,
-                                type = marketOrderType,
-                                orderType = amount.type
-                            )
-                        }
-
-                    }
 
                 }
-
             }
         binding.awonarDialogOrderImageIconClose.setOnClickListener {
             dismiss()
         }
         binding.awonarDialogOrderNumberPickerInputRate.doAfterFocusChange = { rate, hasFocus ->
             if (!hasFocus) {
-                quote?.let {
-                    val price: Float = when (orderType) {
-                        "buy" -> {
-                            if (currentLeverage > 1) it.ask else it.askSpread
-                        }
-                        else -> {
-                            it.bidSpread
-                        }
-                    }
-                    orderViewModel.calculateMinRate(rate, price)
-                    orderViewModel.calculateMaxRate(rate, price)
-                }
+                orderViewModel.calculateMinRate(rate, price)
+                orderViewModel.calculateMaxRate(rate, price)
             }
         }
         binding.awonarDialogOrderToggleOrderRateType.addOnButtonCheckedListener { _, checkedId, _ ->
@@ -212,17 +229,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                 }
                 R.id.awonar_dialog_order_button_rate_unit -> {
                     binding.awonarDialogOrderNumberPickerInputRate.setPlaceHolderEnable(false)
-                    quote?.let {
-                        val price: Float = when (orderType) {
-                            "buy" -> {
-                                if (currentLeverage > 1) it.ask else it.askSpread
-                            }
-                            else -> {
-                                it.bidSpread
-                            }
-                        }
-                        binding.awonarDialogOrderNumberPickerInputRate.setNumber(price)
-                    }
+                    binding.awonarDialogOrderNumberPickerInputRate.setNumber(price)
                 }
                 else -> {
                 }
@@ -246,7 +253,16 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         }
         initLeverageAdapter()
         initListenerInputAmount()
+        binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setDescriptionColor(R.color.awonar_color_orange)
+    }
 
+    private fun updateStopLoss() {
+        binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setNumber(
+            when (amount.type) {
+                "amount" -> amount.amount
+                else -> amount.unit
+            }
+        )
     }
 
     private fun initAmount() {
@@ -254,23 +270,13 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             amount.amount = it.available.times(0.05f)
             binding.awonarDialogOrderNumberPickerInputAmount.setNumber(amount.amount)
             instrument?.let { instrument ->
-                quote?.let { quote ->
-                    orderViewModel.getAmountOrUnit(
-                        instrumentId = instrument.id,
-                        price = when (orderType) {
-                            "buy" -> {
-                                if (currentLeverage > 1) quote.ask else quote.askSpread
-                            }
-                            else -> {
-                                quote.bidSpread
-                            }
-                        },
-                        amount = amount,
-                        leverage = currentLeverage
-                    )
-                }
+                orderViewModel.getUnit(
+                    instrumentId = instrument.id,
+                    price = price,
+                    amount = amount,
+                    leverage = currentLeverage
+                )
             }
-
         }
     }
 
@@ -331,17 +337,15 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     }
 
     private fun updateAmountInput() {
-        quote?.let { quote ->
-            instrument?.let {
-                val price: Float = when (orderType) {
-                    "buy" -> {
-                        if (currentLeverage > 1) quote.ask else quote.askSpread
-                    }
-                    else -> {
-                        quote.bidSpread
-                    }
-                }
-                orderViewModel.getAmountOrUnit(
+        instrument?.let {
+            when (amount.type) {
+                "amount" -> orderViewModel.getAmount(
+                    instrumentId = it.id,
+                    price = price,
+                    amount = amount,
+                    leverage = currentLeverage
+                )
+                else -> orderViewModel.getUnit(
                     instrumentId = it.id,
                     price = price,
                     amount = amount,
@@ -363,7 +367,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
 
     private fun updateCurrentPrice() {
         quote?.let {
-            val price: Float = when (orderType) {
+            price = when (orderType) {
                 "buy" -> {
                     if (currentLeverage > 1) it.ask else it.askSpread
                 }

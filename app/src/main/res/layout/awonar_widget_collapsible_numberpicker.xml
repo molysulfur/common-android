@@ -61,7 +61,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
-        app:checkedButton="@+id/awonar_dialog_order_button_amount_amount"
+        app:checkedButton="@+id/awonar_numberpicker_collapsible_button_amount_amount"
         app:layout_constraintBottom_toBottomOf="@+id/awonar_numberpicker_collapsible_text_title_amount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/awonar_numberpicker_collapsible_text_title_amount"
@@ -77,7 +77,7 @@
             android:text="@string/awonar_text_amount" />
 
         <Button
-            android:id="@+id/awonar_numberpicker_collapsible_button_amount_unit"
+            android:id="@+id/awonar_numberpicker_collapsible_button_amount_rate"
             style="?attr/materialButtonOutlinedStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
