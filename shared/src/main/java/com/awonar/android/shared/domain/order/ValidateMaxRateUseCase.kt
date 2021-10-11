@@ -18,7 +18,7 @@ class ValidateMaxRateUseCase @Inject constructor(@MainDispatcher dispatcher: Cor
     override suspend fun execute(parameters: ValidateRateRequest): Boolean {
         val maxRate: Float = parameters.currentRate.times(MAX_RATE)
         if (parameters.rate >= maxRate) {
-            return throw RateException("Rate must no more than $maxRate", maxRate)
+            throw RateException("Rate must no more than $maxRate", maxRate)
         }
         return true
     }

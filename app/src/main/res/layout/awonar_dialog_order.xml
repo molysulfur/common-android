@@ -3,6 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.awonar.app.ui.order.OrderViewModel" />
+    </data>
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -259,6 +266,7 @@
                 android:id="@+id/awonar_dialog_order_view_numberpicker_collapsible_sl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                setNumberPickerCollapsible="@{viewModel.stopLossState}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_order_view_divider_sl"

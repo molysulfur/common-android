@@ -13,16 +13,13 @@ class MarketPagerViewAdapter(fragment: Fragment) : FragmentStateAdapter(fragment
 
     override fun getItemCount(): Int = tabLists.size
 
-    override fun createFragment(position: Int): Fragment {
-        Timber.e("$position")
-        return when (position) {
-            0 -> RecommendedMarketFragment()
-            1 -> CategoriesMarketFragment()
-            2 -> MarketListFragment()
-            3 -> MarketListFragment()
-            4 -> MarketListFragment()
-            5 -> MarketListFragment()
-            else -> throw Error("Market View Pager is not found!")
-        }
+    override fun createFragment(position: Int): Fragment = when (position) {
+        0 -> RecommendedMarketFragment()
+        1 -> CategoriesMarketFragment()
+        2 -> MarketListFragment()
+        3 -> MarketListFragment()
+        4 -> MarketListFragment()
+        5 -> MarketListFragment()
+        else -> throw Error("Market View Pager is not found!")
     }
 }
