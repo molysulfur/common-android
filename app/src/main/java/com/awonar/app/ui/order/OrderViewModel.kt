@@ -2,6 +2,7 @@ package com.awonar.app.ui.order
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.awonar.android.constrant.TPSLType
 import com.awonar.android.exception.PositionExposureException
 import com.awonar.android.exception.RateException
 import com.awonar.android.exception.ValidateStopLossException
@@ -13,6 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,13 +29,15 @@ class OrderViewModel @Inject constructor(
     private val calculateRateStopLossWithBuyUseCase: CalculateRateStopLossWithBuyUseCase,
     private val calculateRateStopLossWithSellUseCase: CalculateRateStopLossWithSellUseCase,
     private val getDefaultStopLossUseCase: GetDefaultStopLossUseCase,
-    private val validateStopLossUseCase: ValidateStopLossUseCase
+    private val validateRateStopLossWithBuyUseCase: ValidateRateStopLossWithBuyUseCase,
+    private val validateAmountStopLossWithBuyUseCase: ValidateAmountStopLossWithBuyUseCase,
+    private val validateAmountStopLossWithSellUseCase: ValidateAmountStopLossWithSellUseCase,
+    private val validateAmountStopLossWithNonLeverageBuyUseCase: ValidateAmountStopLossWithNonLeverageBuyUseCase,
+    private val validateAmountStopLossWithNonLeverageSellUseCase: ValidateAmountStopLossWithNonLeverageSellUseCase,
 ) : ViewModel() {
 
-    private val _stopLossState: MutableStateFlow<Price?> = MutableStateFlow(null)
-    val stopLossState: StateFlow<Price?> get() = _stopLossState
-    private val _stopLossErrorState: MutableSharedFlow<String> = MutableSharedFlow()
-    val stopLossErrorState: SharedFlow<String> get() = _stopLossErrorState
+    private val _stopLossState: MutableSharedFlow<Price> = MutableSharedFlow()
+    val stopLossState: SharedFlow<Price> get() = _stopLossState
 
     private val _takeProfitState: MutableSharedFlow<Price> = MutableSharedFlow()
     val takeProfitState: SharedFlow<Price> get() = _takeProfitState
@@ -65,8 +69,8 @@ class OrderViewModel @Inject constructor(
                     amount = amount.amount
                 )
             )
-            val newAmount = result.successOr(0f)
-            _stopLossState.emit(Price(amount = newAmount, 1f, "amount"))
+            val price = Price(amount = result.successOr(0f), 1f, TPSLType.AMOUNT)
+            _stopLossState.emit(price)
         }
     }
 
@@ -79,7 +83,7 @@ class OrderViewModel @Inject constructor(
                 )
             )
             val newAmount = result.successOr(0f)
-            _takeProfitState.emit(Price(amount = newAmount, 1f, "amount"))
+            _takeProfitState.emit(Price(amount = newAmount, 1f, TPSLType.AMOUNT))
         }
     }
 
@@ -91,7 +95,6 @@ class OrderViewModel @Inject constructor(
                     currentRate = currentRate
                 )
             )
-            Timber.e("$result")
             if (result is Result.Error) {
                 _maxRateState.emit((result.exception as RateException).rate)
             }
@@ -169,36 +172,38 @@ class OrderViewModel @Inject constructor(
         }
     }
 
-    fun calculateStopLoss(
+    fun changeTypeStopLoss(
         instrumentId: Int,
         stoploss: Price,
+        stopLossType: String?,
         openPrice: Float,
         unitOrder: Float,
         orderType: String?
     ) {
         viewModelScope.launch {
+            stoploss.type = stopLossType ?: TPSLType.AMOUNT
             val request = StopLossRequest(
                 instrumentId = instrumentId,
                 stopLoss = stoploss,
                 openPrice = openPrice,
                 unit = unitOrder
             )
-            when (stoploss.type) {
-                "amount" -> {
+            when (stopLossType) {
+                TPSLType.AMOUNT -> {
                     val result = when (orderType) {
                         "buy" -> calculateAmountStopLossWithBuyUseCase(request)
                         else -> calculateAmountStopLossWithSellUseCase(request)
                     }
-                    val newStopLoss = result.successOr(stoploss)
-                    _stopLossState.emit(newStopLoss)
+                    Timber.e("${result.successOr(stoploss)}")
+                    _stopLossState.emit(result.successOr(stoploss))
                 }
-                "rate" -> {
+                TPSLType.RATE -> {
                     val result = when (orderType) {
                         "buy" -> calculateRateStopLossWithBuyUseCase(request)
                         else -> calculateRateStopLossWithSellUseCase(request)
                     }
-                    val newStopLoss = result.successOr(stoploss)
-                    _stopLossState.emit(newStopLoss)
+                    Timber.e("${result.successOr(stoploss)}")
+                    _stopLossState.emit(result.successOr(stoploss))
                 }
             }
         }
@@ -206,23 +211,65 @@ class OrderViewModel @Inject constructor(
 
     fun validateStopLoss(stoploss: Price, digit: Int, openPrice: Float) {
         viewModelScope.launch {
-            val result = validateStopLossUseCase(
-                ValidateStopLossRequest(
-                    stopLoss = stoploss,
-                    digit = digit,
-                    openPrice = openPrice
-                )
+            val data = ValidateStopLossRequest(
+                stopLoss = stoploss,
+                digit = digit,
+                openPrice = openPrice
             )
-            when (result) {
-                is Result.Error -> {
-                    val exception = result.exception as ValidateStopLossException
-                    _stopLossErrorState.emit(exception.message ?: "")
-                }
-                is Result.Success -> {
-                    _stopLossErrorState.emit("")
-                }
-                is Result.Loading -> {
-                }
+            validateRateStopLoss(data)
+        }
+    }
+
+    fun validateStopLoss(instrumentId: Int, stoploss: Price, leverage: Int, type: String) {
+        viewModelScope.launch {
+            val data = ValidateAmountStopLossRequest(
+                instrumentId = instrumentId,
+                stopLoss = stoploss
+            )
+            validateAmountStopLoss(data, leverage, type)
+        }
+    }
+
+    private suspend fun validateAmountStopLoss(
+        data: ValidateAmountStopLossRequest,
+        leverage: Int,
+        type: String
+    ) {
+        val result = when {
+            leverage == 1 && type == "buy" -> {
+                validateAmountStopLossWithNonLeverageBuyUseCase(data)
+            }
+            leverage == 1 && type == "sell" -> {
+                validateAmountStopLossWithNonLeverageSellUseCase(data)
+            }
+            leverage > 1 && type == "buy" -> {
+                validateAmountStopLossWithBuyUseCase(data)
+            }
+            leverage > 1 && type == "sell" -> {
+                validateAmountStopLossWithSellUseCase(data)
+            }
+            else -> {
+                Result.Error(ValidateStopLossException("leverage or type was wrong!", 0f))
+            }
+        }
+        if (result is Result.Error) {
+            val exception = result.exception as ValidateStopLossException
+            val stoploss = data.stopLoss
+            stoploss.amount = exception.value
+            _stopLossState.emit(stoploss)
+        }
+    }
+
+    private suspend fun validateRateStopLoss(data: ValidateStopLossRequest) {
+        val result = validateRateStopLossWithBuyUseCase(
+            data
+        )
+        when (result) {
+            is Result.Error -> {
+                val exception = result.exception as ValidateStopLossException
+                val stoploss = data.stopLoss
+                stoploss.unit = exception.value
+                _stopLossState.emit(stoploss)
             }
         }
     }

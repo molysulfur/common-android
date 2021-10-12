@@ -20,6 +20,7 @@ class NumberPickerEditText : BaseViewGroup {
 
     private var prefix: String = "$"
     private var number: Float = 0f
+    private var digit: Int = 0
     private var helper: String = ""
     private var placeholder: String? = null
     private var placeholderRes: Int = 0
@@ -53,6 +54,11 @@ class NumberPickerEditText : BaseViewGroup {
             number++
             updateNumber()
         }
+    }
+
+    fun setDigit(digit: Int) {
+        this.digit = digit
+        updateNumber()
     }
 
     fun setHelp(help: String) {
@@ -109,7 +115,7 @@ class NumberPickerEditText : BaseViewGroup {
 
     private fun updateNumber() {
         binding.awonarEditNumberPickerEditNumber.editText?.setText(
-            "%s%s".format(
+            "%s%.${if (digit > 0) digit else 2}f".format(
                 prefix,
                 number
             )
@@ -145,6 +151,7 @@ class NumberPickerEditText : BaseViewGroup {
         val ss = state?.let { SavedState(it) }
         ss?.prefix = prefix
         ss?.number = number
+        ss?.digit = digit
         ss?.helper = helper
         ss?.placeholder = placeholder
         ss?.placeholderRes = placeholderRes
@@ -156,6 +163,7 @@ class NumberPickerEditText : BaseViewGroup {
         val ss = state as SavedState
         prefix = ss.prefix ?: "$"
         number = ss.number
+        digit = ss.digit
         helper = ss.helper ?: ""
         placeholder = ss.placeholder
         placeholderRes = ss.placeholderRes
@@ -170,6 +178,7 @@ class NumberPickerEditText : BaseViewGroup {
 
         var prefix: String? = "$"
         var number: Float = 0f
+        var digit: Int = 0
         var helper: String? = "Monimun position size is $5.00"
         var placeholder: String? = null
         var placeholderRes: Int = 0
@@ -180,6 +189,7 @@ class NumberPickerEditText : BaseViewGroup {
         constructor(parcel: Parcel, classLoader: ClassLoader) : super(parcel, classLoader) {
             prefix = parcel.readString()
             number = parcel.readFloat()
+            digit = parcel.readInt()
             helper = parcel.readString()
             placeholder = parcel.readString()
             placeholderRes = parcel.readInt()
@@ -190,6 +200,7 @@ class NumberPickerEditText : BaseViewGroup {
             super.writeToParcel(out, flags)
             out.writeString(prefix)
             out.writeFloat(number)
+            out.writeInt(digit)
             out.writeString(helper)
             out.writeString(placeholder)
             out.writeInt(placeholderRes)

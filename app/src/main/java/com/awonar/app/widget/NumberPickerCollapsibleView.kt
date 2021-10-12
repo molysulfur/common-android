@@ -30,6 +30,8 @@ class NumberPickerCollapsibleView : BaseViewGroup {
     private var descriptionRes: Int = 0
     private var descriptionColor: Int = 0
     private var number: Float = 0f
+    private var digit: Int = 0
+    private var prefix: String = ""
     private var expanded = false
     private var isNoSet = true
     private val toggle: Transition = TransitionInflater.from(context)
@@ -63,7 +65,8 @@ class NumberPickerCollapsibleView : BaseViewGroup {
             doAfterFocusChange?.invoke(number, hasFocus)
         }
         binding.awonarNumberpickerCollapsibleInputNumber.doAfterTextChange = {
-            doAfterTextChange?.invoke(it)
+            this.number = it
+            doAfterTextChange?.invoke(this.number)
         }
         binding.awonarNumberpickerCollapsibleInputNumber.setPlaceholder("No set")
         updateNoSet()
@@ -72,6 +75,14 @@ class NumberPickerCollapsibleView : BaseViewGroup {
         updateNumber()
     }
 
+    fun setPrefix(prefix :String){
+        this.prefix = prefix
+        updatePrefix()
+    }
+
+    private fun updatePrefix() {
+        binding.awonarNumberpickerCollapsibleInputNumber.setPrefix(prefix)
+    }
 
     fun setHelp(help: String) {
         binding.awonarNumberpickerCollapsibleInputNumber.setHelp(help)
@@ -79,6 +90,12 @@ class NumberPickerCollapsibleView : BaseViewGroup {
 
     fun setNumber(number: Float) {
         this.number = number
+        updateNumber()
+    }
+
+
+    fun setDigit(digit: Int) {
+        this.digit = digit
         updateNumber()
     }
 
@@ -170,6 +187,11 @@ class NumberPickerCollapsibleView : BaseViewGroup {
             typedArray.getFloat(
                 R.styleable.NumberPickerCollapsibleView_numberPickerCollapsibleView_setNumber,
                 0f
+            )
+        digit =
+            typedArray.getInt(
+                R.styleable.NumberPickerCollapsibleView_numberPickerCollapsibleView_setDigit,
+                0
             )
         typedArray.recycle()
     }

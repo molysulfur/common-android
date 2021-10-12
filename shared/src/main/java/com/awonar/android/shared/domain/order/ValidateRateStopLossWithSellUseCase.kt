@@ -14,24 +14,15 @@ import java.text.NumberFormat
 import javax.inject.Inject
 import kotlin.math.pow
 
-class ValidateStopLossUseCase @Inject constructor(
+class ValidateRateStopLossWithSellUseCase @Inject constructor(
     @IoDispatcher dispatcher: CoroutineDispatcher
 ) : UseCase<ValidateStopLossRequest, Price>(dispatcher) {
     override suspend fun execute(parameters: ValidateStopLossRequest): Price {
         val slRate = parameters.stopLoss.unit
         val minRate = parameters.openPrice
-        val maxRate = BigDecimal(10.0.pow(-parameters.digit))
-            .setScale(
-                parameters.digit,
-                RoundingMode.DOWN
-            )
         if (slRate > minRate) {
-            throw ValidateStopLossException("Stop loss cannot more than $minRate")
+            throw ValidateStopLossException("Stop loss cannot more than $minRate",minRate)
         }
-        if (BigDecimal("$slRate") < maxRate) {
-            throw ValidateStopLossException("Stop loss cannot less than $maxRate")
-        }
-
         return parameters.stopLoss
     }
 }

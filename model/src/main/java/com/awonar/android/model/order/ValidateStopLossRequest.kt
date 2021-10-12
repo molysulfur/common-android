@@ -9,3 +9,10 @@ data class ValidateStopLossRequest(
     val digit: Int,
     val openPrice: Float
 ) : Parcelable
+
+
+@Parcelize
+data class ValidateAmountStopLossRequest(
+    val instrumentId: Int,
+    val stopLoss: Price
+) : Parcelable

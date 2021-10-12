@@ -10,6 +10,7 @@ import com.akexorcist.library.dialoginteractor.DialogLauncher
 import com.akexorcist.library.dialoginteractor.InteractorDialog
 import com.akexorcist.library.dialoginteractor.createBundle
 import com.awonar.android.constrant.MarketOrderType
+import com.awonar.android.constrant.TPSLType
 import com.awonar.android.model.market.Instrument
 import com.awonar.android.model.market.Quote
 import com.awonar.android.model.order.Price
@@ -48,8 +49,8 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     private var quote: Quote? = null
     private var price: Float = 0f
 
-    private var stoploss: Price = Price(amount = 0f, unit = 1f, "rate")
-    private var takeProfit: Price = Price(amount = 0f, unit = 1f, "rate")
+    private var stoploss: Price = Price(amount = 0f, unit = 1f, TPSLType.AMOUNT)
+    private var takeProfit: Price = Price(amount = 0f, unit = 1f, TPSLType.AMOUNT)
 
     companion object {
         private const val EXTRA_INSTRUMENT = "com.awonar.app.ui.dialog.order.extra.instrument"
@@ -82,12 +83,21 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        binding.viewModel = orderViewModel
+        binding.lifecycleOwner = viewLifecycleOwner
         launchAndRepeatWithViewLifecycle {
+            launch {
+                orderViewModel.stopLossState.collect { sl ->
+                    stoploss = sl
+                    updateStopLoss()
+                }
+            }
             launch {
                 orderViewModel.takeProfitErrorState.collect {
                     binding.awonarDialogOrderViewNumberpickerCollapsibleTp.setHelp(it)
                 }
             }
+
             launch {
                 orderViewModel.takeProfitState.collect { tp ->
                     takeProfit = tp
@@ -99,16 +109,13 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                     binding.awonarDialogOrderViewNumberpickerCollapsibleTp.setDescription("$number")
                 }
             }
-            launch {
-                orderViewModel.stopLossErrorState.collect {
-                    binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setHelp(it)
-                }
-            }
+
             launch {
                 orderViewModel.exposureState.collect {
                     binding.awonarDialogOrderNumberPickerInputAmount.setNumber(it)
                 }
             }
+
             launch {
                 orderViewModel.validateExposureErrorState.collect { message ->
                     message?.let {
@@ -117,6 +124,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
 
                 }
             }
+
             launch {
                 orderViewModel.getPriceState.collect {
                     amount = it
@@ -138,6 +146,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                     }
                 }
             }
+
             launch {
                 portfolioViewModel.portfolioState.collect {
                     if (it != null) {
@@ -146,6 +155,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                     }
                 }
             }
+
             launch {
                 marketViewModel.quoteSteamingState.collect { quotes ->
                     quote = quotes.find { it.id == instrument?.id }
@@ -173,7 +183,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
 
             launch {
                 orderViewModel.maxRateState.collect { rate ->
-                    Timber.e("$rate")
                     rate?.let {
                         binding.awonarDialogOrderNumberPickerInputRate.setNumber(it)
                     }
@@ -244,36 +253,37 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
 
     private fun initStopLossListener() {
         binding.awonarDialogOrderViewNumberpickerCollapsibleSl.onTypeChange = { type ->
-            stoploss.type = type
             instrument?.let { instrument ->
-                orderViewModel.calculateStopLoss(
+                orderViewModel.changeTypeStopLoss(
                     instrumentId = instrument.id,
                     stoploss = stoploss,
+                    stopLossType = type,
                     openPrice = price,
                     orderType = orderType,
                     unitOrder = amount.unit
                 )
             }
-            updateStopLoss()
         }
         binding.awonarDialogOrderViewNumberpickerCollapsibleSl.doAfterTextChange = {
-            stoploss.apply {
-                when (type) {
-                    "amount" -> this.amount = it
-                    "rate" -> this.unit = it
+            when (stoploss.type) {
+                TPSLType.AMOUNT -> {
+                    stoploss.amount = it
+                }
+                TPSLType.RATE -> {
+                    stoploss.unit = it
                 }
             }
-            binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setDescription(
-                "${
-                    when (stoploss.type) {
-                        "amount" -> stoploss.amount
-                        "rate" -> stoploss.unit
-                        else -> ""
-                    }
-                }"
-            )
             if (instrument != null && quote != null) {
-                orderViewModel.validateStopLoss(stoploss, instrument!!.digit, price)
+                when (stoploss.type) {
+                    TPSLType.AMOUNT -> {
+                        orderViewModel.validateStopLoss(
+                            instrumentId = instrument!!.id,
+                            stoploss = stoploss,
+                            leverage = currentLeverage,
+                            type = orderType ?: "buy"
+                        )
+                    }
+                }
             }
         }
         binding.awonarDialogOrderViewNumberpickerCollapsibleSl.doAfterFocusChange =
@@ -285,12 +295,20 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     }
 
     private fun updateStopLoss() {
-        binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setNumber(
-            when (amount.type) {
-                "amount" -> amount.amount
-                else -> amount.unit
+        when (stoploss.type) {
+            TPSLType.AMOUNT -> {
+                binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setDescription("${stoploss.amount}")
+                binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setNumber(stoploss.amount)
+                binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setPrefix("$-")
+                binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setDigit(0)
             }
-        )
+            TPSLType.RATE -> {
+                binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setDescription("${stoploss.unit}")
+                binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setNumber(stoploss.unit)
+                binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setPrefix("")
+                binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setDigit(instrument?.digit?:0)
+            }
+        }
     }
 
     private fun initAmount() {

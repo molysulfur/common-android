@@ -5,6 +5,7 @@
         <attr name="numberPickerCollapsibleView_setTitle" format="string" />
         <attr name="numberPickerCollapsibleView_setDescription" format="string" />
         <attr name="numberPickerCollapsibleView_setNumber" format="float" />
+        <attr name="numberPickerCollapsibleView_setDigit" format="integer" />
     </declare-styleable>
 
     <declare-styleable name="NumberPickerEditText">
