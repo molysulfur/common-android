@@ -270,6 +270,14 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                             type = orderType ?: "buy"
                         )
                     }
+                    TPSLType.RATE -> {
+                        orderViewModel.validateStopLoss(
+                            stoploss = stoploss,
+                            digit = instrument?.digit ?: 2,
+                            openPrice = price,
+                            orderType = orderType ?: "buy"
+                        )
+                    }
                 }
             }
         }
@@ -284,6 +292,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                             stoploss.unit = number
                         }
                     }
+                    updateStopLoss()
                 }
             }
     }
@@ -319,7 +328,9 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             TPSLType.RATE -> {
                 binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setDescription("${stoploss.unit}")
                 binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setPrefix("")
-                binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setDigit(instrument?.digit ?: 0)
+                binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setDigit(
+                    instrument?.digit ?: 0
+                )
                 binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setNumber(stoploss.unit)
             }
         }

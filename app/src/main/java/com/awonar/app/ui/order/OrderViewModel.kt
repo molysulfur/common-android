@@ -29,7 +29,9 @@ class OrderViewModel @Inject constructor(
     private val calculateRateStopLossWithBuyUseCase: CalculateRateStopLossWithBuyUseCase,
     private val calculateRateStopLossWithSellUseCase: CalculateRateStopLossWithSellUseCase,
     private val getDefaultStopLossUseCase: GetDefaultStopLossUseCase,
+    private val getDefaultTakeProfitUseCase: GetDefaultTakeProfitUseCase,
     private val validateRateStopLossWithBuyUseCase: ValidateRateStopLossWithBuyUseCase,
+    private val validateRateStopLossWithSellUseCase: ValidateRateStopLossWithSellUseCase,
     private val validateAmountStopLossWithBuyUseCase: ValidateAmountStopLossWithBuyUseCase,
     private val validateAmountStopLossWithSellUseCase: ValidateAmountStopLossWithSellUseCase,
     private val validateAmountStopLossWithNonLeverageBuyUseCase: ValidateAmountStopLossWithNonLeverageBuyUseCase,
@@ -70,7 +72,7 @@ class OrderViewModel @Inject constructor(
 
     fun getDefaultTakeProfit(instrumentId: Int, amount: Price) {
         viewModelScope.launch {
-            val result = getDefaultStopLossUseCase(
+            val result = getDefaultTakeProfitUseCase(
                 DefaultStopLossRequest(
                     instrumentId = instrumentId,
                     amount = amount.amount
@@ -203,14 +205,14 @@ class OrderViewModel @Inject constructor(
         }
     }
 
-    fun validateStopLoss(stoploss: Price, digit: Int, openPrice: Float) {
+    fun validateStopLoss(stoploss: Price, digit: Int, openPrice: Float, orderType: String) {
         viewModelScope.launch {
             val data = ValidateStopLossRequest(
                 stopLoss = stoploss,
                 digit = digit,
                 openPrice = openPrice
             )
-            validateRateStopLoss(data)
+            validateRateStopLoss(data, orderType)
         }
     }
 
@@ -254,10 +256,17 @@ class OrderViewModel @Inject constructor(
         }
     }
 
-    private suspend fun validateRateStopLoss(data: ValidateStopLossRequest) {
-        val result = validateRateStopLossWithBuyUseCase(
-            data
-        )
+    private suspend fun validateRateStopLoss(data: ValidateStopLossRequest, type: String) {
+        val result = when (type) {
+            "buy" -> validateRateStopLossWithBuyUseCase(
+                data
+            )
+            "sell" -> validateRateStopLossWithSellUseCase(
+                data
+            )
+            else -> Result.Error(ValidateStopLossException("type was wrong!", 0f))
+        }
+        Timber.e("$result")
         when (result) {
             is Result.Error -> {
                 val exception = result.exception as ValidateStopLossException
