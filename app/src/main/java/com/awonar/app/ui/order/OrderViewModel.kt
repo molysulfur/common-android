@@ -14,7 +14,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,10 +23,10 @@ class OrderViewModel @Inject constructor(
     private val getUnitUseCase: GetUnitUseCase,
     private val getAmountUseCase: GetAmountUseCase,
     private val validateExposureUseCase: ValidateExposureUseCase,
-    private val calculateAmountStopLossWithBuyUseCase: CalculateAmountStopLossWithBuyUseCase,
-    private val calculateAmountStopLossWithSellUseCase: CalculateAmountStopLossWithSellUseCase,
-    private val calculateRateStopLossWithBuyUseCase: CalculateRateStopLossWithBuyUseCase,
-    private val calculateRateStopLossWithSellUseCase: CalculateRateStopLossWithSellUseCase,
+    private val calculateAmountStopLossAndTakeProfitWithBuyUseCase: CalculateAmountStopLossAndTakeProfitWithBuyUseCase,
+    private val calculateAmountStopLossAndTakeProfitWithSellUseCase: CalculateAmountStopLossAndTakeProfitWithSellUseCase,
+    private val calculateRateStopLossAndTakeProfitWithBuyUseCase: CalculateRateStopLossAndTakeProfitWithBuyUseCase,
+    private val calculateRateStopLossAndTakeProfitsWithSellUseCase: CalculateRateStopLossAndTakeProfitsWithSellUseCase,
     private val getDefaultStopLossUseCase: GetDefaultStopLossUseCase,
     private val getDefaultTakeProfitUseCase: GetDefaultTakeProfitUseCase,
     private val validateRateStopLossWithBuyUseCase: ValidateRateStopLossWithBuyUseCase,
@@ -36,6 +35,7 @@ class OrderViewModel @Inject constructor(
     private val validateAmountStopLossWithSellUseCase: ValidateAmountStopLossWithSellUseCase,
     private val validateAmountStopLossWithNonLeverageBuyUseCase: ValidateAmountStopLossWithNonLeverageBuyUseCase,
     private val validateAmountStopLossWithNonLeverageSellUseCase: ValidateAmountStopLossWithNonLeverageSellUseCase,
+    private val validateRateTakeProfitWithBuyUseCase: ValidateRateTakeProfitWithBuyUseCase,
 ) : ViewModel() {
 
     private val _stopLossState: MutableSharedFlow<Price> = MutableSharedFlow()
@@ -168,6 +168,41 @@ class OrderViewModel @Inject constructor(
         }
     }
 
+    fun changeTypeTakeProfit(
+        instrumentId: Int,
+        takeProfit: Price,
+        takeProfitType: String?,
+        openPrice: Float,
+        unitOrder: Float,
+        orderType: String?
+    ) {
+        viewModelScope.launch {
+            takeProfit.type = takeProfitType ?: TPSLType.AMOUNT
+            val request = StopLossRequest(
+                instrumentId = instrumentId,
+                stopLoss = takeProfit,
+                openPrice = openPrice,
+                unit = unitOrder
+            )
+            when (takeProfitType) {
+                TPSLType.AMOUNT -> {
+                    val result = when (orderType) {
+                        "buy" -> calculateAmountStopLossAndTakeProfitWithBuyUseCase(request)
+                        else -> calculateAmountStopLossAndTakeProfitWithSellUseCase(request)
+                    }
+                    _takeProfitState.emit(result.successOr(takeProfit))
+                }
+                TPSLType.RATE -> {
+                    val result = when (orderType) {
+                        "buy" -> calculateRateStopLossAndTakeProfitWithBuyUseCase(request)
+                        else -> calculateRateStopLossAndTakeProfitsWithSellUseCase(request)
+                    }
+                    _takeProfitState.emit(result.successOr(takeProfit))
+                }
+            }
+        }
+    }
+
     fun changeTypeStopLoss(
         instrumentId: Int,
         stoploss: Price,
@@ -187,18 +222,16 @@ class OrderViewModel @Inject constructor(
             when (stopLossType) {
                 TPSLType.AMOUNT -> {
                     val result = when (orderType) {
-                        "buy" -> calculateAmountStopLossWithBuyUseCase(request)
-                        else -> calculateAmountStopLossWithSellUseCase(request)
+                        "buy" -> calculateAmountStopLossAndTakeProfitWithBuyUseCase(request)
+                        else -> calculateAmountStopLossAndTakeProfitWithSellUseCase(request)
                     }
-                    Timber.e("${result.successOr(stoploss)}")
                     _stopLossState.emit(result.successOr(stoploss))
                 }
                 TPSLType.RATE -> {
                     val result = when (orderType) {
-                        "buy" -> calculateRateStopLossWithBuyUseCase(request)
-                        else -> calculateRateStopLossWithSellUseCase(request)
+                        "buy" -> calculateRateStopLossAndTakeProfitWithBuyUseCase(request)
+                        else -> calculateRateStopLossAndTakeProfitsWithSellUseCase(request)
                     }
-                    Timber.e("${result.successOr(stoploss)}")
                     _stopLossState.emit(result.successOr(stoploss))
                 }
             }
@@ -266,13 +299,35 @@ class OrderViewModel @Inject constructor(
             )
             else -> Result.Error(ValidateStopLossException("type was wrong!", 0f))
         }
-        Timber.e("$result")
         when (result) {
             is Result.Error -> {
                 val exception = result.exception as ValidateStopLossException
                 val stoploss = data.stopLoss
                 stoploss.unit = exception.value
                 _stopLossState.emit(stoploss)
+            }
+        }
+    }
+
+    fun validateTakeProfit(takeProfit: Price, openPrice: Float, type: String) {
+        viewModelScope.launch {
+            val data = ValidateRateTakeProfitRequest(
+                takeProfit = takeProfit,
+                openPrice = openPrice
+            )
+            val result = when (type) {
+                "buy" -> validateRateTakeProfitWithBuyUseCase(data)
+                "sell" -> validateRateTakeProfitWithBuyUseCase(data)
+                else -> Result.Error(ValidateStopLossException("type was wrong!", 0f))
+            }
+            Timber.e("$result")
+            when (result) {
+                is Result.Error -> {
+                    val exception = result.exception as ValidateStopLossException
+                    val tp = data.takeProfit
+                    tp.unit = exception.value
+                    _takeProfitState.emit(tp)
+                }
             }
         }
     }

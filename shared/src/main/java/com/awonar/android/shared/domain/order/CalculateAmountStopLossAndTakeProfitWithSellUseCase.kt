@@ -9,9 +9,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 /***
- * Amount Stoploss = Stoploss Rate - current price * unit / conversion rate bid
+ * Amount Stoploss =   current price - Stoploss Rate * unit / conversion rate bid
  */
-class CalculateAmountStopLossWithBuyUseCase @Inject constructor(
+class CalculateAmountStopLossAndTakeProfitWithSellUseCase @Inject constructor(
     private val repository: CurrenciesRepository,
     @IoDispatcher dispatcher: CoroutineDispatcher
 ) : UseCase<StopLossRequest, Price>(dispatcher) {
@@ -19,7 +19,7 @@ class CalculateAmountStopLossWithBuyUseCase @Inject constructor(
     override suspend fun execute(parameters: StopLossRequest): Price {
         val stoploss = parameters.stopLoss
         val conversion = repository.getConversionByInstrumentId(parameters.instrumentId)
-        val amount = stoploss.unit.minus(parameters.openPrice).times(parameters.unit)
+        val amount = parameters.openPrice.minus(parameters.stopLoss.unit).times(parameters.unit)
             .div(conversion.rateBid)
         stoploss.amount = amount
         return stoploss

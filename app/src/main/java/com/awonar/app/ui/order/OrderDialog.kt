@@ -182,7 +182,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         return binding.root
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         instrument = arguments?.getParcelable(EXTRA_INSTRUMENT)
@@ -230,7 +229,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         initLeverageAdapter()
         initListenerInputAmount()
         initStopLoss()
-        binding.awonarDialogOrderViewNumberpickerCollapsibleTp.setDescriptionColor(R.color.awonar_color_primary)
+        initTakeProfit()
     }
 
     private fun initHeaderDialog() {
@@ -243,6 +242,53 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         binding.awonarDialogOrderImageIconClose.setOnClickListener {
             dismiss()
         }
+    }
+
+    private fun initTakeProfit() {
+        binding.awonarDialogOrderViewNumberpickerCollapsibleTp.setDescriptionColor(R.color.awonar_color_primary)
+        binding.awonarDialogOrderViewNumberpickerCollapsibleTp.onTypeChange = { type ->
+            instrument?.let { instrument ->
+                orderViewModel.changeTypeTakeProfit(
+                    instrumentId = instrument.id,
+                    takeProfit = takeProfit,
+                    takeProfitType = type,
+                    openPrice = price,
+                    orderType = orderType,
+                    unitOrder = amount.unit
+                )
+            }
+        }
+        binding.awonarDialogOrderViewNumberpickerCollapsibleTp.doAfterTextChange = {
+            if (instrument != null && quote != null) {
+                Timber.e("$takeProfit")
+                when (takeProfit.type) {
+                    TPSLType.AMOUNT -> {
+                        //TODO("")
+                    }
+                    TPSLType.RATE -> {
+                        orderViewModel.validateTakeProfit(
+                            takeProfit = takeProfit,
+                            openPrice = price,
+                            type = orderType ?: "buy"
+                        )
+                    }
+                }
+            }
+        }
+        binding.awonarDialogOrderViewNumberpickerCollapsibleTp.doAfterFocusChange =
+            { number, hasFocus ->
+                if (!hasFocus) {
+                    when (takeProfit.type) {
+                        TPSLType.AMOUNT -> {
+                            takeProfit.amount = number
+                        }
+                        TPSLType.RATE -> {
+                            takeProfit.unit = number
+                        }
+                    }
+                    updateTakeProfit()
+                }
+            }
     }
 
     private fun initStopLoss() {

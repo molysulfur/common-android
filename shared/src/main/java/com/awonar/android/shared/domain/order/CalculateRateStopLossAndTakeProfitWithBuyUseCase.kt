@@ -7,12 +7,13 @@ import com.awonar.android.shared.di.IoDispatcher
 import com.awonar.android.shared.repos.CurrenciesRepository
 import com.molysulfur.library.usecase.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
+import timber.log.Timber
 import javax.inject.Inject
 
 /***
- * Amount Stoploss * conversion rate bid /unit - current price = - Stoploss Rate
+ * Stoploss Rate = (Amount Stoploss * conversion rate bid / unit) + current price
  */
-class CalculateRateStopLossWithSellUseCase @Inject constructor(
+class CalculateRateStopLossAndTakeProfitWithBuyUseCase @Inject constructor(
     private val repository: CurrenciesRepository,
     @IoDispatcher dispatcher: CoroutineDispatcher
 ) : UseCase<StopLossRequest, Price>(dispatcher) {
@@ -20,9 +21,8 @@ class CalculateRateStopLossWithSellUseCase @Inject constructor(
     override suspend fun execute(parameters: StopLossRequest): Price {
         val stopLoss = parameters.stopLoss
         val conversion = repository.getConversionByInstrumentId(parameters.instrumentId)
-        val rate = (stopLoss.amount.times(conversion.rateBid).div(parameters.unit)
-            .minus(parameters.openPrice)) * -1
-        stopLoss.unit = rate
-        return stopLoss
+        val rate = (stopLoss.amount.times(conversion.rateBid).div(parameters.unit))
+            .plus(parameters.openPrice)
+        return Price(stopLoss.amount, rate, stopLoss.type)
     }
 }
