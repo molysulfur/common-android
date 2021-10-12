@@ -38,11 +38,8 @@ class OrderViewModel @Inject constructor(
 
     private val _stopLossState: MutableSharedFlow<Price> = MutableSharedFlow()
     val stopLossState: SharedFlow<Price> get() = _stopLossState
-
     private val _takeProfitState: MutableSharedFlow<Price> = MutableSharedFlow()
     val takeProfitState: SharedFlow<Price> get() = _takeProfitState
-    private val _takeProfitErrorState: MutableSharedFlow<String> = MutableSharedFlow()
-    val takeProfitErrorState: SharedFlow<String> get() = _takeProfitErrorState
 
     private val _validateExposureErrorState: MutableSharedFlow<String?> = MutableSharedFlow()
     val validateExposureErrorState: SharedFlow<String?> get() = _validateExposureErrorState
@@ -52,9 +49,6 @@ class OrderViewModel @Inject constructor(
 
     private val _getPriceState: MutableSharedFlow<Price> = MutableSharedFlow()
     val getPriceState: SharedFlow<Price> get() = _getPriceState
-
-    private val _rateErrorMessageState: MutableSharedFlow<String?> = MutableSharedFlow()
-    val rateErrorMessageState: SharedFlow<String?> get() = _rateErrorMessageState
 
     private val _minRateState: MutableSharedFlow<Float?> = MutableSharedFlow()
     val minRateState: SharedFlow<Float?> = _minRateState

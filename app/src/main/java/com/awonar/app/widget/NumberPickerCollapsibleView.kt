@@ -75,7 +75,7 @@ class NumberPickerCollapsibleView : BaseViewGroup {
         updateNumber()
     }
 
-    fun setPrefix(prefix :String){
+    fun setPrefix(prefix: String) {
         this.prefix = prefix
         updatePrefix()
     }
@@ -96,7 +96,11 @@ class NumberPickerCollapsibleView : BaseViewGroup {
 
     fun setDigit(digit: Int) {
         this.digit = digit
-        updateNumber()
+        updateDigit()
+    }
+
+    private fun updateDigit() {
+        binding.awonarNumberpickerCollapsibleInputNumber.setDigit(digit)
     }
 
     private fun updateNumber() {
