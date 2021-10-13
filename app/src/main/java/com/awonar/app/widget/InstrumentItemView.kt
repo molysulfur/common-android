@@ -50,10 +50,10 @@ class InstrumentItemView : BaseViewGroup {
 
     override fun setup() {
         binding.awonarInstrumentItemTextBid.setOnClickListener {
-            onOpenOrder?.invoke("bid")
+            onOpenOrder?.invoke("sell")
         }
         binding.awonarInstrumentItemTextAsk.setOnClickListener {
-            onOpenOrder?.invoke("ask")
+            onOpenOrder?.invoke("buy")
         }
         updateImage()
         updateAsk()

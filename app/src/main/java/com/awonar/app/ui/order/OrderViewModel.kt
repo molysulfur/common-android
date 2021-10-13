@@ -36,11 +36,14 @@ class OrderViewModel @Inject constructor(
     private val validateAmountStopLossWithNonLeverageBuyUseCase: ValidateAmountStopLossWithNonLeverageBuyUseCase,
     private val validateAmountStopLossWithNonLeverageSellUseCase: ValidateAmountStopLossWithNonLeverageSellUseCase,
     private val validateRateTakeProfitWithBuyUseCase: ValidateRateTakeProfitWithBuyUseCase,
-    private val getOvernightFeeUseCase: GetOvernightFeeUseCase,
+    private val getOvernightFeeDaliyUseCase: GetOvernightFeeDaliyUseCase,
+    private val getOvernightFeeWeeklyUseCase: GetOvernightFeeWeeklyUseCase,
 ) : ViewModel() {
 
     private val _overNightFeeState: MutableSharedFlow<Float> = MutableSharedFlow()
     val overNightFeeState: SharedFlow<Float> get() = _overNightFeeState
+    private val _overNightFeeWeekState: MutableSharedFlow<Float> = MutableSharedFlow()
+    val overNightFeeWeekState: SharedFlow<Float> get() = _overNightFeeWeekState
 
     private val _stopLossState: MutableSharedFlow<Price> = MutableSharedFlow()
     val stopLossState: SharedFlow<Price> get() = _stopLossState
@@ -336,9 +339,9 @@ class OrderViewModel @Inject constructor(
         }
     }
 
-    fun getOvernightFee(instrumentId: Int, amount: Price, leverage: Int, orderType: String) {
+    fun getOvernightFeeDaliy(instrumentId: Int, amount: Price, leverage: Int, orderType: String) {
         viewModelScope.launch {
-            val result = getOvernightFeeUseCase(
+            val result = getOvernightFeeDaliyUseCase(
                 OvernightFeeRequest(
                     instrumentId = instrumentId,
                     amount = amount,
@@ -347,6 +350,20 @@ class OrderViewModel @Inject constructor(
                 )
             )
             _overNightFeeState.emit(result.successOr(0f))
+        }
+    }
+
+    fun getOvernightFeeWeek(instrumentId: Int, amount: Price, leverage: Int, orderType: String) {
+        viewModelScope.launch {
+            val result = getOvernightFeeWeeklyUseCase(
+                OvernightFeeRequest(
+                    instrumentId = instrumentId,
+                    amount = amount,
+                    leverage = leverage,
+                    orderType = orderType
+                )
+            )
+            _overNightFeeWeekState.emit(result.successOr(0f))
         }
     }
 }

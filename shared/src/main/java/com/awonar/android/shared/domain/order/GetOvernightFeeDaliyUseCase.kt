@@ -8,7 +8,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import timber.log.Timber
 import javax.inject.Inject
 
-class GetOvernightFeeUseCase @Inject constructor(
+class GetOvernightFeeDaliyUseCase @Inject constructor(
     private val repository: MarketRepository,
     @IoDispatcher dispatcher: CoroutineDispatcher
 ) : UseCase<OvernightFeeRequest, Float>(dispatcher) {
@@ -22,7 +22,7 @@ class GetOvernightFeeUseCase @Inject constructor(
             parameters.leverage == 1 && parameters.orderType == "sell" -> trading.nonLeveragedSellOverNightFee
             else -> 0f
         }
-        Timber.e("$amount")
+        Timber.e("$amount $overnightFee")
         return overnightFee.times(amount.unit)
     }
 }

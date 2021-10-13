@@ -89,7 +89,11 @@ class RecommendedMarketFragment : Fragment() {
                 viewModel.onViewMore(arg)
             }
             instrumentAdapter.onOpenOrder = { instrument, type ->
-                OrderDialog.Builder().setSymbol(instrument).build().show(childFragmentManager)
+                OrderDialog.Builder()
+                    .setType(type)
+                    .setSymbol(instrument)
+                    .build()
+                    .show(childFragmentManager)
             }
             val adapter = ConcatAdapter(
                 InstrumentHorizontalWrapperAdapter(horizontalAdapter),
