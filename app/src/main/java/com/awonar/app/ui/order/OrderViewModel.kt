@@ -36,7 +36,11 @@ class OrderViewModel @Inject constructor(
     private val validateAmountStopLossWithNonLeverageBuyUseCase: ValidateAmountStopLossWithNonLeverageBuyUseCase,
     private val validateAmountStopLossWithNonLeverageSellUseCase: ValidateAmountStopLossWithNonLeverageSellUseCase,
     private val validateRateTakeProfitWithBuyUseCase: ValidateRateTakeProfitWithBuyUseCase,
+    private val getOvernightFeeUseCase: GetOvernightFeeUseCase,
 ) : ViewModel() {
+
+    private val _overNightFeeState: MutableSharedFlow<Float> = MutableSharedFlow()
+    val overNightFeeState: SharedFlow<Float> get() = _overNightFeeState
 
     private val _stopLossState: MutableSharedFlow<Price> = MutableSharedFlow()
     val stopLossState: SharedFlow<Price> get() = _stopLossState
@@ -329,6 +333,20 @@ class OrderViewModel @Inject constructor(
                     _takeProfitState.emit(tp)
                 }
             }
+        }
+    }
+
+    fun getOvernightFee(instrumentId: Int, amount: Price, leverage: Int, orderType: String) {
+        viewModelScope.launch {
+            val result = getOvernightFeeUseCase(
+                OvernightFeeRequest(
+                    instrumentId = instrumentId,
+                    amount = amount,
+                    leverage = leverage,
+                    orderType = orderType
+                )
+            )
+            _overNightFeeState.emit(result.successOr(0f))
         }
     }
 }

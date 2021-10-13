@@ -75,7 +75,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         setStyle(
             STYLE_NORMAL,
             android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen
-        );
+        )
     }
 
     override fun onCreateView(
@@ -83,8 +83,12 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         launchAndRepeatWithViewLifecycle {
+            launch {
+                orderViewModel.overNightFeeState.collect {
+                    binding.awonarDialogOrderTextOrderOvernight.text = "Overnight Fee : $it"
+                }
+            }
             launch {
                 orderViewModel.stopLossState.collect { sl ->
                     stoploss = sl
@@ -115,6 +119,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
 
             launch {
                 orderViewModel.getPriceState.collect {
+                    Timber.e("$amount")
                     amount = it
                     when (amount.type) {
                         "amount" -> binding.awonarDialogOrderNumberPickerInputAmount.setNumber(
@@ -130,6 +135,12 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                         orderViewModel.getDefaultTakeProfit(
                             instrumentId = instrument.id,
                             amount = amount
+                        )
+                        orderViewModel.getOvernightFee(
+                            instrumentId = instrument.id,
+                            amount = amount,
+                            leverage = currentLeverage,
+                            orderType = orderType ?: "buy"
                         )
                     }
                 }
@@ -186,8 +197,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         super.onViewCreated(view, savedInstanceState)
         instrument = arguments?.getParcelable(EXTRA_INSTRUMENT)
         orderType = arguments?.getString(EXTRA_ORDER_TYPE)
-
-
         binding.awonarDialogOrderNumberPickerInputRate.doAfterFocusChange = { rate, hasFocus ->
             if (!hasFocus) {
                 orderViewModel.calculateMinRate(rate, price)
@@ -216,11 +225,13 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                         binding.awonarDialogOrderNumberPickerInputAmount.setPrefix("$")
                         amount.type = "amount"
                         updateAmountInput()
+                        updateDetail()
                     }
                     R.id.awonar_dialog_order_button_amount_unit -> {
                         binding.awonarDialogOrderNumberPickerInputAmount.setPrefix("")
                         amount.type = "unit"
                         updateAmountInput()
+                        updateDetail()
                     }
                 }
             }
@@ -343,6 +354,25 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             }
     }
 
+    private fun updateDetail() {
+        val amountUnit: Float = when (amount.type) {
+            "amount" -> amount.unit
+            else -> amount.amount
+        }
+        val equity: Float = (amount.amount.div(portfolio?.available ?: 0f)) * 100
+        binding.awonarDialogOrderTextOrderDetail.text =
+            "%.2f Units | %.2f%s of equity | Exposure %.2f".format(
+                amountUnit,
+                equity,
+                "%",
+                amount.amount.times(currentLeverage)
+            )
+    }
+
+    private fun updateOvernightDetail() {
+
+    }
+
     private fun updateTakeProfit() {
         when (takeProfit.type) {
             TPSLType.AMOUNT -> {
@@ -394,6 +424,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                     leverage = currentLeverage
                 )
             }
+            updateDetail()
         }
     }
 
@@ -424,6 +455,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                 val newLeverage: Int = text.replace("X", "").toInt()
                 currentLeverage = newLeverage
                 validateExposure()
+                updateDetail()
                 binding.awonarDialogOrderCollapseLeverage.setDescription("X$newLeverage")
             }
         }

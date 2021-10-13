@@ -108,5 +108,6 @@
         android:id="@+id/awonar_numberpicker_collapsible_group_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:constraint_referenced_ids="awonar_numberpicker_collapsible_text_title_amount,awonar_numberpicker_collapsible_toggle_order_amount_type,awonar_numberpicker_collapsible_input_number,awonar_numberpicker_collapsible_button_no_set" />
 </androidx.constraintlayout.widget.ConstraintLayout>
