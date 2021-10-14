@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.awonar.android.model.market.Instrument
 import com.awonar.android.model.market.MarketViewMoreArg
 import com.awonar.android.model.market.Quote
+import com.awonar.android.model.order.OpenOrderRequest
+import com.awonar.android.model.order.Price
 import com.awonar.android.model.tradingdata.TradingData
 import com.awonar.android.shared.domain.market.GetInstrumentListUseCase
 import com.awonar.android.shared.domain.order.GetTradingDataByInstrumentIdUseCase
@@ -95,7 +97,7 @@ class MarketViewModel @Inject constructor(
             val instrumentList =
                 instruments.value.filter { it.categories?.contains("crypto") == true }
             _instrumentItem.value =
-                convertInstrumentToItemUseCase(instruments.value).data ?: arrayListOf()
+                convertInstrumentToItemUseCase(instrumentList).data ?: arrayListOf()
         }
     }
 

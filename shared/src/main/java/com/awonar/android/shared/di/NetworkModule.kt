@@ -65,4 +65,10 @@ class NetworkModule {
     fun provideCurrenciesService(client: NetworkClient): CurrenciesService {
         return CurrenciesService.create(client)
     }
+
+    @Singleton
+    @Provides
+    fun provideOrderService(client: NetworkClient): OrderService {
+        return OrderService.create(client)
+    }
 }

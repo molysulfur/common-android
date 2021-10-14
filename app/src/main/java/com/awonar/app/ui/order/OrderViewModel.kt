@@ -2,6 +2,7 @@ package com.awonar.app.ui.order
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.awonar.android.constrant.MarketOrderType
 import com.awonar.android.constrant.TPSLType
 import com.awonar.android.exception.PositionExposureException
 import com.awonar.android.exception.RateException
@@ -11,6 +12,7 @@ import com.awonar.android.shared.domain.order.*
 import com.molysulfur.library.result.Result
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -38,7 +40,11 @@ class OrderViewModel @Inject constructor(
     private val validateRateTakeProfitWithBuyUseCase: ValidateRateTakeProfitWithBuyUseCase,
     private val getOvernightFeeDaliyUseCase: GetOvernightFeeDaliyUseCase,
     private val getOvernightFeeWeeklyUseCase: GetOvernightFeeWeeklyUseCase,
+    private val openOrderUseCase: OpenOrderUseCase
 ) : ViewModel() {
+
+    private val _openOrderState= Channel<Boolean>(capacity = Channel.CONFLATED)
+    val openOrderState get() = _openOrderState.receiveAsFlow()
 
     private val _overNightFeeState: MutableSharedFlow<Float> = MutableSharedFlow()
     val overNightFeeState: SharedFlow<Float> get() = _overNightFeeState
@@ -63,6 +69,37 @@ class OrderViewModel @Inject constructor(
     val minRateState: SharedFlow<Float?> = _minRateState
     private val _maxRateState: MutableSharedFlow<Float?> = MutableSharedFlow()
     val maxRateState: SharedFlow<Float?> get() = _maxRateState
+
+    fun openOrder(
+        instrumentId: Int,
+        amount: Price,
+        stopLoss: Price,
+        takeProfit: Price,
+        orderType: String,
+        leverage: Int,
+        rate: Float
+    ) {
+        viewModelScope.launch {
+            val request = OpenOrderRequest(
+                instrumentId = instrumentId,
+                amount = amount.amount,
+                units = amount.unit,
+                isBuy = orderType == "buy",
+                leverage = leverage,
+                rate = rate,
+                stopLoss = stopLoss.unit,
+                takeProfit = takeProfit.unit
+            )
+            openOrderUseCase(request).collect {
+                val response = it.successOr(null)
+                if (response != null) {
+                    _openOrderState.send(true)
+                } else {
+                    _openOrderState.send(false)
+                }
+            }
+        }
+    }
 
     fun getDefaultStopLoss(instrumentId: Int, amount: Price) {
         viewModelScope.launch {
@@ -327,7 +364,6 @@ class OrderViewModel @Inject constructor(
                 "sell" -> validateRateTakeProfitWithBuyUseCase(data)
                 else -> Result.Error(ValidateStopLossException("type was wrong!", 0f))
             }
-            Timber.e("$result")
             when (result) {
                 is Result.Error -> {
                     val exception = result.exception as ValidateStopLossException
