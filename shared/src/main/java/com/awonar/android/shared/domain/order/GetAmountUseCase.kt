@@ -18,9 +18,6 @@ class GetAmountUseCase @Inject constructor(
         val conversionRate =
             currencyRepository.getConversionByInstrumentId(instrumentId = parameters.instrumentId)
         if (conversionRate != null) {
-            Timber.e(
-                """$parameters"""
-            )
             return parameters.amount.times(parameters.price).div(parameters.leverage)
                 .div(conversionRate.rateAsk)
         }

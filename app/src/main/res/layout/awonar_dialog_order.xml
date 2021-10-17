@@ -8,6 +8,10 @@
         <variable
             name="viewModel"
             type="com.awonar.app.ui.order.OrderViewModel" />
+
+        <variable
+            name="activityViewModel"
+            type="com.awonar.app.ui.order.OrderViewModelActivity" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -148,7 +152,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
-                app:checkedButton="@+id/awonar_dialog_order_button_rate_amount"
+                app:checkedButton="@+id/awonar_dialog_order_button_rate_market"
                 app:layout_constraintBottom_toBottomOf="@+id/awonar_dialog_order_text_title_rate"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/awonar_dialog_order_text_title_rate"
@@ -156,7 +160,7 @@
                 app:singleSelection="true">
 
                 <Button
-                    android:id="@+id/awonar_dialog_order_button_rate_amount"
+                    android:id="@+id/awonar_dialog_order_button_rate_market"
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -164,7 +168,7 @@
                     android:text="@string/awonar_text_market" />
 
                 <Button
-                    android:id="@+id/awonar_dialog_order_button_rate_unit"
+                    android:id="@+id/awonar_dialog_order_button_rate_manual"
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -177,6 +181,8 @@
                 android:id="@+id/awonar_dialog_order_number_picker_input_rate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                visibleHint="@{activityViewModel.marketOrderTypeState}"
+                setRate="@{activityViewModel.rateState}"
                 android:layout_margin="@dimen/awonar_size_margin_padding_normal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -230,6 +236,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+                setAmount="@{activityViewModel.amountState}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_order_toggle_order_amount_type" />

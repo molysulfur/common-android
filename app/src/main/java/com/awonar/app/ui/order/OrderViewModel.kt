@@ -65,11 +65,6 @@ class OrderViewModel @Inject constructor(
     private val _getPriceState: MutableSharedFlow<Price> = MutableSharedFlow()
     val getPriceState: SharedFlow<Price> get() = _getPriceState
 
-    private val _minRateState: MutableSharedFlow<Float?> = MutableSharedFlow()
-    val minRateState: SharedFlow<Float?> = _minRateState
-    private val _maxRateState: MutableSharedFlow<Float?> = MutableSharedFlow()
-    val maxRateState: SharedFlow<Float?> get() = _maxRateState
-
     fun openOrder(
         instrumentId: Int,
         amount: Price,
@@ -124,34 +119,6 @@ class OrderViewModel @Inject constructor(
             )
             val newAmount = result.successOr(0f)
             _takeProfitState.emit(Price(amount = newAmount, 1f, TPSLType.AMOUNT))
-        }
-    }
-
-    fun calculateMaxRate(rate: Float, currentRate: Float) {
-        viewModelScope.launch {
-            val result: Result<Boolean?> = validateMaxRateUseCase(
-                ValidateRateRequest(
-                    rate = rate,
-                    currentRate = currentRate
-                )
-            )
-            if (result is Result.Error) {
-                _maxRateState.emit((result.exception as RateException).rate)
-            }
-        }
-    }
-
-    fun calculateMinRate(rate: Float, currentRate: Float) {
-        viewModelScope.launch {
-            val result: Result<Boolean?> = validateMinRateUseCase(
-                ValidateRateRequest(
-                    rate = rate,
-                    currentRate = currentRate
-                )
-            )
-            if (result is Result.Error) {
-                _minRateState.emit((result.exception as RateException).rate)
-            }
         }
     }
 

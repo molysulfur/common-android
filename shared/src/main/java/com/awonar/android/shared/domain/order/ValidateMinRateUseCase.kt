@@ -17,8 +17,9 @@ class ValidateMinRateUseCase @Inject constructor(@MainDispatcher dispatcher: Cor
 
     override suspend fun execute(parameters: ValidateRateRequest): Boolean {
         val minRate: Float = parameters.currentRate.div(MIN_RATE)
+        val minString = "%.${parameters.digit}f".format(minRate)
         if (parameters.rate < minRate) {
-            return throw RateException("Rate must not lower than $minRate", minRate)
+            return throw RateException("Rate must not lower than $minString", minString.toFloat())
         }
         return true
     }

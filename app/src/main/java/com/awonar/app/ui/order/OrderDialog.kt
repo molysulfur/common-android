@@ -21,7 +21,6 @@ import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarDialogOrderBinding
 import com.awonar.app.ui.market.MarketViewModel
-import com.awonar.app.ui.market.OrderViewModelActivity
 import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.awonar.app.utils.ColorChangingUtil
 import com.molysulfur.library.extension.toast
@@ -46,7 +45,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     private var tradingData: TradingData? = null
     private var portfolio: Portfolio? = null
     private var orderType: String? = "buy"
-    private lateinit var marketOrderType: MarketOrderType
     private var currentLeverage: Int = 1
     private var amount: Price = Price(0f, 1f, "amount")
     private var quote: Quote? = null
@@ -91,16 +89,19 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     ): View {
         launchAndRepeatWithViewLifecycle {
             launch {
+                orderActivityViewModel.rateState.collect {
+                    instrument?.run {
+                        orderActivityViewModel.calculateMaxRate(it, price, digit)
+                        orderActivityViewModel.calculateMinRate(it, price, digit)
+                    }
+                }
+            }
+            launch {
                 orderViewModel.openOrderState.collect { success ->
                     dismiss()
                     if (success) {
                         toast("Successfully.")
                     }
-                }
-            }
-            launch {
-                orderActivityViewModel.orderTypeState.collect {
-                    marketOrderType = it
                 }
             }
             launch {
@@ -110,7 +111,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                 }
             }
             launch {
-
                 orderViewModel.overNightFeeState.collect {
                     overnightDaliy = it
                     updateOvernight()
@@ -180,10 +180,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                 marketViewModel.quoteSteamingState.collect { quotes ->
                     quote = quotes.find { it.id == instrument?.id }
                     updateCurrentPrice()
-                    updateRate()
-                    if (marketOrderType != MarketOrderType.PENDING_ORDER) {
-                        updateOrderType()
-                    }
+                    orderActivityViewModel.updateRateWithStream(price)
                 }
             }
 
@@ -196,24 +193,9 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                     }
                 }
             }
-
-            launch {
-                orderViewModel.minRateState.collect { rate ->
-                    rate?.let {
-                        binding.awonarDialogOrderNumberPickerInputRate.setNumber(it)
-                    }
-                }
-            }
-
-            launch {
-                orderViewModel.maxRateState.collect { rate ->
-                    rate?.let {
-                        binding.awonarDialogOrderNumberPickerInputRate.setNumber(it)
-                    }
-                }
-            }
         }
         binding.viewModel = orderViewModel
+        binding.activityViewModel = orderActivityViewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
@@ -237,15 +219,8 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     }
 
     private fun updateOvernight() {
-        Timber.e("$overnightDaliy, $overnightWeek")
         binding.awonarDialogOrderTextOrderOvernight.text =
             "Overnight Fee : Daily: %.2f | Weekend: %.2f".format(overnightDaliy, overnightWeek)
-    }
-
-    private fun updateRate() {
-        if (marketOrderType != MarketOrderType.PENDING_ORDER) {
-            rate = price
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -256,15 +231,11 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             if (isChecked) {
                 when (checkedId) {
                     R.id.awonar_dialog_order_button_amount_amount -> {
-                        binding.awonarDialogOrderNumberPickerInputAmount.setPrefix("$")
-                        amount.type = "amount"
-                        calculateAmountOrUnit()
+                        orderActivityViewModel.updateAmountType("amount")
                         updateDetail()
                     }
                     R.id.awonar_dialog_order_button_amount_unit -> {
-                        binding.awonarDialogOrderNumberPickerInputAmount.setPrefix("")
-                        amount.type = "unit"
-                        calculateAmountOrUnit()
+                        orderActivityViewModel.updateAmountType("unit")
                         updateDetail()
                     }
                 }
@@ -274,34 +245,32 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             submitOrder()
         }
         initHeaderDialog()
+        initRateListener()
         initLeverageAdapter()
         initListenerInputAmount()
         initStopLoss()
         initTakeProfit()
-        initRateListener()
     }
 
     private fun initRateListener() {
-        binding.awonarDialogOrderNumberPickerInputRate.doAfterTextChange = {
-            this.rate = it
-        }
-        binding.awonarDialogOrderNumberPickerInputRate.doAfterFocusChange = { rate, hasFocus ->
-            if (!hasFocus) {
-                orderViewModel.calculateMinRate(rate, price)
-                orderViewModel.calculateMaxRate(rate, price)
+        instrument?.run {
+            binding.awonarDialogOrderNumberPickerInputRate.setDigit(digit)
+            binding.awonarDialogOrderNumberPickerInputRate.setPrefix("")
+            binding.awonarDialogOrderNumberPickerInputRate.doAfterTextChange = {
+                orderActivityViewModel.updateRate(it)
             }
         }
+
         binding.awonarDialogOrderToggleOrderRateType.addOnButtonCheckedListener { _, checkedId, _ ->
             when (checkedId) {
-                R.id.awonar_dialog_order_button_rate_amount -> {
-                    binding.awonarDialogOrderNumberPickerInputRate.setPlaceHolderEnable(true)
-                    updateOrderType()
-
+                R.id.awonar_dialog_order_button_rate_market -> {
+                    if (quote?.status == "open")
+                        orderActivityViewModel.updateMarketOrderType(MarketOrderType.OPEN_ORDER)
+                    else
+                        orderActivityViewModel.updateMarketOrderType(MarketOrderType.ENTRY_ORDER)
                 }
-                R.id.awonar_dialog_order_button_rate_unit -> {
-                    binding.awonarDialogOrderNumberPickerInputRate.setPlaceHolderEnable(false)
-                    binding.awonarDialogOrderNumberPickerInputRate.setNumber(price)
-                    orderActivityViewModel.updateMarketType(MarketOrderType.PENDING_ORDER)
+                R.id.awonar_dialog_order_button_rate_manual -> {
+                    orderActivityViewModel.updateMarketOrderType(MarketOrderType.PENDING_ORDER)
                 }
                 else -> {
                 }
@@ -321,19 +290,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                 rate = rate
             )
         }
-
     }
-
-    private fun updateOrderType() {
-        quote?.let {
-            if (it.status == "open") {
-                orderActivityViewModel.updateMarketType(MarketOrderType.OPEN_ORDER)
-            } else {
-                orderActivityViewModel.updateMarketType(MarketOrderType.ENTRY_ORDER)
-            }
-        }
-    }
-
 
     private fun initHeaderDialog() {
         instrument?.let {
@@ -511,15 +468,13 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     }
 
     private fun initAmount() {
-        portfolio?.let {
-            amount.amount = it.available.times(0.05f)
-            binding.awonarDialogOrderNumberPickerInputAmount.setNumber(amount.amount)
+        portfolio?.let { portfolio ->
             instrument?.let { instrument ->
-                orderViewModel.getUnit(
-                    instrumentId = instrument.id,
-                    price = price,
-                    amount = amount,
-                    leverage = currentLeverage
+                orderActivityViewModel.getDefaultAmount(
+                    instrument.id,
+                    currentLeverage,
+                    price,
+                    portfolio.available
                 )
             }
             updateDetail()
