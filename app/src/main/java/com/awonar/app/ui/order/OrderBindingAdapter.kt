@@ -1,5 +1,6 @@
 package com.awonar.app.ui.order
 
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.databinding.BindingAdapter
 import com.awonar.android.constrant.MarketOrderType
 import com.awonar.android.model.order.Price
@@ -7,6 +8,12 @@ import com.awonar.app.widget.NumberPickerCollapsibleView
 import com.awonar.app.widget.NumberPickerEditText
 import timber.log.Timber
 
+
+@BindingAdapter("setOvernightDaily", "setOvernightWeek")
+fun setOvernight(textView: AppCompatTextView, overnightDaliy: Float, overnightWeek: Float) {
+    textView.text =
+        "Overnight Fee : Daily: %.2f | Weekend: %.2f".format(overnightDaliy, overnightWeek)
+}
 
 @BindingAdapter("setRate")
 fun setRate(view: NumberPickerEditText, rate: Float) {
@@ -36,7 +43,7 @@ fun setAmount(view: NumberPickerEditText, amount: Price) {
     }
 }
 
-@BindingAdapter("setNumberPickerCollapsibleView", "setDigit",)
+@BindingAdapter("setNumberPickerCollapsibleView", "setDigit")
 fun setNumberPickerCollapsibleView(
     view: NumberPickerCollapsibleView,
     stopLoss: Price,

@@ -44,13 +44,11 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     private var tradingData: TradingData? = null
     private var portfolio: Portfolio? = null
     private var orderType: String? = "buy"
-    private var currentLeverage: Int = 1
-    private var amount: Price = Price(0f, 1f, "amount")
     private var quote: Quote? = null
     private var price: Float = 0f
-    private var overnightDaliy: Float = 0f
-    private var overnightWeek: Float = 0f
 
+    private var currentLeverage: Int = 1
+    private var amount: Price = Price(0f, 1f, "amount")
     private var takeProfit: Price = Price(amount = 0f, unit = 1f, TPSLType.AMOUNT)
 
     companion object {
@@ -86,6 +84,11 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     ): View {
         launchAndRepeatWithViewLifecycle {
             launch {
+                orderActivityViewModel.getOrderRequest.collect {
+                    orderViewModel.openOrder(it)
+                }
+            }
+            launch {
                 orderActivityViewModel.stopLossState.collect {
                     validateStoploss()
                 }
@@ -94,6 +97,8 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                 orderActivityViewModel.amountState.collect {
                     validateExposure()
                     getDefaultTpAndSl()
+                    updateDetail()
+                    getOvernight()
                 }
             }
             launch {
@@ -122,25 +127,11 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                 }
             }
             launch {
-                orderViewModel.overNightFeeWeekState.collect {
-                    overnightWeek = it
-                    updateOvernight()
-                }
-            }
-            launch {
-                orderViewModel.overNightFeeState.collect {
-                    overnightDaliy = it
-                    updateOvernight()
-                }
-            }
-
-            launch {
                 orderViewModel.takeProfitState.collect { tp ->
                     takeProfit = tp
                     updateTakeProfit()
                 }
             }
-
             launch {
                 orderActivityViewModel.exposureState.collect {
                     instrument?.let { instrument ->
@@ -148,13 +139,11 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                     }
                 }
             }
-
             launch {
                 orderActivityViewModel.exposureMessageState.collect {
                     binding.awonarDialogOrderNumberPickerInputAmount.setHelp(it)
                 }
             }
-
             launch {
                 portfolioViewModel.portfolioState.collect {
                     if (it != null) {
@@ -163,7 +152,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                     }
                 }
             }
-
             launch {
                 marketViewModel.quoteSteamingState.collect { quotes ->
                     quote = quotes.find { it.id == instrument?.id }
@@ -227,25 +215,16 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
 
     private fun getOvernight() {
         instrument?.let { instrument ->
-            orderViewModel.getOvernightFeeDaliy(
+            orderActivityViewModel.getOvernightFeeDaliy(
                 instrumentId = instrument.id,
-                amount = amount,
-                leverage = currentLeverage,
                 orderType = orderType ?: "buy"
             )
-            orderViewModel.getOvernightFeeWeek(
+            orderActivityViewModel.getOvernightFeeWeek(
                 instrumentId = instrument.id,
-                amount = amount,
-                leverage = currentLeverage,
                 orderType = orderType ?: "buy"
             )
         }
 
-    }
-
-    private fun updateOvernight() {
-        binding.awonarDialogOrderTextOrderOvernight.text =
-            "Overnight Fee : Daily: %.2f | Weekend: %.2f".format(overnightDaliy, overnightWeek)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -268,7 +247,12 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             }
         }
         binding.awonarDialogOrderButtonOpenTrade.setOnClickListener {
-            submitOrder()
+            instrument?.let { instrument ->
+                orderActivityViewModel.getOrderRequest(
+                    instrumentId = instrument.id,
+                    orderType = orderType ?: "buy"
+                )
+            }
         }
         initHeaderDialog()
         initRateListener()
@@ -302,20 +286,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                 }
             }
         }
-    }
-
-    private fun submitOrder() {
-//        instrument?.let { instrument ->
-//            orderViewModel.openOrder(
-//                instrumentId = instrument.id,
-//                amount = amount,
-//                stopLoss = stoploss,
-//                takeProfit = takeProfit,
-//                leverage = currentLeverage,
-//                orderType = orderType ?: "buy",
-//                rate = rate
-//            )
-//    }
     }
 
     private fun initHeaderDialog() {
@@ -397,28 +367,8 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     }
 
     private fun updateDetail() {
-        if (portfolio?.available ?: 0f < amount.amount) {
-            binding.awonarDialogOrderButtonOpenTrade.text = "Deposit"
-            binding.awonarDialogOrderTextOrderDetail.text =
-                " Deposit %.2f $ for order to open this trade.".format(
-                    amount.amount.minus(
-                        portfolio?.available ?: 0f
-                    )
-                )
-        } else {
-            val amountUnit: Float = when (amount.type) {
-                "amount" -> amount.unit
-                else -> amount.amount
-            }
-            val equity: Float = (amount.amount.div(portfolio?.available ?: 0f)) * 100
-            binding.awonarDialogOrderTextOrderDetail.text =
-                "%.2f Units | %.2f%s of equity | Exposure %.2f".format(
-                    amountUnit,
-                    equity,
-                    "%",
-                    amount.amount.times(currentLeverage)
-                )
-        }
+        orderActivityViewModel.getDetail(portfolio?.available ?: 0f)
+
     }
 
     private fun updateTakeProfit() {
@@ -450,8 +400,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                     portfolio.available
                 )
             }
-            updateDetail()
-            getOvernight()
+
         }
     }
 
@@ -538,7 +487,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             binding.awonarDialogOrderTextMarketStatus.text = it.status
         }
     }
-
 
     class Builder {
         private var instrument: Instrument? = null

@@ -25,42 +25,19 @@ class OrderViewModel @Inject constructor(
     private val calculateRateStopLossAndTakeProfitWithBuyUseCase: CalculateRateStopLossAndTakeProfitWithBuyUseCase,
     private val calculateRateStopLossAndTakeProfitsWithSellUseCase: CalculateRateStopLossAndTakeProfitsWithSellUseCase,
     private val validateRateTakeProfitWithBuyUseCase: ValidateRateTakeProfitWithBuyUseCase,
-    private val getOvernightFeeDaliyUseCase: GetOvernightFeeDaliyUseCase,
-    private val getOvernightFeeWeeklyUseCase: GetOvernightFeeWeeklyUseCase,
     private val openOrderUseCase: OpenOrderUseCase
 ) : ViewModel() {
 
     private val _openOrderState = Channel<Boolean>(capacity = Channel.CONFLATED)
     val openOrderState get() = _openOrderState.receiveAsFlow()
 
-    private val _overNightFeeState: MutableSharedFlow<Float> = MutableSharedFlow()
-    val overNightFeeState: SharedFlow<Float> get() = _overNightFeeState
-    private val _overNightFeeWeekState: MutableSharedFlow<Float> = MutableSharedFlow()
-    val overNightFeeWeekState: SharedFlow<Float> get() = _overNightFeeWeekState
-
     private val _takeProfitState: MutableSharedFlow<Price> = MutableSharedFlow()
     val takeProfitState: SharedFlow<Price> get() = _takeProfitState
 
     fun openOrder(
-        instrumentId: Int,
-        amount: Price,
-        stopLoss: Price,
-        takeProfit: Price,
-        orderType: String,
-        leverage: Int,
-        rate: Float
+        request: OpenOrderRequest
     ) {
         viewModelScope.launch {
-            val request = OpenOrderRequest(
-                instrumentId = instrumentId,
-                amount = amount.amount,
-                units = amount.unit,
-                isBuy = orderType == "buy",
-                leverage = leverage,
-                rate = rate,
-                stopLoss = stopLoss.unit,
-                takeProfit = takeProfit.unit
-            )
             openOrderUseCase(request).collect {
                 val response = it.successOr(null)
                 if (response != null) {
@@ -129,32 +106,5 @@ class OrderViewModel @Inject constructor(
         }
     }
 
-    fun getOvernightFeeDaliy(instrumentId: Int, amount: Price, leverage: Int, orderType: String) {
-        viewModelScope.launch {
-            val result = getOvernightFeeDaliyUseCase(
-                OvernightFeeRequest(
-                    instrumentId = instrumentId,
-                    amount = amount,
-                    leverage = leverage,
-                    orderType = orderType
-                )
-            )
-            _overNightFeeState.emit(result.successOr(0f))
-        }
-    }
-
-    fun getOvernightFeeWeek(instrumentId: Int, amount: Price, leverage: Int, orderType: String) {
-        viewModelScope.launch {
-            val result = getOvernightFeeWeeklyUseCase(
-                OvernightFeeRequest(
-                    instrumentId = instrumentId,
-                    amount = amount,
-                    leverage = leverage,
-                    orderType = orderType
-                )
-            )
-            _overNightFeeWeekState.emit(result.successOr(0f))
-        }
-    }
 
 }

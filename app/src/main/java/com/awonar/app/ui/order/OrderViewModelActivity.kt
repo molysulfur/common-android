@@ -12,6 +12,7 @@ import com.awonar.android.shared.domain.order.*
 import com.molysulfur.library.result.Result
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -23,6 +24,8 @@ class OrderViewModelActivity @Inject constructor(
     private val getAmountUseCase: GetAmountUseCase,
     private val getDefaultStopLossUseCase: GetDefaultStopLossUseCase,
     private val getDefaultTakeProfitUseCase: GetDefaultTakeProfitUseCase,
+    private val getOvernightFeeDaliyUseCase: GetOvernightFeeDaliyUseCase,
+    private val getOvernightFeeWeeklyUseCase: GetOvernightFeeWeeklyUseCase,
     private val calculateAmountStopLossAndTakeProfitWithBuyUseCase: CalculateAmountStopLossAndTakeProfitWithBuyUseCase,
     private val calculateAmountStopLossAndTakeProfitWithSellUseCase: CalculateAmountStopLossAndTakeProfitWithSellUseCase,
     private val calculateRateStopLossAndTakeProfitWithBuyUseCase: CalculateRateStopLossAndTakeProfitWithBuyUseCase,
@@ -38,22 +41,64 @@ class OrderViewModelActivity @Inject constructor(
     private val validateAmountStopLossWithNonLeverageSellUseCase: ValidateAmountStopLossWithNonLeverageSellUseCase,
 ) : ViewModel() {
 
-    val leverageState = MutableStateFlow(0)
+    private val _getOrderRequest = Channel<OpenOrderRequest>(capacity = Channel.CONFLATED)
+    val getOrderRequest get() = _getOrderRequest.receiveAsFlow()
+
+    private val _detailState = MutableStateFlow("")
+    val detailState: StateFlow<String> get() = _detailState
+    private val _buttonText = MutableStateFlow("Open Trade")
+    val buttonText: StateFlow<String> get() = _buttonText
     private val _amountState = MutableStateFlow(Price(0f, 0f, "amount"))
     val amountState: StateFlow<Price> get() = _amountState
     private val _rateState = MutableStateFlow(0f)
     val rateState: StateFlow<Float> get() = _rateState
     private val _stopLossState = MutableStateFlow(Price(0f, 0f, "amount"))
-    val stopLossState get() = _stopLossState
+    val stopLossState: StateFlow<Price> get() = _stopLossState
     private val _takeProfit = MutableStateFlow(Price(0f, 0f, "amount"))
-    val takeProfit get() = _takeProfit
-
-    val marketOrderTypeState = MutableStateFlow(MarketOrderType.ENTRY_ORDER)
-
+    val takeProfit: StateFlow<Price> get() = _takeProfit
+    private val _overNightFeeState: MutableStateFlow<Float> = MutableStateFlow(0f)
+    val overNightFeeState: StateFlow<Float> get() = _overNightFeeState
+    private val _overNightFeeWeekState: MutableStateFlow<Float> = MutableStateFlow(0f)
+    val overNightFeeWeekState: StateFlow<Float> get() = _overNightFeeWeekState
     private val _exposureMessageState = MutableStateFlow("")
     val exposureMessageState: StateFlow<String> get() = _exposureMessageState
     private val _exposureState = MutableSharedFlow<Float>()
     val exposureState: SharedFlow<Float> get() = _exposureState
+
+    val marketOrderTypeState = MutableStateFlow(MarketOrderType.ENTRY_ORDER)
+    val leverageState = MutableStateFlow(0)
+
+    fun getOvernightFeeDaliy(instrumentId: Int, orderType: String) {
+        viewModelScope.launch {
+            val amount = _amountState.value
+            val leverage = leverageState.value
+            val result = getOvernightFeeDaliyUseCase(
+                OvernightFeeRequest(
+                    instrumentId = instrumentId,
+                    amount = amount,
+                    leverage = leverage,
+                    orderType = orderType
+                )
+            )
+            _overNightFeeState.emit(result.successOr(0f))
+        }
+    }
+
+    fun getOvernightFeeWeek(instrumentId: Int, orderType: String) {
+        viewModelScope.launch {
+            val amount = _amountState.value
+            val leverage = leverageState.value
+            val result = getOvernightFeeWeeklyUseCase(
+                OvernightFeeRequest(
+                    instrumentId = instrumentId,
+                    amount = amount,
+                    leverage = leverage,
+                    orderType = orderType
+                )
+            )
+            _overNightFeeWeekState.emit(result.successOr(0f))
+        }
+    }
 
     fun validateStopLoss(
         instrument: Instrument,
@@ -479,6 +524,56 @@ class OrderViewModelActivity @Inject constructor(
             if (result is Result.Success) {
                 _takeProfit.emit(result.data)
             }
+        }
+    }
+
+    fun getDetail(available: Float) {
+        viewModelScope.launch {
+            var message = ""
+            val amount = _amountState.value
+            val leverage = leverageState.value
+            if (available < amount.amount) {
+                _buttonText.value = "Deposit"
+                message = "Deposit %.2f $ for order to open this trade.".format(
+                    amount.amount.minus(available)
+                )
+
+            } else {
+                _buttonText.value = "Open Trade"
+                val amountUnit: Float = when (amount.type) {
+                    "amount" -> amount.unit
+                    else -> amount.amount
+                }
+                val equity: Float = (amount.amount.div(available)) * 100
+                message = "%.2f Units | %.2f%s of equity | Exposure $%.2f".format(
+                    amountUnit,
+                    equity,
+                    "%",
+                    amount.amount.times(leverage)
+                )
+            }
+            _detailState.emit(message)
+        }
+    }
+
+    fun getOrderRequest(instrumentId: Int, orderType: String) {
+        viewModelScope.launch {
+            val amount = _amountState.value
+            val rate = _rateState.value
+            val sl = _stopLossState.value
+            val tp = _takeProfit.value
+            val leverage = leverageState.value
+            val request = OpenOrderRequest(
+                instrumentId = instrumentId,
+                amount = amount.amount,
+                isBuy = orderType == "buy",
+                leverage = leverage,
+                rate = rate,
+                stopLoss = sl.unit,
+                takeProfit = tp.unit,
+                units = amount.unit,
+            )
+            _getOrderRequest.send(request)
         }
     }
 
