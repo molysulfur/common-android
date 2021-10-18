@@ -17,10 +17,7 @@ class GetUnitUseCase @Inject constructor(
     override suspend fun execute(parameters: CalAmountUnitRequest): Float {
         val conversionRate =
             currencyRepository.getConversionByInstrumentId(instrumentId = parameters.instrumentId)
-        if (conversionRate != null) {
-            return parameters.amount.times(conversionRate.rateAsk).times(parameters.leverage)
-                .div(parameters.price)
-        }
-        throw NullPointerException()
+        return parameters.amount.times(conversionRate.rateAsk).times(parameters.leverage)
+            .div(parameters.price)
     }
 }

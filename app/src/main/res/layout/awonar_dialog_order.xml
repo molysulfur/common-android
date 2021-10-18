@@ -6,6 +6,10 @@
     <data>
 
         <variable
+            name="digit"
+            type="Integer" />
+
+        <variable
             name="viewModel"
             type="com.awonar.app.ui.order.OrderViewModel" />
 
@@ -179,10 +183,10 @@
 
             <com.awonar.app.widget.NumberPickerEditText
                 android:id="@+id/awonar_dialog_order_number_picker_input_rate"
+                setRate="@{activityViewModel.rateState}"
+                visibleHint="@{activityViewModel.marketOrderTypeState}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                visibleHint="@{activityViewModel.marketOrderTypeState}"
-                setRate="@{activityViewModel.rateState}"
                 android:layout_margin="@dimen/awonar_size_margin_padding_normal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -233,10 +237,10 @@
 
             <com.awonar.app.widget.NumberPickerEditText
                 android:id="@+id/awonar_dialog_order_number_picker_input_amount"
+                setAmount="@{activityViewModel.amountState}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/awonar_size_margin_padding_normal"
-                setAmount="@{activityViewModel.amountState}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_order_toggle_order_amount_type" />
@@ -271,6 +275,8 @@
 
             <com.awonar.app.widget.NumberPickerCollapsibleView
                 android:id="@+id/awonar_dialog_order_view_numberpicker_collapsible_sl"
+                setDigit="@{digit}"
+                setNumberPickerCollapsibleView="@{activityViewModel.stopLossState}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -290,6 +296,8 @@
 
             <com.awonar.app.widget.NumberPickerCollapsibleView
                 android:id="@+id/awonar_dialog_order_view_numberpicker_collapsible_tp"
+                setDigit="@{digit}"
+                setNumberPickerCollapsibleView="@{activityViewModel.takeProfit}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"

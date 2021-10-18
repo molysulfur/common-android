@@ -27,7 +27,6 @@ import com.molysulfur.library.extension.toast
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogViewModel>() {
 
@@ -49,11 +48,9 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     private var amount: Price = Price(0f, 1f, "amount")
     private var quote: Quote? = null
     private var price: Float = 0f
-    private var rate: Float = 0f
     private var overnightDaliy: Float = 0f
     private var overnightWeek: Float = 0f
 
-    private var stoploss: Price = Price(amount = 0f, unit = 1f, TPSLType.AMOUNT)
     private var takeProfit: Price = Price(amount = 0f, unit = 1f, TPSLType.AMOUNT)
 
     companion object {
@@ -89,6 +86,26 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     ): View {
         launchAndRepeatWithViewLifecycle {
             launch {
+                orderActivityViewModel.stopLossState.collect {
+                    validateStoploss()
+                }
+            }
+            launch {
+                orderActivityViewModel.amountState.collect {
+                    validateExposure()
+                    getDefaultTpAndSl()
+                }
+            }
+            launch {
+                orderActivityViewModel.leverageState.collect {
+                    currentLeverage = it
+                    binding.awonarDialogOrderNumberPickerInputAmount.setHelp("")
+                    binding.awonarDialogOrderCollapseLeverage.setDescription("X$it")
+                    updateDetail()
+                    getOvernight()
+                }
+            }
+            launch {
                 orderActivityViewModel.rateState.collect {
                     instrument?.run {
                         orderActivityViewModel.calculateMaxRate(it, price, digit)
@@ -116,12 +133,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                     updateOvernight()
                 }
             }
-            launch {
-                orderViewModel.stopLossState.collect { sl ->
-                    stoploss = sl
-                    updateStopLoss()
-                }
-            }
 
             launch {
                 orderViewModel.takeProfitState.collect { tp ->
@@ -131,39 +142,16 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             }
 
             launch {
-                orderViewModel.exposureState.collect {
-                    binding.awonarDialogOrderNumberPickerInputAmount.setNumber(it)
-                }
-            }
-
-            launch {
-                orderViewModel.validateExposureErrorState.collect { message ->
-                    message?.let {
-                        binding.awonarDialogOrderNumberPickerInputAmount.setHelp(it)
-                    }
-                }
-            }
-
-            launch {
-                orderViewModel.getPriceState.collect {
-                    amount = it
-                    when (amount.type) {
-                        "amount" -> binding.awonarDialogOrderNumberPickerInputAmount.setNumber(
-                            amount.amount
-                        )
-                        "unit" -> binding.awonarDialogOrderNumberPickerInputAmount.setNumber(amount.unit)
-                    }
+                orderActivityViewModel.exposureState.collect {
                     instrument?.let { instrument ->
-                        orderViewModel.getDefaultStopLoss(
-                            instrumentId = instrument.id,
-                            amount = amount
-                        )
-                        orderViewModel.getDefaultTakeProfit(
-                            instrumentId = instrument.id,
-                            amount = amount
-                        )
-                        getOvernight()
+                        orderActivityViewModel.updateAmount(instrument.id, price, it)
                     }
+                }
+            }
+
+            launch {
+                orderActivityViewModel.exposureMessageState.collect {
+                    binding.awonarDialogOrderNumberPickerInputAmount.setHelp(it)
                 }
             }
 
@@ -188,8 +176,10 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                 marketViewModel.tradingDataState.collect {
                     if (it != null) {
                         tradingData = it
-                        currentLeverage = tradingData?.defaultLeverage ?: 1
-                        initValueWithTradingData()
+                        tradingData?.let { tradingData ->
+                            updateLeverage(tradingData.defaultLeverage)
+                            initValueWithTradingData()
+                        }
                     }
                 }
             }
@@ -198,6 +188,41 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         binding.activityViewModel = orderActivityViewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
+    }
+
+    private fun getDefaultTpAndSl() {
+        instrument?.let { instrument ->
+            orderActivityViewModel.getDefaultStopLoss(
+                instrumentId = instrument.id,
+                price = price,
+                orderType = orderType ?: "buy"
+            )
+            orderActivityViewModel.getDefaultTakeProfit(
+                instrumentId = instrument.id,
+                price = price,
+                orderType = orderType ?: "buy"
+            )
+        }
+    }
+
+    private fun validateStoploss() {
+        instrument?.let { instrument ->
+            orderActivityViewModel.validateStopLoss(
+                instrument,
+                price,
+                orderType ?: "buy"
+            )
+        }
+    }
+
+    private fun updateLeverage(leverage: Int) {
+        instrument?.let {
+            orderActivityViewModel.updateLeverage(
+                it.id,
+                price,
+                leverage
+            )
+        }
     }
 
     private fun getOvernight() {
@@ -227,6 +252,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         super.onViewCreated(view, savedInstanceState)
         instrument = arguments?.getParcelable(EXTRA_INSTRUMENT)
         orderType = arguments?.getString(EXTRA_ORDER_TYPE)
+        binding.digit = instrument?.digit ?: 0
         binding.awonarDialogOrderToggleOrderAmountType.addOnButtonCheckedListener { _, checkedId, isChecked ->
             if (isChecked) {
                 when (checkedId) {
@@ -279,17 +305,17 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     }
 
     private fun submitOrder() {
-        instrument?.let { instrument ->
-            orderViewModel.openOrder(
-                instrumentId = instrument.id,
-                amount = amount,
-                stopLoss = stoploss,
-                takeProfit = takeProfit,
-                leverage = currentLeverage,
-                orderType = orderType ?: "buy",
-                rate = rate
-            )
-        }
+//        instrument?.let { instrument ->
+//            orderViewModel.openOrder(
+//                instrumentId = instrument.id,
+//                amount = amount,
+//                stopLoss = stoploss,
+//                takeProfit = takeProfit,
+//                leverage = currentLeverage,
+//                orderType = orderType ?: "buy",
+//                rate = rate
+//            )
+//    }
     }
 
     private fun initHeaderDialog() {
@@ -320,7 +346,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         }
         binding.awonarDialogOrderViewNumberpickerCollapsibleTp.doAfterTextChange = {
             if (instrument != null && quote != null) {
-                Timber.e("$takeProfit")
                 when (takeProfit.type) {
                     TPSLType.AMOUNT -> {
                         //TODO("")
@@ -354,52 +379,20 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     private fun initStopLoss() {
         binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setDescriptionColor(R.color.awonar_color_orange)
         binding.awonarDialogOrderViewNumberpickerCollapsibleSl.onTypeChange = { type ->
-            instrument?.let { instrument ->
-                orderViewModel.changeTypeStopLoss(
-                    instrumentId = instrument.id,
-                    stoploss = stoploss,
-                    stopLossType = type,
-                    openPrice = price,
-                    orderType = orderType,
-                    unitOrder = amount.unit
-                )
-            }
-        }
-        binding.awonarDialogOrderViewNumberpickerCollapsibleSl.doAfterTextChange = {
-            if (instrument != null && quote != null) {
-                when (stoploss.type) {
-                    TPSLType.AMOUNT -> {
-                        orderViewModel.validateStopLoss(
-                            instrumentId = instrument!!.id,
-                            stoploss = stoploss,
-                            leverage = currentLeverage,
-                            type = orderType ?: "buy"
-                        )
-                    }
-                    TPSLType.RATE -> {
-                        orderViewModel.validateStopLoss(
-                            stoploss = stoploss,
-                            digit = instrument?.digit ?: 2,
-                            openPrice = price,
-                            orderType = orderType ?: "buy"
-                        )
-                    }
-                }
-            }
+            orderActivityViewModel.updateStopLossType(type)
         }
         binding.awonarDialogOrderViewNumberpickerCollapsibleSl.doAfterFocusChange =
             { number, hasFocus ->
-                if (!hasFocus) {
-                    when (stoploss.type) {
-                        TPSLType.AMOUNT -> {
-                            stoploss.amount = number
-                        }
-                        TPSLType.RATE -> {
-                            stoploss.unit = number
-                        }
+                if (!hasFocus)
+                    instrument?.let {
+                        orderActivityViewModel.updateStopLoss(
+                            number,
+                            orderType ?: "buy",
+                            it.id,
+                            price
+                        )
                     }
-                    updateStopLoss()
-                }
+
             }
     }
 
@@ -447,32 +440,12 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         }
     }
 
-    private fun updateStopLoss() {
-        when (stoploss.type) {
-            TPSLType.AMOUNT -> {
-                binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setDescription("${stoploss.amount}")
-                binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setPrefix("$-")
-                binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setDigit(0)
-                binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setNumber(stoploss.amount)
-
-            }
-            TPSLType.RATE -> {
-                binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setDescription("${stoploss.unit}")
-                binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setPrefix("")
-                binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setDigit(
-                    instrument?.digit ?: 0
-                )
-                binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setNumber(stoploss.unit)
-            }
-        }
-    }
 
     private fun initAmount() {
         portfolio?.let { portfolio ->
             instrument?.let { instrument ->
                 orderActivityViewModel.getDefaultAmount(
                     instrument.id,
-                    currentLeverage,
                     price,
                     portfolio.available
                 )
@@ -507,11 +480,8 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         leverageAdapter = LeverageAdapter().apply {
             onClick = { text ->
                 val newLeverage: Int = text.replace("X", "").toInt()
-                currentLeverage = newLeverage
+                updateLeverage(newLeverage)
                 validateExposure()
-                updateDetail()
-                getOvernight()
-                binding.awonarDialogOrderCollapseLeverage.setDescription("X$newLeverage")
             }
         }
         binding.awonarDialogOrderToggleOrderType.addOnButtonCheckedListener { _, checkedId, _ ->
@@ -529,54 +499,17 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     private fun initListenerInputAmount() {
         binding.awonarDialogOrderNumberPickerInputAmount.doAfterFocusChange = { number, hasFocus ->
             if (!hasFocus) {
-                calculateAmountOrUnit()
-                validateExposure()
-            }
-        }
-        binding.awonarDialogOrderNumberPickerInputAmount.doAfterTextChange = { number ->
-            when (amount.type) {
-                "amount" -> {
-                    if (amount.amount != number) {
-                        validateExposure()
-                    }
-                    amount.amount = number
+                instrument?.run {
+                    orderActivityViewModel.updateAmount(id, price, number)
                 }
-                "unit" -> {
-                    if (amount.unit != number) {
-                        validateExposure()
-                    }
-                    amount.unit = number
-                }
-            }
-
-        }
-    }
-
-    private fun calculateAmountOrUnit() {
-        instrument?.let {
-            when (amount.type) {
-                "amount" -> orderViewModel.getUnit(
-                    instrumentId = it.id,
-                    price = price,
-                    amount = amount,
-                    leverage = currentLeverage
-                )
-                else -> orderViewModel.getAmount(
-                    instrumentId = it.id,
-                    price = price,
-                    amount = amount,
-                    leverage = currentLeverage
-                )
             }
         }
     }
 
     private fun validateExposure() {
         instrument?.let {
-            orderViewModel.validatePositionExposure(
-                id = it.id,
-                amount = amount.amount,
-                leverage = currentLeverage,
+            orderActivityViewModel.validatePositionExposure(
+                id = it.id
             )
         }
     }

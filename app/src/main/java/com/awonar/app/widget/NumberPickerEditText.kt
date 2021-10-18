@@ -37,21 +37,27 @@ class NumberPickerEditText : BaseViewGroup {
             doAfterFocusChange?.invoke(number, hasFocus)
         }
         binding.awonarEditNumberPickerEditNumber.editText?.doAfterTextChanged {
-            val numberText = it.toString().replace(prefix, "")
-            number = if (!numberText.isNullOrBlank()) {
-                numberText.toFloat()
-            } else {
-                0f
+            try {
+                val numberText = it.toString().replace(prefix, "")
+                number = if (!numberText.isNullOrBlank()) {
+                    numberText.toFloat()
+                } else {
+                    0f
+                }
+                doAfterTextChange?.invoke(number)
+            } catch (e: NumberFormatException) {
+                e.printStackTrace()
             }
-            doAfterTextChange?.invoke(number)
         }
         binding.awonarEditNumberPickerImageMinus.setOnClickListener {
             number--
+            doAfterFocusChange?.invoke(number, false)
             updateNumber()
         }
 
         binding.awonarEditNumberPickerImagePlus.setOnClickListener {
             number++
+            doAfterFocusChange?.invoke(number, false)
             updateNumber()
         }
     }

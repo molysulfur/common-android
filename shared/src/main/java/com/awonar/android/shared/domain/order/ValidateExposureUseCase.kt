@@ -6,7 +6,6 @@ import com.awonar.android.shared.di.IoDispatcher
 import com.awonar.android.shared.repos.MarketRepository
 import com.molysulfur.library.usecase.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
-import timber.log.Timber
 import javax.inject.Inject
 
 class ValidateExposureUseCase @Inject constructor(
@@ -15,7 +14,6 @@ class ValidateExposureUseCase @Inject constructor(
 ) : UseCase<ExposureRequest, Boolean>(dispatcher) {
     override suspend fun execute(parameters: ExposureRequest): Boolean {
         val trading = marketRepository.getTradingDataById(parameters.instrumentId)
-        Timber.e("$trading")
         val exposure =
             if (parameters.leverage < trading.minLeverage) parameters.amount.times(parameters.leverage) else parameters.amount
         val leverage = if (parameters.leverage < trading.minLeverage) parameters.leverage else 1
@@ -29,7 +27,6 @@ class ValidateExposureUseCase @Inject constructor(
             minPositionExposure = trading.minPositionAmount
             maxPositionExposure = trading.maxPositionAmount
         }
-
         if (exposure > maxPositionExposure) {
             val maximun = maxPositionExposure.div(leverage).toFloat()
             throw PositionExposureException(

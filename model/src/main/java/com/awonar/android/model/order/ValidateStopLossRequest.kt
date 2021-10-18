@@ -5,14 +5,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ValidateStopLossRequest(
+    val instrumentId: Int,
     val stopLoss: Price,
     val digit: Int,
     val openPrice: Float
-) : Parcelable
-
-
-@Parcelize
-data class ValidateAmountStopLossRequest(
-    val instrumentId: Int,
-    val stopLoss: Price
 ) : Parcelable

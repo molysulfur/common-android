@@ -22,7 +22,6 @@ class GetOvernightFeeDaliyUseCase @Inject constructor(
             parameters.leverage == 1 && parameters.orderType == "sell" -> trading.nonLeveragedSellOverNightFee
             else -> 0f
         }
-        Timber.e("$amount $overnightFee")
         return overnightFee.times(amount.unit)
     }
 }

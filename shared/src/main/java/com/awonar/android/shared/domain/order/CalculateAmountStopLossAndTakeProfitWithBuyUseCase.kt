@@ -6,10 +6,11 @@ import com.awonar.android.shared.di.IoDispatcher
 import com.awonar.android.shared.repos.CurrenciesRepository
 import com.molysulfur.library.usecase.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
+import timber.log.Timber
 import javax.inject.Inject
 
 /***
- * Amount Stoploss = Stoploss Rate - current price * unit / conversion rate bid
+ * Amount Stoploss = (Stoploss Rate - current price) * unit / conversion rate bid
  */
 class CalculateAmountStopLossAndTakeProfitWithBuyUseCase @Inject constructor(
     private val repository: CurrenciesRepository,
