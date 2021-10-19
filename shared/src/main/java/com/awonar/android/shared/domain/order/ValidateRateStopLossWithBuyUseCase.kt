@@ -20,16 +20,15 @@ class ValidateRateStopLossWithBuyUseCase @Inject constructor(
     override suspend fun execute(parameters: ValidateStopLossRequest): Price {
         val slRate = parameters.stopLoss.unit
         val minRate = parameters.openPrice
-        val maxRate = BigDecimal(10.0.pow(-parameters.digit))
-            .setScale(
-                parameters.digit,
-                RoundingMode.DOWN
-            )
+        val maxRate = 10.0.pow(-parameters.digit)
         if (slRate > minRate) {
             throw ValidateStopLossException("Stop loss cannot more than $minRate", minRate)
         }
-        if (BigDecimal("$slRate") < maxRate) {
-            throw ValidateStopLossException("Stop loss cannot less than $maxRate", maxRate.toFloat())
+        if (slRate < maxRate) {
+            throw ValidateStopLossException(
+                "Stop loss cannot less than $maxRate",
+                maxRate.toFloat()
+            )
         }
 
         return parameters.stopLoss

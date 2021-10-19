@@ -52,8 +52,8 @@ class OrderViewModelActivity @Inject constructor(
     val amountState: StateFlow<Price> get() = _amountState
     private val _rateState = MutableStateFlow(0f)
     val rateState: StateFlow<Float> get() = _rateState
-    private val _stopLossState = MutableStateFlow(Price(0f, 0f, "amount"))
-    val stopLossState: StateFlow<Price> get() = _stopLossState
+    private val _stopLossState = MutableStateFlow<Price?>(null)
+    val stopLossState: StateFlow<Price?> get() = _stopLossState
     private val _takeProfit = MutableStateFlow(Price(0f, 0f, "amount"))
     val takeProfit: StateFlow<Price> get() = _takeProfit
     private val _overNightFeeState: MutableStateFlow<Float> = MutableStateFlow(0f)
@@ -106,23 +106,27 @@ class OrderViewModelActivity @Inject constructor(
         orderType: String
     ) {
         viewModelScope.launch {
-            val stoploss = _stopLossState.value.copy()
-            val data = ValidateStopLossRequest(
-                instrumentId = instrument.id,
-                stopLoss = stoploss,
-                digit = instrument.digit,
-                openPrice = openPrice
-            )
-            val result: Result<Price>? = when (stoploss.type) {
-                "amount" -> validateAmountStopLoss(data, orderType)
-                "rate" -> validateRateStopLoss(data, orderType)
-                else -> null
+            val stoploss = _stopLossState.value?.copy()
+            val amount = _amountState.value
+            stoploss?.let {
+                val data = ValidateStopLossRequest(
+                    instrumentId = instrument.id,
+                    stopLoss = stoploss,
+                    amount = amount.amount,
+                    digit = instrument.digit,
+                    openPrice = openPrice
+                )
+                val result: Result<Price>? = when (stoploss.type) {
+                    "amount" -> validateAmountStopLoss(data, orderType)
+                    "rate" -> validateRateStopLoss(data, orderType)
+                    else -> null
+                }
+                if (result is Result.Error && result.exception is ValidateStopLossException) {
+                    val exception = result.exception as ValidateStopLossException
+                    updateStopLoss(exception.value, orderType, instrument.id, openPrice)
+                }
             }
-            Timber.e("$result")
-            if (result is Result.Error) {
-                val exception = result.exception as ValidateStopLossException
-                updateStopLoss(exception.value, orderType, instrument.id, openPrice)
-            }
+
         }
     }
 
@@ -165,7 +169,7 @@ class OrderViewModelActivity @Inject constructor(
 
     fun updateStopLossType(type: String) {
         viewModelScope.launch {
-            _stopLossState.value = _stopLossState.value.copy(type = type)
+            _stopLossState.value = _stopLossState.value?.copy(type = type)
         }
     }
 
@@ -197,22 +201,24 @@ class OrderViewModelActivity @Inject constructor(
     fun getDefaultStopLoss(instrumentId: Int, price: Float, orderType: String) {
         viewModelScope.launch {
             val amount = _amountState.value
-            val resultSL = getDefaultStopLossUseCase(
-                DefaultStopLossRequest(
-                    instrumentId = instrumentId,
-                    amount = amount.amount,
-                    price = price,
-                    unit = amount.unit
-                )
-            )
-            if (resultSL is Result.Success) {
-                resultSL.data.let { stoploss ->
-                    getRateStopLoss(
-                        stoploss,
-                        instrumentId,
-                        price,
-                        orderType
+            if (amount.amount > 0) {
+                val resultSL = getDefaultStopLossUseCase(
+                    DefaultStopLossRequest(
+                        instrumentId = instrumentId,
+                        amount = amount.amount,
+                        price = price,
+                        unit = amount.unit
                     )
+                )
+                if (resultSL is Result.Success) {
+                    resultSL.data.let { stoploss ->
+                        getRateStopLoss(
+                            stoploss,
+                            instrumentId,
+                            price,
+                            orderType
+                        )
+                    }
                 }
             }
 
@@ -372,10 +378,10 @@ class OrderViewModelActivity @Inject constructor(
 
     fun updateStopLoss(number: Float, orderType: String, instrumentId: Int, openPrice: Float) {
         viewModelScope.launch {
-            val stoploss = _stopLossState.value.copy()
-            when (stoploss.type) {
+            val stoploss = _stopLossState.value?.copy()
+            when (stoploss?.type) {
                 "amount" -> {
-                    stoploss.amount = number
+                    stoploss.amount = number * -1
                     getRateStopLoss(
                         stoploss,
                         instrumentId,
@@ -394,6 +400,7 @@ class OrderViewModelActivity @Inject constructor(
                 }
                 else -> null
             }
+
         }
     }
 
@@ -569,7 +576,7 @@ class OrderViewModelActivity @Inject constructor(
                 isBuy = orderType == "buy",
                 leverage = leverage,
                 rate = rate,
-                stopLoss = sl.unit,
+                stopLoss = sl?.unit ?: 0f,
                 takeProfit = tp.unit,
                 units = amount.unit,
             )

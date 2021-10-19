@@ -27,6 +27,7 @@ import com.molysulfur.library.extension.toast
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogViewModel>() {
 
@@ -90,7 +91,8 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             }
             launch {
                 orderActivityViewModel.stopLossState.collect {
-                    validateStoploss()
+                    if (it != null)
+                        validateStoploss()
                 }
             }
             launch {
@@ -355,8 +357,9 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             { number, hasFocus ->
                 if (!hasFocus)
                     instrument?.let {
+                        Timber.e("$number")
                         orderActivityViewModel.updateStopLoss(
-                            number,
+                            (-number),
                             orderType ?: "buy",
                             it.id,
                             price

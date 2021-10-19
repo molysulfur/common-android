@@ -27,6 +27,6 @@ class GetDefaultStopLossUseCase @Inject constructor(
         val percent = (trading.defaultStopLossPercentage.minus(0.5f).div(100))
         val amountSL = parameters.amount.times(percent)
         val rateSL = amountSL.times(conversion.rateBid).div(parameters.unit).plus(parameters.price)
-        return Price(amount = amountSL, unit = rateSL, type = "amount")
+        return Price(amount = -amountSL, unit = rateSL, type = "amount")
     }
 }

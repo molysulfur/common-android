@@ -46,13 +46,13 @@ fun setAmount(view: NumberPickerEditText, amount: Price) {
 @BindingAdapter("setNumberPickerCollapsibleView", "setDigit")
 fun setNumberPickerCollapsibleView(
     view: NumberPickerCollapsibleView,
-    stopLoss: Price,
+    stopLoss: Price?,
     digit: Int
 ) {
-    when (stopLoss.type) {
+    when (stopLoss?.type) {
         "amount" -> {
             view.setDigit(0)
-            view.setPrefix("-$")
+            view.setPrefix("$")
             view.setDescription("%.2f".format(stopLoss.amount))
             view.setNumber(stopLoss.amount)
         }

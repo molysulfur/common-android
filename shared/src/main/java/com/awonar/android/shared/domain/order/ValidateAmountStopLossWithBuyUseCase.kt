@@ -7,6 +7,7 @@ import com.awonar.android.shared.di.IoDispatcher
 import com.awonar.android.shared.repos.MarketRepository
 import com.molysulfur.library.usecase.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
+import timber.log.Timber
 import javax.inject.Inject
 
 class ValidateAmountStopLossWithBuyUseCase @Inject constructor(
@@ -17,8 +18,9 @@ class ValidateAmountStopLossWithBuyUseCase @Inject constructor(
         val tradingData = repository.getTradingDataById(parameters.instrumentId)
         val slRate = parameters.stopLoss.amount
         val maxAmountSL =
-            -(parameters.stopLoss.amount.times(tradingData.maxStopLossPercentageLeveragedBuy)
+            -(parameters.amount.times(tradingData.maxStopLossPercentageLeveragedBuy)
                 .div(100))
+        Timber.e("$slRate $maxAmountSL ${tradingData.maxStopLossPercentageLeveragedBuy}")
         if (slRate < maxAmountSL) {
             throw ValidateStopLossException("Stop loss cannot less than $maxAmountSL", maxAmountSL)
         }
