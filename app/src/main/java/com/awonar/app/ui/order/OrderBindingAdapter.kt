@@ -64,3 +64,8 @@ fun setNumberPickerCollapsibleView(
         }
     }
 }
+
+@BindingAdapter("setHideNoSet")
+fun hideNoSet(view: NumberPickerCollapsibleView, leverage: Int) {
+    view.visibleNoSet(leverage == 1)
+}

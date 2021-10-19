@@ -54,8 +54,8 @@ class OrderViewModelActivity @Inject constructor(
     val rateState: StateFlow<Float> get() = _rateState
     private val _stopLossState = MutableStateFlow<Price?>(null)
     val stopLossState: StateFlow<Price?> get() = _stopLossState
-    private val _takeProfit = MutableStateFlow(Price(0f, 0f, "amount"))
-    val takeProfit: StateFlow<Price> get() = _takeProfit
+    private val _takeProfit = MutableStateFlow<Price?>(null)
+    val takeProfit: StateFlow<Price?> get() = _takeProfit
     private val _overNightFeeState: MutableStateFlow<Float> = MutableStateFlow(0f)
     val overNightFeeState: StateFlow<Float> get() = _overNightFeeState
     private val _overNightFeeWeekState: MutableStateFlow<Float> = MutableStateFlow(0f)
@@ -577,10 +577,16 @@ class OrderViewModelActivity @Inject constructor(
                 leverage = leverage,
                 rate = rate,
                 stopLoss = sl?.unit ?: 0f,
-                takeProfit = tp.unit,
+                takeProfit = tp?.unit ?: 0f,
                 units = amount.unit,
             )
             _getOrderRequest.send(request)
+        }
+    }
+
+    fun updateTakeProfitType(type: String) {
+        viewModelScope.launch {
+            _takeProfit.value = _takeProfit.value?.copy(type = type)
         }
     }
 

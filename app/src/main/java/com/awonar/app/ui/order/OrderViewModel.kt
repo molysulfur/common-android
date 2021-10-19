@@ -31,8 +31,6 @@ class OrderViewModel @Inject constructor(
     private val _openOrderState = Channel<Boolean>(capacity = Channel.CONFLATED)
     val openOrderState get() = _openOrderState.receiveAsFlow()
 
-    private val _takeProfitState: MutableSharedFlow<Price> = MutableSharedFlow()
-    val takeProfitState: SharedFlow<Price> get() = _takeProfitState
 
     fun openOrder(
         request: OpenOrderRequest
@@ -44,41 +42,6 @@ class OrderViewModel @Inject constructor(
                     _openOrderState.send(true)
                 } else {
                     _openOrderState.send(false)
-                }
-            }
-        }
-    }
-
-    fun changeTypeTakeProfit(
-        instrumentId: Int,
-        takeProfit: Price,
-        takeProfitType: String?,
-        openPrice: Float,
-        unitOrder: Float,
-        orderType: String?
-    ) {
-        viewModelScope.launch {
-            takeProfit.type = takeProfitType ?: TPSLType.AMOUNT
-            val request = StopLossRequest(
-                instrumentId = instrumentId,
-                stopLoss = takeProfit,
-                openPrice = openPrice,
-                unit = unitOrder
-            )
-            when (takeProfitType) {
-                TPSLType.AMOUNT -> {
-                    val result = when (orderType) {
-                        "buy" -> calculateAmountStopLossAndTakeProfitWithBuyUseCase(request)
-                        else -> calculateAmountStopLossAndTakeProfitWithSellUseCase(request)
-                    }
-                    _takeProfitState.emit(result.successOr(takeProfit))
-                }
-                TPSLType.RATE -> {
-                    val result = when (orderType) {
-                        "buy" -> calculateRateStopLossAndTakeProfitWithBuyUseCase(request)
-                        else -> calculateRateStopLossAndTakeProfitsWithSellUseCase(request)
-                    }
-                    _takeProfitState.emit(result.successOr(takeProfit))
                 }
             }
         }
@@ -100,7 +63,7 @@ class OrderViewModel @Inject constructor(
                     val exception = result.exception as ValidateStopLossException
                     val tp = data.takeProfit
                     tp.unit = exception.value
-                    _takeProfitState.emit(tp)
+//                    _takeProfitState.emit(tp)
                 }
             }
         }

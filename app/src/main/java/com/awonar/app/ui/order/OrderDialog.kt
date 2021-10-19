@@ -90,6 +90,11 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                 }
             }
             launch {
+                orderActivityViewModel.takeProfit.collect { tp ->
+
+                }
+            }
+            launch {
                 orderActivityViewModel.stopLossState.collect {
                     if (it != null)
                         validateStoploss()
@@ -126,12 +131,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                     if (success) {
                         toast("Successfully.")
                     }
-                }
-            }
-            launch {
-                orderViewModel.takeProfitState.collect { tp ->
-                    takeProfit = tp
-                    updateTakeProfit()
                 }
             }
             launch {
@@ -306,14 +305,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         binding.awonarDialogOrderViewNumberpickerCollapsibleTp.setDescriptionColor(R.color.awonar_color_primary)
         binding.awonarDialogOrderViewNumberpickerCollapsibleTp.onTypeChange = { type ->
             instrument?.let { instrument ->
-                orderViewModel.changeTypeTakeProfit(
-                    instrumentId = instrument.id,
-                    takeProfit = takeProfit,
-                    takeProfitType = type,
-                    openPrice = price,
-                    orderType = orderType,
-                    unitOrder = amount.unit
-                )
+                orderActivityViewModel.updateTakeProfitType(type)
             }
         }
         binding.awonarDialogOrderViewNumberpickerCollapsibleTp.doAfterTextChange = {
@@ -335,15 +327,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         binding.awonarDialogOrderViewNumberpickerCollapsibleTp.doAfterFocusChange =
             { number, hasFocus ->
                 if (!hasFocus) {
-                    when (takeProfit.type) {
-                        TPSLType.AMOUNT -> {
-                            takeProfit.amount = number
-                        }
-                        TPSLType.RATE -> {
-                            takeProfit.unit = number
-                        }
-                    }
-                    updateTakeProfit()
+
                 }
             }
     }
@@ -357,7 +341,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             { number, hasFocus ->
                 if (!hasFocus)
                     instrument?.let {
-                        Timber.e("$number")
                         orderActivityViewModel.updateStopLoss(
                             (-number),
                             orderType ?: "buy",
@@ -371,28 +354,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
 
     private fun updateDetail() {
         orderActivityViewModel.getDetail(portfolio?.available ?: 0f)
-
     }
-
-    private fun updateTakeProfit() {
-        when (takeProfit.type) {
-            TPSLType.AMOUNT -> {
-                binding.awonarDialogOrderViewNumberpickerCollapsibleTp.setDescription("${takeProfit.amount}")
-                binding.awonarDialogOrderViewNumberpickerCollapsibleTp.setNumber(takeProfit.amount)
-                binding.awonarDialogOrderViewNumberpickerCollapsibleTp.setPrefix("$-")
-                binding.awonarDialogOrderViewNumberpickerCollapsibleTp.setDigit(0)
-            }
-            TPSLType.RATE -> {
-                binding.awonarDialogOrderViewNumberpickerCollapsibleTp.setDescription("${takeProfit.unit}")
-                binding.awonarDialogOrderViewNumberpickerCollapsibleTp.setNumber(takeProfit.unit)
-                binding.awonarDialogOrderViewNumberpickerCollapsibleTp.setPrefix("")
-                binding.awonarDialogOrderViewNumberpickerCollapsibleTp.setDigit(
-                    instrument?.digit ?: 0
-                )
-            }
-        }
-    }
-
 
     private fun initAmount() {
         portfolio?.let { portfolio ->

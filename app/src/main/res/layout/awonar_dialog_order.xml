@@ -276,6 +276,7 @@
             <com.awonar.app.widget.NumberPickerCollapsibleView
                 android:id="@+id/awonar_dialog_order_view_numberpicker_collapsible_sl"
                 setDigit="@{digit}"
+                setHideNoSet="@{activityViewModel.leverageState}"
                 setNumberPickerCollapsibleView="@{activityViewModel.stopLossState}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -297,6 +298,7 @@
             <com.awonar.app.widget.NumberPickerCollapsibleView
                 android:id="@+id/awonar_dialog_order_view_numberpicker_collapsible_tp"
                 setDigit="@{digit}"
+                setHideNoSet="@{activityViewModel.leverageState}"
                 setNumberPickerCollapsibleView="@{activityViewModel.takeProfit}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -329,12 +331,12 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/awonar_dialog_order_text_order_overnight"
                 style="@style/Awonar.Text.Bold.Normal"
+                setOvernightDaily="@{activityViewModel.overNightFeeState}"
+                setOvernightWeek="@{activityViewModel.overNightFeeWeekState}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/awonar_size_margin_padding_large"
                 android:gravity="center"
-                setOvernightDaily="@{activityViewModel.overNightFeeState}"
-                setOvernightWeek="@{activityViewModel.overNightFeeWeekState}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

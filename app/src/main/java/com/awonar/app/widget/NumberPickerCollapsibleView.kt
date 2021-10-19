@@ -34,6 +34,7 @@ class NumberPickerCollapsibleView : BaseViewGroup {
     private var prefix: String = ""
     private var expanded = false
     private var isNoSet = true
+    private var visibleNoSet = false
     private val toggle: Transition = TransitionInflater.from(context)
         .inflateTransition(R.transition.awonar_transition_list_toggle)
 
@@ -73,6 +74,16 @@ class NumberPickerCollapsibleView : BaseViewGroup {
         updateTitle()
         updateDescription()
         updateNumber()
+    }
+
+    fun visibleNoSet(visible: Boolean) {
+        visibleNoSet = visible
+        updateHideNoSet()
+    }
+
+    private fun updateHideNoSet() {
+        binding.awonarNumberpickerCollapsibleButtonNoSet.visibility =
+            if (visibleNoSet) View.VISIBLE else View.GONE
     }
 
     fun setPrefix(prefix: String) {
