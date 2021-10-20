@@ -10,6 +10,7 @@ import com.awonar.android.exception.ValidateStopLossException
 import com.awonar.android.model.order.*
 import com.awonar.android.shared.domain.order.*
 import com.molysulfur.library.result.Result
+import com.molysulfur.library.result.succeeded
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -20,28 +21,23 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OrderViewModel @Inject constructor(
-    private val calculateAmountStopLossAndTakeProfitWithBuyUseCase: CalculateAmountStopLossAndTakeProfitWithBuyUseCase,
-    private val calculateAmountStopLossAndTakeProfitWithSellUseCase: CalculateAmountStopLossAndTakeProfitWithSellUseCase,
-    private val calculateRateStopLossAndTakeProfitWithBuyUseCase: CalculateRateStopLossAndTakeProfitWithBuyUseCase,
-    private val calculateRateStopLossAndTakeProfitsWithSellUseCase: CalculateRateStopLossAndTakeProfitsWithSellUseCase,
     private val validateRateTakeProfitWithBuyUseCase: ValidateRateTakeProfitWithBuyUseCase,
     private val openOrderUseCase: OpenOrderUseCase
 ) : ViewModel() {
 
-    private val _openOrderState = Channel<Boolean>(capacity = Channel.CONFLATED)
+    private val _openOrderState = Channel<String>(capacity = Channel.CONFLATED)
     val openOrderState get() = _openOrderState.receiveAsFlow()
-
 
     fun openOrder(
         request: OpenOrderRequest
     ) {
         viewModelScope.launch {
             openOrderUseCase(request).collect {
-                val response = it.successOr(null)
-                if (response != null) {
-                    _openOrderState.send(true)
-                } else {
-                    _openOrderState.send(false)
+                if (it.succeeded) {
+                    _openOrderState.send("Successfully")
+                }
+                if (it is Result.Error) {
+                    _openOrderState.send("Failed to Open Trade")
                 }
             }
         }

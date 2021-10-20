@@ -126,10 +126,10 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                 }
             }
             launch {
-                orderViewModel.openOrderState.collect { success ->
+                orderViewModel.openOrderState.collect { message ->
                     dismiss()
                     if (success) {
-                        toast("Successfully.")
+                        toast(message)
                     }
                 }
             }
