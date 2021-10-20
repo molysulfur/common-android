@@ -29,12 +29,12 @@ ext.versions = [
         timber            : "4.7.1",
         coil              : "1.2.2",
         androidSupport    : "27.1.0",
-        kotlinCoroutines  : "1.5.0",
+        kotlinCoroutines  : "1.5.1",
         localization      : "1.2.10",
         screenOrientation : "1.0.0",
         retrofit          : "2.9.0",
-        okhttp           : "4.9.0"
-
+        okhttp            : "4.9.0",
+        androidxRoom      : "2.3.0"
 ]
 
 def versions = ext.versions

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/linearLayoutCompat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/awonar_ripple_tranparent"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/awonar_size_margin_padding_normal"
+        android:weightSum="1"
+        app:layout_constraintBottom_toTopOf="@+id/awonar_leverage_collapsible_recycler_item"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_leverage_collapsible_text_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="start"
+            tools:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_leverage_collapsible_text_description"
+            style="@style/Awonar.Text.Bold.Normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="X1" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/awonar_leverage_collapsible_image_icon_expand"
+            android:layout_width="@dimen/awonar_size_icon"
+            android:layout_height="@dimen/awonar_size_icon"
+            android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
+            app:srcCompat="@drawable/awonar_ic_expand"
+            tools:text="X1" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/awonar_leverage_collapsible_recycler_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/awonar_size_margin_padding_normal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

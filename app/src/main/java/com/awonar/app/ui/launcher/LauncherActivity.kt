@@ -11,6 +11,7 @@ import com.molysulfur.library.activity.BaseActivity
 import com.molysulfur.library.extension.openActivityAndClearThisActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LauncherActivity : BaseActivity() {
@@ -21,15 +22,25 @@ class LauncherActivity : BaseActivity() {
     }
 
     private val viewModel: AuthViewModel by viewModels()
+    private val launcherViewModel: LauncherViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         lifecycleScope.launchWhenStarted {
-            viewModel.autoSignIn.collect {
-                when (it) {
-                    false -> openActivityAndClearThisActivity(AuthenticationActivity::class.java)
-                    true -> openActivityAndClearThisActivity(MainActivity::class.java)
+            launch {
+                launcherViewModel.loadConversionState.collect { _ ->
+                    launcherViewModel.loadTradingData.collect { tradingData ->
+                        if (tradingData != null) {
+                            viewModel.autoSignIn.collect {
+                                when (it) {
+                                    false -> openActivityAndClearThisActivity(AuthenticationActivity::class.java)
+                                    true -> openActivityAndClearThisActivity(MainActivity::class.java)
+                                }
+                            }
+                        }
+                    }
+
                 }
             }
         }

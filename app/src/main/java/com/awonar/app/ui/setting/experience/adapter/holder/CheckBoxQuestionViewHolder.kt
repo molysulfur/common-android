@@ -19,6 +19,7 @@ class CheckBoxQuestionViewHolder constructor(private val binding: AwonarItemQues
                 setText(option?.text ?: "")
                 id = index
                 tag = option?.id ?: "NONE"
+                isChecked(item.questionAnswer?.answers?.find { it.id == option?.id } != null)
                 setEnable(true)
                 option?.image?.let {
                     setIcon(it)

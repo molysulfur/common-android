@@ -5,8 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.awonar.android.model.market.Instrument
 import com.awonar.android.model.market.MarketViewMoreArg
 import com.awonar.android.model.market.Quote
+import com.awonar.android.model.order.OpenOrderRequest
+import com.awonar.android.model.order.Price
+import com.awonar.android.model.tradingdata.TradingData
 import com.awonar.android.shared.domain.market.GetInstrumentListUseCase
-import com.awonar.android.shared.domain.market.GetQuoteSteamingUseCase
+import com.awonar.android.shared.domain.order.GetTradingDataByInstrumentIdUseCase
 import com.awonar.android.shared.steaming.QuoteSteamingEvent
 import com.awonar.android.shared.steaming.QuoteSteamingListener
 import com.awonar.android.shared.steaming.QuoteSteamingManager
@@ -27,9 +30,11 @@ class MarketViewModel @Inject constructor(
     private val convertRememberToItemUseCase: ConvertRememberToItemUseCase,
     private val convertInstrumentStockToItemUseCase: ConvertInstrumentStockToItemUseCase,
     private val convertInstrumentToItemUseCase: ConvertInstrumentToItemUseCase,
-    private val getQuoteSteamingUseCase: GetQuoteSteamingUseCase,
+    private val getTradingDataByInstrumentIdUseCase: GetTradingDataByInstrumentIdUseCase,
     private val quoteSteamingManager: QuoteSteamingManager
 ) : ViewModel() {
+
+    val tradingDataState = MutableSharedFlow<TradingData?>()
 
     private val _viewMoreState = Channel<MarketViewMoreArg?>(capacity = Channel.CONFLATED)
     val viewMoreState = _viewMoreState.receiveAsFlow()
@@ -60,6 +65,14 @@ class MarketViewModel @Inject constructor(
         }
     }
 
+    fun getTradingData(intrumentId: Int) {
+        viewModelScope.launch {
+            getTradingDataByInstrumentIdUseCase(intrumentId).collect {
+                tradingDataState.emit(it.successOr(null))
+            }
+        }
+    }
+
 
     fun setNewQuoteListener() {
         quoteSteamingManager.setListener(listener)
@@ -84,7 +97,7 @@ class MarketViewModel @Inject constructor(
             val instrumentList =
                 instruments.value.filter { it.categories?.contains("crypto") == true }
             _instrumentItem.value =
-                convertInstrumentToItemUseCase(instruments.value).data ?: arrayListOf()
+                convertInstrumentToItemUseCase(instrumentList).data ?: arrayListOf()
         }
     }
 

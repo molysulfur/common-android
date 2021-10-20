@@ -60,11 +60,17 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$versions.retrofit"
     implementation "com.jakewharton.timber:timber:$versions.timber"
     implementation "com.orhanobut:hawk:2.0.1"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlinCoroutines"
     testImplementation "androidx.arch.core:core-common:2.1.0"
     testImplementation "androidx.arch.core:core-runtime:2.1.0"
     testImplementation "androidx.arch.core:core-testing:2.1.0"
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.1'
     testImplementation "org.mockito:mockito-core:3.11.2"
     implementation 'com.facebook.android:facebook-core:11.1.0'
+    kapt "androidx.room:room-compiler:$versions.androidxRoom"
+    implementation "androidx.room:room-ktx:$versions.androidxRoom"
+    api "androidx.room:room-runtime:$versions.androidxRoom"
+    androidTestImplementation "androidx.room:room-testing:$versions.androidxRoom"
+    testImplementation "androidx.room:room-testing:$versions.androidxRoom"
+
 }

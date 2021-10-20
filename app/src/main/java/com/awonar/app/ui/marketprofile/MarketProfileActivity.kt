@@ -3,15 +3,13 @@ package com.awonar.app.ui.marketprofile
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.awonar.android.model.market.Quote
-import com.awonar.android.shared.steaming.QuoteSteamingListener
 import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarActivityMarketProfileBinding
 import com.awonar.app.ui.market.MarketViewModel
+import com.awonar.app.utils.ColorChangingUtil
 import com.molysulfur.library.activity.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -68,33 +66,17 @@ class MarketProfileActivity : BaseActivity() {
     }
 
     private fun setChangeText(quote: Quote?) {
-        val change: Float = (quote?.close ?: 0f) - (quote?.previous ?: 0f)
+        val change: Float = ConverterQuoteUtil.change(quote?.close ?: 0f, quote?.previous ?: 0f)
         val percent: Float = ConverterQuoteUtil.percentChange(
             oldPrice = quote?.previous ?: 0f,
             newPrice = quote?.close ?: 0f
         )
-        when {
-            change < 0f -> binding.awonarMarketProfileTextChange.setTextColor(
-                ContextCompat.getColor(
-                    this@MarketProfileActivity,
-                    R.color.awonar_color_orange
-                )
+        binding.awonarMarketProfileTextChange.setTextColor(
+            ColorChangingUtil.getTextColorChange(
+                this@MarketProfileActivity,
+                change
             )
-
-            change == 0f -> binding.awonarMarketProfileTextChange.setTextColor(
-                ContextCompat.getColor(
-                    this@MarketProfileActivity,
-                    R.color.awonar_color_gray
-                )
-            )
-
-            change > 0f -> binding.awonarMarketProfileTextChange.setTextColor(
-                ContextCompat.getColor(
-                    this@MarketProfileActivity,
-                    R.color.awonar_color_green
-                )
-            )
-        }
+        )
         binding.awonarMarketProfileTextChange.text =
             "%.2f (%.2f%s)".format(change, percent, "%")
     }

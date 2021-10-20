@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class ExperienceAnswerResponse(
     @SerializedName("id") val id: String?,
-    @SerializedName("topic") val topic: String?,
+    @SerializedName("topics") val topic: List<TopicAnswer?>,
 )
 
 data class TopicAnswer(

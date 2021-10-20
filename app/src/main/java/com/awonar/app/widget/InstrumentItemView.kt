@@ -17,6 +17,7 @@ import android.view.animation.Animation
 import android.view.animation.AlphaAnimation
 import android.widget.Button
 import coil.load
+import com.awonar.app.utils.ColorChangingUtil
 import com.molysulfur.library.extension.readBooleanUsingCompat
 import com.molysulfur.library.extension.writeBooleanUsingCompat
 import timber.log.Timber
@@ -37,6 +38,9 @@ class InstrumentItemView : BaseViewGroup {
     private var bidUp: Boolean = true
 
     private lateinit var binding: AwonarWidgetInstrumentItemViewBinding
+
+    var onOpenOrder: ((String) -> Unit)? = null
+
     private val anim: Animation = AlphaAnimation(0.5f, 1.0f)
 
     init {
@@ -45,6 +49,12 @@ class InstrumentItemView : BaseViewGroup {
     }
 
     override fun setup() {
+        binding.awonarInstrumentItemTextBid.setOnClickListener {
+            onOpenOrder?.invoke("sell")
+        }
+        binding.awonarInstrumentItemTextAsk.setOnClickListener {
+            onOpenOrder?.invoke("buy")
+        }
         updateImage()
         updateAsk()
         updateBid()
@@ -164,26 +174,7 @@ class InstrumentItemView : BaseViewGroup {
     }
 
     private fun updateChangeColor() {
-        when {
-            change > 0f -> binding.awonarInstrumentItemTextChange.setTextColor(
-                ContextCompat.getColor(
-                    context,
-                    R.color.awonar_color_green
-                )
-            )
-            change == 0f -> binding.awonarInstrumentItemTextChange.setTextColor(
-                ContextCompat.getColor(
-                    context,
-                    R.color.awonar_color_gray
-                )
-            )
-            change < 0f -> binding.awonarInstrumentItemTextChange.setTextColor(
-                ContextCompat.getColor(
-                    context,
-                    R.color.awonar_color_orange
-                )
-            )
-        }
+        binding.awonarInstrumentItemTextChange.setTextColor(ColorChangingUtil.getTextColorChange(context,change))
     }
 
 

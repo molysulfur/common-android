@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/awonar_bg_15_light_gray">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/awonar_edit_number_picker_layout_input_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/awonar_edit_number_picker_image_minus"
+            style="@style/Awonar.Button.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/awonar_size_margin_padding_normal"
+            android:src="@drawable/awonar_ic_minus"
+            android:tint="@color/awonar_color_primary" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/awonar_edit_number_picker_edit_number"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:boxBackgroundColor="@color/awonar_color_light_gray"
+            app:helperText=""
+            app:helperTextEnabled="true"
+            app:helperTextTextColor="@color/black">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:inputType="numberDecimal" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/awonar_edit_number_picker_image_plus"
+            style="@style/Awonar.Button.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/awonar_size_margin_padding_normal"
+            android:src="@drawable/awonar_ic_plus"
+            android:tint="@color/awonar_color_primary" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/awonar_edit_number_picker_text_placeholder"
+        style="@style/Awonar.Title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/awonar_bg_15_light_gray"
+        android:gravity="center"
+        android:padding="@dimen/awonar_size_margin_padding_normal"
+        android:text="Place Holder"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/awonar_edit_number_picker_layout_input_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/awonar_edit_number_picker_layout_input_container" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

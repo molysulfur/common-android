@@ -69,10 +69,11 @@ class ExperienceViewModel @Inject constructor(
         isNoExpShow: Boolean,
         topic: Topic
     ) {
+        val questionAnswer = question.questionAnswer
         if (question.multiple) {
             itemList.add(ExperienceItem.Title(question.title ?: ""))
             itemList.add(ExperienceItem.SubTitle(question.description ?: ""))
-            val questionList = ArrayList(question.questionOption)
+            val questionList = (question.questionOption as? ArrayList) ?: arrayListOf()
             if (isNoExpShow) {
                 questionList.add(
                     QuestionOption(
@@ -92,7 +93,8 @@ class ExperienceViewModel @Inject constructor(
                     ExperienceItem.CheckBoxQuestion(
                         questionId = question.id!!,
                         topicId = topic.id!!,
-                        option = questionList
+                        option = questionList,
+                        questionAnswer = questionAnswer
                     )
                 )
             }
@@ -100,7 +102,7 @@ class ExperienceViewModel @Inject constructor(
         } else {
             itemList.add(ExperienceItem.Title(question.title ?: ""))
             itemList.add(ExperienceItem.SubTitle(question.description ?: ""))
-            val questionList = ArrayList(question.questionOption)
+            val questionList = (question.questionOption as? ArrayList) ?: arrayListOf()
             if (isNoExpShow) {
                 questionList.add(
                     QuestionOption(
@@ -120,7 +122,8 @@ class ExperienceViewModel @Inject constructor(
                     ExperienceItem.RadioQuestion(
                         questionId = question.id!!,
                         topicId = topic.id!!,
-                        option = questionList
+                        option = questionList,
+                        questionAnswer = questionAnswer
                     )
                 )
             }

@@ -48,11 +48,6 @@ class MarketFragment : Fragment(), TabLayout.OnTabSelectedListener {
         savedInstanceState: Bundle?
     ): View {
         launchAndRepeatWithViewLifecycle {
-            viewModel.instrumentItem.collect {
-                viewModel.subscribe()
-            }
-        }
-        launchAndRepeatWithViewLifecycle {
             viewModel.viewMoreState.collect { instrumentType ->
                 instrumentType?.let {
                     findNavController().navigate(

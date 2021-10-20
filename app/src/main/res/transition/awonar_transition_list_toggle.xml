@@ -1,0 +1,13 @@
+<transitionSet
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@android:interpolator/fast_out_slow_in">
+
+    <transition class="com.awonar.app.widget.transition.RotateX">
+        <targets>
+            <target android:targetId="@+id/awonar_leverage_collapsible_image_icon_expand" />
+        </targets>
+    </transition>
+
+    <changeBounds />
+
+</transitionSet>

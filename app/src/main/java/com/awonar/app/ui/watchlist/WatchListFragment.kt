@@ -26,11 +26,16 @@ class WatchListFragment : Fragment() {
         _binding = AwonarFragmentWatchlistBinding.inflate(inflater, container, false)
         _binding!!.lifecycleOwner = activity
         return binding.root
+    }
 
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+
     }
 }
