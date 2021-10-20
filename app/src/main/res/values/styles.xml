@@ -116,6 +116,7 @@
 
     <style name="Awonar.Button.Icon">
         <item name="android:scaleType">centerCrop</item>
+        <item name="android:padding">@dimen/awonar_size_margin_padding_extra_small</item>
         <item name="android:background">@drawable/awonar_ripple_icon</item>
         <item name="android:textColor">@color/awonar_color_primary</item>
     </style>
