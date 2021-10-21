@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+        <variable
+            name="title"
+            type="String" />
+
+        <variable
+            name="description"
+            type="String" />
+
+        <variable
+            name="column1"
+            type="String" />
+
+        <variable
+            name="column2"
+            type="String" />
+
+        <variable
+            name="column3"
+            type="String" />
+
+        <variable
+            name="column4"
+            type="String" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tool="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/awonar_color_surface">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/awonar_instrument_order_image_avatar"
+            android:layout_width="@dimen/awonar_size_icon"
+            android:layout_height="@dimen/awonar_size_icon"
+            android:src="@drawable/awonar_placeholder_avatar"
+            app:layout_constraintBottom_toTopOf="@+id/awonar_instrument_order_text_value_column_one"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_instrument_order_text_name"
+            style="@style/Awonar.Text.Bold.Normal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/awonar_size_margin_padding_small"
+            android:layout_marginEnd="@dimen/awonar_size_margin_padding_small"
+            android:text="@{title}"
+            app:layout_constraintBottom_toBottomOf="@+id/awonar_instrument_order_image_avatar"
+            app:layout_constraintEnd_toStartOf="@+id/awonar_instrument_order_text_date"
+            app:layout_constraintStart_toEndOf="@+id/awonar_instrument_order_image_avatar"
+            app:layout_constraintTop_toTopOf="@+id/awonar_instrument_order_image_avatar"
+            tool:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_instrument_order_text_date"
+            style="@style/Awonar.Description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{description}"
+            app:layout_constraintBottom_toBottomOf="@+id/awonar_instrument_order_image_avatar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/awonar_instrument_order_image_avatar"
+            tool:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_instrument_order_text_value_column_one"
+            style="@style/Awonar.Description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/awonar_size_margin_padding_small"
+            android:text="@{column1}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/awonar_instrument_order_text_value_column_two"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_instrument_order_image_avatar"
+            tool:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_instrument_order_text_value_column_two"
+            style="@style/Awonar.Description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{column2}"
+            app:layout_constraintBottom_toBottomOf="@+id/awonar_instrument_order_text_value_column_one"
+            app:layout_constraintEnd_toStartOf="@+id/awonar_instrument_order_text_value_column_three"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/awonar_instrument_order_text_value_column_one"
+            app:layout_constraintTop_toTopOf="@+id/awonar_instrument_order_text_value_column_one"
+            tool:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_instrument_order_text_value_column_three"
+            style="@style/Awonar.Description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{column3}"
+            app:layout_constraintBottom_toBottomOf="@+id/awonar_instrument_order_text_value_column_two"
+            app:layout_constraintEnd_toStartOf="@+id/awonar_instrument_order_text_value_column_four"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/awonar_instrument_order_text_value_column_two"
+            app:layout_constraintTop_toTopOf="@+id/awonar_instrument_order_text_value_column_two"
+            tool:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_instrument_order_text_value_column_four"
+            style="@style/Awonar.Description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{column4}"
+            app:layout_constraintBottom_toBottomOf="@+id/awonar_instrument_order_text_value_column_three"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/awonar_instrument_order_text_value_column_three"
+            app:layout_constraintTop_toTopOf="@+id/awonar_instrument_order_text_value_column_three"
+            tool:text="@string/awonar_example_name" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

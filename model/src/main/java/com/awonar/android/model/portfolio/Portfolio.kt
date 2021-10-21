@@ -13,6 +13,4 @@ data class Portfolio(
     @SerializedName("totalAllocated") val totalAllocated: Float,
     @SerializedName("type") val type: String,
     @SerializedName("userId") val userId: String,
-) : Parcelable {
-
-}
+) : Parcelable

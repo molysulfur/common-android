@@ -1,6 +1,7 @@
 package com.awonar.android.shared.repos
 
 import com.awonar.android.model.portfolio.Portfolio
+import com.awonar.android.model.portfolio.UserPortfolioResponse
 import com.awonar.android.shared.api.PortfolioService
 import com.molysulfur.library.network.DirectNetworkFlow
 import retrofit2.Response
@@ -14,6 +15,17 @@ class PortfolioRepository @Inject constructor(
         override fun createCall(): Response<Portfolio> = portfolioService.getPortFolio().execute()
 
         override fun convertToResultType(response: Portfolio): Portfolio = response
+
+        override fun onFetchFailed(errorMessage: String) {
+            println(errorMessage)
+        }
+
+    }.asFlow()
+
+    fun getUserPortfolio() = object : DirectNetworkFlow<Boolean, UserPortfolioResponse, UserPortfolioResponse>() {
+        override fun createCall(): Response<UserPortfolioResponse> = portfolioService.getUserPortFolio().execute()
+
+        override fun convertToResultType(response: UserPortfolioResponse): UserPortfolioResponse = response
 
         override fun onFetchFailed(errorMessage: String) {
             println(errorMessage)

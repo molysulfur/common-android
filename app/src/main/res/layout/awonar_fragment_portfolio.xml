@@ -91,6 +91,7 @@
                     android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
                     android:scaleType="fitXY"
                     android:src="@drawable/awonar_ic_filter"
+                    android:tint="@color/awonar_color_primary"
                     app:layout_constraintBottom_toBottomOf="@+id/awonar_portfolio_text_title_section"
                     app:layout_constraintEnd_toStartOf="@+id/awonar_portfolio_image_icon_list"
                     app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_text_title_section" />
@@ -102,6 +103,19 @@
                     android:layout_height="wrap_content"
                     android:scaleType="fitXY"
                     android:src="@drawable/awonar_ic_list"
+                    android:tint="@color/awonar_color_primary"
+                    app:layout_constraintBottom_toBottomOf="@+id/awonar_portfolio_text_title_section"
+                    app:layout_constraintEnd_toStartOf="@+id/awonar_portfolio_image_icon_chart"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_text_title_section" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/awonar_portfolio_image_icon_chart"
+                    style="@style/Awonar.Button.Icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/awonar_ic_chart"
+                    android:tint="@color/awonar_color_primary"
                     app:layout_constraintBottom_toBottomOf="@+id/awonar_portfolio_text_title_section"
                     app:layout_constraintEnd_toEndOf="@+id/awonar_portfolio_text_title_equity"
                     app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_text_title_section" />
@@ -170,9 +184,11 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+            setOrderPortfolio="@{viewModel.positionOrderList}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+            tools:listitem="@layout/awonar_item_instrument_order" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
