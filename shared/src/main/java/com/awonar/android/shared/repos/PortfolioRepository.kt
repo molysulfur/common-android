@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class PortfolioRepository @Inject constructor(
     private val portfolioService: PortfolioService,
-    private val portfolioActivedColumnManager: PortfolioActivedColumnManager
+    private val preference: PortfolioActivedColumnManager
 ) {
 
     fun getPortFolio() = object : DirectNetworkFlow<Boolean, Portfolio, Portfolio>() {
@@ -39,14 +39,38 @@ class PortfolioRepository @Inject constructor(
         }.asFlow()
 
     fun getActivedColumn(): List<String> =
-        portfolioActivedColumnManager.get() ?: listOf(
-            "invested",
-            "execute at",
-            "current",
-            "pip chnage"
+        preference.get() ?: listOf(
+            "Invested",
+            "Execute at",
+            "Current",
+            "Pip Change"
         )
 
     fun clearActivedColumn() {
-        portfolioActivedColumnManager.clear()
+        preference.clear()
+    }
+
+    fun getColumnList(): List<String> {
+        val activedList = getActivedColumn()
+        val columnList = listOf(
+            "Invested",
+            "Units",
+            "Open",
+            "Current",
+            "SL",
+            "TP",
+            "S/L($)",
+            "S/L(%)",
+            "Pip Change",
+            "Leverage",
+            "Value",
+            "Fee",
+            "Execute at"
+        )
+        return columnList.filter { it !in activedList }
+    }
+
+    fun updateColumn(newColumns: List<String>) {
+        preference.save(newColumns)
     }
 }

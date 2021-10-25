@@ -13,6 +13,8 @@ class ActivedColumnAdapter : RecyclerView.Adapter<ColumnItemListViewHolder>() {
             notifyDataSetChanged()
         }
 
+    var onClick: ((String) -> Unit)? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ColumnItemListViewHolder =
         ColumnItemListViewHolder(
             AwonarItemListBinding.inflate(
@@ -23,7 +25,7 @@ class ActivedColumnAdapter : RecyclerView.Adapter<ColumnItemListViewHolder>() {
         )
 
     override fun onBindViewHolder(holder: ColumnItemListViewHolder, position: Int) {
-        holder.bind(itemList[position])
+        holder.bind(itemList[position], onClick)
     }
 
     override fun getItemCount(): Int = itemList.size
