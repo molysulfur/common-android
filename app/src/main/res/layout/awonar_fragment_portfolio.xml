@@ -101,6 +101,7 @@
                     style="@style/Awonar.Button.Icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
                     android:scaleType="fitXY"
                     android:src="@drawable/awonar_ic_list"
                     android:tint="@color/awonar_color_primary"
@@ -136,7 +137,7 @@
                     style="@style/Awonar.Text.Default.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/awonar_text_units"
+                    android:text="Invested"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/awonar_portfolio_text_column_two"
                     app:layout_constraintHorizontal_bias="0.5"
@@ -149,7 +150,7 @@
                     style="@style/Awonar.Text.Default.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Open"
+                    android:text="Executed At"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/awonar_portfolio_text_column_three"
                     app:layout_constraintHorizontal_bias="0.5"
@@ -173,7 +174,7 @@
                     style="@style/Awonar.Text.Default.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Value"
+                    android:text="Pip Change"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
@@ -184,6 +185,7 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/awonar_portfolio_recycler_orders"
             setOrderPortfolio="@{viewModel.positionOrderList}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

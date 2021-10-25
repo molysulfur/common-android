@@ -14,6 +14,11 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             notifyDataSetChanged()
         }
 
+
+    fun shownMenu(position: Int) {
+        val menu = itemLists
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
             OrderPortfolioType.INSTRUMENT_PORTFOLIO -> InstrumentPortfolioViewHolder(
@@ -28,7 +33,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = itemLists[position]
-        when (holder){
+        when (holder) {
             is InstrumentPortfolioViewHolder -> holder.bind(item as OrderPortfolioItem.InstrumentPortfolioItem)
         }
     }
@@ -36,4 +41,5 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemViewType(position: Int): Int = itemLists[position].type
 
     override fun getItemCount(): Int = itemLists.size
+
 }

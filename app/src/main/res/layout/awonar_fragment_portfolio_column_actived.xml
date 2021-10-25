@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.awonar.app.ui.portfolio.PortFolioViewModel" />
+    </data>
+    <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/awonar_portfolio_column_actived_recycler_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        setActivedColumn="@{viewModel.activedColumnState}"
+        tools:listitem="@layout/awonar_item_list" />
+
+</layout>
+
+

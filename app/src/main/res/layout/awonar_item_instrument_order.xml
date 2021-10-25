@@ -12,7 +12,7 @@
         setPositionOrder="@{position}"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/awonar_ripple_tranparent"
+        android:background="@drawable/awonar_ripple_white"
         android:padding="@dimen/awonar_size_margin_padding_normal" />
 
 </layout>

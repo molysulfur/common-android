@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.awonar.android.model.portfolio.Portfolio
 import com.awonar.android.model.portfolio.Position
 import com.awonar.android.shared.domain.portfolio.GetMyPortFolioUseCase
+import com.awonar.android.shared.domain.portfolio.GetPortfolioActivedColumnPreferenceUseCase
 import com.awonar.android.shared.domain.portfolio.GetPositionOrderUseCase
 import com.awonar.android.shared.utils.WhileViewSubscribed
 import com.molysulfur.library.result.successOr
@@ -18,8 +19,14 @@ import javax.inject.Inject
 @HiltViewModel
 class PortFolioViewModel @Inject constructor(
     private val getMyPortFolioUseCase: GetMyPortFolioUseCase,
-    private val getPositionOrderUseCase: GetPositionOrderUseCase
+    private val getPositionOrderUseCase: GetPositionOrderUseCase,
+    private var getPortfolioActivedColumnPreferenceUseCase: GetPortfolioActivedColumnPreferenceUseCase
 ) : ViewModel() {
+
+    val activedColumnState: StateFlow<List<String>> = flow {
+        val list = getPortfolioActivedColumnPreferenceUseCase(Unit).successOr(emptyList())
+        emit(list)
+    }.stateIn(viewModelScope, WhileViewSubscribed, emptyList())
 
     val portfolioState: StateFlow<Portfolio?> = flow {
         getMyPortFolioUseCase(true).collect {
