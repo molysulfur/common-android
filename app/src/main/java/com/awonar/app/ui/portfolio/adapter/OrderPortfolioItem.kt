@@ -29,7 +29,6 @@ sealed class OrderPortfolioItem(
     open val value4: ColumnValue? = null
 ) : Parcelable {
 
-
     @Parcelize
     class InstrumentPortfolioItem(
         val position: Position,

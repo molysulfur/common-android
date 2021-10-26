@@ -71,7 +71,8 @@ class PortFolioViewModel @Inject constructor(
                 val column = _activedColumnState.value
                 val instrumentIdList = arrayListOf<Int>()
                 result.successOr(emptyList()).forEach {
-                   val conversionRate :Float = getConversionByInstrumentUseCase(it.instrumentId).successOr(0f)
+                    val conversionRate: Float =
+                        getConversionByInstrumentUseCase(it.instrumentId).successOr(0f)
                     instrumentIdList.add(it.instrumentId)
                     itemList.add(
                         OrderPortfolioItem.InstrumentPortfolioItem(
@@ -129,8 +130,32 @@ class PortFolioViewModel @Inject constructor(
                     Price(0f, 0f, "amount")
                 ).amount, ColumnValueType.COLUMN_TEXT
             )
-            "SL(%)" -> ColumnValue(0f, ColumnValueType.COLUMN_TEXT)
-            "TP(%)" -> ColumnValue(0f, ColumnValueType.COLUMN_TEXT)
+            "SL(%)" -> {
+                val amountSL = calculateAmountStopLossAndTakeProfitWithBuyUseCase(
+                    StopLossRequest(
+                        position.instrumentId,
+                        Price(0f, position.stopLossRate, "amount"),
+                        position.openRate,
+                        position.units
+                    )
+                ).successOr(
+                    Price(0f, 0f, "amount")
+                ).amount
+                ColumnValue(amountSL.times(100).div(position.amount), ColumnValueType.COLUMN_TEXT)
+            }
+            "TP(%)" -> {
+                val amountTp = calculateAmountStopLossAndTakeProfitWithBuyUseCase(
+                    StopLossRequest(
+                        position.instrumentId,
+                        Price(0f, position.takeProfitRate, "amount"),
+                        position.openRate,
+                        position.units
+                    )
+                ).successOr(
+                    Price(0f, 0f, "amount")
+                ).amount
+                ColumnValue(amountTp.times(100).div(position.amount), ColumnValueType.COLUMN_TEXT)
+            }
             else -> throw Error("column name is not found!")
         }
 

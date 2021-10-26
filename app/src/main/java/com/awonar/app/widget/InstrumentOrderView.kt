@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import coil.load
 import com.awonar.android.shared.constrant.BuildConfig
 import com.awonar.app.R
@@ -28,11 +29,107 @@ class InstrumentOrderView : BaseViewGroup {
     private var columnTwo: String? = null
     private var columnThree: String? = null
     private var columnFour: String? = null
+    private var columnOneColor: Int = 0
+    private var columnTwoColor: Int = 0
+    private var columnThreeColor: Int = 0
+    private var columnFourColor: Int = 0
 
     override fun setup() {
         updateTitle()
         updateDescription()
         updateImage()
+        updateTextColorColumnFour()
+        updateTextColorColumnThree()
+        updateTextColorColumnTwo()
+        updateTextColorColumnOne()
+    }
+
+    fun setTextColorColumnFour(color: Int) {
+        this.columnFourColor = color
+        updateTextColorColumnFour()
+    }
+
+    private fun updateTextColorColumnFour() {
+        when {
+            columnFourColor > 0 -> binding.awonarInstrumentOrderTextValueColumnFour.setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    columnFourColor
+                )
+            )
+            else -> binding.awonarInstrumentOrderTextValueColumnFour.setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    R.color.awonar_color_text_primary
+                )
+            )
+        }
+    }
+
+    fun setTextColorColumnThree(color: Int) {
+        this.columnThreeColor = color
+        updateTextColorColumnThree()
+    }
+
+    private fun updateTextColorColumnThree() {
+        when {
+            columnThreeColor > 0 -> binding.awonarInstrumentOrderTextValueColumnThree.setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    columnThreeColor
+                )
+            )
+            else -> binding.awonarInstrumentOrderTextValueColumnThree.setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    R.color.awonar_color_text_primary
+                )
+            )
+        }
+    }
+
+    fun setTextColorColumnTwo(color: Int) {
+        this.columnTwoColor = color
+        updateTextColorColumnTwo()
+    }
+
+    private fun updateTextColorColumnTwo() {
+        when {
+            columnTwoColor > 0 -> binding.awonarInstrumentOrderTextValueColumnTwo.setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    columnTwoColor
+                )
+            )
+            else -> binding.awonarInstrumentOrderTextValueColumnTwo.setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    R.color.awonar_color_text_primary
+                )
+            )
+        }
+    }
+
+    fun setTextColorColumnOne(color: Int) {
+        this.columnOneColor = color
+        updateTextColorColumnOne()
+    }
+
+    private fun updateTextColorColumnOne() {
+        when {
+            columnOneColor > 0 -> binding.awonarInstrumentOrderTextValueColumnOne.setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    columnTwoColor
+                )
+            )
+            else -> binding.awonarInstrumentOrderTextValueColumnOne.setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    R.color.awonar_color_text_primary
+                )
+            )
+        }
     }
 
     fun setTextColumnOne(text: String) {
@@ -160,6 +257,10 @@ class InstrumentOrderView : BaseViewGroup {
         ss?.columnTwo = columnTwo
         ss?.columnThree = columnThree
         ss?.columnFour = columnFour
+        ss?.columnOneColor = columnOneColor
+        ss?.columnTwoColor = columnTwoColor
+        ss?.columnThreeColor = columnThreeColor
+        ss?.columnFourColor = columnFourColor
         return ss
     }
 
@@ -175,6 +276,10 @@ class InstrumentOrderView : BaseViewGroup {
         columnTwo = ss.columnTwo
         columnThree = ss.columnThree
         columnFour = ss.columnFour
+        columnOneColor = ss.columnOneColor
+        columnTwoColor = ss.columnTwoColor
+        columnThreeColor = ss.columnThreeColor
+        columnFourColor = ss.columnFourColor
         updateTitle()
         updateDescription()
         updateImage()
@@ -182,6 +287,10 @@ class InstrumentOrderView : BaseViewGroup {
         updateColumnTwo()
         updateColumnThree()
         updateColumnFour()
+        updateTextColorColumnOne()
+        updateTextColorColumnTwo()
+        updateTextColorColumnThree()
+        updateTextColorColumnFour()
     }
 
     constructor(context: Context) : super(context)
@@ -214,6 +323,10 @@ class InstrumentOrderView : BaseViewGroup {
         var columnTwo: String? = null
         var columnThree: String? = null
         var columnFour: String? = null
+        var columnOneColor: Int = 0
+        var columnTwoColor: Int = 0
+        var columnThreeColor: Int = 0
+        var columnFourColor: Int = 0
 
         constructor(superState: Parcelable) : super(superState)
 
@@ -228,6 +341,10 @@ class InstrumentOrderView : BaseViewGroup {
             columnTwo = parcel.readString()
             columnThree = parcel.readString()
             columnFour = parcel.readString()
+            columnOneColor = parcel.readInt()
+            columnTwoColor = parcel.readInt()
+            columnThreeColor = parcel.readInt()
+            columnFourColor = parcel.readInt()
         }
 
         override fun writeToParcel(out: Parcel, flags: Int) {
@@ -242,6 +359,10 @@ class InstrumentOrderView : BaseViewGroup {
             out.writeString(columnTwo)
             out.writeString(columnThree)
             out.writeString(columnFour)
+            out.writeInt(columnOneColor)
+            out.writeInt(columnTwoColor)
+            out.writeInt(columnThreeColor)
+            out.writeInt(columnFourColor)
         }
 
         companion object {

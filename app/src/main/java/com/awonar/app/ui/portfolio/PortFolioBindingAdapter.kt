@@ -23,7 +23,11 @@ import com.google.android.material.appbar.MaterialToolbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.DateFormat
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 @BindingAdapter("updateQuoteList")
 fun updateQuoteList(
@@ -72,57 +76,99 @@ fun setPositionOrderPortfolio(
     item.position.let { position ->
         view.setImage(position.instrument.logo ?: "")
         view.setTitle("${if (position.isBuy) "BUY" else "SELL"} ${position.instrument.symbol}")
-        val convertedDate = SimpleDateFormat("dd-MM-yyyy").parse(position.openDateTime)
-        view.setDescription("$convertedDate")
+        val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+        val formatter = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+        val date = parser.parse(position.openDateTime)
+        date?.let {
+            view.setDescription(formatter.format(date))
+        }
     }
+
+    val (format1, value1) = getItemWithColumnType(
+        position = item.position,
+        value = item.value1,
+        quote = quote,
+        conversion = item.conversionRate
+    )
     view.setTextColumnOne(
-        getColumnValue(
-            position = item.position,
-            value = item.value1,
-            quote = quote,
-            conversion = item.conversionRate
+        format1.format(value1)
+    )
+    when (item.value1?.type) {
+        ColumnValueType.PROFITLOSS, ColumnValueType.COLUMN_PIP_CHANGE, ColumnValueType.PROFITLOSS_PERCENT -> view.setTextColorColumnOne(
+            if (value1 >= 0) R.color.awonar_color_green else R.color.awonar_color_orange
         )
+        else -> {
+        }
+    }
+
+    val (format2, value2) = getItemWithColumnType(
+        position = item.position,
+        value = item.value2,
+        quote = quote,
+        conversion = item.conversionRate
     )
     view.setTextColumnTwo(
-        getColumnValue(
-            position = item.position,
-            value = item.value2,
-            quote = quote,
-            conversion = item.conversionRate
-        )
+        format2.format(value2)
     )
+    when (item.value2?.type) {
+        ColumnValueType.PROFITLOSS, ColumnValueType.COLUMN_PIP_CHANGE, ColumnValueType.PROFITLOSS_PERCENT -> view.setTextColorColumnTwo(
+            if (value2 >= 0) R.color.awonar_color_green else R.color.awonar_color_orange
+        )
+        else -> {
+        }
+    }
+
+    val (format3, value3) = getItemWithColumnType(
+        position = item.position,
+        value = item.value3,
+        quote = quote,
+        conversion = item.conversionRate
+    )
+    when (item.value3?.type) {
+        ColumnValueType.PROFITLOSS, ColumnValueType.COLUMN_PIP_CHANGE, ColumnValueType.PROFITLOSS_PERCENT -> view.setTextColorColumnThree(
+            if (value3 >= 0) R.color.awonar_color_green else R.color.awonar_color_orange
+        )
+        else -> {
+        }
+    }
     view.setTextColumnThree(
-        getColumnValue(
-            position = item.position,
-            value = item.value3,
-            quote = quote,
-            conversion = item.conversionRate
-        )
+        format3.format(value3)
     )
-    view.setTextColumnFour(
-        getColumnValue(
-            position = item.position,
-            value = item.value4,
-            quote = quote,
-            conversion = item.conversionRate
+    val (format4, value4) = getItemWithColumnType(
+        position = item.position,
+        value = item.value4,
+        quote = quote,
+        conversion = item.conversionRate
+    )
+    when (item.value4?.type) {
+        ColumnValueType.PROFITLOSS, ColumnValueType.COLUMN_PIP_CHANGE, ColumnValueType.PROFITLOSS_PERCENT -> view.setTextColorColumnFour(
+            if (value4 >= 0) R.color.awonar_color_green else R.color.awonar_color_orange
         )
+        else -> {
+        }
+    }
+    view.setTextColumnFour(
+        format4.format(value4)
     )
 }
 
-private fun getColumnValue(
+private fun getItemWithColumnType(
     position: Position,
     value: ColumnValue?,
     quote: Quote?,
     conversion: Float
-): String {
+): Pair<String, Float> {
     quote?.let {
         return when (value?.type) {
             ColumnValueType.COLUMN_CURRENT -> {
-                "%.${position.instrument.digit}f".format(if (position.isBuy) quote.bid else quote.ask)
+                Pair(
+                    "%.${position.instrument.digit}f",
+                    if (position.isBuy) quote.bid else quote.ask
+                )
             }
             ColumnValueType.PROFITLOSS -> {
-                "$%.2f".format(
-                    PortfolioUtil.getProfitOrLoss(
+                Pair(
+                    "$%.2f", PortfolioUtil.getProfitOrLoss(
                         current = if (position.isBuy) quote.bid else quote.ask,
                         openRate = position.openRate,
                         unit = position.units,
@@ -132,14 +178,14 @@ private fun getColumnValue(
                 )
             }
             ColumnValueType.COLUMN_PIP_CHANGE -> {
-                "${
-                    PortfolioUtil.pipChange(
+                Pair(
+                    "%s", PortfolioUtil.pipChange(
                         current = if (position.isBuy) quote.bid else quote.ask,
                         openRate = position.openRate,
                         isBuy = position.isBuy,
                         digit = position.instrument.digit
-                    )
-                }"
+                    ).toFloat()
+                )
             }
             ColumnValueType.COLUMN_VALUE -> {
                 val pl = PortfolioUtil.getProfitOrLoss(
@@ -149,7 +195,7 @@ private fun getColumnValue(
                     rate = conversion,
                     isBuy = position.isBuy
                 )
-                "%.2f".format(PortfolioUtil.getValue(pl, position.amount))
+                Pair("$%.2f", PortfolioUtil.getValue(pl, position.amount))
             }
             ColumnValueType.PROFITLOSS_PERCENT -> {
                 val pl = PortfolioUtil.getProfitOrLoss(
@@ -159,12 +205,12 @@ private fun getColumnValue(
                     rate = conversion,
                     isBuy = position.isBuy
                 )
-                "%.2f%s".format(pl.times(100).div(position.amount), "%")
+                Pair("%.2f\\%", pl.times(100).div(position.amount))
             }
-            else -> "${value?.value ?: 0f}"
+            else -> Pair("%s", value?.value ?: 0f)
         }
     }
-    return "${value?.value ?: 0f}"
+    return Pair("%s", value?.value ?: 0f)
 }
 
 @BindingAdapter("setActivedColumn", "viewModel")
