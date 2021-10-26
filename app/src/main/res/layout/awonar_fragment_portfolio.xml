@@ -8,6 +8,26 @@
         <variable
             name="viewModel"
             type="com.awonar.app.ui.portfolio.PortFolioViewModel" />
+
+        <variable
+            name="marketViewModel"
+            type="com.awonar.app.ui.market.MarketViewModel" />
+
+        <variable
+            name="column1"
+            type="String" />
+
+        <variable
+            name="column2"
+            type="String" />
+
+        <variable
+            name="column3"
+            type="String" />
+
+        <variable
+            name="column4"
+            type="String" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -137,7 +157,8 @@
                     style="@style/Awonar.Text.Default.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Invested"
+                    android:gravity="center"
+                    android:text="@{column1}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/awonar_portfolio_text_column_two"
                     app:layout_constraintHorizontal_bias="0.5"
@@ -150,7 +171,8 @@
                     style="@style/Awonar.Text.Default.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Executed At"
+                    android:gravity="center"
+                    android:text="@{column2}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/awonar_portfolio_text_column_three"
                     app:layout_constraintHorizontal_bias="0.5"
@@ -162,7 +184,8 @@
                     style="@style/Awonar.Text.Default.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Current"
+                    android:gravity="center"
+                    android:text="@{column3}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/awonar_portfolio_text_column_fore"
                     app:layout_constraintHorizontal_bias="0.5"
@@ -174,7 +197,8 @@
                     style="@style/Awonar.Text.Default.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Pip Change"
+                    android:gravity="center"
+                    android:text="@{column4}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
@@ -187,6 +211,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/awonar_portfolio_recycler_orders"
             setOrderPortfolio="@{viewModel.positionOrderList}"
+            updateQuoteList="@{marketViewModel.quoteSteamingState}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"

@@ -6,6 +6,7 @@ import com.awonar.android.shared.api.PortfolioService
 import com.awonar.android.shared.db.hawk.PortfolioActivedColumnManager
 import com.molysulfur.library.network.DirectNetworkFlow
 import retrofit2.Response
+import timber.log.Timber
 import javax.inject.Inject
 
 class PortfolioRepository @Inject constructor(
@@ -50,23 +51,27 @@ class PortfolioRepository @Inject constructor(
         preference.clear()
     }
 
-    fun getColumnList(): List<String> {
-        val activedList = getActivedColumn()
+    fun getColumnList(activedList: List<String>): List<String> {
         val columnList = listOf(
             "Invested",
             "Units",
             "Open",
             "Current",
-            "SL",
-            "TP",
             "S/L($)",
             "S/L(%)",
             "Pip Change",
             "Leverage",
             "Value",
             "Fee",
-            "Execute at"
+            "Execute at",
+            "SL",
+            "TP",
+            "SL($)",
+            "TP($)",
+            "SL(%)",
+            "TP(%)"
         )
+        Timber.e("$activedList $columnList ${columnList.filter { it !in activedList }}")
         return columnList.filter { it !in activedList }
     }
 

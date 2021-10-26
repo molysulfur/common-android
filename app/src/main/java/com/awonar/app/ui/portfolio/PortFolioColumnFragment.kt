@@ -12,6 +12,7 @@ import com.awonar.app.databinding.AwonarFragmentPortfolioColumnActivedBinding
 import com.awonar.app.databinding.AwonarFragmentPortfolioColumnListBinding
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class PortFolioColumnFragment : Fragment() {
 
@@ -27,6 +28,16 @@ class PortFolioColumnFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        launchAndRepeatWithViewLifecycle {
+            launch {
+                viewModel.navigateActivedColumn.collect { newColumn ->
+                    args.activedColumnName.let { oldColumn ->
+                        viewModel.replaceActivedColumn(oldColumn = oldColumn, newColumn = newColumn)
+                        findNavController().popBackStack()
+                    }
+                }
+            }
+        }
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
@@ -34,13 +45,8 @@ class PortFolioColumnFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        launchAndRepeatWithViewLifecycle {
-            viewModel.navigateActivedColumn.collect { newColumn ->
-                args.activedColumnName.let { oldColumn ->
-                    viewModel.replaceActivedColumn(oldColumn = oldColumn, newColumn = newColumn)
-                    findNavController().popBackStack()
-                }
-            }
+        binding.awonarPortfolioColumnToolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
         }
     }
 

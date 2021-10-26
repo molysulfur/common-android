@@ -4,12 +4,17 @@
     <data>
 
         <variable
-            name="position"
-            type="com.awonar.android.model.portfolio.Position" />
+            name="quote"
+            type="com.awonar.android.model.market.Quote" />
+
+        <variable
+            name="item"
+            type="com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem.InstrumentPortfolioItem" />
     </data>
 
     <com.awonar.app.widget.InstrumentOrderView xmlns:android="http://schemas.android.com/apk/res/android"
-        setPositionOrder="@{position}"
+        setPositionOrder="@{item}"
+        updateQuote="@{quote}"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/awonar_ripple_white"

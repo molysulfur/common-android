@@ -9,6 +9,7 @@ import javax.inject.Inject
 class GetPortfolioColumnListUseCase @Inject constructor(
     private val repository: PortfolioRepository,
     @IoDispatcher dispatcher: CoroutineDispatcher
-) : UseCase<Unit, List<String>>(dispatcher) {
-    override suspend fun execute(parameters: Unit): List<String> = repository.getColumnList()
+) : UseCase<List<String>, List<String>>(dispatcher) {
+    override suspend fun execute(parameters: List<String>): List<String> =
+        repository.getColumnList(parameters)
 }

@@ -11,6 +11,7 @@ import java.lang.Exception
 import java.util.*
 import java.util.Date.from
 import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.collections.ArrayList
 
 interface QuoteSteamingListener {

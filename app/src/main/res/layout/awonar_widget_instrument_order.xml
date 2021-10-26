@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:tool="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
@@ -27,9 +29,7 @@
             type="String" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tool="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -78,6 +78,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/awonar_instrument_order_text_value_column_two"
             app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/awonar_instrument_order_image_avatar"
             tool:text="@string/awonar_example_name" />
@@ -120,7 +121,6 @@
             app:layout_constraintStart_toEndOf="@+id/awonar_instrument_order_text_value_column_three"
             app:layout_constraintTop_toTopOf="@+id/awonar_instrument_order_text_value_column_three"
             tool:text="@string/awonar_example_name" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

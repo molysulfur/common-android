@@ -22,6 +22,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,7 +41,7 @@ class MarketViewModel @Inject constructor(
     val viewMoreState = _viewMoreState.receiveAsFlow()
 
     private val _quoteSteamingState = MutableStateFlow<Array<Quote>>(emptyArray())
-    val quoteSteamingState: SharedFlow<Array<Quote>> get() = _quoteSteamingState
+    val quoteSteamingState: StateFlow<Array<Quote>> get() = _quoteSteamingState
 
     private val _marketTabState =
         MutableSharedFlow<MarketFragment.Companion.MarketTabSelectedState>(replay = 0)

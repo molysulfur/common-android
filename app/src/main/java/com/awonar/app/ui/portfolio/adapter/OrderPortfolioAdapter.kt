@@ -3,12 +3,19 @@ package com.awonar.app.ui.portfolio.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.awonar.android.model.market.Quote
 import com.awonar.app.databinding.AwonarItemInstrumentOrderBinding
 import com.awonar.app.ui.portfolio.adapter.holder.InstrumentPortfolioViewHolder
 
 class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var itemLists: MutableList<OrderPortfolioItem> = mutableListOf()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
+
+    var quote: Array<Quote> = emptyArray()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -34,7 +41,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = itemLists[position]
         when (holder) {
-            is InstrumentPortfolioViewHolder -> holder.bind(item as OrderPortfolioItem.InstrumentPortfolioItem)
+            is InstrumentPortfolioViewHolder -> holder.bind(item as OrderPortfolioItem.InstrumentPortfolioItem,quote)
         }
     }
 
