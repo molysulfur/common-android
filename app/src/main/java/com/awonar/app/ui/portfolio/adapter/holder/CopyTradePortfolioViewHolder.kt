@@ -11,6 +11,8 @@ class CopyTradePortfolioViewHolder constructor(
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: OrderPortfolioItem.CopierPortfolioItem, quote: Array<Quote>) {
+//        binding.quote = quote
+        binding.item = item
     }
 
 }

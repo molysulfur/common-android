@@ -2,21 +2,22 @@ package com.awonar.app.domain.portfolio
 
 import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.portfolio.Position
-import com.awonar.android.shared.di.MainDispatcher
+import com.awonar.android.shared.di.IoDispatcher
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
 import com.molysulfur.library.usecase.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
+import timber.log.Timber
 import javax.inject.Inject
 
 class ConvertCopierToItemUseCase @Inject constructor(
-    @MainDispatcher dispatcher: CoroutineDispatcher
-) : UseCase<List<Copier>, List<OrderPortfolioItem>>(dispatcher) {
-    override suspend fun execute(parameters: List<Copier>): List<OrderPortfolioItem> {
+    @IoDispatcher dispatcher: CoroutineDispatcher
+) : UseCase<List<Copier>, MutableList<OrderPortfolioItem>>(dispatcher) {
+    override suspend fun execute(parameters: List<Copier>): MutableList<OrderPortfolioItem> {
         val itemList = mutableListOf<OrderPortfolioItem>()
         parameters.forEach { copier ->
-            val totalUnits: Double = sumUnit(copier.positions)
-            val avgOpen: Double = calAvgOpen(copier.positions.filter { it.isBuy },
-                copier.positions.filter { !it.isBuy })
+            val totalUnits: Double = sumUnit(copier.positions ?: emptyList())
+            val avgOpen: Double = calAvgOpen(copier.positions?.filter { it.isBuy } ?: emptyList(),
+                copier.positions?.filter { !it.isBuy } ?: emptyList())
             val invested = copier.initialInvestment
             val fees = copier.totalFees
             val csl = copier.stopLossAmount

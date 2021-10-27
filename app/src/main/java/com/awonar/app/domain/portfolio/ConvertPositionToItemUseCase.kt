@@ -2,27 +2,31 @@ package com.awonar.app.domain.portfolio
 
 import com.awonar.android.model.order.Price
 import com.awonar.android.model.order.StopLossRequest
-import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.portfolio.Position
-import com.awonar.android.shared.di.MainDispatcher
+import com.awonar.android.shared.di.IoDispatcher
 import com.awonar.android.shared.domain.order.CalculateAmountStopLossAndTakeProfitWithBuyUseCase
 import com.awonar.android.shared.domain.order.CalculateAmountStopLossAndTakeProfitWithSellUseCase
+import com.awonar.android.shared.repos.CurrenciesRepository
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
 import com.molysulfur.library.result.data
 import com.molysulfur.library.result.succeeded
 import com.molysulfur.library.usecase.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
+import timber.log.Timber
 import javax.inject.Inject
 
 
 class ConvertPositionToItemUseCase @Inject constructor(
+    private val currenciesRepository: CurrenciesRepository,
     private val calculateAmountStopLossAndTakeProfitWithBuyUseCase: CalculateAmountStopLossAndTakeProfitWithBuyUseCase,
     private val calculateAmountStopLossAndTakeProfitWithSellUseCase: CalculateAmountStopLossAndTakeProfitWithSellUseCase,
-    @MainDispatcher dispatcher: CoroutineDispatcher
+    @IoDispatcher dispatcher: CoroutineDispatcher
 ) : UseCase<List<Position>, List<OrderPortfolioItem>>(dispatcher) {
-    override suspend fun execute(parameters: List<Position>): List<OrderPortfolioItem> {
+    override suspend fun execute(parameters: List<Position>): MutableList<OrderPortfolioItem> {
         val itemList = mutableListOf<OrderPortfolioItem>()
         parameters.forEach { position ->
+            val conversionRate =
+                currenciesRepository.getConversionByInstrumentId(position.instrumentId).rateBid
             val invested = position.amount
             val units = position.units
             val open = position.openRate
@@ -42,6 +46,7 @@ class ConvertPositionToItemUseCase @Inject constructor(
             itemList.add(
                 OrderPortfolioItem.InstrumentPortfolioItem(
                     position = position,
+                    conversionRate = conversionRate,
                     invested = invested,
                     units = units,
                     open = open,
@@ -61,7 +66,7 @@ class ConvertPositionToItemUseCase @Inject constructor(
                 )
             )
         }
-
+        Timber.e("$itemList")
         return itemList
     }
 

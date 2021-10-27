@@ -2,6 +2,7 @@ package com.awonar.android.model.portfolio
 
 import android.os.Parcelable
 import com.awonar.android.model.market.Instrument
+import com.awonar.android.model.user.User
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
@@ -19,22 +20,35 @@ data class Copier(
     @SerializedName("closedPositionsNetProfit") val closedPositionsNetProfit: Float,
     @SerializedName("copyExistingPositions") val copyExistingPositions: Boolean,
     @SerializedName("depositSummary") val depositSummary: Float,
-    @SerializedName("entryOrder") val entryOrder: List<EntryOrderPortfolio>,
-    @SerializedName("historyPositions") val historyPositions: List<Position>,
+    @SerializedName("entryOrder") val entryOrder: List<EntryOrderPortfolio>?,
+    @SerializedName("historyPositions") val historyPositions: List<Position>?,
     @SerializedName("id") val id: String,
     @SerializedName("initialInvestment") val initialInvestment: Float,
     @SerializedName("investAmount") val investAmount: Float,
     @SerializedName("isPaused") val isPaused: Boolean,
-    @SerializedName("orders") val orders: List<OrderPortfolio>,
+    @SerializedName("orders") val orders: List<OrderPortfolio>?,
     @SerializedName("parentUserId") val parentUserId: String,
     @SerializedName("parentUsername") val parentUsername: String,
     @SerializedName("pendingForClosure") val pendingForClosure: Boolean,
-    @SerializedName("positions") val positions: List<Position>,
+    @SerializedName("positions") val positions: List<Position>?,
     @SerializedName("startedCopyDate") val startedCopyDate: String,
     @SerializedName("stopLossAmount") val stopLossAmount: Float,
     @SerializedName("stopLossPercentage") val stopLossPercentage: Float,
     @SerializedName("totalFees") val totalFees: Float,
     @SerializedName("withdrawalSummary") val withdrawalSummary: Float,
+    @SerializedName("parentUser") val user: UserCopier
+) : Parcelable
+
+@Parcelize
+data class UserCopier(
+    @SerializedName("id") val id: String,
+    @SerializedName("displayFullName") val fullName: String?,
+    @SerializedName("firstName") val firstName: String?,
+    @SerializedName("lastName") val lastName: String?,
+    @SerializedName("middleName") val middleName: String?,
+    @SerializedName("picture") val picture: String?,
+    @SerializedName("private") val private: Boolean,
+    @SerializedName("username") val username: String?,
 ) : Parcelable
 
 @Parcelize

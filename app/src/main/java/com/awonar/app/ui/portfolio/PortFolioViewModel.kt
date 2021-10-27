@@ -12,14 +12,20 @@ import com.awonar.android.shared.domain.order.CalculateAmountStopLossAndTakeProf
 import com.awonar.android.shared.domain.portfolio.*
 import com.awonar.android.shared.utils.WhileViewSubscribed
 import com.awonar.app.domain.portfolio.ConvertCopierToItemUseCase
+import com.awonar.app.domain.portfolio.ConvertPositionToItemUseCase
 import com.awonar.app.ui.portfolio.adapter.ColumnValue
 import com.awonar.app.ui.portfolio.adapter.ColumnValueType
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
+import com.molysulfur.library.result.data
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,8 +37,8 @@ class PortFolioViewModel @Inject constructor(
     private var updatePortfolioColumnUseCase: UpdatePortfolioColumnUseCase,
     private var resetPortfolioColumnUseCase: ResetPortfolioColumnUseCase,
     private var calculateAmountStopLossAndTakeProfitWithBuyUseCase: CalculateAmountStopLossAndTakeProfitWithBuyUseCase,
-    private var getConversionByInstrumentUseCase: GetConversionByInstrumentUseCase,
     private var getPositionMarketUseCase: GetPositionMarketUseCase,
+    private var convertPositionToItemUseCase: ConvertPositionToItemUseCase,
     private var convertCopierToItemUseCase: ConvertCopierToItemUseCase,
 ) : ViewModel() {
 
@@ -82,49 +88,22 @@ class PortFolioViewModel @Inject constructor(
 
         viewModelScope.launch {
             getPositionManualUseCase(Unit).collect { result ->
-                val itemList = mutableListOf<OrderPortfolioItem>()
-                val column = _activedColumnState.value
-                val instrumentIdList = arrayListOf<Int>()
-                result.successOr(emptyList()).forEach {
-                    val conversionRate: Float =
-                        getConversionByInstrumentUseCase(it.instrumentId).successOr(0f)
-                    instrumentIdList.add(it.instrumentId)
-                    itemList.add(
-                        OrderPortfolioItem.InstrumentPortfolioItem(
-                            position = it,
-                            conversionRate = conversionRate,
-                            value1 = getValueFromActivedColumn(it, column[0]),
-                            value2 = getValueFromActivedColumn(it, column[1]),
-                            value3 = getValueFromActivedColumn(it, column[2]),
-                            value4 = getValueFromActivedColumn(it, column[3])
-                        )
-                    )
-                }
-                _subscricbeQuote.send(instrumentIdList)
-                _positionOrderList.emit(itemList)
+                val positionItemResult =
+                    convertPositionToItemUseCase(result.successOr(emptyList())).successOr(emptyList())
+                _subscricbeQuote.send(result.successOr(emptyList()).map { it.instrumentId })
+                _positionOrderList.emit(positionItemResult.toMutableList())
             }
         }
     }
 
     private suspend fun convertToItem(positions: List<Position>, copies: List<Copier>) {
         val itemList = mutableListOf<OrderPortfolioItem>()
-        val column = _activedColumnState.value
-        positions.forEach {
-            val conversionRate: Float =
-                getConversionByInstrumentUseCase(it.instrumentId).successOr(0f)
-            itemList.add(
-                OrderPortfolioItem.InstrumentPortfolioItem(
-                    position = it,
-                    conversionRate = conversionRate,
-                    value1 = getValueFromActivedColumn(it, column[0]),
-                    value2 = getValueFromActivedColumn(it, column[1]),
-                    value3 = getValueFromActivedColumn(it, column[2]),
-                    value4 = getValueFromActivedColumn(it, column[3])
-                )
-            )
-        }
-        val data = convertCopierToItemUseCase(copies).successOr(emptyList())
-        itemList.addAll(data)
+        val positionItems = convertPositionToItemUseCase(positions).successOr(emptyList())
+        itemList.addAll(positionItems)
+        Timber.e("positionItems ${positionItems}")
+        val copierItems = convertCopierToItemUseCase(copies).successOr(emptyList())
+        itemList.addAll(copierItems)
+        Timber.e("copierItems ${copierItems}")
         _positionMarketState.emit(itemList)
     }
 
@@ -227,24 +206,24 @@ class PortFolioViewModel @Inject constructor(
     fun sortColumn(index: Int, isDesc: Boolean) {
         viewModelScope.launch {
             val itemList: MutableList<OrderPortfolioItem> = _positionOrderList.value.toMutableList()
-            when (isDesc) {
-                true -> itemList.sortByDescending {
-                    when (index) {
-                        1 -> it.value1?.value
-                        2 -> it.value2?.value
-                        3 -> it.value3?.value
-                        else -> it.value4?.value
-                    }
-                }
-                else -> itemList.sortBy {
-                    when (index) {
-                        1 -> it.value1?.value
-                        2 -> it.value2?.value
-                        3 -> it.value3?.value
-                        else -> it.value4?.value
-                    }
-                }
-            }
+//            when (isDesc) {
+//                true -> itemList.sortByDescending {
+//                    when (index) {
+//                        1 -> it.value1?.value
+//                        2 -> it.value2?.value
+//                        3 -> it.value3?.value
+//                        else -> it.value4?.value
+//                    }
+//                }
+//                else -> itemList.sortBy {
+//                    when (index) {
+//                        1 -> it.value1?.value
+//                        2 -> it.value2?.value
+//                        3 -> it.value3?.value
+//                        else -> it.value4?.value
+//                    }
+//                }
+//            }
             _positionOrderList.emit(itemList)
         }
     }
