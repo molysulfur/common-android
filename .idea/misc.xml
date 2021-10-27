@@ -85,6 +85,7 @@
         <entry key="app/src/main/res/layout/awonar_item_description.xml" value="0.20625" />
         <entry key="app/src/main/res/layout/awonar_item_divider.xml" value="0.20729166666666668" />
         <entry key="app/src/main/res/layout/awonar_item_divider_blank.xml" value="0.109375" />
+        <entry key="app/src/main/res/layout/awonar_item_empty.xml" value="0.2962962962962963" />
         <entry key="app/src/main/res/layout/awonar_item_instrument_card.xml" value="0.28541666666666665" />
         <entry key="app/src/main/res/layout/awonar_item_instrument_list.xml" value="0.121875" />
         <entry key="app/src/main/res/layout/awonar_item_instrument_order.xml" value="0.2171875" />

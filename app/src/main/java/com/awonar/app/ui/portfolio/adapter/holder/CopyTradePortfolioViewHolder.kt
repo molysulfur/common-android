@@ -7,8 +7,7 @@ import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
 
 class CopyTradePortfolioViewHolder constructor(
     private val binding: AwonarItemInstrumentOrderBinding,
-) :
-    RecyclerView.ViewHolder(binding.root) {
+) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(
         item: OrderPortfolioItem.CopierPortfolioItem,

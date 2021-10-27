@@ -1,16 +1,20 @@
 package com.awonar.app.ui.portfolio.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.market.Quote
+import com.awonar.app.databinding.AwonarItemEmptyBinding
 import com.awonar.app.databinding.AwonarItemInstrumentOrderBinding
 import com.awonar.app.ui.portfolio.adapter.holder.CopyTradePortfolioViewHolder
+import com.awonar.app.ui.portfolio.adapter.holder.EmptyViewHolder
 import com.awonar.app.ui.portfolio.adapter.holder.InstrumentPortfolioViewHolder
 
+@SuppressLint("NotifyDataSetChanged")
 class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var itemLists: MutableList<OrderPortfolioItem> = mutableListOf()
+    var itemLists: MutableList<OrderPortfolioItem> = mutableListOf(OrderPortfolioItem.EmptyItem())
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -30,6 +34,13 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
+            OrderPortfolioType.EMPTY_PORTFOLIO -> EmptyViewHolder(
+                AwonarItemEmptyBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
             OrderPortfolioType.INSTRUMENT_PORTFOLIO -> InstrumentPortfolioViewHolder(
                 AwonarItemInstrumentOrderBinding.inflate(
                     LayoutInflater.from(parent.context),

@@ -7,25 +7,17 @@ import com.awonar.android.model.order.StopLossRequest
 import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.portfolio.Portfolio
 import com.awonar.android.model.portfolio.Position
-import com.awonar.android.shared.domain.market.GetConversionByInstrumentUseCase
 import com.awonar.android.shared.domain.order.CalculateAmountStopLossAndTakeProfitWithBuyUseCase
 import com.awonar.android.shared.domain.portfolio.*
 import com.awonar.android.shared.utils.WhileViewSubscribed
 import com.awonar.app.domain.portfolio.ConvertCopierToItemUseCase
 import com.awonar.app.domain.portfolio.ConvertPositionToItemUseCase
-import com.awonar.app.ui.portfolio.adapter.ColumnValue
-import com.awonar.app.ui.portfolio.adapter.ColumnValueType
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
-import com.molysulfur.library.result.data
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,7 +28,6 @@ class PortFolioViewModel @Inject constructor(
     private var getPortfolioColumnListUseCase: GetPortfolioColumnListUseCase,
     private var updatePortfolioColumnUseCase: UpdatePortfolioColumnUseCase,
     private var resetPortfolioColumnUseCase: ResetPortfolioColumnUseCase,
-    private var calculateAmountStopLossAndTakeProfitWithBuyUseCase: CalculateAmountStopLossAndTakeProfitWithBuyUseCase,
     private var getPositionMarketUseCase: GetPositionMarketUseCase,
     private var convertPositionToItemUseCase: ConvertPositionToItemUseCase,
     private var convertCopierToItemUseCase: ConvertCopierToItemUseCase,

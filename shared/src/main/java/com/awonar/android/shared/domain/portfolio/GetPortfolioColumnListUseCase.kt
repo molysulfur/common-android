@@ -11,5 +11,5 @@ class GetPortfolioColumnListUseCase @Inject constructor(
     @IoDispatcher dispatcher: CoroutineDispatcher
 ) : UseCase<List<String>, List<String>>(dispatcher) {
     override suspend fun execute(parameters: List<String>): List<String> =
-        repository.getColumnList(parameters)
+        repository.getPortfolioManualColumns(parameters)
 }

@@ -7,17 +7,12 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.market.Quote
-import com.awonar.android.model.order.Price
-import com.awonar.android.model.order.StopLossRequest
 import com.awonar.app.R
 import com.awonar.app.ui.portfolio.activedadapter.ActivedColumnAdapter
-import com.awonar.app.ui.portfolio.adapter.ColumnValue
-import com.awonar.app.ui.portfolio.adapter.ColumnValueType
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioAdapter
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
 import com.awonar.app.widget.InstrumentOrderView
 import com.google.android.material.appbar.MaterialToolbar
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -107,10 +102,53 @@ fun setItemPositionOrderPortfolio(
         is OrderPortfolioItem.CopierPortfolioItem -> item.copier.let { copy ->
             view.setImage(copy.user.picture ?: "")
             view.setTitle(copy.user.username ?: "")
+            view.setTextColumnOne(
+                getCopierValueByCoumn(
+                    item,
+                    column1
+                )
+            )
+            view.setTextColumnTwo(
+                getCopierValueByCoumn(
+                    item,
+                    column2
+                )
+            )
+            view.setTextColumnThree(
+                getCopierValueByCoumn(
+                    item,
+                    column3
+                )
+            )
+            view.setTextColumnFour(
+                getCopierValueByCoumn(
+                    item,
+                    column4
+                )
+            )
         }
         else -> {
         }
     }
+}
+
+private fun getCopierValueByCoumn(
+    item: OrderPortfolioItem.CopierPortfolioItem,
+    column: String
+): String = when (column) {
+    "Units" -> "%.2f".format(item.units)
+    "Avg. Open" -> "%s".format(item.avgOpen)
+    "Invested" -> "$%.2f".format(item.invested)
+    "S/L($)" -> "$%.2f".format(item.profitLoss)
+    "S/L(%)" -> "%s%s".format(item.profitLossPercent, "%")
+    "Value" -> "$%s".format(item.value)
+    "Fee" -> "$%s".format(item.fees)
+    "Leverage" -> "%s".format(item.leverage)
+    "Current" -> ""
+    "Net Invest" -> "$%.2f".format(item.netInvested)
+    "CSL" -> "%s".format(item.copyStopLoss)
+    "CSL(%)" -> "%.2f%s".format(item.copyStopLossPercent, "%")
+    else -> ""
 }
 
 private fun getPositionValueByColumn(

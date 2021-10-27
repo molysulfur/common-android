@@ -6,6 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
+import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentPortfolioBinding
 import com.awonar.app.ui.market.MarketViewModel
 import com.molysulfur.library.extension.openActivity
@@ -56,6 +59,22 @@ class PortFolioFragment : Fragment() {
         marketViewModel.setNewQuoteListener()
         binding.awonarPortfolioImageIconList.setOnClickListener {
             openActivity(PortFolioColumnActivedActivity::class.java)
+        }
+        binding.awonarPortfolioImageChangeStyle.setOnClickListener {
+            val tag = binding.awonarPortfolioImageChangeStyle.tag
+            if (tag == "market") {
+                binding.awonarPortfolioImageChangeStyle.tag = "manual"
+                binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_chart)
+                Navigation
+                    .findNavController(binding.awonarMainDrawerNavigationHostPortfolio)
+                    .navigate(PortFolioMarketFragmentDirections.portFolioMarketFragmentToPortFolioMaunalFragment())
+            } else {
+                binding.awonarPortfolioImageChangeStyle.tag = "market"
+                binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_list)
+                Navigation
+                    .findNavController(binding.awonarMainDrawerNavigationHostPortfolio)
+                    .navigate(PortFolioMaunalFragmentDirections.portFolioMaunalFragmentToPortFolioMarketFragment())
+            }
         }
         setColumnListener()
     }

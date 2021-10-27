@@ -4,28 +4,16 @@ import android.os.Parcelable
 import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.portfolio.Position
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.COPYTRADE_PORTFOLIO
+import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.EMPTY_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.INSTRUMENT_PORTFOLIO
 import kotlinx.parcelize.Parcelize
-
-@Parcelize
-data class ColumnValue(
-    var value: Float,
-    var type: ColumnValueType,
-) : Parcelable
-
-enum class ColumnValueType {
-    COLUMN_TEXT,
-    COLUMN_BUTTON,
-    COLUMN_CURRENT,
-    COLUMN_PIP_CHANGE,
-    COLUMN_VALUE,
-    PROFITLOSS,
-    PROFITLOSS_PERCENT
-}
 
 sealed class OrderPortfolioItem(
     val type: Int,
 ) : Parcelable {
+
+    @Parcelize
+    class EmptyItem : OrderPortfolioItem(EMPTY_PORTFOLIO)
 
     @Parcelize
     class InstrumentPortfolioItem(

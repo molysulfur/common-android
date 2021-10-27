@@ -51,7 +51,25 @@ class PortfolioRepository @Inject constructor(
         preference.clear()
     }
 
-    fun getColumnList(activedList: List<String>): List<String> {
+    fun getPortfolioMarketColumns(activedList: List<String>): List<String> {
+        val columnList = listOf(
+            "Invested",
+            "Units",
+            "Avg. Open",
+            "Current",
+            "S/L($)",
+            "S/L(%)",
+            "Leverage",
+            "Value",
+            "Fee",
+            "Net Invest",
+            "CSL",
+            "CSL(%)"
+        )
+        return columnList.filter { it !in activedList }
+    }
+
+    fun getPortfolioManualColumns(activedList: List<String>): List<String> {
         val columnList = listOf(
             "Invested",
             "Units",
@@ -71,7 +89,6 @@ class PortfolioRepository @Inject constructor(
             "SL(%)",
             "TP(%)"
         )
-        Timber.e("$activedList $columnList ${columnList.filter { it !in activedList }}")
         return columnList.filter { it !in activedList }
     }
 
