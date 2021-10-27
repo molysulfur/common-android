@@ -70,10 +70,10 @@ fun setAdapterOrderPortfolio(
 @BindingAdapter("setPositionOrder", "updateQuote")
 fun setPositionOrderPortfolio(
     view: InstrumentOrderView,
-    item: OrderPortfolioItem.InstrumentPortfolioItem,
+    item: OrderPortfolioItem?,
     quote: Quote?
 ) {
-    item.position.let { position ->
+    (item as? OrderPortfolioItem.InstrumentPortfolioItem)?.position?.let { position ->
         view.setImage(position.instrument.logo ?: "")
         view.setTitle("${if (position.isBuy) "BUY" else "SELL"} ${position.instrument.symbol}")
         val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
@@ -82,74 +82,74 @@ fun setPositionOrderPortfolio(
         date?.let {
             view.setDescription(formatter.format(date))
         }
-    }
 
-    val (format1, value1) = getItemWithColumnType(
-        position = item.position,
-        value = item.value1,
-        quote = quote,
-        conversion = item.conversionRate
-    )
-    view.setTextColumnOne(
-        format1.format(value1)
-    )
-    when (item.value1?.type) {
-        ColumnValueType.PROFITLOSS, ColumnValueType.COLUMN_PIP_CHANGE, ColumnValueType.PROFITLOSS_PERCENT -> view.setTextColorColumnOne(
-            if (value1 >= 0) R.color.awonar_color_green else R.color.awonar_color_orange
+        val (format1, value1) = getItemWithColumnType(
+            position = item.position,
+            value = item.value1,
+            quote = quote,
+            conversion = item.conversionRate
         )
-        else -> {
+        view.setTextColumnOne(
+            format1.format(value1)
+        )
+        when (item.value1?.type) {
+            ColumnValueType.PROFITLOSS, ColumnValueType.COLUMN_PIP_CHANGE, ColumnValueType.PROFITLOSS_PERCENT -> view.setTextColorColumnOne(
+                if (value1 >= 0) R.color.awonar_color_green else R.color.awonar_color_orange
+            )
+            else -> {
+            }
         }
-    }
 
-    val (format2, value2) = getItemWithColumnType(
-        position = item.position,
-        value = item.value2,
-        quote = quote,
-        conversion = item.conversionRate
-    )
-    view.setTextColumnTwo(
-        format2.format(value2)
-    )
-    when (item.value2?.type) {
-        ColumnValueType.PROFITLOSS, ColumnValueType.COLUMN_PIP_CHANGE, ColumnValueType.PROFITLOSS_PERCENT -> view.setTextColorColumnTwo(
-            if (value2 >= 0) R.color.awonar_color_green else R.color.awonar_color_orange
+        val (format2, value2) = getItemWithColumnType(
+            position = item.position,
+            value = item.value2,
+            quote = quote,
+            conversion = item.conversionRate
         )
-        else -> {
+        view.setTextColumnTwo(
+            format2.format(value2)
+        )
+        when (item.value2?.type) {
+            ColumnValueType.PROFITLOSS, ColumnValueType.COLUMN_PIP_CHANGE, ColumnValueType.PROFITLOSS_PERCENT -> view.setTextColorColumnTwo(
+                if (value2 >= 0) R.color.awonar_color_green else R.color.awonar_color_orange
+            )
+            else -> {
+            }
         }
-    }
 
-    val (format3, value3) = getItemWithColumnType(
-        position = item.position,
-        value = item.value3,
-        quote = quote,
-        conversion = item.conversionRate
-    )
-    when (item.value3?.type) {
-        ColumnValueType.PROFITLOSS, ColumnValueType.COLUMN_PIP_CHANGE, ColumnValueType.PROFITLOSS_PERCENT -> view.setTextColorColumnThree(
-            if (value3 >= 0) R.color.awonar_color_green else R.color.awonar_color_orange
+        val (format3, value3) = getItemWithColumnType(
+            position = item.position,
+            value = item.value3,
+            quote = quote,
+            conversion = item.conversionRate
         )
-        else -> {
+        when (item.value3?.type) {
+            ColumnValueType.PROFITLOSS, ColumnValueType.COLUMN_PIP_CHANGE, ColumnValueType.PROFITLOSS_PERCENT -> view.setTextColorColumnThree(
+                if (value3 >= 0) R.color.awonar_color_green else R.color.awonar_color_orange
+            )
+            else -> {
+            }
         }
-    }
-    view.setTextColumnThree(
-        format3.format(value3)
-    )
-    val (format4, value4) = getItemWithColumnType(
-        position = item.position,
-        value = item.value4,
-        quote = quote,
-        conversion = item.conversionRate
-    )
-    when (item.value4?.type) {
-        ColumnValueType.PROFITLOSS, ColumnValueType.COLUMN_PIP_CHANGE, ColumnValueType.PROFITLOSS_PERCENT -> view.setTextColorColumnFour(
-            if (value4 >= 0) R.color.awonar_color_green else R.color.awonar_color_orange
+        view.setTextColumnThree(
+            format3.format(value3)
         )
-        else -> {
+        val (format4, value4) = getItemWithColumnType(
+            position = item.position,
+            value = item.value4,
+            quote = quote,
+            conversion = item.conversionRate
+        )
+        when (item.value4?.type) {
+            ColumnValueType.PROFITLOSS, ColumnValueType.COLUMN_PIP_CHANGE, ColumnValueType.PROFITLOSS_PERCENT -> view.setTextColorColumnFour(
+                if (value4 >= 0) R.color.awonar_color_green else R.color.awonar_color_orange
+            )
+            else -> {
+            }
         }
+        view.setTextColumnFour(
+            format4.format(value4)
+        )
     }
-    view.setTextColumnFour(
-        format4.format(value4)
-    )
 }
 
 private fun getItemWithColumnType(

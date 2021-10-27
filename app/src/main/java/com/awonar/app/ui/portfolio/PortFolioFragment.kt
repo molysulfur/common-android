@@ -47,7 +47,6 @@ class PortFolioFragment : Fragment() {
             }
         }
         binding.viewModel = portViewModel
-        binding.marketViewModel = marketViewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }

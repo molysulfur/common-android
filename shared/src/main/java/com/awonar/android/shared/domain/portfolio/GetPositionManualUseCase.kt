@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class GetPositionOrderUseCase @Inject constructor(
+class GetPositionManualUseCase @Inject constructor(
     private val repository: PortfolioRepository,
     @IoDispatcher dispatcher: CoroutineDispatcher
 ) : FlowUseCase<Unit, List<Position>>(dispatcher) {

@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.market.Quote
 import com.awonar.app.databinding.AwonarItemInstrumentOrderBinding
+import com.awonar.app.ui.portfolio.adapter.holder.CopyTradePortfolioViewHolder
 import com.awonar.app.ui.portfolio.adapter.holder.InstrumentPortfolioViewHolder
 
 class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -29,6 +30,13 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
             OrderPortfolioType.INSTRUMENT_PORTFOLIO -> InstrumentPortfolioViewHolder(
+                AwonarItemInstrumentOrderBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+            OrderPortfolioType.COPYTRADE_PORTFOLIO -> CopyTradePortfolioViewHolder(
                 AwonarItemInstrumentOrderBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/awonar_portfolio_graph"
+    app:startDestination="@id/portFolioMarketFragment">
+
+    <fragment
+        android:id="@+id/portFolioMarketFragment"
+        android:name="com.awonar.app.ui.portfolio.PortFolioMarketFragment"
+        android:label="PortFolioMarketFragment" />
+
+    <fragment
+        android:id="@+id/portFolioMaunalFragment"
+        android:name="com.awonar.app.ui.portfolio.PortFolioMaunalFragment"
+        android:label="PortFolioMaunalFragment" />
+
+</navigation>

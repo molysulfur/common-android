@@ -10,10 +10,6 @@
             type="com.awonar.app.ui.portfolio.PortFolioViewModel" />
 
         <variable
-            name="marketViewModel"
-            type="com.awonar.app.ui.market.MarketViewModel" />
-
-        <variable
             name="column1"
             type="String" />
 
@@ -126,16 +122,17 @@
                     android:src="@drawable/awonar_ic_list"
                     android:tint="@color/awonar_color_primary"
                     app:layout_constraintBottom_toBottomOf="@+id/awonar_portfolio_text_title_section"
-                    app:layout_constraintEnd_toStartOf="@+id/awonar_portfolio_image_icon_chart"
+                    app:layout_constraintEnd_toStartOf="@+id/awonar_portfolio_image_change_style"
                     app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_text_title_section" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/awonar_portfolio_image_icon_chart"
+                    android:id="@+id/awonar_portfolio_image_change_style"
                     style="@style/Awonar.Button.Icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:scaleType="fitXY"
                     android:src="@drawable/awonar_ic_chart"
+                    android:tag="market"
                     android:tint="@color/awonar_color_primary"
                     app:layout_constraintBottom_toBottomOf="@+id/awonar_portfolio_text_title_section"
                     app:layout_constraintEnd_toEndOf="@+id/awonar_portfolio_text_title_equity"
@@ -208,14 +205,14 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/awonar_portfolio_recycler_orders"
-            setOrderPortfolio="@{viewModel.positionOrderList}"
-            updateQuoteList="@{marketViewModel.quoteSteamingState}"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/awonar_main_drawer_navigation_host_portfolio"
+            android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:defaultNavHost="true"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-            tools:listitem="@layout/awonar_item_instrument_order" />
+            app:navGraph="@navigation/awonar_portfolio_graph" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

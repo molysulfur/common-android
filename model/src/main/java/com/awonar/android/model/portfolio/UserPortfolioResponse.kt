@@ -7,9 +7,34 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class UserPortfolioResponse(
+    @SerializedName("copies") val copies: List<Copier>,
     @SerializedName("entryOrder") val entries: List<EntryOrderPortfolio>,
     @SerializedName("orders") val orders: List<OrderPortfolio>,
     @SerializedName("positions") val positions: List<Position>
+) : Parcelable
+
+@Parcelize
+data class Copier(
+    @SerializedName("availableAmount") val availableAmount: Float,
+    @SerializedName("closedPositionsNetProfit") val closedPositionsNetProfit: Float,
+    @SerializedName("copyExistingPositions") val copyExistingPositions: Boolean,
+    @SerializedName("depositSummary") val depositSummary: Float,
+    @SerializedName("entryOrder") val entryOrder: List<EntryOrderPortfolio>,
+    @SerializedName("historyPositions") val historyPositions: List<Position>,
+    @SerializedName("id") val id: String,
+    @SerializedName("initialInvestment") val initialInvestment: Float,
+    @SerializedName("investAmount") val investAmount: Float,
+    @SerializedName("isPaused") val isPaused: Boolean,
+    @SerializedName("orders") val orders: List<OrderPortfolio>,
+    @SerializedName("parentUserId") val parentUserId: String,
+    @SerializedName("parentUsername") val parentUsername: String,
+    @SerializedName("pendingForClosure") val pendingForClosure: Boolean,
+    @SerializedName("positions") val positions: List<Position>,
+    @SerializedName("startedCopyDate") val startedCopyDate: String,
+    @SerializedName("stopLossAmount") val stopLossAmount: Float,
+    @SerializedName("stopLossPercentage") val stopLossPercentage: Float,
+    @SerializedName("totalFees") val totalFees: Float,
+    @SerializedName("withdrawalSummary") val withdrawalSummary: Float,
 ) : Parcelable
 
 @Parcelize

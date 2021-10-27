@@ -4,13 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.awonar.android.model.order.Price
 import com.awonar.android.model.order.StopLossRequest
+import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.portfolio.Portfolio
 import com.awonar.android.model.portfolio.Position
 import com.awonar.android.shared.domain.market.GetConversionByInstrumentUseCase
 import com.awonar.android.shared.domain.order.CalculateAmountStopLossAndTakeProfitWithBuyUseCase
-import com.awonar.android.shared.domain.order.GetConversionsUseCase
 import com.awonar.android.shared.domain.portfolio.*
 import com.awonar.android.shared.utils.WhileViewSubscribed
+import com.awonar.app.domain.portfolio.ConvertCopierToItemUseCase
 import com.awonar.app.ui.portfolio.adapter.ColumnValue
 import com.awonar.app.ui.portfolio.adapter.ColumnValueType
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
@@ -19,19 +20,20 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class PortFolioViewModel @Inject constructor(
     private val getMyPortFolioUseCase: GetMyPortFolioUseCase,
-    private val getPositionOrderUseCase: GetPositionOrderUseCase,
+    private val getPositionManualUseCase: GetPositionManualUseCase,
     private var getPortfolioActivedColumnPreferenceUseCase: GetPortfolioActivedColumnPreferenceUseCase,
     private var getPortfolioColumnListUseCase: GetPortfolioColumnListUseCase,
     private var updatePortfolioColumnUseCase: UpdatePortfolioColumnUseCase,
     private var resetPortfolioColumnUseCase: ResetPortfolioColumnUseCase,
     private var calculateAmountStopLossAndTakeProfitWithBuyUseCase: CalculateAmountStopLossAndTakeProfitWithBuyUseCase,
     private var getConversionByInstrumentUseCase: GetConversionByInstrumentUseCase,
+    private var getPositionMarketUseCase: GetPositionMarketUseCase,
+    private var convertCopierToItemUseCase: ConvertCopierToItemUseCase,
 ) : ViewModel() {
 
     private val _navigateActivedColumn = Channel<String>(capacity = Channel.CONFLATED)
@@ -58,7 +60,20 @@ class PortFolioViewModel @Inject constructor(
         MutableStateFlow(mutableListOf())
     val positionOrderList: StateFlow<MutableList<OrderPortfolioItem>> get() = _positionOrderList
 
+    private val _positionMarketState: MutableStateFlow<MutableList<OrderPortfolioItem>> =
+        MutableStateFlow(mutableListOf())
+    val positionMarketState: StateFlow<MutableList<OrderPortfolioItem>> get() = _positionMarketState
+
     init {
+
+        viewModelScope.launch {
+            getPositionMarketUseCase(Unit).collect {
+                val data = it.successOr(null)
+                if (data != null) {
+                    convertToItem(data.positions, data.copies)
+                }
+            }
+        }
         viewModelScope.launch {
             val list =
                 getPortfolioActivedColumnPreferenceUseCase(Unit).successOr(emptyList())
@@ -66,7 +81,7 @@ class PortFolioViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            getPositionOrderUseCase(Unit).collect { result ->
+            getPositionManualUseCase(Unit).collect { result ->
                 val itemList = mutableListOf<OrderPortfolioItem>()
                 val column = _activedColumnState.value
                 val instrumentIdList = arrayListOf<Int>()
@@ -89,6 +104,28 @@ class PortFolioViewModel @Inject constructor(
                 _positionOrderList.emit(itemList)
             }
         }
+    }
+
+    private suspend fun convertToItem(positions: List<Position>, copies: List<Copier>) {
+        val itemList = mutableListOf<OrderPortfolioItem>()
+        val column = _activedColumnState.value
+        positions.forEach {
+            val conversionRate: Float =
+                getConversionByInstrumentUseCase(it.instrumentId).successOr(0f)
+            itemList.add(
+                OrderPortfolioItem.InstrumentPortfolioItem(
+                    position = it,
+                    conversionRate = conversionRate,
+                    value1 = getValueFromActivedColumn(it, column[0]),
+                    value2 = getValueFromActivedColumn(it, column[1]),
+                    value3 = getValueFromActivedColumn(it, column[2]),
+                    value4 = getValueFromActivedColumn(it, column[3])
+                )
+            )
+        }
+        val data = convertCopierToItemUseCase(copies).successOr(emptyList())
+        itemList.addAll(data)
+        _positionMarketState.emit(itemList)
     }
 
     private suspend fun getValueFromActivedColumn(position: Position, column: String): ColumnValue =

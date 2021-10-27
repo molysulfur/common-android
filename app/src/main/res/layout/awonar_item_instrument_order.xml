@@ -9,7 +9,8 @@
 
         <variable
             name="item"
-            type="com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem.InstrumentPortfolioItem" />
+            type="com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem" />
+
     </data>
 
     <com.awonar.app.widget.InstrumentOrderView xmlns:android="http://schemas.android.com/apk/res/android"
