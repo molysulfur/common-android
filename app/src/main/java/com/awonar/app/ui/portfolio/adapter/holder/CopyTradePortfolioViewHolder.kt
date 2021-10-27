@@ -10,8 +10,16 @@ class CopyTradePortfolioViewHolder constructor(
 ) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: OrderPortfolioItem.CopierPortfolioItem, quote: Array<Quote>) {
-//        binding.quote = quote
+    fun bind(
+        item: OrderPortfolioItem.CopierPortfolioItem,
+        columns: List<String>,
+        quote: Array<Quote>
+    ) {
+        binding.column1 = columns[0]
+        binding.column2 = columns[1]
+        binding.column3 = columns[2]
+        binding.column4 = columns[3]
+        binding.quote = null
         binding.item = item
     }
 

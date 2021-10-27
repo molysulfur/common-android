@@ -17,8 +17,9 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/awonar_portfolio_recycler_orders"
+        activedColumn="@{viewModel.activedColumnState}"
         setOrderPortfolio="@{viewModel.positionOrderList}"
-        updateQuoteList="@{marketViewModel.quoteSteamingState}"
+        updateQuote="@{marketViewModel.quoteSteamingState}"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"

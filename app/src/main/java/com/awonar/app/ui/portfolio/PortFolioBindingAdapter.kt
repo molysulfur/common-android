@@ -2,16 +2,13 @@ package com.awonar.app.ui.portfolio
 
 import android.app.Activity
 import android.graphics.Canvas
-import android.os.Build
 import androidx.databinding.BindingAdapter
-import androidx.lifecycle.viewModelScope
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.market.Quote
-import com.awonar.android.model.portfolio.Position
-import com.awonar.android.shared.utils.PortfolioUtil
+import com.awonar.android.model.order.Price
+import com.awonar.android.model.order.StopLossRequest
 import com.awonar.app.R
 import com.awonar.app.ui.portfolio.activedadapter.ActivedColumnAdapter
 import com.awonar.app.ui.portfolio.adapter.ColumnValue
@@ -20,17 +17,11 @@ import com.awonar.app.ui.portfolio.adapter.OrderPortfolioAdapter
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
 import com.awonar.app.widget.InstrumentOrderView
 import com.google.android.material.appbar.MaterialToolbar
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 
-@BindingAdapter("updateQuoteList")
+@BindingAdapter("updateQuote")
 fun updateQuoteList(
     recycler: RecyclerView,
     quote: Array<Quote>
@@ -41,10 +32,12 @@ fun updateQuoteList(
     }
 }
 
-@BindingAdapter("setOrderPortfolio")
+
+@BindingAdapter("setOrderPortfolio", "activedColumn")
 fun setAdapterOrderPortfolio(
     recycler: RecyclerView,
-    items: MutableList<OrderPortfolioItem>
+    items: MutableList<OrderPortfolioItem>,
+    activedColumn: List<String>
 ) {
     if (recycler.adapter == null) {
         recycler.apply {
@@ -63,16 +56,18 @@ fun setAdapterOrderPortfolio(
         })
     }
     val adapter = recycler.adapter as OrderPortfolioAdapter
+    adapter.columns = activedColumn
     adapter.itemLists = items
-
-
 }
 
-@BindingAdapter("setPositionOrder", "updateQuote")
-fun setPositionOrderPortfolio(
+@BindingAdapter("setPositionOrder", "column1", "column2", "column3", "column4")
+fun setItemPositionOrderPortfolio(
     view: InstrumentOrderView,
     item: OrderPortfolioItem?,
-    quote: Quote?
+    column1: String,
+    column2: String,
+    column3: String,
+    column4: String,
 ) {
     when (item) {
         is OrderPortfolioItem.InstrumentPortfolioItem -> item.position.let { position ->
@@ -84,10 +79,32 @@ fun setPositionOrderPortfolio(
             date?.let {
                 view.setDescription(formatter.format(date))
             }
-
+            view.setTextColumnOne(
+                getPositionValueByColumn(
+                    item,
+                    column1
+                )
+            )
+            view.setTextColumnTwo(
+                getPositionValueByColumn(
+                    item,
+                    column2
+                )
+            )
+            view.setTextColumnThree(
+                getPositionValueByColumn(
+                    item,
+                    column3
+                )
+            )
+            view.setTextColumnFour(
+                getPositionValueByColumn(
+                    item,
+                    column4
+                )
+            )
         }
         is OrderPortfolioItem.CopierPortfolioItem -> item.copier.let { copy ->
-            Timber.e("${copy.user}")
             view.setImage(copy.user.picture ?: "")
             view.setTitle(copy.user.username ?: "")
         }
@@ -95,6 +112,31 @@ fun setPositionOrderPortfolio(
         }
     }
 }
+
+private fun getPositionValueByColumn(
+    item: OrderPortfolioItem.InstrumentPortfolioItem,
+    column: String
+): String = when (column) {
+    "Invested" -> "$%.2f".format(item.invested)
+    "Units" -> "%.2f".format(item.units)
+    "Open" -> "%s".format(item.open)
+    "Current" -> "%s".format(item.current)
+    "S/L($)" -> "$%.2f".format(item.profitLoss)
+    "S/L(%)" -> "%s%s".format(item.profitLossPercent, "%")
+    "Pip Change" -> "%s".format(item.pipChange)
+    "Leverage" -> "%s".format(item.leverage.toFloat())
+    "Value" -> "$%s".format(item.value)
+    "Fee" -> "$%s".format(item.fees)
+    "Execute at" -> "$%s".format(item.invested)
+    "SL" -> "%s".format(item.stopLoss)
+    "TP" -> "%s".format(item.takeProfit)
+    "SL($)" -> "$%.2f".format(item.amountStopLoss)
+    "TP($)" -> "$%.2f".format(item.amountTakeProfit)
+    "SL(%)" -> "%s%s".format(item.stopLossPercent, "%")
+    "TP(%)" -> "%s%s".format(item.takeProfitPercent, "%")
+    else -> ""
+}
+
 
 @BindingAdapter("setActivedColumn", "viewModel")
 fun setActivedColumn(

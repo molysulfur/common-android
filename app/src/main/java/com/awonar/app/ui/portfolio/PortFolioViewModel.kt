@@ -100,80 +100,10 @@ class PortFolioViewModel @Inject constructor(
         val itemList = mutableListOf<OrderPortfolioItem>()
         val positionItems = convertPositionToItemUseCase(positions).successOr(emptyList())
         itemList.addAll(positionItems)
-        Timber.e("positionItems ${positionItems}")
         val copierItems = convertCopierToItemUseCase(copies).successOr(emptyList())
         itemList.addAll(copierItems)
-        Timber.e("copierItems ${copierItems}")
         _positionMarketState.emit(itemList)
     }
-
-    private suspend fun getValueFromActivedColumn(position: Position, column: String): ColumnValue =
-        when (column) {
-            "Invested" -> ColumnValue(position.amount, ColumnValueType.COLUMN_TEXT)
-            "Units" -> ColumnValue(position.units, ColumnValueType.COLUMN_TEXT)
-            "Open" -> ColumnValue(position.openRate, ColumnValueType.COLUMN_TEXT)
-            "Current" -> ColumnValue(0f, ColumnValueType.COLUMN_CURRENT)
-            "S/L($)" -> ColumnValue(0f, ColumnValueType.PROFITLOSS)
-            "S/L(%)" -> ColumnValue(0f, ColumnValueType.PROFITLOSS_PERCENT)
-            "Pip Change" -> ColumnValue(0f, ColumnValueType.COLUMN_PIP_CHANGE)
-            "Leverage" -> ColumnValue(position.leverage.toFloat(), ColumnValueType.COLUMN_TEXT)
-            "Value" -> ColumnValue(0f, ColumnValueType.COLUMN_VALUE)
-            "Fee" -> ColumnValue(position.totalFees, ColumnValueType.COLUMN_TEXT)
-            "Execute at" -> ColumnValue(position.amount, ColumnValueType.COLUMN_TEXT)
-            "SL" -> ColumnValue(position.stopLossRate, ColumnValueType.COLUMN_TEXT)
-            "TP" -> ColumnValue(position.takeProfitRate, ColumnValueType.COLUMN_TEXT)
-            "SL($)" -> ColumnValue(
-                calculateAmountStopLossAndTakeProfitWithBuyUseCase(
-                    StopLossRequest(
-                        position.instrumentId,
-                        Price(0f, position.stopLossRate, "amount"),
-                        position.openRate,
-                        position.units
-                    )
-                ).successOr(
-                    Price(0f, 0f, "amount")
-                ).amount, ColumnValueType.COLUMN_TEXT
-            )
-            "TP($)" -> ColumnValue(
-                calculateAmountStopLossAndTakeProfitWithBuyUseCase(
-                    StopLossRequest(
-                        position.instrumentId,
-                        Price(0f, position.takeProfitRate, "amount"),
-                        position.openRate,
-                        position.units
-                    )
-                ).successOr(
-                    Price(0f, 0f, "amount")
-                ).amount, ColumnValueType.COLUMN_TEXT
-            )
-            "SL(%)" -> {
-                val amountSL = calculateAmountStopLossAndTakeProfitWithBuyUseCase(
-                    StopLossRequest(
-                        position.instrumentId,
-                        Price(0f, position.stopLossRate, "amount"),
-                        position.openRate,
-                        position.units
-                    )
-                ).successOr(
-                    Price(0f, 0f, "amount")
-                ).amount
-                ColumnValue(amountSL.times(100).div(position.amount), ColumnValueType.COLUMN_TEXT)
-            }
-            "TP(%)" -> {
-                val amountTp = calculateAmountStopLossAndTakeProfitWithBuyUseCase(
-                    StopLossRequest(
-                        position.instrumentId,
-                        Price(0f, position.takeProfitRate, "amount"),
-                        position.openRate,
-                        position.units
-                    )
-                ).successOr(
-                    Price(0f, 0f, "amount")
-                ).amount
-                ColumnValue(amountTp.times(100).div(position.amount), ColumnValueType.COLUMN_TEXT)
-            }
-            else -> throw Error("column name is not found!")
-        }
 
     fun activedColumnChange(text: String) {
         viewModelScope.launch {

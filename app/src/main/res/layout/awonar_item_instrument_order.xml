@@ -4,6 +4,22 @@
     <data>
 
         <variable
+            name="column1"
+            type="String" />
+
+        <variable
+            name="column2"
+            type="String" />
+
+        <variable
+            name="column3"
+            type="String" />
+
+        <variable
+            name="column4"
+            type="String" />
+
+        <variable
             name="quote"
             type="com.awonar.android.model.market.Quote" />
 
@@ -14,8 +30,11 @@
     </data>
 
     <com.awonar.app.widget.InstrumentOrderView xmlns:android="http://schemas.android.com/apk/res/android"
+        column1="@{column1}"
+        column2="@{column2}"
+        column3="@{column3}"
+        column4="@{column4}"
         setPositionOrder="@{item}"
-        updateQuote="@{quote}"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/awonar_ripple_white"

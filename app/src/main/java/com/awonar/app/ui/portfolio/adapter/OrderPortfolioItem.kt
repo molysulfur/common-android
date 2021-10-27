@@ -30,7 +30,7 @@ sealed class OrderPortfolioItem(
     @Parcelize
     class InstrumentPortfolioItem(
         val position: Position,
-        val conversionRate :Float,
+        val conversionRate: Float,
         var invested: Float,
         var units: Float,
         var open: Float,

@@ -16,6 +16,12 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             notifyDataSetChanged()
         }
 
+    var columns: List<String> = listOf()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
+
     var quote: Array<Quote> = emptyArray()
         set(value) {
             field = value
@@ -44,8 +50,16 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = itemLists[position]
         when (holder) {
-            is InstrumentPortfolioViewHolder -> holder.bind(item as OrderPortfolioItem.InstrumentPortfolioItem,quote)
-            is CopyTradePortfolioViewHolder -> holder.bind(item as OrderPortfolioItem.CopierPortfolioItem,quote)
+            is InstrumentPortfolioViewHolder -> holder.bind(
+                item as OrderPortfolioItem.InstrumentPortfolioItem,
+                columns,
+                quote
+            )
+            is CopyTradePortfolioViewHolder -> holder.bind(
+                item as OrderPortfolioItem.CopierPortfolioItem,
+                columns,
+                quote
+            )
         }
     }
 
