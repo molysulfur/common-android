@@ -6,11 +6,10 @@ import com.molysulfur.library.usecase.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
-class ResetPortfolioColumnUseCase @Inject constructor(
+class GetManualColumnListUseCase @Inject constructor(
     private val repository: PortfolioRepository,
     @IoDispatcher dispatcher: CoroutineDispatcher
-) : UseCase<Unit, Unit>(dispatcher) {
-    override suspend fun execute(parameters: Unit) {
-        repository.clearActivedColumn()
-    }
+) : UseCase<List<String>, List<String>>(dispatcher) {
+    override suspend fun execute(parameters: List<String>): List<String> =
+        repository.getPortfolioManualColumns(parameters)
 }

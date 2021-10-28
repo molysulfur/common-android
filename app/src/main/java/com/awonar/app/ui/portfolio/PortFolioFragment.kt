@@ -32,6 +32,11 @@ class PortFolioFragment : Fragment() {
     ): View {
         launchAndRepeatWithViewLifecycle {
             launch {
+                portViewModel.portfolioType.collect {
+                    portViewModel.getActivedColoumn(it)
+                }
+            }
+            launch {
                 portViewModel.subscricbeQuote.collect { instrumentIds ->
                     instrumentIds.forEach {
                         marketViewModel.subscribe(it)
@@ -61,43 +66,61 @@ class PortFolioFragment : Fragment() {
             openActivity(PortFolioColumnActivedActivity::class.java)
         }
         binding.awonarPortfolioImageChangeStyle.setOnClickListener {
-            val tag = binding.awonarPortfolioImageChangeStyle.tag
-            if (tag == "market") {
-                binding.awonarPortfolioImageChangeStyle.tag = "manual"
-                binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_chart)
-                Navigation
-                    .findNavController(binding.awonarMainDrawerNavigationHostPortfolio)
-                    .navigate(PortFolioMarketFragmentDirections.portFolioMarketFragmentToPortFolioMaunalFragment())
-            } else {
-                binding.awonarPortfolioImageChangeStyle.tag = "market"
-                binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_list)
-                Navigation
-                    .findNavController(binding.awonarMainDrawerNavigationHostPortfolio)
-                    .navigate(PortFolioMaunalFragmentDirections.portFolioMaunalFragmentToPortFolioMarketFragment())
-            }
+            setPortfolioTypeChange()
         }
         setColumnListener()
+    }
+
+    private fun setPortfolioTypeChange() {
+        var tag = binding.awonarPortfolioImageChangeStyle.tag
+        if (tag == "market") {
+            tag = "manual"
+            binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_chart)
+            Navigation
+                .findNavController(binding.awonarMainDrawerNavigationHostPortfolio)
+                .navigate(PortFolioMarketFragmentDirections.portFolioMarketFragmentToPortFolioMaunalFragment())
+        } else {
+            tag = "market"
+            binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_list)
+            Navigation
+                .findNavController(binding.awonarMainDrawerNavigationHostPortfolio)
+                .navigate(PortFolioMaunalFragmentDirections.portFolioMaunalFragmentToPortFolioMarketFragment())
+        }
+        binding.awonarPortfolioImageChangeStyle.tag = tag
+        portViewModel.togglePortfolio(tag)
     }
 
     private fun setColumnListener() {
         binding.awonarPortfolioTextColumnOne.setOnClickListener {
             val tag = binding.awonarPortfolioTextColumnOne.tag
-            portViewModel.sortColumn(binding.awonarPortfolioTextColumnOne.text.toString(), tag == "DESC")
+            portViewModel.sortColumn(
+                binding.awonarPortfolioTextColumnOne.text.toString(),
+                tag == "DESC"
+            )
             binding.awonarPortfolioTextColumnOne.tag = if (tag == "DESC") "ASC" else "DESC"
         }
         binding.awonarPortfolioTextColumnTwo.setOnClickListener {
             val tag = binding.awonarPortfolioTextColumnTwo.tag
-            portViewModel.sortColumn(binding.awonarPortfolioTextColumnTwo.text.toString(), tag == "DESC")
+            portViewModel.sortColumn(
+                binding.awonarPortfolioTextColumnTwo.text.toString(),
+                tag == "DESC"
+            )
             binding.awonarPortfolioTextColumnTwo.tag = if (tag == "DESC") "ASC" else "DESC"
         }
         binding.awonarPortfolioTextColumnThree.setOnClickListener {
             val tag = binding.awonarPortfolioTextColumnThree.tag
-            portViewModel.sortColumn(binding.awonarPortfolioTextColumnThree.text.toString(), tag == "DESC")
+            portViewModel.sortColumn(
+                binding.awonarPortfolioTextColumnThree.text.toString(),
+                tag == "DESC"
+            )
             binding.awonarPortfolioTextColumnThree.tag = if (tag == "DESC") "ASC" else "DESC"
         }
         binding.awonarPortfolioTextColumnFore.setOnClickListener {
             val tag = binding.awonarPortfolioTextColumnFore.tag
-            portViewModel.sortColumn(binding.awonarPortfolioTextColumnFore.text.toString(), tag == "DESC")
+            portViewModel.sortColumn(
+                binding.awonarPortfolioTextColumnFore.text.toString(),
+                tag == "DESC"
+            )
             binding.awonarPortfolioTextColumnFore.tag = if (tag == "DESC") "ASC" else "DESC"
         }
     }

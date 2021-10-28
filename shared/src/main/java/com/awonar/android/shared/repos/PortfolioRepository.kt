@@ -1,12 +1,13 @@
 package com.awonar.android.shared.repos
 
+import com.awonar.android.constrant.manualColumns
+import com.awonar.android.constrant.marketColumns
 import com.awonar.android.model.portfolio.Portfolio
 import com.awonar.android.model.portfolio.UserPortfolioResponse
 import com.awonar.android.shared.api.PortfolioService
 import com.awonar.android.shared.db.hawk.PortfolioActivedColumnManager
 import com.molysulfur.library.network.DirectNetworkFlow
 import retrofit2.Response
-import timber.log.Timber
 import javax.inject.Inject
 
 class PortfolioRepository @Inject constructor(
@@ -39,60 +40,45 @@ class PortfolioRepository @Inject constructor(
 
         }.asFlow()
 
-    fun getActivedColumn(): List<String> =
-        preference.get() ?: listOf(
+    fun getActivedManualColumn(): List<String> =
+        preference.getManual() ?: listOf(
             "Invested",
             "Execute at",
             "Current",
             "Pip Change"
         )
 
-    fun clearActivedColumn() {
-        preference.clear()
-    }
-
-    fun getPortfolioMarketColumns(activedList: List<String>): List<String> {
-        val columnList = listOf(
-            "Invested",
+    fun getActivedMarketColumn(): List<String> =
+        preference.getManual() ?: listOf(
             "Units",
             "Avg. Open",
-            "Current",
-            "P/L($)",
-            "P/L(%)",
-            "Leverage",
-            "Value",
-            "Fee",
-            "Net Invest",
-            "CSL",
-            "CSL(%)"
+            "Invested",
+            "P/L($)"
         )
-        return columnList.filter { it !in activedList }
+
+
+    fun getPortfolioMarketColumns(activedList: List<String>): List<String> {
+        return marketColumns.filter { it !in activedList }
     }
 
     fun getPortfolioManualColumns(activedList: List<String>): List<String> {
-        val columnList = listOf(
-            "Invested",
-            "Units",
-            "Open",
-            "Current",
-            "P/L($)",
-            "P/L(%)",
-            "Pip Change",
-            "Leverage",
-            "Value",
-            "Fee",
-            "Execute at",
-            "SL",
-            "TP",
-            "SL($)",
-            "TP($)",
-            "SL(%)",
-            "TP(%)"
-        )
-        return columnList.filter { it !in activedList }
+        return manualColumns.filter { it !in activedList }
     }
 
-    fun updateColumn(newColumns: List<String>) {
-        preference.save(newColumns)
+    fun updateManualColumn(newColumns: List<String>) {
+        preference.saveManualColumn(newColumns)
     }
+
+    fun updateMarketColumn(newColumns: List<String>) {
+        preference.saveMarketColumn(newColumns)
+    }
+
+    fun clearActivedManualColumn() {
+        preference.clearManual()
+    }
+
+    fun clearActivedMarketColumn() {
+        preference.clearMarket()
+    }
+
 }

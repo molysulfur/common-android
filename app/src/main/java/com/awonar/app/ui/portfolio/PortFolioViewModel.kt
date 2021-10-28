@@ -2,15 +2,11 @@ package com.awonar.app.ui.portfolio
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.awonar.android.model.order.Price
-import com.awonar.android.model.order.StopLossRequest
 import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.portfolio.Portfolio
 import com.awonar.android.model.portfolio.Position
-import com.awonar.android.shared.domain.order.CalculateAmountStopLossAndTakeProfitWithBuyUseCase
 import com.awonar.android.shared.domain.portfolio.*
 import com.awonar.android.shared.utils.WhileViewSubscribed
-import com.awonar.app.R
 import com.awonar.app.domain.portfolio.ConvertCopierToItemUseCase
 import com.awonar.app.domain.portfolio.ConvertPositionToItemUseCase
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
@@ -25,14 +21,18 @@ import javax.inject.Inject
 class PortFolioViewModel @Inject constructor(
     private val getMyPortFolioUseCase: GetMyPortFolioUseCase,
     private val getPositionManualUseCase: GetPositionManualUseCase,
-    private var getPortfolioActivedColumnPreferenceUseCase: GetPortfolioActivedColumnPreferenceUseCase,
-    private var getPortfolioColumnListUseCase: GetPortfolioColumnListUseCase,
-    private var updatePortfolioColumnUseCase: UpdatePortfolioColumnUseCase,
-    private var resetPortfolioColumnUseCase: ResetPortfolioColumnUseCase,
+    private var getActivedManualColumnUseCase: GetActivedManualColumnUseCase,
+    private var getActivedMarketColumnUseCase: GetActivedMarketColumnUseCase,
+    private var getManualColumnListUseCase: GetManualColumnListUseCase,
+    private var updateManualColumnUseCase: UpdateManualColumnUseCase,
+    private var resetManualColumnUseCase: ResetManualColumnUseCase,
     private var getPositionMarketUseCase: GetPositionMarketUseCase,
     private var convertPositionToItemUseCase: ConvertPositionToItemUseCase,
     private var convertCopierToItemUseCase: ConvertCopierToItemUseCase,
 ) : ViewModel() {
+
+    private val _portfolioType = MutableSharedFlow<String>()
+    val portfolioType: SharedFlow<String> get() = _portfolioType
 
     private val _navigateActivedColumn = Channel<String>(capacity = Channel.CONFLATED)
     val navigateActivedColumn: Flow<String> = _navigateActivedColumn.receiveAsFlow()
@@ -47,7 +47,7 @@ class PortFolioViewModel @Inject constructor(
     val activedColumnState: StateFlow<List<String>> get() = _activedColumnState
 
     val columnState: StateFlow<List<String>> = flow {
-        val list = getPortfolioColumnListUseCase(_activedColumnState.value).successOr(emptyList())
+        val list = getManualColumnListUseCase(_activedColumnState.value).successOr(emptyList())
         emit(list)
     }.stateIn(viewModelScope, WhileViewSubscribed, emptyList())
 
@@ -76,8 +76,7 @@ class PortFolioViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
-            val list =
-                getPortfolioActivedColumnPreferenceUseCase(Unit).successOr(emptyList())
+            val list = getActivedMarketColumnUseCase(Unit).successOr(emptyList())
             _activedColumnState.emit(list)
         }
 
@@ -118,19 +117,36 @@ class PortFolioViewModel @Inject constructor(
     fun saveActivedColumn() {
         viewModelScope.launch {
             val activedList = _activedColumnState.value.toMutableList()
-            updatePortfolioColumnUseCase(activedList)
+            updateManualColumnUseCase(activedList)
         }
     }
 
     fun resetActivedColumn() {
         viewModelScope.launch {
-            resetPortfolioColumnUseCase(Unit)
+            resetManualColumnUseCase(Unit)
         }
     }
 
     fun sortColumn(coloumn: String, isDesc: Boolean) {
         viewModelScope.launch {
             _sortColumnState.send(Pair(coloumn, isDesc))
+        }
+    }
+
+    fun getActivedColoumn(portfolioType: String) {
+        viewModelScope.launch {
+            val actived = when (portfolioType) {
+                "market" -> getActivedMarketColumnUseCase(Unit).successOr(emptyList())
+                "manual" -> getActivedManualColumnUseCase(Unit).successOr(emptyList())
+                else -> emptyList()
+            }
+            _activedColumnState.emit(actived)
+        }
+    }
+
+    fun togglePortfolio(type: String) {
+        viewModelScope.launch {
+            _portfolioType.emit(type)
         }
     }
 
