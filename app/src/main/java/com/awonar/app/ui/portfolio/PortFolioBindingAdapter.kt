@@ -55,6 +55,41 @@ fun setAdapterOrderPortfolio(
     adapter.itemLists = items
 }
 
+@BindingAdapter("setActivedColumn", "viewModel")
+fun setActivedColumn(
+    recycler: RecyclerView,
+    activedList: List<String>,
+    viewModel: PortFolioViewModel
+) {
+    if (recycler.adapter == null) {
+        recycler.apply {
+            layoutManager =
+                LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
+            adapter = ActivedColumnAdapter().apply {
+                onClick = { text ->
+                    viewModel.activedColumnChange(text)
+                }
+            }
+        }
+    }
+    (recycler.adapter as ActivedColumnAdapter).itemList = activedList
+}
+
+@BindingAdapter("setActivedColumnToolbar")
+fun setActivedColumnToolbar(toolbar: MaterialToolbar, viewModel: PortFolioViewModel) {
+    toolbar.setNavigationOnClickListener {
+        (toolbar.context as Activity).finish()
+    }
+    toolbar.setOnMenuItemClickListener {
+        when (it.itemId) {
+            R.id.awonar_toolbar_actived_column_save -> viewModel.saveActivedColumn()
+            R.id.awonar_toolbar_actived_column_reset -> viewModel.resetActivedColumn()
+        }
+        (toolbar.context as Activity).finish()
+        false
+    }
+}
+
 @BindingAdapter("setPositionOrder", "column1", "column2", "column3", "column4")
 fun setItemPositionOrderPortfolio(
     view: InstrumentOrderView,
@@ -98,30 +133,78 @@ fun setItemPositionOrderPortfolio(
                     column4
                 )
             )
+            view.setTextColorColumnOne(
+                getPositionColorColoumn(
+                    item,
+                    column1
+                )
+            )
+            view.setTextColorColumnTwo(
+                getPositionColorColoumn(
+                    item,
+                    column2
+                )
+            )
+            view.setTextColorColumnThree(
+                getPositionColorColoumn(
+                    item,
+                    column3
+                )
+            )
+            view.setTextColorColumnFour(
+                getPositionColorColoumn(
+                    item,
+                    column4
+                )
+            )
         }
         is OrderPortfolioItem.CopierPortfolioItem -> item.copier.let { copy ->
             view.setImage(copy.user.picture ?: "")
             view.setTitle(copy.user.username ?: "")
             view.setTextColumnOne(
-                getCopierValueByCoumn(
+                getCopierValueByColumn(
                     item,
                     column1
                 )
             )
             view.setTextColumnTwo(
-                getCopierValueByCoumn(
+                getCopierValueByColumn(
                     item,
                     column2
                 )
             )
             view.setTextColumnThree(
-                getCopierValueByCoumn(
+                getCopierValueByColumn(
                     item,
                     column3
                 )
             )
             view.setTextColumnFour(
-                getCopierValueByCoumn(
+                getCopierValueByColumn(
+                    item,
+                    column4
+                )
+            )
+            view.setTextColorColumnOne(
+                getCopierColorByColumn(
+                    item,
+                    column1
+                )
+            )
+            view.setTextColorColumnTwo(
+                getCopierColorByColumn(
+                    item,
+                    column2
+                )
+            )
+            view.setTextColorColumnThree(
+                getCopierColorByColumn(
+                    item,
+                    column3
+                )
+            )
+            view.setTextColorColumnFour(
+                getCopierColorByColumn(
                     item,
                     column4
                 )
@@ -132,23 +215,43 @@ fun setItemPositionOrderPortfolio(
     }
 }
 
-private fun getCopierValueByCoumn(
+private fun getCopierColorByColumn(
+    item: OrderPortfolioItem.CopierPortfolioItem,
+    column: String
+): Int = when {
+    column == "P/L($)" && item.profitLoss < 0 -> R.color.awonar_color_orange
+    column == "P/L($)" && item.profitLoss >= 0 -> R.color.awonar_color_green
+    column == "P/L(%)" && item.profitLossPercent < 0 -> R.color.awonar_color_orange
+    column == "P/L(%)" && item.profitLossPercent >= 0 -> R.color.awonar_color_green
+    else -> 0
+}
+
+private fun getCopierValueByColumn(
     item: OrderPortfolioItem.CopierPortfolioItem,
     column: String
 ): String = when (column) {
-    "Units" -> "%.2f".format(item.units)
-    "Avg. Open" -> "%s".format(item.avgOpen)
     "Invested" -> "$%.2f".format(item.invested)
-    "S/L($)" -> "$%.2f".format(item.profitLoss)
-    "S/L(%)" -> "%s%s".format(item.profitLossPercent, "%")
+    "P/L($)" -> "$%.2f".format(item.profitLoss)
+    "P/L(%)" -> "%s%s".format(item.profitLossPercent, "%")
     "Value" -> "$%s".format(item.value)
     "Fee" -> "$%s".format(item.fees)
-    "Leverage" -> "%s".format(item.leverage)
-    "Current" -> ""
     "Net Invest" -> "$%.2f".format(item.netInvested)
     "CSL" -> "%s".format(item.copyStopLoss)
     "CSL(%)" -> "%.2f%s".format(item.copyStopLossPercent, "%")
     else -> ""
+}
+
+private fun getPositionColorColoumn(
+    item: OrderPortfolioItem.InstrumentPortfolioItem,
+    column: String
+): Int = when {
+    column == "P/L($)" && item.profitLoss < 0 -> R.color.awonar_color_orange
+    column == "P/L($)" && item.profitLoss >= 0 -> R.color.awonar_color_green
+    column == "P/L(%)" && item.profitLossPercent < 0 -> R.color.awonar_color_orange
+    column == "P/L(%)" && item.profitLossPercent >= 0 -> R.color.awonar_color_green
+    column == "Pip Change" && item.pipChange < 0 -> R.color.awonar_color_orange
+    column == "Pip Change" && item.pipChange >= 0 -> R.color.awonar_color_green
+    else -> 0
 }
 
 private fun getPositionValueByColumn(
@@ -159,8 +262,8 @@ private fun getPositionValueByColumn(
     "Units" -> "%.2f".format(item.units)
     "Open" -> "%s".format(item.open)
     "Current" -> "%s".format(item.current)
-    "S/L($)" -> "$%.2f".format(item.profitLoss)
-    "S/L(%)" -> "%s%s".format(item.profitLossPercent, "%")
+    "P/L($)" -> "$%.2f".format(item.profitLoss)
+    "P/L(%)" -> "%.2f%s".format(item.profitLossPercent, "%")
     "Pip Change" -> "%s".format(item.pipChange)
     "Leverage" -> "%s".format(item.leverage.toFloat())
     "Value" -> "$%s".format(item.value)
@@ -170,43 +273,7 @@ private fun getPositionValueByColumn(
     "TP" -> "%s".format(item.takeProfit)
     "SL($)" -> "$%.2f".format(item.amountStopLoss)
     "TP($)" -> "$%.2f".format(item.amountTakeProfit)
-    "SL(%)" -> "%s%s".format(item.stopLossPercent, "%")
-    "TP(%)" -> "%s%s".format(item.takeProfitPercent, "%")
+    "SL(%)" -> "%.2f%s".format(item.stopLossPercent, "%")
+    "TP(%)" -> "%.2f%s".format(item.takeProfitPercent, "%")
     else -> ""
-}
-
-
-@BindingAdapter("setActivedColumn", "viewModel")
-fun setActivedColumn(
-    recycler: RecyclerView,
-    activedList: List<String>,
-    viewModel: PortFolioViewModel
-) {
-    if (recycler.adapter == null) {
-        recycler.apply {
-            layoutManager =
-                LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
-            adapter = ActivedColumnAdapter().apply {
-                onClick = { text ->
-                    viewModel.activedColumnChange(text)
-                }
-            }
-        }
-    }
-    (recycler.adapter as ActivedColumnAdapter).itemList = activedList
-}
-
-@BindingAdapter("setActivedColumnToolbar")
-fun setActivedColumnToolbar(toolbar: MaterialToolbar, viewModel: PortFolioViewModel) {
-    toolbar.setNavigationOnClickListener {
-        (toolbar.context as Activity).finish()
-    }
-    toolbar.setOnMenuItemClickListener {
-        when (it.itemId) {
-            R.id.awonar_toolbar_actived_column_save -> viewModel.saveActivedColumn()
-            R.id.awonar_toolbar_actived_column_reset -> viewModel.resetActivedColumn()
-        }
-        (toolbar.context as Activity).finish()
-        false
-    }
 }

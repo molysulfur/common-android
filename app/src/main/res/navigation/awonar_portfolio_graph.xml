@@ -11,10 +11,6 @@
         <action
             android:id="@+id/portFolioMaunalFragment_to_portFolioMarketFragment"
             app:destination="@+id/portFolioMarketFragment"
-            app:enterAnim="@anim/common_anim_right_to_left_in"
-            app:exitAnim="@anim/common_anim_right_to_left_out"
-            app:popEnterAnim="@anim/common_anim_left_to_right_in"
-            app:popExitAnim="@anim/common_anim_left_to_right_out"
             app:popUpTo="@+id/portFolioMaunalFragment" />
     </fragment>
 
@@ -25,10 +21,6 @@
         <action
             android:id="@+id/portFolioMarketFragment_to_portFolioMaunalFragment"
             app:destination="@+id/portFolioMaunalFragment"
-            app:enterAnim="@anim/common_anim_right_to_left_in"
-            app:exitAnim="@anim/common_anim_right_to_left_out"
-            app:popEnterAnim="@anim/common_anim_left_to_right_in"
-            app:popExitAnim="@anim/common_anim_left_to_right_out"
             app:popUpTo="@+id/portFolioMarketFragment" />
     </fragment>
 
