@@ -82,22 +82,22 @@ class PortFolioFragment : Fragment() {
     private fun setColumnListener() {
         binding.awonarPortfolioTextColumnOne.setOnClickListener {
             val tag = binding.awonarPortfolioTextColumnOne.tag
-            portViewModel.sortColumn(1, tag == "DESC")
+            portViewModel.sortColumn(binding.awonarPortfolioTextColumnOne.text.toString(), tag == "DESC")
             binding.awonarPortfolioTextColumnOne.tag = if (tag == "DESC") "ASC" else "DESC"
         }
         binding.awonarPortfolioTextColumnTwo.setOnClickListener {
             val tag = binding.awonarPortfolioTextColumnTwo.tag
-            portViewModel.sortColumn(1, tag == "DESC")
+            portViewModel.sortColumn(binding.awonarPortfolioTextColumnTwo.text.toString(), tag == "DESC")
             binding.awonarPortfolioTextColumnTwo.tag = if (tag == "DESC") "ASC" else "DESC"
         }
         binding.awonarPortfolioTextColumnThree.setOnClickListener {
             val tag = binding.awonarPortfolioTextColumnThree.tag
-            portViewModel.sortColumn(1, tag == "DESC")
+            portViewModel.sortColumn(binding.awonarPortfolioTextColumnThree.text.toString(), tag == "DESC")
             binding.awonarPortfolioTextColumnThree.tag = if (tag == "DESC") "ASC" else "DESC"
         }
         binding.awonarPortfolioTextColumnFore.setOnClickListener {
             val tag = binding.awonarPortfolioTextColumnFore.tag
-            portViewModel.sortColumn(1, tag == "DESC")
+            portViewModel.sortColumn(binding.awonarPortfolioTextColumnFore.text.toString(), tag == "DESC")
             binding.awonarPortfolioTextColumnFore.tag = if (tag == "DESC") "ASC" else "DESC"
         }
     }

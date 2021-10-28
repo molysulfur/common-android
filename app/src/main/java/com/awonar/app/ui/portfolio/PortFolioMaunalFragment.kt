@@ -8,6 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.awonar.app.databinding.AwonarFragmentPortfolioManualBinding
 import com.awonar.app.ui.market.MarketViewModel
+import com.awonar.app.ui.portfolio.adapter.OrderPortfolioAdapter
+import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class PortFolioMaunalFragment : Fragment() {
 
@@ -23,6 +27,17 @@ class PortFolioMaunalFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        launchAndRepeatWithViewLifecycle {
+            launch {
+                viewModel.sortColumnState.collect {
+                    if (binding.awonarPortfolioRecyclerOrders.adapter != null) {
+                        val adapter: OrderPortfolioAdapter =
+                            binding.awonarPortfolioRecyclerOrders.adapter as OrderPortfolioAdapter
+                        adapter.sortColumn(it.first, it.second)
+                    }
+                }
+            }
+        }
         binding.viewModel = viewModel
         binding.marketViewModel = marketViewModel
         binding.lifecycleOwner = viewLifecycleOwner

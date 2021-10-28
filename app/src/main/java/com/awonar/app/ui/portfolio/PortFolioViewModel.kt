@@ -10,6 +10,7 @@ import com.awonar.android.model.portfolio.Position
 import com.awonar.android.shared.domain.order.CalculateAmountStopLossAndTakeProfitWithBuyUseCase
 import com.awonar.android.shared.domain.portfolio.*
 import com.awonar.android.shared.utils.WhileViewSubscribed
+import com.awonar.app.R
 import com.awonar.app.domain.portfolio.ConvertCopierToItemUseCase
 import com.awonar.app.domain.portfolio.ConvertPositionToItemUseCase
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
@@ -35,6 +36,9 @@ class PortFolioViewModel @Inject constructor(
 
     private val _navigateActivedColumn = Channel<String>(capacity = Channel.CONFLATED)
     val navigateActivedColumn: Flow<String> = _navigateActivedColumn.receiveAsFlow()
+
+    private val _sortColumnState = Channel<Pair<String, Boolean>>(capacity = Channel.CONFLATED)
+    val sortColumnState: Flow<Pair<String, Boolean>> = _sortColumnState.receiveAsFlow()
 
     private val _subscricbeQuote = Channel<List<Int>>(capacity = Channel.CONFLATED)
     val subscricbeQuote: Flow<List<Int>> = _subscricbeQuote.receiveAsFlow()
@@ -124,28 +128,11 @@ class PortFolioViewModel @Inject constructor(
         }
     }
 
-    fun sortColumn(index: Int, isDesc: Boolean) {
+    fun sortColumn(coloumn: String, isDesc: Boolean) {
         viewModelScope.launch {
-            val itemList: MutableList<OrderPortfolioItem> = _positionOrderList.value.toMutableList()
-//            when (isDesc) {
-//                true -> itemList.sortByDescending {
-//                    when (index) {
-//                        1 -> it.value1?.value
-//                        2 -> it.value2?.value
-//                        3 -> it.value3?.value
-//                        else -> it.value4?.value
-//                    }
-//                }
-//                else -> itemList.sortBy {
-//                    when (index) {
-//                        1 -> it.value1?.value
-//                        2 -> it.value2?.value
-//                        3 -> it.value3?.value
-//                        else -> it.value4?.value
-//                    }
-//                }
-//            }
-            _positionOrderList.emit(itemList)
+            _sortColumnState.send(Pair(coloumn, isDesc))
         }
     }
+
+
 }
