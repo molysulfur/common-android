@@ -15,6 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,6 +25,7 @@ class PortFolioViewModel @Inject constructor(
     private var getActivedManualColumnUseCase: GetActivedManualColumnUseCase,
     private var getActivedMarketColumnUseCase: GetActivedMarketColumnUseCase,
     private var getManualColumnListUseCase: GetManualColumnListUseCase,
+    private var getMarketColumnListUseCase: GetMarketColumnListUseCase,
     private var updateManualColumnUseCase: UpdateManualColumnUseCase,
     private var resetManualColumnUseCase: ResetManualColumnUseCase,
     private var getPositionMarketUseCase: GetPositionMarketUseCase,
@@ -31,8 +33,8 @@ class PortFolioViewModel @Inject constructor(
     private var convertCopierToItemUseCase: ConvertCopierToItemUseCase,
 ) : ViewModel() {
 
-    private val _portfolioType = MutableSharedFlow<String>()
-    val portfolioType: SharedFlow<String> get() = _portfolioType
+    private val _portfolioType = MutableStateFlow("market")
+    val portfolioType: StateFlow<String> get() = _portfolioType
 
     private val _navigateActivedColumn = Channel<String>(capacity = Channel.CONFLATED)
     val navigateActivedColumn: Flow<String> = _navigateActivedColumn.receiveAsFlow()
@@ -47,7 +49,12 @@ class PortFolioViewModel @Inject constructor(
     val activedColumnState: StateFlow<List<String>> get() = _activedColumnState
 
     val columnState: StateFlow<List<String>> = flow {
-        val list = getManualColumnListUseCase(_activedColumnState.value).successOr(emptyList())
+        val list = when (_portfolioType.value) {
+            "manual" -> getManualColumnListUseCase(_activedColumnState.value).successOr(
+                emptyList()
+            )
+            else -> getMarketColumnListUseCase(_activedColumnState.value).successOr(emptyList())
+        }
         emit(list)
     }.stateIn(viewModelScope, WhileViewSubscribed, emptyList())
 
@@ -133,9 +140,9 @@ class PortFolioViewModel @Inject constructor(
         }
     }
 
-    fun getActivedColoumn(portfolioType: String) {
+    fun getActivedColoumn(type: String) {
         viewModelScope.launch {
-            val actived = when (portfolioType) {
+            val actived = when (type) {
                 "market" -> getActivedMarketColumnUseCase(Unit).successOr(emptyList())
                 "manual" -> getActivedManualColumnUseCase(Unit).successOr(emptyList())
                 else -> emptyList()

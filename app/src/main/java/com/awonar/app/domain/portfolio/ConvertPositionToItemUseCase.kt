@@ -66,7 +66,6 @@ class ConvertPositionToItemUseCase @Inject constructor(
                 )
             )
         }
-        Timber.e("$itemList")
         return itemList
     }
 

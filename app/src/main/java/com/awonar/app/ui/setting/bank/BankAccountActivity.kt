@@ -95,7 +95,8 @@ class BankAccountActivity : BaseActivity() {
             toast("Upload Your Book Bank.please.")
             return
         }
-        val countryId = remoteViewModel.countryState.value?.findLast { it.name.equals(country) }?.id ?: ""
+        val countryId =
+            remoteViewModel.countryState.value?.findLast { it.name.equals(country) }?.id ?: ""
         if (countryId.isBlank()) {
             toast("Not found! ,your country is not support. please check again.")
             return

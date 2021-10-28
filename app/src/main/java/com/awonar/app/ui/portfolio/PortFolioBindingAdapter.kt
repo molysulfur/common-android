@@ -85,7 +85,10 @@ fun setActivedColumnToolbar(toolbar: MaterialToolbar, viewModel: PortFolioViewMo
             R.id.awonar_toolbar_actived_column_save -> viewModel.saveActivedColumn()
             R.id.awonar_toolbar_actived_column_reset -> viewModel.resetActivedColumn()
         }
-        (toolbar.context as Activity).finish()
+        (toolbar.context as Activity).run {
+            setResult(Activity.RESULT_OK)
+            finish()
+        }
         false
     }
 }

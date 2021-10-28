@@ -1,25 +1,38 @@
 package com.awonar.app.ui.portfolio
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentPortfolioBinding
 import com.awonar.app.ui.market.MarketViewModel
-import com.molysulfur.library.extension.openActivity
+import com.molysulfur.library.extension.openActivityCompatForResult
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class PortFolioFragment : Fragment() {
 
     private val portViewModel: PortFolioViewModel by activityViewModels()
     private val marketViewModel: MarketViewModel by activityViewModels()
+
+    private val activityResult: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
+            if (activityResult.resultCode == Activity.RESULT_OK) {
+                val tag = binding.awonarPortfolioImageChangeStyle.tag
+                portViewModel.getActivedColoumn("$tag")
+            }
+        }
 
     private val binding: AwonarFragmentPortfolioBinding by lazy {
         AwonarFragmentPortfolioBinding.inflate(layoutInflater)
@@ -63,7 +76,12 @@ class PortFolioFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         marketViewModel.setNewQuoteListener()
         binding.awonarPortfolioImageIconList.setOnClickListener {
-            openActivity(PortFolioColumnActivedActivity::class.java)
+            val tag = binding.awonarPortfolioImageChangeStyle.tag
+            openActivityCompatForResult(
+                activityResult, PortFolioColumnActivedActivity::class.java, bundleOf(
+                    PortFolioColumnActivedActivity.EXTRA_PORTFOLIO_TYPE to tag
+                )
+            )
         }
         binding.awonarPortfolioImageChangeStyle.setOnClickListener {
             setPortfolioTypeChange()

@@ -8,7 +8,7 @@
     </data>
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/awonar_portfolio_colUmnnav_host_fragment"
+        android:id="@+id/awonar_portfolio_column_nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
