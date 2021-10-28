@@ -38,11 +38,11 @@ class ConvertPositionToItemUseCase @Inject constructor(
             val amountTp = calculateAmount(position.instrumentId, tp, open, units, position.isBuy)
             val slPercent = amountSl.times(100).div(invested)
             val tpPercent = amountTp.times(100).div(invested)
-            val current = 0f //TODO
-            val pl = 0f //TODO
-            val plPercent = 0f //TODO
-            val pipChange = 0f //TODO
-            val value = 0f  //TODO
+            val current = 0f // after get realtime
+            val pl = 0f // cal after get realtime
+            val plPercent = 0f // cal after get realtime
+            val pipChange = 0f // cal after get realtime
+            val value = 0f// cal after get realtime
             itemList.add(
                 OrderPortfolioItem.InstrumentPortfolioItem(
                     position = position,

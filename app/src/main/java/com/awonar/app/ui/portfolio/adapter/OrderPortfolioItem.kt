@@ -40,6 +40,7 @@ sealed class OrderPortfolioItem(
     @Parcelize
     class CopierPortfolioItem(
         val copier: Copier,
+        val conversions: Map<Int, Float>,
         var units: Float,
         var avgOpen: Float,
         var invested: Float,

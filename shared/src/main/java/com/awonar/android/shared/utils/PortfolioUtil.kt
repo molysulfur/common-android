@@ -1,24 +1,25 @@
 package com.awonar.android.shared.utils
 
-import timber.log.Timber
 import kotlin.math.pow
 
-
 object PortfolioUtil {
+
+    fun profitLossPercent(pl: Float, invested: Float) =
+        pl.div(invested).times(100)
 
     fun pipChange(
         current: Float,
         openRate: Float,
         isBuy: Boolean,
         digit: Int
-    ): Int {
+    ): Float {
         val pow = (10f.pow(digit))
         return when (isBuy) {
             true -> {
-                current.minus(openRate).times(pow).toInt()
+                current.minus(openRate).times(pow)
             }
             else -> {
-                openRate.minus(current).times(pow).toInt()
+                openRate.minus(current).times(pow)
             }
         }
     }
