@@ -27,7 +27,9 @@ class PortFolioViewModel @Inject constructor(
     private var getManualColumnListUseCase: GetManualColumnListUseCase,
     private var getMarketColumnListUseCase: GetMarketColumnListUseCase,
     private var updateManualColumnUseCase: UpdateManualColumnUseCase,
+    private var updateMarketColumnUseCase: UpdateMarketColumnUseCase,
     private var resetManualColumnUseCase: ResetManualColumnUseCase,
+    private var resetMarketColumnUseCase: ResetMarketColumnUseCase,
     private var getPositionMarketUseCase: GetPositionMarketUseCase,
     private var convertPositionToItemUseCase: ConvertPositionToItemUseCase,
     private var convertCopierToItemUseCase: ConvertCopierToItemUseCase,
@@ -124,13 +126,19 @@ class PortFolioViewModel @Inject constructor(
     fun saveActivedColumn() {
         viewModelScope.launch {
             val activedList = _activedColumnState.value.toMutableList()
-            updateManualColumnUseCase(activedList)
+            when (_portfolioType.value) {
+                "manual" -> updateManualColumnUseCase(activedList)
+                "market" -> updateMarketColumnUseCase(activedList)
+            }
         }
     }
 
     fun resetActivedColumn() {
         viewModelScope.launch {
-            resetManualColumnUseCase(Unit)
+            when (_portfolioType.value) {
+                "manual" -> resetManualColumnUseCase(Unit)
+                "market" -> resetMarketColumnUseCase(Unit)
+            }
         }
     }
 

@@ -49,7 +49,7 @@ class PortfolioRepository @Inject constructor(
         )
 
     fun getActivedMarketColumn(): List<String> =
-        preference.getManual() ?: listOf(
+        preference.getMarket() ?: listOf(
             "Units",
             "Avg. Open",
             "Invested",
