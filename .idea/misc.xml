@@ -67,6 +67,7 @@
         <entry key="app/src/main/res/layout/awonar_fragment_portfolio.xml" value="0.1" />
         <entry key="app/src/main/res/layout/awonar_fragment_portfolio_column_actived.xml" value="0.16638655462184873" />
         <entry key="app/src/main/res/layout/awonar_fragment_portfolio_column_list.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/awonar_fragment_portfolio_inside_instrument.xml" value="0.12760416666666666" />
         <entry key="app/src/main/res/layout/awonar_fragment_portfolio_manual.xml" value="0.20416666666666666" />
         <entry key="app/src/main/res/layout/awonar_fragment_portfolio_market.xml" value="0.20416666666666666" />
         <entry key="app/src/main/res/layout/awonar_fragment_privacy.xml" value="0.20260416666666667" />
@@ -89,6 +90,7 @@
         <entry key="app/src/main/res/layout/awonar_item_instrument_card.xml" value="0.28541666666666665" />
         <entry key="app/src/main/res/layout/awonar_item_instrument_list.xml" value="0.121875" />
         <entry key="app/src/main/res/layout/awonar_item_instrument_order.xml" value="0.2171875" />
+        <entry key="app/src/main/res/layout/awonar_item_instrument_position.xml" value="0.12760416666666666" />
         <entry key="app/src/main/res/layout/awonar_item_list.xml" value="0.12239583333333333" />
         <entry key="app/src/main/res/layout/awonar_item_loading.xml" value="0.20729166666666668" />
         <entry key="app/src/main/res/layout/awonar_item_question_checkbox.xml" value="0.1140625" />
@@ -108,6 +110,7 @@
         <entry key="app/src/main/res/layout/awonar_widget_image_checkbox.xml" value="0.5" />
         <entry key="app/src/main/res/layout/awonar_widget_instrument_item_view.xml" value="0.321875" />
         <entry key="app/src/main/res/layout/awonar_widget_instrument_order.xml" value="0.2171875" />
+        <entry key="app/src/main/res/layout/awonar_widget_instrument_position_card.xml" value="0.34135338345864663" />
         <entry key="app/src/main/res/layout/awonar_widget_progress.xml" value="0.5" />
         <entry key="app/src/main/res/layout/awonar_widget_text_divider.xml" value="0.14722222222222223" />
         <entry key="app/src/main/res/menu/awonar_main_menu.xml" value="0.11145833333333334" />

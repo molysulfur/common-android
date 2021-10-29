@@ -13,10 +13,11 @@
     </data>
 
     <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-        activedColumn="@{viewModel.activedColumnState}"
         android:id="@+id/awonar_portfolio_market_recycler_container"
+        activedColumn="@{viewModel.activedColumnState}"
         setOrderPortfolio="@{viewModel.positionMarketState}"
         updateQuote="@{marketViewModel.quoteSteamingState}"
+        viewModel="@{viewModel}"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

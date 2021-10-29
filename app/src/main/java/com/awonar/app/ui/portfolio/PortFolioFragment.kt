@@ -12,6 +12,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentPortfolioBinding
 import com.awonar.app.ui.market.MarketViewModel
@@ -43,6 +44,16 @@ class PortFolioFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        launchAndRepeatWithViewLifecycle {
+            portViewModel.navigateInsideInstrumentPortfolio.collect {
+                findNavController()
+                    .navigate(
+                        PortFolioFragmentDirections.actionPortFolioFragmentToPortFolioInsideInstrumentPortfolioFragment(
+                            it
+                        )
+                    )
+            }
+        }
         launchAndRepeatWithViewLifecycle {
             launch {
                 portViewModel.portfolioType.collect {

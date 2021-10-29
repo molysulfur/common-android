@@ -7,14 +7,67 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.market.Quote
+import com.awonar.android.model.portfolio.Position
+import com.awonar.android.shared.utils.ConverterQuoteUtil
+import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.app.R
 import com.awonar.app.ui.portfolio.activedadapter.ActivedColumnAdapter
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioAdapter
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
 import com.awonar.app.widget.InstrumentOrderView
+import com.awonar.app.widget.InstrumentPositionCardView
 import com.google.android.material.appbar.MaterialToolbar
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
+
+@BindingAdapter("setInstrumentPositionCard")
+fun setInstrumentPositionCard(
+    view: InstrumentPositionCardView,
+    position: Position?
+) {
+    position?.let {
+        view.apply {
+            setImage(it.instrument.logo ?: "")
+            setTitle(it.instrument.symbol ?: "")
+            setSubTitle(it.instrument.name ?: "")
+            setDescrption(it.instrument.industry ?: "")
+            setInvested(it.amount)
+            setUnit(it.units)
+            setAvgOpen(it.openRate)
+        }
+    }
+}
+
+@BindingAdapter("position", "isBuy", "conversionRate", "updateQuote")
+fun updateQuoteInstrumentPosition(
+    view: InstrumentPositionCardView,
+    position: Position?,
+    isBuy: Boolean?,
+    conversionRate: Float,
+    quotes: Array<Quote>
+) {
+    val quote = quotes.find { it.id == position?.instrumentId }
+    quote?.let {
+        val current = if (isBuy == true) it.bid else it.ask
+        val profitLoss = PortfolioUtil.getProfitOrLoss(
+            current = current,
+            openRate = position?.openRate ?: 0f,
+            unit = position?.units ?: 0f,
+            rate = conversionRate,
+            isBuy = isBuy == true
+        )
+        val valueInvest = PortfolioUtil.getValue(profitLoss, position?.amount ?: 0f)
+        view.apply {
+            setPrice(current)
+            setProfitLoss(profitLoss)
+            setChange(ConverterQuoteUtil.change(it.close, it.previous))
+            setStatusText("${it.status ?: "Closed"}")
+            setValueInvested(valueInvest)
+            setChangePercent(ConverterQuoteUtil.percentChange(it.previous, it.close))
+        }
+    }
+}
 
 @BindingAdapter("updateQuote")
 fun updateQuoteList(
@@ -28,17 +81,22 @@ fun updateQuoteList(
 }
 
 
-@BindingAdapter("setOrderPortfolio", "activedColumn")
+@BindingAdapter("setOrderPortfolio", "activedColumn", "viewModel")
 fun setAdapterOrderPortfolio(
     recycler: RecyclerView,
     items: MutableList<OrderPortfolioItem>,
-    activedColumn: List<String>
+    activedColumn: List<String>,
+    viewModel: PortFolioViewModel
 ) {
     if (recycler.adapter == null) {
         recycler.apply {
             layoutManager =
                 LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
-            adapter = OrderPortfolioAdapter()
+            adapter = OrderPortfolioAdapter().apply {
+                onClick = {
+                    viewModel.navigateInsidePortfolio(it)
+                }
+            }
         }
         val callback = PortfolioListItemTouchHelperCallback(recycler.context)
         val helper = ItemTouchHelper(callback)

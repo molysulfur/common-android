@@ -22,6 +22,7 @@ import javax.inject.Inject
 class PortFolioViewModel @Inject constructor(
     private val getMyPortFolioUseCase: GetMyPortFolioUseCase,
     private val getPositionManualUseCase: GetPositionManualUseCase,
+    private val getPositionUseCase: GetPositionUseCase,
     private var getActivedManualColumnUseCase: GetActivedManualColumnUseCase,
     private var getActivedMarketColumnUseCase: GetActivedMarketColumnUseCase,
     private var getManualColumnListUseCase: GetManualColumnListUseCase,
@@ -40,6 +41,9 @@ class PortFolioViewModel @Inject constructor(
 
     private val _navigateActivedColumn = Channel<String>(capacity = Channel.CONFLATED)
     val navigateActivedColumn: Flow<String> = _navigateActivedColumn.receiveAsFlow()
+    private val _navigateInsideInstrumentPortfolio = Channel<String>(capacity = Channel.CONFLATED)
+    val navigateInsideInstrumentPortfolio: Flow<String> =
+        _navigateInsideInstrumentPortfolio.receiveAsFlow()
 
     private val _sortColumnState = Channel<Pair<String, Boolean>>(capacity = Channel.CONFLATED)
     val sortColumnState: Flow<Pair<String, Boolean>> = _sortColumnState.receiveAsFlow()
@@ -73,6 +77,9 @@ class PortFolioViewModel @Inject constructor(
     private val _positionMarketState: MutableStateFlow<MutableList<OrderPortfolioItem>> =
         MutableStateFlow(mutableListOf())
     val positionMarketState: StateFlow<MutableList<OrderPortfolioItem>> get() = _positionMarketState
+
+    private val _positionState = MutableStateFlow<Position?>(null)
+    val positionState: StateFlow<Position?> get() = _positionState
 
     init {
 
@@ -162,6 +169,21 @@ class PortFolioViewModel @Inject constructor(
     fun togglePortfolio(type: String) {
         viewModelScope.launch {
             _portfolioType.emit(type)
+        }
+    }
+
+    fun navigateInsidePortfolio(it: String) {
+        viewModelScope.launch {
+            _navigateInsideInstrumentPortfolio.send(it)
+        }
+    }
+
+    fun getPosition(id: String) {
+        viewModelScope.launch {
+            getPositionUseCase(id).collect {
+                val position = it.successOr(null)
+                _positionState.emit(position)
+            }
         }
     }
 

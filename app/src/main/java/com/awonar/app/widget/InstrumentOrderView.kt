@@ -13,6 +13,7 @@ import coil.load
 import com.awonar.android.shared.constrant.BuildConfig
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarWidgetInstrumentOrderBinding
+import com.awonar.app.utils.loadImage
 import com.molysulfur.library.widget.BaseViewGroup
 
 class InstrumentOrderView : BaseViewGroup {
@@ -183,7 +184,7 @@ class InstrumentOrderView : BaseViewGroup {
 
     private fun updateImage() {
         when {
-            image != null -> binding.awonarInstrumentOrderImageAvatar.load(BuildConfig.BASE_IMAGE_URL + image)
+            image != null -> binding.awonarInstrumentOrderImageAvatar.loadImage(image)
             imageRes > 0 -> binding.awonarInstrumentOrderImageAvatar.setImageResource(imageRes)
         }
     }

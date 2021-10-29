@@ -45,6 +45,10 @@
         <item name="android:textSize">@dimen/awonar_size_text_large</item>
     </style>
 
+    <style name="Awonar.Text.Bold.ExtraLarge">
+        <item name="android:textSize">@dimen/awonar_size_text_extra_large</item>
+    </style>
+
     <style name="Awonar.Button">
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">@color/awonar_color_variant</item>
@@ -148,7 +152,7 @@
 
     <style name="Awonar.SubDescription" parent="Awonar.Text.Default.Small"></style>
 
-    <style name="Awonar.TabLayout" >
+    <style name="Awonar.TabLayout">
         <item name="tabIndicatorColor">@color/awonar_color_primary</item>
         <item name="tabSelectedTextColor">@color/awonar_color_primary</item>
     </style>

@@ -103,7 +103,7 @@ data class Position(
     @SerializedName("instrumentId") val instrumentId: Int,
     @SerializedName("copyId") val copyId: String,
     @SerializedName("amount") val amount: Float,
-    @SerializedName("exitOrder") val exitOrder: ExitOrder,
+    @SerializedName("exitOrder") val exitOrder: ExitOrder?,
     @SerializedName("exposure") val exposure: Float,
     @SerializedName("instrument") val instrument: Instrument,
     @SerializedName("openDateTime") val openDateTime: String,

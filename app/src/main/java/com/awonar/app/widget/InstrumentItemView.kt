@@ -18,6 +18,7 @@ import android.view.animation.AlphaAnimation
 import android.widget.Button
 import coil.load
 import com.awonar.app.utils.ColorChangingUtil
+import com.awonar.app.utils.loadImage
 import com.molysulfur.library.extension.readBooleanUsingCompat
 import com.molysulfur.library.extension.writeBooleanUsingCompat
 import timber.log.Timber
@@ -155,7 +156,7 @@ class InstrumentItemView : BaseViewGroup {
 
     private fun updateImage() {
         when {
-            image != null -> binding.awonarInstrumentItemImageLogo.load(BuildConfig.BASE_IMAGE_URL + image)
+            image != null -> binding.awonarInstrumentItemImageLogo.loadImage(image)
             imageRes > 0 -> binding.awonarInstrumentItemImageLogo.setImageResource(imageRes)
         }
     }
@@ -174,7 +175,12 @@ class InstrumentItemView : BaseViewGroup {
     }
 
     private fun updateChangeColor() {
-        binding.awonarInstrumentItemTextChange.setTextColor(ColorChangingUtil.getTextColorChange(context,change))
+        binding.awonarInstrumentItemTextChange.setTextColor(
+            ColorChangingUtil.getTextColorChange(
+                context,
+                change
+            )
+        )
     }
 
 

@@ -8,6 +8,7 @@ import com.awonar.android.model.market.Quote
 import com.awonar.android.model.order.OpenOrderRequest
 import com.awonar.android.model.order.Price
 import com.awonar.android.model.tradingdata.TradingData
+import com.awonar.android.shared.domain.market.GetConversionByInstrumentUseCase
 import com.awonar.android.shared.domain.market.GetInstrumentListUseCase
 import com.awonar.android.shared.domain.order.GetTradingDataByInstrumentIdUseCase
 import com.awonar.android.shared.steaming.QuoteSteamingEvent
@@ -32,10 +33,14 @@ class MarketViewModel @Inject constructor(
     private val convertInstrumentStockToItemUseCase: ConvertInstrumentStockToItemUseCase,
     private val convertInstrumentToItemUseCase: ConvertInstrumentToItemUseCase,
     private val getTradingDataByInstrumentIdUseCase: GetTradingDataByInstrumentIdUseCase,
+    private val getConversionByInstrumentUseCase: GetConversionByInstrumentUseCase,
     private val quoteSteamingManager: QuoteSteamingManager
 ) : ViewModel() {
 
     val tradingDataState = MutableSharedFlow<TradingData?>()
+
+    private val _conversionRateState = MutableStateFlow(0f)
+    val conversionRateState: StateFlow<Float> get() = _conversionRateState
 
     private val _viewMoreState = Channel<MarketViewMoreArg?>(capacity = Channel.CONFLATED)
     val viewMoreState = _viewMoreState.receiveAsFlow()
@@ -188,6 +193,12 @@ class MarketViewModel @Inject constructor(
                 instruments.value.filter { it.categories?.contains(instrumentType) ?: false }
             _instrumentItem.value =
                 convertInstrumentToItemUseCase(instrumentList).data ?: arrayListOf()
+        }
+    }
+
+    fun getConversionsRate(instrumentId: Int) {
+        viewModelScope.launch {
+            _conversionRateState.emit(getConversionByInstrumentUseCase(instrumentId).successOr(0f))
         }
     }
 

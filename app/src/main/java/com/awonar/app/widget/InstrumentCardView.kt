@@ -15,6 +15,7 @@ import coil.load
 import com.awonar.android.shared.constrant.BuildConfig
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarWidgetCardViewInstrumentBinding
+import com.awonar.app.utils.loadImage
 import com.molysulfur.library.widget.BaseViewGroup
 
 class InstrumentCardView : BaseViewGroup {
@@ -53,7 +54,7 @@ class InstrumentCardView : BaseViewGroup {
 
     private fun updateImage() {
         when {
-            image != null -> binding.awonarInstrumentCardViewImageLogo.load(BuildConfig.BASE_IMAGE_URL + image)
+            image != null -> binding.awonarInstrumentCardViewImageLogo.loadImage(image)
             imageRes > 0 -> binding.awonarInstrumentCardViewImageLogo.setImageResource(imageRes)
         }
     }

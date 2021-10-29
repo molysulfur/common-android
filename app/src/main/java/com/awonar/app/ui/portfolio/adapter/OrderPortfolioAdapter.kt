@@ -3,16 +3,13 @@ package com.awonar.app.ui.portfolio.adapter
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.market.Quote
-import com.awonar.app.R
 import com.awonar.app.databinding.AwonarItemEmptyBinding
 import com.awonar.app.databinding.AwonarItemInstrumentOrderBinding
 import com.awonar.app.ui.portfolio.adapter.holder.CopyTradePortfolioViewHolder
 import com.awonar.app.ui.portfolio.adapter.holder.EmptyViewHolder
 import com.awonar.app.ui.portfolio.adapter.holder.InstrumentPortfolioViewHolder
-import kotlinx.coroutines.launch
 
 @SuppressLint("NotifyDataSetChanged")
 class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -34,6 +31,9 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             field = value
             notifyDataSetChanged()
         }
+
+
+    var onClick: ((String) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
@@ -67,7 +67,8 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is InstrumentPortfolioViewHolder -> holder.bind(
                 item as OrderPortfolioItem.InstrumentPortfolioItem,
                 columns,
-                quote
+                quote,
+                onClick
             )
             is CopyTradePortfolioViewHolder -> holder.bind(
                 item as OrderPortfolioItem.CopierPortfolioItem,

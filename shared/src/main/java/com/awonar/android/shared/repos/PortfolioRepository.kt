@@ -3,6 +3,7 @@ package com.awonar.android.shared.repos
 import com.awonar.android.constrant.manualColumns
 import com.awonar.android.constrant.marketColumns
 import com.awonar.android.model.portfolio.Portfolio
+import com.awonar.android.model.portfolio.Position
 import com.awonar.android.model.portfolio.UserPortfolioResponse
 import com.awonar.android.shared.api.PortfolioService
 import com.awonar.android.shared.db.hawk.PortfolioActivedColumnManager
@@ -14,6 +15,17 @@ class PortfolioRepository @Inject constructor(
     private val portfolioService: PortfolioService,
     private val preference: PortfolioActivedColumnManager
 ) {
+
+    fun getMyPositions() = object : DirectNetworkFlow<Unit, List<Position>, List<Position>>() {
+        override fun createCall(): Response<List<Position>> =
+            portfolioService.getMyPositions().execute()
+
+        override fun convertToResultType(response: List<Position>): List<Position> = response
+
+        override fun onFetchFailed(errorMessage: String) {
+            println(errorMessage)
+        }
+    }.asFlow()
 
     fun getPortFolio() = object : DirectNetworkFlow<Boolean, Portfolio, Portfolio>() {
         override fun createCall(): Response<Portfolio> = portfolioService.getPortFolio().execute()
@@ -80,5 +92,6 @@ class PortfolioRepository @Inject constructor(
     fun clearActivedMarketColumn() {
         preference.clearMarket()
     }
+
 
 }

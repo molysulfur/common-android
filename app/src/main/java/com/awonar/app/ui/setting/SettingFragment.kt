@@ -17,6 +17,7 @@ import com.awonar.app.ui.setting.bank.BankAccountActivity
 import com.awonar.app.ui.setting.experience.ExperienceActivity
 import com.awonar.app.ui.setting.personal.PersonalInfoActivity
 import com.awonar.app.ui.user.UserViewModel
+import com.awonar.app.utils.loadImage
 import com.molysulfur.library.extension.openActivity
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
@@ -56,7 +57,7 @@ class SettingFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     private fun updateHeaderSetting() {
         if (user != null) {
-            binding.awonarSettingImageAvatar.load(BuildConfig.BASE_IMAGE_URL + user?.avatar)
+            binding.awonarSettingImageAvatar.loadImage(user?.avatar)
             binding.awonarSettingTextTitle.text =
                 "${user?.firstName} ${user?.middleName} ${user?.lastName}"
             binding.awonarSettingTextDescription.text = "${user?.username}"

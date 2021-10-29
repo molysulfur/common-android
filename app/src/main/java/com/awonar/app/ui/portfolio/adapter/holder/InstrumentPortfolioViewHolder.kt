@@ -5,7 +5,6 @@ import com.awonar.android.model.market.Quote
 import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.app.databinding.AwonarItemInstrumentOrderBinding
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
-import timber.log.Timber
 
 class InstrumentPortfolioViewHolder constructor(
     private val binding: AwonarItemInstrumentOrderBinding,
@@ -15,7 +14,8 @@ class InstrumentPortfolioViewHolder constructor(
     fun bind(
         item: OrderPortfolioItem.InstrumentPortfolioItem,
         columns: List<String>,
-        quotes: Array<Quote>
+        quotes: Array<Quote>,
+        onClick: ((String) -> Unit)?
     ) {
         val quote = quotes.find { it.id == item.position.instrumentId }
         quote?.let {
@@ -32,6 +32,11 @@ class InstrumentPortfolioViewHolder constructor(
             item.pipChange = pipChange
             item.value = value
             item.profitLossPercent = plPercent
+        }
+        binding.awonarInsturmentOrderItem.setOnClickListener {
+            item.position.let {
+                onClick?.invoke(it.id)
+            }
         }
         binding.column1 = columns[0]
         binding.column2 = columns[1]
