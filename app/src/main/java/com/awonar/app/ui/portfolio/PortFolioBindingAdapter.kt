@@ -88,6 +88,7 @@ fun setAdapterOrderPortfolio(
     activedColumn: List<String>,
     viewModel: PortFolioViewModel
 ) {
+    Timber.e("${items.size}")
     if (recycler.adapter == null) {
         recycler.apply {
             layoutManager =

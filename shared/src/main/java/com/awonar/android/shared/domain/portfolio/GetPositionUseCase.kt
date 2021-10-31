@@ -15,11 +15,12 @@ import javax.inject.Inject
 class GetPositionUseCase @Inject constructor(
     private val portfolioRepository: PortfolioRepository,
     @IoDispatcher dispatcher: CoroutineDispatcher
-) : FlowUseCase<String, Position>(dispatcher) {
-    override fun execute(parameters: String): Flow<Result<Position>> = flow {
+) : FlowUseCase<String, List<Position>>(dispatcher) {
+    override fun execute(parameters: String): Flow<Result<List<Position>>> = flow {
         portfolioRepository.getMyPositions().collect { result ->
             val list = result.successOr(emptyList())
-            val position = list?.find { it.id == parameters }
+            val instrumentId = list?.find { it.id == parameters }?.instrumentId
+            val position = list?.filter { it.instrumentId == instrumentId }
             if (position != null)
                 emit(Result.Success(position))
         }

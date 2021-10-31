@@ -78,13 +78,14 @@ class PortFolioViewModel @Inject constructor(
         MutableStateFlow(mutableListOf())
     val positionMarketState: StateFlow<MutableList<OrderPortfolioItem>> get() = _positionMarketState
 
-    private val _positionState = MutableStateFlow<Position?>(null)
-    val positionState: StateFlow<Position?> get() = _positionState
+    private val _positionState = MutableStateFlow<List<Position>>(emptyList())
+    val positionState: StateFlow<List<Position>> get() = _positionState
 
     init {
 
         viewModelScope.launch {
             getPositionMarketUseCase(Unit).collect {
+                Timber.e("$it")
                 val data = it.successOr(null)
                 if (data != null) {
                     convertToItem(data.positions, data.copies)
@@ -155,7 +156,7 @@ class PortFolioViewModel @Inject constructor(
         }
     }
 
-    fun getActivedColoumn(type: String) {
+    fun getActivedColoumn(type: String = "market") {
         viewModelScope.launch {
             val actived = when (type) {
                 "market" -> getActivedMarketColumnUseCase(Unit).successOr(emptyList())
@@ -181,7 +182,10 @@ class PortFolioViewModel @Inject constructor(
     fun getPosition(id: String) {
         viewModelScope.launch {
             getPositionUseCase(id).collect {
-                val position = it.successOr(null)
+                val position = it.successOr(emptyList())
+                _positionOrderList.emit(
+                    convertPositionToItemUseCase(position).successOr(emptyList()).toMutableList()
+                )
                 _positionState.emit(position)
             }
         }

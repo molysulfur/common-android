@@ -16,9 +16,7 @@ object ImageUtil {
 
     fun loadImage(imageView: ImageView, url: String?) {
         imageView.load(BuildConfig.BASE_IMAGE_URL + url){
-            crossfade(true)
             placeholder(R.drawable.awonar_placeholder_avatar)
-            error(R.drawable.awonar_placeholder_avatar)
         }
     }
 }

@@ -59,7 +59,7 @@ data class EntryOrderPortfolio(
     @SerializedName("amount") val amount: Float,
     @SerializedName("exposure") val exposure: Float,
     @SerializedName("initOpenRate") val initOpenRate: Float,
-    @SerializedName("ip") val ip: Float,
+    @SerializedName("ip") val ip: String,
     @SerializedName("isBuy") val isBuy: Boolean,
     @SerializedName("leverage") val leverage: Int,
     @SerializedName("openDateTime") val openDateTime: String,
@@ -71,7 +71,6 @@ data class EntryOrderPortfolio(
     @SerializedName("stopLossPercentage") val stopLossPercentage: Float,
     @SerializedName("takeProfitPercentage") val takeProfitPercentage: Float,
 ) : Parcelable
-
 
 @Parcelize
 data class OrderPortfolio(

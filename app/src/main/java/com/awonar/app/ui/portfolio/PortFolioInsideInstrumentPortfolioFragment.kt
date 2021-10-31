@@ -31,8 +31,9 @@ class PortFolioInsideInstrumentPortfolioFragment : Fragment() {
     ): View {
         launchAndRepeatWithViewLifecycle {
             portFolioViewModel.positionState.collect {
-                if(it != null){
-                    marketViewModel.getConversionsRate(it.instrumentId)
+                if(it.isNotEmpty()){
+                    portFolioViewModel.getActivedColoumn("manual")
+                    marketViewModel.getConversionsRate(it[0].instrumentId)
                 }
             }
         }
