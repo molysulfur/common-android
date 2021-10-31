@@ -46,12 +46,21 @@ class PortFolioFragment : Fragment() {
     ): View {
         launchAndRepeatWithViewLifecycle {
             portViewModel.navigateInsideInstrumentPortfolio.collect {
-                findNavController()
-                    .navigate(
-                        PortFolioFragmentDirections.actionPortFolioFragmentToPortFolioInsideInstrumentPortfolioFragment(
-                            it
+                when (it.second) {
+                    "instrument" -> findNavController()
+                        .navigate(
+                            PortFolioFragmentDirections.actionPortFolioFragmentToPortFolioInsideInstrumentPortfolioFragment(
+                                it.first
+                            )
                         )
-                    )
+                    "copier" -> findNavController()
+                        .navigate(
+                            PortFolioFragmentDirections.actionPortFolioFragmentToPortFolioInsideCopierPortfolioFragment(
+                                it.first
+                            )
+                        )
+                }
+
             }
         }
         launchAndRepeatWithViewLifecycle {

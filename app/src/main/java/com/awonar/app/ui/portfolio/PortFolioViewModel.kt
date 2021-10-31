@@ -10,6 +10,8 @@ import com.awonar.android.shared.utils.WhileViewSubscribed
 import com.awonar.app.domain.portfolio.ConvertCopierToItemUseCase
 import com.awonar.app.domain.portfolio.ConvertPositionToItemUseCase
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
+import com.molysulfur.library.result.Result
+import com.molysulfur.library.result.data
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -23,6 +25,7 @@ class PortFolioViewModel @Inject constructor(
     private val getMyPortFolioUseCase: GetMyPortFolioUseCase,
     private val getPositionManualUseCase: GetPositionManualUseCase,
     private val getPositionUseCase: GetPositionUseCase,
+    private val getCopierUseCase: GetCopierUseCase,
     private var getActivedManualColumnUseCase: GetActivedManualColumnUseCase,
     private var getActivedMarketColumnUseCase: GetActivedMarketColumnUseCase,
     private var getManualColumnListUseCase: GetManualColumnListUseCase,
@@ -41,8 +44,9 @@ class PortFolioViewModel @Inject constructor(
 
     private val _navigateActivedColumn = Channel<String>(capacity = Channel.CONFLATED)
     val navigateActivedColumn: Flow<String> = _navigateActivedColumn.receiveAsFlow()
-    private val _navigateInsideInstrumentPortfolio = Channel<String>(capacity = Channel.CONFLATED)
-    val navigateInsideInstrumentPortfolio: Flow<String> =
+    private val _navigateInsideInstrumentPortfolio =
+        Channel<Pair<String, String>>(capacity = Channel.CONFLATED)
+    val navigateInsideInstrumentPortfolio: Flow<Pair<String, String>> =
         _navigateInsideInstrumentPortfolio.receiveAsFlow()
 
     private val _sortColumnState = Channel<Pair<String, Boolean>>(capacity = Channel.CONFLATED)
@@ -80,6 +84,9 @@ class PortFolioViewModel @Inject constructor(
 
     private val _positionState = MutableStateFlow<List<Position>>(emptyList())
     val positionState: StateFlow<List<Position>> get() = _positionState
+
+    private val _copierState = MutableStateFlow<Copier?>(null)
+    val copierState: StateFlow<Copier?> get() = _copierState
 
     init {
 
@@ -173,9 +180,9 @@ class PortFolioViewModel @Inject constructor(
         }
     }
 
-    fun navigateInsidePortfolio(it: String) {
+    fun navigateInsidePortfolio(it: String, type: String) {
         viewModelScope.launch {
-            _navigateInsideInstrumentPortfolio.send(it)
+            _navigateInsideInstrumentPortfolio.send(Pair(it, type))
         }
     }
 
@@ -187,6 +194,21 @@ class PortFolioViewModel @Inject constructor(
                     convertPositionToItemUseCase(position).successOr(emptyList()).toMutableList()
                 )
                 _positionState.emit(position)
+            }
+        }
+    }
+
+    fun getCopierPosition(id: String) {
+        viewModelScope.launch {
+            getCopierUseCase(id).collect { result ->
+                if (result is Result.Success)
+                    _positionOrderList.emit(
+                        convertPositionToItemUseCase(
+                            result.data.positions ?: emptyList()
+                        ).successOr(emptyList())
+                            .toMutableList()
+                    )
+                _copierState.emit(result.data)
             }
         }
     }

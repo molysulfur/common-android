@@ -34,7 +34,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
 
 
-    var onClick: ((String) -> Unit)? = null
+    var onClick: ((String, String) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
@@ -74,7 +74,8 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is CopyTradePortfolioViewHolder -> holder.bind(
                 item as OrderPortfolioItem.CopierPortfolioItem,
                 columns,
-                quote
+                quote,
+                onClick
             )
         }
     }

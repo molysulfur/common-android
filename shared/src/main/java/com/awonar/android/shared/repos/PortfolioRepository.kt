@@ -2,6 +2,7 @@ package com.awonar.android.shared.repos
 
 import com.awonar.android.constrant.manualColumns
 import com.awonar.android.constrant.marketColumns
+import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.portfolio.Portfolio
 import com.awonar.android.model.portfolio.Position
 import com.awonar.android.model.portfolio.UserPortfolioResponse
@@ -15,6 +16,18 @@ class PortfolioRepository @Inject constructor(
     private val portfolioService: PortfolioService,
     private val preference: PortfolioActivedColumnManager
 ) {
+
+
+    fun getMyCopier() = object : DirectNetworkFlow<Unit, List<Copier>, List<Copier>>() {
+        override fun createCall(): Response<List<Copier>> =
+            portfolioService.getMyCopier().execute()
+
+        override fun convertToResultType(response: List<Copier>): List<Copier> = response
+
+        override fun onFetchFailed(errorMessage: String) {
+            println(errorMessage)
+        }
+    }.asFlow()
 
     fun getMyPositions() = object : DirectNetworkFlow<Unit, List<Position>, List<Position>>() {
         override fun createCall(): Response<List<Position>> =

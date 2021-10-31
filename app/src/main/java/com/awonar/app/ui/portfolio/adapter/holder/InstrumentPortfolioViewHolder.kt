@@ -15,7 +15,7 @@ class InstrumentPortfolioViewHolder constructor(
         item: OrderPortfolioItem.InstrumentPortfolioItem,
         columns: List<String>,
         quotes: Array<Quote>,
-        onClick: ((String) -> Unit)?
+        onClick: ((String, String) -> Unit)?
     ) {
         val quote = quotes.find { it.id == item.position.instrumentId }
         quote?.let {
@@ -35,7 +35,7 @@ class InstrumentPortfolioViewHolder constructor(
         }
         binding.awonarInsturmentOrderItem.setOnClickListener {
             item.position.let {
-                onClick?.invoke(it.id)
+                onClick?.invoke(it.id, "instrument")
             }
         }
         binding.column1 = columns[0]

@@ -54,13 +54,9 @@
                     app:navigationIcon="@drawable/awonar_ic_back"
                     app:title="Back" />
 
-                <com.awonar.app.widget.InstrumentPositionCardView
-                    android:id="@+id/awonar_portfolio_inside_instrument_instrument_position_header"
-                    conversionRate="@{marketViewModel.conversionRateState}"
-                    isBuy="@{viewModel.positionState[0].buy == true}"
-                    position="@{viewModel.positionState[0]}"
-                    setInstrumentPositionCard="@{viewModel.positionState[0]}"
-                    updateQuote="@{marketViewModel.quoteSteamingState}"
+                <com.awonar.app.widget.CopierPositionCardView
+                    android:id="@+id/awonar_portfolio_inside_copier_position_header"
+                    setCopierPositionCard="@{viewModel.copierState}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 

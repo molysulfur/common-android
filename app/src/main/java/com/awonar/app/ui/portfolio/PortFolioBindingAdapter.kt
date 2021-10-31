@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.market.Quote
+import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.portfolio.Position
 import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.android.shared.utils.PortfolioUtil
@@ -14,12 +15,29 @@ import com.awonar.app.R
 import com.awonar.app.ui.portfolio.activedadapter.ActivedColumnAdapter
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioAdapter
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
+import com.awonar.app.widget.CopierPositionCardView
 import com.awonar.app.widget.InstrumentOrderView
 import com.awonar.app.widget.InstrumentPositionCardView
 import com.google.android.material.appbar.MaterialToolbar
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
+
+@BindingAdapter("setCopierPositionCard")
+fun setCopierPositionCard(
+    view: CopierPositionCardView,
+    copier: Copier?
+) {
+    copier?.let {
+        view.apply {
+            setImage(it.user.picture ?: "")
+            setTitle("${it.user.firstName} ${it.user.middleName} ${it.user.lastName}")
+            setDescrption(it.user.username ?: "")
+            setInvested(it.investAmount)
+        }
+    }
+}
+
 
 @BindingAdapter("setInstrumentPositionCard")
 fun setInstrumentPositionCard(
@@ -88,14 +106,13 @@ fun setAdapterOrderPortfolio(
     activedColumn: List<String>,
     viewModel: PortFolioViewModel
 ) {
-    Timber.e("${items.size}")
     if (recycler.adapter == null) {
         recycler.apply {
             layoutManager =
                 LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
             adapter = OrderPortfolioAdapter().apply {
-                onClick = {
-                    viewModel.navigateInsidePortfolio(it)
+                onClick = { it, type ->
+                    viewModel.navigateInsidePortfolio(it, type)
                 }
             }
         }

@@ -11,13 +11,14 @@ import com.awonar.app.databinding.AwonarFragmentPortfolioInsideInstrumentBinding
 import com.awonar.app.ui.market.MarketViewModel
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
-class PortFolioInsideInstrumentPortfolioFragment : Fragment() {
+class PortFolioInsideInstrumentFragment : Fragment() {
 
     private val portFolioViewModel: PortFolioViewModel by activityViewModels()
     private val marketViewModel: MarketViewModel by activityViewModels()
 
-    private val args: PortFolioInsideInstrumentPortfolioFragmentArgs by navArgs()
+    private val args: PortFolioInsideInstrumentFragmentArgs by navArgs()
 
     private val binding: AwonarFragmentPortfolioInsideInstrumentBinding by lazy {
         AwonarFragmentPortfolioInsideInstrumentBinding.inflate(layoutInflater)
@@ -30,10 +31,20 @@ class PortFolioInsideInstrumentPortfolioFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         launchAndRepeatWithViewLifecycle {
-            portFolioViewModel.positionState.collect {
-                if(it.isNotEmpty()){
-                    portFolioViewModel.getActivedColoumn("manual")
-                    marketViewModel.getConversionsRate(it[0].instrumentId)
+            launch {
+                portFolioViewModel.activedColumnState.collect { newColumn ->
+                    binding.column1 = newColumn[0]
+                    binding.column2 = newColumn[1]
+                    binding.column3 = newColumn[2]
+                    binding.column4 = newColumn[3]
+                }
+            }
+            launch {
+                portFolioViewModel.positionState.collect {
+                    if (it.isNotEmpty()) {
+                        portFolioViewModel.getActivedColoumn("manual")
+                        marketViewModel.getConversionsRate(it[0].instrumentId)
+                    }
                 }
             }
         }
