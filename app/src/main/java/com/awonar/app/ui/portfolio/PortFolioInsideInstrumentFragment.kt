@@ -24,7 +24,6 @@ class PortFolioInsideInstrumentFragment : Fragment() {
         AwonarFragmentPortfolioInsideInstrumentBinding.inflate(layoutInflater)
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -56,7 +55,12 @@ class PortFolioInsideInstrumentFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        args.positionId.let {
+        args.copier?.let { copier ->
+            args.instrumentId.let { instrumentId ->
+                portFolioViewModel.getPosition(copier, instrumentId)
+            }
+        }
+        args.positionId?.let {
             portFolioViewModel.getPosition(it)
         }
     }

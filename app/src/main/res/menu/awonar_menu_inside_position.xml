@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/awonar_menu_instide_position_back"
+        android:icon="@drawable/awonar_ic_back"
+        android:title="back"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/awonar_menu_instide_position_next"
+        android:icon="@drawable/awonar_ic_next"
+        android:title="next"
+        app:showAsAction="ifRoom" />
+</menu>

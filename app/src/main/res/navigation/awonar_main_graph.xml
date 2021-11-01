@@ -41,7 +41,20 @@
         android:label="PortFolioInsideInstrumentPortfolioFragment">
         <argument
             android:name="positionId"
-            app:argType="string" />
+            android:defaultValue="null"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="copier"
+            android:defaultValue="null"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="instrumentId"
+            android:defaultValue="0"
+            app:argType="integer" />
     </fragment>
 
 

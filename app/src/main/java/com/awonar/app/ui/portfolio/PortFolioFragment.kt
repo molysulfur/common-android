@@ -49,9 +49,10 @@ class PortFolioFragment : Fragment() {
                 when (it.second) {
                     "instrument" -> findNavController()
                         .navigate(
-                            PortFolioFragmentDirections.actionPortFolioFragmentToPortFolioInsideInstrumentPortfolioFragment(
-                                it.first
-                            )
+                            PortFolioFragmentDirections.actionPortFolioFragmentToPortFolioInsideInstrumentPortfolioFragment()
+                                .apply {
+                                    positionId = it.first
+                                }
                         )
                     "copier" -> findNavController()
                         .navigate(

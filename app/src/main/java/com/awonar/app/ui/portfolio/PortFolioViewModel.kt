@@ -2,13 +2,16 @@ package com.awonar.app.ui.portfolio
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.awonar.android.model.portfolio.ConvertPositionItemWithCopier
 import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.portfolio.Portfolio
 import com.awonar.android.model.portfolio.Position
 import com.awonar.android.shared.domain.portfolio.*
 import com.awonar.android.shared.utils.WhileViewSubscribed
 import com.awonar.app.domain.portfolio.ConvertCopierToItemUseCase
+import com.awonar.app.domain.portfolio.ConvertGroupPositionToItemUseCase
 import com.awonar.app.domain.portfolio.ConvertPositionToItemUseCase
+import com.awonar.app.domain.portfolio.ConvertPositionWithCopierUseCase
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
 import com.molysulfur.library.result.Result
 import com.molysulfur.library.result.data
@@ -24,6 +27,7 @@ import javax.inject.Inject
 class PortFolioViewModel @Inject constructor(
     private val getMyPortFolioUseCase: GetMyPortFolioUseCase,
     private val getPositionManualUseCase: GetPositionManualUseCase,
+    private var getPositionMarketUseCase: GetPositionMarketUseCase,
     private val getPositionUseCase: GetPositionUseCase,
     private val getCopierUseCase: GetCopierUseCase,
     private var getActivedManualColumnUseCase: GetActivedManualColumnUseCase,
@@ -34,9 +38,10 @@ class PortFolioViewModel @Inject constructor(
     private var updateMarketColumnUseCase: UpdateMarketColumnUseCase,
     private var resetManualColumnUseCase: ResetManualColumnUseCase,
     private var resetMarketColumnUseCase: ResetMarketColumnUseCase,
-    private var getPositionMarketUseCase: GetPositionMarketUseCase,
     private var convertPositionToItemUseCase: ConvertPositionToItemUseCase,
     private var convertCopierToItemUseCase: ConvertCopierToItemUseCase,
+    private var convertGroupPositionToItemUseCase: ConvertGroupPositionToItemUseCase,
+    private var convertPositionWithCopierUseCase: ConvertPositionWithCopierUseCase,
 ) : ViewModel() {
 
     private val _portfolioType = MutableStateFlow("market")
@@ -89,10 +94,8 @@ class PortFolioViewModel @Inject constructor(
     val copierState: StateFlow<Copier?> get() = _copierState
 
     init {
-
         viewModelScope.launch {
             getPositionMarketUseCase(Unit).collect {
-                Timber.e("$it")
                 val data = it.successOr(null)
                 if (data != null) {
                     convertToItem(data.positions, data.copies)
@@ -116,7 +119,7 @@ class PortFolioViewModel @Inject constructor(
 
     private suspend fun convertToItem(positions: List<Position>, copies: List<Copier>) {
         val itemList = mutableListOf<OrderPortfolioItem>()
-        val positionItems = convertPositionToItemUseCase(positions).successOr(emptyList())
+        val positionItems = convertGroupPositionToItemUseCase(positions).successOr(emptyList())
         itemList.addAll(positionItems)
         val copierItems = convertCopierToItemUseCase(copies).successOr(emptyList())
         itemList.addAll(copierItems)
@@ -198,12 +201,32 @@ class PortFolioViewModel @Inject constructor(
         }
     }
 
+    fun getPosition(copyId: String, id: Int) {
+        viewModelScope.launch {
+            viewModelScope.launch {
+                getCopierUseCase(copyId).collect { result ->
+                    if (result is Result.Success)
+                        _positionOrderList.emit(
+                            convertPositionWithCopierUseCase(
+                                ConvertPositionItemWithCopier(
+                                    instrumentFilterId = id,
+                                    positions = result.data.positions ?: emptyList()
+                                )
+                            ).successOr(emptyList())
+                                .toMutableList()
+                        )
+                    _positionState.emit(result.data?.positions ?: emptyList())
+                }
+            }
+        }
+    }
+
     fun getCopierPosition(id: String) {
         viewModelScope.launch {
             getCopierUseCase(id).collect { result ->
                 if (result is Result.Success)
                     _positionOrderList.emit(
-                        convertPositionToItemUseCase(
+                        convertGroupPositionToItemUseCase(
                             result.data.positions ?: emptyList()
                         ).successOr(emptyList())
                             .toMutableList()
@@ -212,6 +235,4 @@ class PortFolioViewModel @Inject constructor(
             }
         }
     }
-
-
 }

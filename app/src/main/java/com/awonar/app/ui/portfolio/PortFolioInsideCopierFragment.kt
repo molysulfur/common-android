@@ -31,22 +31,25 @@ class PortFolioInsideCopierFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         launchAndRepeatWithViewLifecycle {
-            portFolioViewModel.navigateInsideInstrumentPortfolio.collect {
-                when (it.second) {
-                    "instrument" -> findNavController()
-                        .navigate(
-                            PortFolioInsideCopierFragmentDirections.actionPortFolioInsideCopierFragmentToPortFolioInsideInstrumentProfileFragment(
-                                it.first
+            portFolioViewModel.navigateInsideInstrumentPortfolio.collect { pair ->
+                val copier = portFolioViewModel.copierState.value
+                copier?.let {
+                    val position = copier.positions?.find { it.id == pair.first }
+                    when (pair.second) {
+                        "instrument" -> findNavController()
+                            .navigate(
+                                PortFolioInsideCopierFragmentDirections.actionPortFolioInsideCopierFragmentToPortFolioInsideInstrumentProfileFragment()
+                                    .apply {
+                                        this.copier = copier.id
+                                        this.instrumentId = position?.instrumentId ?: 0
+                                    }
                             )
-                        )
+                    }
                 }
+
             }
         }
         launchAndRepeatWithViewLifecycle {
-            launch {
-                portFolioViewModel.activedColumnState.collect { newColumn ->
-                }
-            }
             launch {
                 portFolioViewModel.copierState.collect {
                     portFolioViewModel.getActivedColoumn("market")

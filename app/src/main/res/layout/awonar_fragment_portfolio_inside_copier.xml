@@ -50,6 +50,7 @@
                 <com.google.android.material.appbar.MaterialToolbar
                     android:id="@+id/awonar_portfolio_inside_instrument_toolbar"
                     android:layout_width="match_parent"
+                    app:menu="@menu/awonar_menu_inside_position"
                     android:layout_height="wrap_content"
                     app:navigationIcon="@drawable/awonar_ic_back"
                     app:title="Back" />
