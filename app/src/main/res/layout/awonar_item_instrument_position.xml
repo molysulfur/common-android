@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.awonar.app.widget.InstrumentPositionCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
+<layout>
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem.InstrumentPositionCardItem" />
+
+        <variable
+            name="quote"
+            type="com.awonar.android.model.market.Quote" />
+    </data>
+
+    <com.awonar.app.widget.InstrumentPositionCardView xmlns:android="http://schemas.android.com/apk/res/android"
+        initInstrumentPositionCard="@{item}"
+        instrumentPositionCardItem="@{item}"
+        quote="@{quote}"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</layout>

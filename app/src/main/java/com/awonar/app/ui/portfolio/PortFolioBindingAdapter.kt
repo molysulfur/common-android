@@ -24,7 +24,74 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
 
-@BindingAdapter("copier", "conversionRateList", "qoute")
+@BindingAdapter("initInstrumentPositionCard")
+fun setInstrumentPositionCardView(
+    view: InstrumentPositionCardView,
+    item: OrderPortfolioItem.InstrumentPositionCardItem?
+) {
+    item?.let {
+        view.setImage(item.position.instrument.logo ?: "")
+        view.setTitle(item.position.instrument.symbol ?: "")
+        view.setSubTitle(item.position.instrument.name ?: "")
+        view.setInvested(item.invested)
+        view.setValueInvested(item.value)
+        view.setUnit(item.units)
+        view.setAvgOpen(item.avgOpen)
+        view.setProfitLoss(item.profitLoss)
+    }
+}
+
+
+@BindingAdapter("instrumentPositionCardItem", "quote")
+fun setInsturmentPositionCardWithQuote(
+    view: InstrumentPositionCardView,
+    item: OrderPortfolioItem.InstrumentPositionCardItem?,
+    quote: Quote?,
+) {
+    quote?.let {
+        val current = PortfolioUtil.getCurrent(item?.position?.isBuy == true, it)
+        val profitLoss =
+            PortfolioUtil.getProfitOrLoss(
+                current,
+                item?.position?.openRate ?: 0f,
+                item?.position?.units ?: 0f,
+                item?.conversion ?: 1f,
+                item?.position?.isBuy == true
+            )
+        view.setPrice(current)
+        view.setStatusText("${quote.status}")
+        view.setProfitLoss(profitLoss)
+    }
+}
+
+@BindingAdapter("setItemListCard")
+fun setItemListCard(
+    recycler: RecyclerView,
+    items: MutableList<OrderPortfolioItem>
+) {
+    if (recycler.adapter == null) {
+        recycler.apply {
+            layoutManager =
+                LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
+            adapter = OrderPortfolioAdapter().apply {
+                onClick = { it, type ->
+                }
+            }
+        }
+        val callback = PortfolioListItemTouchHelperCallback(recycler.context)
+        val helper = ItemTouchHelper(callback)
+        helper.attachToRecyclerView(recycler)
+        recycler.addItemDecoration(object : RecyclerView.ItemDecoration() {
+            override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+                super.onDraw(c, parent, state)
+                callback.onDraw(c)
+            }
+        })
+    }
+    (recycler.adapter as OrderPortfolioAdapter).itemLists = items
+}
+
+@BindingAdapter("copier", "conversionRateList", "quote")
 fun updateCopierProfitLoss(
     view: CopierPositionCardView,
     copier: Copier?,
@@ -49,7 +116,7 @@ fun updateCopierProfitLoss(
     }
 }
 
-@BindingAdapter("setCopierPositionCard")
+@BindingAdapter("setOrder")
 fun setCopierPositionCard(
     view: CopierPositionCardView,
     copier: Copier?
@@ -203,10 +270,10 @@ fun setActivedColumnToolbar(toolbar: MaterialToolbar, viewModel: PortFolioViewMo
 fun setItemPositionOrderPortfolio(
     view: InstrumentOrderView,
     item: OrderPortfolioItem?,
-    column1: String,
-    column2: String,
-    column3: String,
-    column4: String,
+    column1: String?,
+    column2: String?,
+    column3: String?,
+    column4: String?,
 ) {
     when (item) {
         is OrderPortfolioItem.InstrumentPortfolioItem -> item.position.let { position ->
@@ -221,49 +288,49 @@ fun setItemPositionOrderPortfolio(
             view.setTextColumnOne(
                 getPositionValueByColumn(
                     item,
-                    column1
+                    column1 ?: ""
                 )
             )
             view.setTextColumnTwo(
                 getPositionValueByColumn(
                     item,
-                    column2
+                    column2 ?: ""
                 )
             )
             view.setTextColumnThree(
                 getPositionValueByColumn(
                     item,
-                    column3
+                    column3 ?: ""
                 )
             )
             view.setTextColumnFour(
                 getPositionValueByColumn(
                     item,
-                    column4
+                    column4 ?: ""
                 )
             )
             view.setTextColorColumnOne(
                 getPositionColorColoumn(
                     item,
-                    column1
+                    column1 ?: ""
                 )
             )
             view.setTextColorColumnTwo(
                 getPositionColorColoumn(
                     item,
-                    column2
+                    column2 ?: ""
                 )
             )
             view.setTextColorColumnThree(
                 getPositionColorColoumn(
                     item,
-                    column3
+                    column3 ?: ""
                 )
             )
             view.setTextColorColumnFour(
                 getPositionColorColoumn(
                     item,
-                    column4
+                    column4 ?: ""
                 )
             )
         }
@@ -273,49 +340,49 @@ fun setItemPositionOrderPortfolio(
             view.setTextColumnOne(
                 getCopierValueByColumn(
                     item,
-                    column1
+                    column1 ?: ""
                 )
             )
             view.setTextColumnTwo(
                 getCopierValueByColumn(
                     item,
-                    column2
+                    column2 ?: ""
                 )
             )
             view.setTextColumnThree(
                 getCopierValueByColumn(
                     item,
-                    column3
+                    column3 ?: ""
                 )
             )
             view.setTextColumnFour(
                 getCopierValueByColumn(
                     item,
-                    column4
+                    column4 ?: ""
                 )
             )
             view.setTextColorColumnOne(
                 getCopierColorByColumn(
                     item,
-                    column1
+                    column1 ?: ""
                 )
             )
             view.setTextColorColumnTwo(
                 getCopierColorByColumn(
                     item,
-                    column2
+                    column2 ?: ""
                 )
             )
             view.setTextColorColumnThree(
                 getCopierColorByColumn(
                     item,
-                    column3
+                    column3 ?: ""
                 )
             )
             view.setTextColorColumnFour(
                 getCopierColorByColumn(
                     item,
-                    column4
+                    column4 ?: ""
                 )
             )
         }

@@ -1,5 +1,6 @@
 package com.awonar.android.shared.utils
 
+import com.awonar.android.model.market.Quote
 import kotlin.math.pow
 
 object PortfolioUtil {
@@ -37,4 +38,6 @@ object PortfolioUtil {
         }
 
     fun getValue(profitLoss: Float, amount: Float): Float = profitLoss.plus(amount)
+
+    fun getCurrent(isBuy: Boolean, quote: Quote): Float = if (isBuy) quote.bid else quote.ask
 }

@@ -5,6 +5,7 @@ import com.awonar.android.model.market.Quote
 import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.app.databinding.AwonarItemInstrumentOrderBinding
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
+import timber.log.Timber
 
 class InstrumentPortfolioViewHolder constructor(
     private val binding: AwonarItemInstrumentOrderBinding,
@@ -38,10 +39,12 @@ class InstrumentPortfolioViewHolder constructor(
                 onClick?.invoke(it.id, "instrument")
             }
         }
-        binding.column1 = columns[0]
-        binding.column2 = columns[1]
-        binding.column3 = columns[2]
-        binding.column4 = columns[3]
+        if (columns.isNotEmpty()) {
+            binding.column1 = columns[0]
+            binding.column2 = columns[1]
+            binding.column3 = columns[2]
+            binding.column4 = columns[3]
+        }
         binding.quote = quote
         binding.item = item
     }

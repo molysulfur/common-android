@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -41,7 +42,8 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                app:layout_scrollFlags="scroll|snap">
 
                 <include
                     android:id="@+id/awonar_portfolio_inside_include_allocation"
@@ -77,13 +79,57 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            activedColumn="@{viewModel.activedColumnState}"
-            setOrderPortfolio="@{viewModel.positionOrderList}"
-            updateQuote="@{marketViewModel.quoteSteamingState}"
-            viewModel="@{viewModel}"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+            android:background="@color/awonar_color_background"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/awonar_portfolio_recycler_container"
+                activedColumn="@{viewModel.activedColumnState}"
+                setOrderPortfolio="@{viewModel.positionOrderList}"
+                updateQuote="@{marketViewModel.quoteSteamingState}"
+                viewModel="@{viewModel}"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@color/awonar_color_surface"
+                app:layout_constraintBottom_toTopOf="@+id/awonar_portfolio_text_title_trade"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_portfolio_text_title_trade"
+                style="@style/Awonar.Text.Bold.Normal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/awonar_size_margin_padding_normal"
+                android:text="New Trade"
+                app:layout_constraintBottom_toTopOf="@+id/awonar_portfolio_button_sell"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/awonar_portfolio_button_sell"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/awonar_size_margin_padding_normal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/awonar_portfolio_button_buy"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toStartOf="@+id/awonar_portfolio_text_title_trade" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/awonar_portfolio_button_buy"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/awonar_size_margin_padding_normal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/awonar_portfolio_text_title_trade"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@+id/awonar_portfolio_button_sell" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

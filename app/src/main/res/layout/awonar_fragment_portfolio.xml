@@ -139,74 +139,22 @@
                     app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_text_title_section" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/awonar_color_background"
-                android:paddingStart="@dimen/awonar_size_margin_padding_normal"
-                android:paddingTop="@dimen/awonar_size_margin_padding_small"
-                android:paddingEnd="@dimen/awonar_size_margin_padding_normal"
-                android:paddingBottom="@dimen/awonar_size_margin_padding_small"
-                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/awonar_portfolio_text_column_one"
-                    style="@style/Awonar.Text.Default.Small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@{column1}"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/awonar_portfolio_text_column_two"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintHorizontal_chainStyle="spread_inside"
+                <include
+                    android:id="@+id/awonar_portfolio_include_column"
+                    column1="@{column1}"
+                    column2="@{column2}"
+                    column3="@{column3}"
+                    column4="@{column4}"
+                    layout="@layout/awonar_include_column"
+                    app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/awonar_portfolio_text_column_two"
-                    style="@style/Awonar.Text.Default.Small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@{column2}"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/awonar_portfolio_text_column_three"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/awonar_portfolio_text_column_one"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/awonar_portfolio_text_column_three"
-                    style="@style/Awonar.Text.Default.Small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@{column3}"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/awonar_portfolio_text_column_fore"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/awonar_portfolio_text_column_two"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/awonar_portfolio_text_column_fore"
-                    style="@style/Awonar.Text.Default.Small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@{column4}"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/awonar_portfolio_text_column_three"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/awonar_main_drawer_navigation_host_portfolio"
+            android:id="@+id/awonar_portfolio_navigation_host_portfolio"
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

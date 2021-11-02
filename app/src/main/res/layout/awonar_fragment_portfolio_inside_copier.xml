@@ -59,8 +59,8 @@
                     android:id="@+id/awonar_portfolio_inside_copier_position_header"
                     conversionRateList="@{marketViewModel.conversionRateListState}"
                     copier="@{viewModel.copierState}"
-                    qoute="@{marketViewModel.quoteSteamingState}"
-                    setCopierPositionCard="@{viewModel.copierState}"
+                    quote="@{marketViewModel.quoteSteamingState}"
+                    setOrder="@{viewModel.copierState}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 

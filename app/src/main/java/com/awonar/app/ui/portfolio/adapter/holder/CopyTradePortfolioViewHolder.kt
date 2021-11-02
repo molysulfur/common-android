@@ -5,6 +5,7 @@ import com.awonar.android.model.market.Quote
 import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.app.databinding.AwonarItemInstrumentOrderBinding
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
+import timber.log.Timber
 
 class CopyTradePortfolioViewHolder constructor(
     private val binding: AwonarItemInstrumentOrderBinding,
@@ -43,10 +44,13 @@ class CopyTradePortfolioViewHolder constructor(
         item.profitLoss = pl
         item.profitLossPercent = plPercent
         item.value = value
-        binding.column1 = columns[0]
-        binding.column2 = columns[1]
-        binding.column3 = columns[2]
-        binding.column4 = columns[3]
+        if (columns.isNotEmpty()) {
+            Timber.e("$columns")
+            binding.column1 = columns[0]
+            binding.column2 = columns[1]
+            binding.column3 = columns[2]
+            binding.column4 = columns[3]
+        }
         binding.quote = null
         binding.item = item
     }

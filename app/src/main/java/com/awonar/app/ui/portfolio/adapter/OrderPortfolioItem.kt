@@ -4,8 +4,10 @@ import android.os.Parcelable
 import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.portfolio.Position
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.COPYTRADE_PORTFOLIO
+import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.COPY_POSITION_CARD
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.EMPTY_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.INSTRUMENT_PORTFOLIO
+import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.INSTRUMENT_POSITION_CARD
 import kotlinx.parcelize.Parcelize
 
 sealed class OrderPortfolioItem(
@@ -54,4 +56,30 @@ sealed class OrderPortfolioItem(
         var copyStopLoss: Float,
         var copyStopLossPercent: Float,
     ) : OrderPortfolioItem(COPYTRADE_PORTFOLIO)
+
+    @Parcelize
+    class InstrumentPositionCardItem(
+        val position: Position,
+        val conversion: Float,
+        var units: Float,
+        var avgOpen: Float,
+        var invested: Float,
+        var profitLoss: Float,
+        var value: Float,
+        var leverage: Float,
+        var current: Float,
+    ) : OrderPortfolioItem(INSTRUMENT_POSITION_CARD)
+
+    @Parcelize
+    class CopierPositionCardItem(
+        val position: Copier,
+        val conversions: Map<Int, Float>,
+        var units: Float,
+        var avgOpen: Float,
+        var invested: Float,
+        var profitLoss: Float,
+        var value: Float,
+        var leverage: Float,
+        var current: Float,
+    ) : OrderPortfolioItem(COPY_POSITION_CARD)
 }
