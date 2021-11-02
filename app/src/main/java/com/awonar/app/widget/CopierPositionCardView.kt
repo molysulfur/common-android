@@ -29,8 +29,27 @@ class CopierPositionCardView : BaseViewGroup {
     private var units: Float = 0f
     private var profitLoss: Float = 0f
     private var avgOpen: Float = 0f
+    private var money: Float = 0f
 
     override fun setup() {
+        updateAvgOpen()
+        updateDescription()
+        updateImage()
+        updateInvested()
+        updateMoney()
+        updateProfitLoss()
+        updateTitle()
+        updateUnit()
+        updateValueInvested()
+    }
+
+    fun setMoney(money: Float) {
+        this.money = money
+        updateMoney()
+    }
+
+    private fun updateMoney() {
+        binding.money = money
     }
 
     fun setAvgOpen(number: Float) {
@@ -162,6 +181,7 @@ class CopierPositionCardView : BaseViewGroup {
         ss?.units = units
         ss?.profitLoss = profitLoss
         ss?.avgOpen = avgOpen
+        ss?.money = money
         return ss
     }
 
@@ -178,6 +198,16 @@ class CopierPositionCardView : BaseViewGroup {
         units = ss.units
         profitLoss = ss.profitLoss
         avgOpen = ss.avgOpen
+        money = ss.money
+        updateAvgOpen()
+        updateDescription()
+        updateImage()
+        updateInvested()
+        updateMoney()
+        updateProfitLoss()
+        updateTitle()
+        updateUnit()
+        updateValueInvested()
     }
 
     constructor(context: Context) : super(context)
@@ -210,6 +240,7 @@ class CopierPositionCardView : BaseViewGroup {
         var units: Float = 0f
         var profitLoss: Float = 0f
         var avgOpen: Float = 0f
+        var money: Float = 0f
 
         constructor(superState: Parcelable) : super(superState)
 
@@ -225,6 +256,7 @@ class CopierPositionCardView : BaseViewGroup {
             units = parcel.readFloat()
             profitLoss = parcel.readFloat()
             avgOpen = parcel.readFloat()
+            money = parcel.readFloat()
         }
 
         override fun writeToParcel(out: Parcel, flags: Int) {
@@ -240,6 +272,7 @@ class CopierPositionCardView : BaseViewGroup {
             out.writeFloat(units)
             out.writeFloat(profitLoss)
             out.writeFloat(avgOpen)
+            out.writeFloat(money)
         }
 
         companion object {

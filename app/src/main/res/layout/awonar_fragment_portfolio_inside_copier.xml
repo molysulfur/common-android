@@ -50,13 +50,16 @@
                 <com.google.android.material.appbar.MaterialToolbar
                     android:id="@+id/awonar_portfolio_inside_instrument_toolbar"
                     android:layout_width="match_parent"
-                    app:menu="@menu/awonar_menu_inside_position"
                     android:layout_height="wrap_content"
+                    app:menu="@menu/awonar_menu_inside_position"
                     app:navigationIcon="@drawable/awonar_ic_back"
                     app:title="Back" />
 
                 <com.awonar.app.widget.CopierPositionCardView
                     android:id="@+id/awonar_portfolio_inside_copier_position_header"
+                    conversionRateList="@{marketViewModel.conversionRateListState}"
+                    copier="@{viewModel.copierState}"
+                    qoute="@{marketViewModel.quoteSteamingState}"
                     setCopierPositionCard="@{viewModel.copierState}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -82,5 +85,4 @@
             android:layout_height="match_parent"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
 </layout>

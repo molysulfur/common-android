@@ -52,6 +52,7 @@ class PortFolioInsideCopierFragment : Fragment() {
         launchAndRepeatWithViewLifecycle {
             launch {
                 portFolioViewModel.copierState.collect {
+                    marketViewModel.getConversionsRateList(it?.positions ?: emptyList())
                     portFolioViewModel.getActivedColoumn("market")
                 }
             }

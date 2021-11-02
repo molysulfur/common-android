@@ -22,6 +22,32 @@ import com.google.android.material.appbar.MaterialToolbar
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.HashMap
+
+@BindingAdapter("copier", "conversionRateList", "qoute")
+fun updateCopierProfitLoss(
+    view: CopierPositionCardView,
+    copier: Copier?,
+    conversions: HashMap<Int, Float>,
+    quotes: Array<Quote>?
+) {
+    copier?.positions?.forEach { position ->
+        val quote = quotes?.find { it.id == position.instrumentId }
+        var sumFloatingPL = 0f
+        quote?.let {
+            val current = if (position.isBuy) it.bid else it.ask
+            val pl = PortfolioUtil.getProfitOrLoss(
+                current,
+                position.openRate,
+                position.units,
+                conversions[position.instrumentId] ?: 1f,
+                position.isBuy
+            )
+            sumFloatingPL = sumFloatingPL.plus(pl)
+        }
+        view.setProfitLoss(copier.closedPositionsNetProfit.plus(sumFloatingPL))
+    }
+}
 
 @BindingAdapter("setCopierPositionCard")
 fun setCopierPositionCard(
@@ -29,11 +55,15 @@ fun setCopierPositionCard(
     copier: Copier?
 ) {
     copier?.let {
+        val money = it.depositSummary.minus(it.withdrawalSummary)
+        val value = it.initialInvestment.plus(money)
         view.apply {
             setImage(it.user.picture ?: "")
             setTitle("${it.user.firstName} ${it.user.middleName} ${it.user.lastName}")
             setDescrption(it.user.username ?: "")
             setInvested(it.investAmount)
+            setMoney(money)
+            setValueInvested(value)
         }
     }
 }

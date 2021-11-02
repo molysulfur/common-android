@@ -7,6 +7,7 @@ import com.awonar.android.model.market.MarketViewMoreArg
 import com.awonar.android.model.market.Quote
 import com.awonar.android.model.order.OpenOrderRequest
 import com.awonar.android.model.order.Price
+import com.awonar.android.model.portfolio.Position
 import com.awonar.android.model.tradingdata.TradingData
 import com.awonar.android.shared.domain.market.GetConversionByInstrumentUseCase
 import com.awonar.android.shared.domain.market.GetInstrumentListUseCase
@@ -41,6 +42,9 @@ class MarketViewModel @Inject constructor(
 
     private val _conversionRateState = MutableStateFlow(0f)
     val conversionRateState: StateFlow<Float> get() = _conversionRateState
+
+    private val _conversionRateListState = MutableStateFlow<HashMap<Int, Float>>(hashMapOf())
+    val conversionRateListState: StateFlow<HashMap<Int, Float>> get() = _conversionRateListState
 
     private val _viewMoreState = Channel<MarketViewMoreArg?>(capacity = Channel.CONFLATED)
     val viewMoreState = _viewMoreState.receiveAsFlow()
@@ -198,7 +202,17 @@ class MarketViewModel @Inject constructor(
 
     fun getConversionsRate(instrumentId: Int) {
         viewModelScope.launch {
-            _conversionRateState.emit(getConversionByInstrumentUseCase(instrumentId).successOr(0f))
+            _conversionRateState.emit(getConversionByInstrumentUseCase(instrumentId).successOr(1f))
+        }
+    }
+
+    fun getConversionsRateList(list: List<Position>) {
+        viewModelScope.launch {
+            val conversions = HashMap<Int, Float>()
+            list.forEach {
+                val conversion = getConversionByInstrumentUseCase(it.instrumentId).successOr(1f)
+                conversions[it.instrumentId] = conversion
+            }
         }
     }
 
