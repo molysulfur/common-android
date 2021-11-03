@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.awonar.app.databinding.AwonarWidgetImageCheckboxBinding
 import com.awonar.app.databinding.AwonarWidgetInstrumentPositionCardBinding
+import com.awonar.app.utils.ColorChangingUtil
 import com.awonar.app.utils.ImageUtil
 import com.molysulfur.library.widget.BaseViewGroup
 
@@ -96,6 +97,12 @@ class InstrumentPositionCardView : BaseViewGroup {
     }
 
     private fun updateChange() {
+        binding.awonarInstrumentPositionCardTextChange.setTextColor(
+            ColorChangingUtil.getTextColorChange(
+                context,
+                change
+            )
+        )
         binding.awonarInstrumentPositionCardTextChange.text =
             "%.2f (%.2f)".format(change, changePercent)
     }

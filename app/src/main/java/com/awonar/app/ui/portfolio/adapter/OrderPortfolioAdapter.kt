@@ -6,13 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.market.Quote
+import com.awonar.app.databinding.AwonarItemCopierCardBinding
 import com.awonar.app.databinding.AwonarItemEmptyBinding
 import com.awonar.app.databinding.AwonarItemInstrumentOrderBinding
 import com.awonar.app.databinding.AwonarItemInstrumentPositionBinding
-import com.awonar.app.ui.portfolio.adapter.holder.CopyTradePortfolioViewHolder
-import com.awonar.app.ui.portfolio.adapter.holder.EmptyViewHolder
-import com.awonar.app.ui.portfolio.adapter.holder.InstrumentPortfolioViewHolder
-import com.awonar.app.ui.portfolio.adapter.holder.InstrumentPositionViewHolder
+import com.awonar.app.ui.portfolio.adapter.holder.*
 
 @SuppressLint("NotifyDataSetChanged")
 class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -68,6 +66,13 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     false
                 )
             )
+            OrderPortfolioType.COPY_POSITION_CARD -> CopierPositionViewHolder(
+                AwonarItemCopierCardBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
             else -> throw Exception("View Type is not found with $viewType")
         }
 
@@ -88,6 +93,10 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             )
             is InstrumentPositionViewHolder -> holder.bind(
                 item as OrderPortfolioItem.InstrumentPositionCardItem,
+                quote
+            )
+            is CopierPositionViewHolder -> holder.bind(
+                item as OrderPortfolioItem.CopierPositionCardItem,
                 quote
             )
         }

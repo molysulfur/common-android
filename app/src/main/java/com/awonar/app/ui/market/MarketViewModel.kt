@@ -85,7 +85,6 @@ class MarketViewModel @Inject constructor(
 
 
     fun setNewQuoteListener() {
-        quoteSteamingManager.setListener(listener)
     }
 
     fun convertInstrumentToItem() {
@@ -148,6 +147,7 @@ class MarketViewModel @Inject constructor(
             QuoteSteamingEvent.subscribe,
             "$id"
         )
+        quoteSteamingManager.setListener(listener)
     }
 
     fun subscribe() {
@@ -162,6 +162,7 @@ class MarketViewModel @Inject constructor(
 
             }
         }
+        quoteSteamingManager.setListener(listener)
     }
 
     fun unsubscribe() {

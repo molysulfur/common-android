@@ -66,7 +66,6 @@ fun setInsturmentPositionCardWithQuote(
     quote: Quote?,
 ) {
     quote?.let {
-        Timber.e("$quote")
         val current = PortfolioUtil.getCurrent(item?.position?.isBuy == true, it)
         val profitLoss =
             PortfolioUtil.getProfitOrLoss(
@@ -77,6 +76,7 @@ fun setInsturmentPositionCardWithQuote(
                 item?.position?.isBuy == true
             )
         view.setPrice(current)
+        view.setChange(quote.close - quote.previous)
         view.setStatusText("${quote.status}")
         view.setProfitLoss(profitLoss)
     }
