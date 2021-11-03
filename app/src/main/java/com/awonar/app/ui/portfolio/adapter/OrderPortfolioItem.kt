@@ -72,14 +72,10 @@ sealed class OrderPortfolioItem(
 
     @Parcelize
     class CopierPositionCardItem(
-        val position: Copier,
-        val conversions: Map<Int, Float>,
-        var units: Float,
-        var avgOpen: Float,
+        val copier: Copier,
         var invested: Float,
-        var profitLoss: Float,
+        var money: Float,
         var value: Float,
-        var leverage: Float,
-        var current: Float,
+        var profitLoss: Float
     ) : OrderPortfolioItem(COPY_POSITION_CARD)
 }

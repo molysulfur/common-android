@@ -29,12 +29,18 @@ class ConvertGroupPositionToItemUseCase @Inject constructor(
             val conversionRate = currenciesRepository.getConversionByInstrumentId(key).rateBid
             val invested: Double = positions.sumOf { it.amount.toDouble() }
             val units = positions.sumOf { it.units.toDouble() }
-            val avgOpen = positions.sumOf {
-                if (it.isBuy) {
-                    it.units * it.openRate.toDouble()
+            val avgOpen = positions.sumOf { position ->
+                if (position.isBuy) {
+                    position.units * position.openRate.toDouble()
                 } else {
-                    -abs(it.units * it.openRate).toDouble()
-                }
+                    -abs(position.units * position.openRate).toDouble()
+                }.div(positions.sumOf {
+                    if (it.isBuy) {
+                        it.units
+                    } else {
+                        -it.units
+                    }.toDouble()
+                })
             }
             val leverage = (positions.sumOf { it.leverage }).div(invested)
             val fees = positions.sumOf { it.totalFees.toDouble() }

@@ -39,6 +39,7 @@ class PortFolioViewModel @Inject constructor(
     private var convertGroupPositionToItemUseCase: ConvertGroupPositionToItemUseCase,
     private var convertPositionWithCopierUseCase: ConvertPositionWithCopierUseCase,
     private var convertPositionToCardItemUseCase: ConvertPositionToCardItemUseCase,
+    private var convertCopierToCardItemUseCase: ConvertCopierToCardItemUseCase,
 ) : ViewModel() {
 
     private val _portfolioType = MutableStateFlow("market")
@@ -234,12 +235,19 @@ class PortFolioViewModel @Inject constructor(
     fun getCardPosition() {
         viewModelScope.launch {
             getPositionMarketUseCase(Unit).collect { result ->
-                val covertResult = convertPositionToCardItemUseCase(
+                val itemList = mutableListOf<OrderPortfolioItem>()
+                val positionResult = convertPositionToCardItemUseCase(
                     result.data?.positions ?: emptyList()
                 ).successOr(
                     emptyList()
                 )
-                _positionOrderList.emit(covertResult.toMutableList())
+                val copierResult =
+                    convertCopierToCardItemUseCase(result.data?.copies ?: emptyList()).successOr(
+                        emptyList()
+                    )
+                itemList.addAll(positionResult)
+                itemList.addAll(copierResult)
+                _positionOrderList.emit(itemList)
             }
         }
     }

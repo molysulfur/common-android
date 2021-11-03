@@ -24,6 +24,23 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
 
+@BindingAdapter("initCopierCard")
+fun initCopierCard(
+    view: CopierPositionCardView,
+    item: OrderPortfolioItem.CopierPositionCardItem?
+) {
+    item?.let {
+        view.setImage(item.copier.user.picture ?: "")
+        view.setTitle("${item.copier.user.firstName} ${item.copier.user.middleName} ${item.copier.user.lastName}")
+        view.setDescrption(item.copier.user.username ?: "")
+        view.setInvested(item.invested)
+        view.setValueInvested(item.value)
+        view.setMoney(item.money)
+        view.setAvgOpen(item.profitLoss)
+        view.setProfitLoss(item.profitLoss)
+    }
+}
+
 @BindingAdapter("initInstrumentPositionCard")
 fun setInstrumentPositionCardView(
     view: InstrumentPositionCardView,
@@ -49,6 +66,7 @@ fun setInsturmentPositionCardWithQuote(
     quote: Quote?,
 ) {
     quote?.let {
+        Timber.e("$quote")
         val current = PortfolioUtil.getCurrent(item?.position?.isBuy == true, it)
         val profitLoss =
             PortfolioUtil.getProfitOrLoss(
@@ -134,7 +152,6 @@ fun setCopierPositionCard(
         }
     }
 }
-
 
 @BindingAdapter("setInstrumentPositionCard")
 fun setInstrumentPositionCard(
