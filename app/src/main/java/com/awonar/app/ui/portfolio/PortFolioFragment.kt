@@ -124,9 +124,13 @@ class PortFolioFragment : Fragment() {
                 binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_list)
                 PortFolioMaunalFragmentDirections.portFolioMaunalFragmentToPortFolioCardFragment()
             }
+            "card" -> {
+                tag = "piechart"
+                PortFolioCardFragmentDirections.portFolioCardFragmentToPortFolioPieChartFragment()
+            }
             else -> {
                 tag = "market"
-                PortFolioCardFragmentDirections.portFolioCardFragmentToPortFolioMarketFragment()
+                PortfolioPieChartFragmentDirections.portfolioPieChartFragmentToPortFolioMarketFragment()
             }
         }
         Navigation

@@ -33,7 +33,20 @@
         android:label="PortFolioCardFragment">
 
         <action
-            android:id="@+id/portFolioCardFragment_to_portFolioMarketFragment"
+            android:id="@+id/portFolioCardFragment_to_portFolioPieChartFragment"
+            app:destination="@+id/portfolioPieChartFragment"
+            app:popUpTo="@+id/portFolioFragment"
+            app:popUpToInclusive="true"
+            app:restoreState="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/portfolioPieChartFragment"
+        android:name="com.awonar.app.ui.portfolio.PortfolioPieChartFragment"
+        android:label="PortfolioPieChartFragment">
+
+        <action
+            android:id="@+id/portfolioPieChartFragment_to_portFolioMarketFragment"
             app:destination="@+id/portFolioMarketFragment"
             app:popUpTo="@+id/portFolioFragment"
             app:popUpToInclusive="true"

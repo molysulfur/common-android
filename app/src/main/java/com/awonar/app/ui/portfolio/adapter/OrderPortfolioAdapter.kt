@@ -6,10 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.market.Quote
-import com.awonar.app.databinding.AwonarItemCopierCardBinding
-import com.awonar.app.databinding.AwonarItemEmptyBinding
-import com.awonar.app.databinding.AwonarItemInstrumentOrderBinding
-import com.awonar.app.databinding.AwonarItemInstrumentPositionBinding
+import com.awonar.app.databinding.*
 import com.awonar.app.ui.portfolio.adapter.holder.*
 
 @SuppressLint("NotifyDataSetChanged")
@@ -73,6 +70,13 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     false
                 )
             )
+            OrderPortfolioType.EXPOSURE_PIECHART -> ExposureViewHolder(
+                AwonarItemListBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
             else -> throw Exception("View Type is not found with $viewType")
         }
 
@@ -98,6 +102,9 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is CopierPositionViewHolder -> holder.bind(
                 item as OrderPortfolioItem.CopierPositionCardItem,
                 quote
+            )
+            is ExposureViewHolder -> holder.bind(
+                item as OrderPortfolioItem.PieChartExposureItem
             )
         }
     }

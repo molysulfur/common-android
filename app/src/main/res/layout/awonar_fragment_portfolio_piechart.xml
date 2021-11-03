@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.awonar.app.ui.portfolio.PortFolioViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_portfolio_piechart_text_title"
+            style="@style/Awonar.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Exposure"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_portfolio_piechart_text_subtitle"
+            style="@style/Awonar.SubTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/awonar_size_margin_padding_small"
+            android:gravity="center"
+            android:text="Click on the pie chart or legend items to drill down."
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_portfolio_piechart_text_title" />
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/awonr_portfolio_piechart_allocate"
+            setPieChartExposure="@{viewModel.positionOrderList}"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="@dimen/awonar_size_text_extra_large"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_portfolio_piechart_text_subtitle" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            setOrderPortfolio="@{viewModel.positionOrderList}"
+            viewModel="@{viewModel}"
+            activedColumn="@{viewModel.activedColumnState}"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/awonar_size_text_extra_large"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/awonr_portfolio_piechart_allocate" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

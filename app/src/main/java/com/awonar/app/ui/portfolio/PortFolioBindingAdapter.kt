@@ -18,11 +18,42 @@ import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
 import com.awonar.app.widget.CopierPositionCardView
 import com.awonar.app.widget.InstrumentOrderView
 import com.awonar.app.widget.InstrumentPositionCardView
+import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.appbar.MaterialToolbar
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
+
+@BindingAdapter("setPieChartExposure")
+fun setPieChartExposure(
+    view: PieChart,
+    position: MutableList<OrderPortfolioItem>
+) {
+    if (position.isNotEmpty()) {
+        val entries = arrayListOf<PieEntry>()
+        position.forEach {
+            if (it is OrderPortfolioItem.PieChartExposureItem) {
+                entries.add(PieEntry(it.exposure, it.name))
+            }
+        }
+        val dataSet = PieDataSet(entries, "Exposure")
+        dataSet.colors = ColorTemplate.MATERIAL_COLORS.toMutableList()
+        view.data = PieData(dataSet)
+    }
+    view.apply {
+        isRotationEnabled = false
+        legend.isEnabled = false
+        setDrawCenterText(false)
+        setUsePercentValues(true)
+        description.isEnabled = false
+        invalidate()
+    }
+}
 
 @BindingAdapter("initCopierCard")
 fun initCopierCard(
@@ -76,7 +107,8 @@ fun setInsturmentPositionCardWithQuote(
                 item?.position?.isBuy == true
             )
         view.setPrice(current)
-        view.setChange(quote.close - quote.previous)
+        view.setChange(ConverterQuoteUtil.change(quote.close, quote.previous))
+        view.setChangePercent(ConverterQuoteUtil.percentChange(quote.previous, quote.close))
         view.setStatusText("${quote.status}")
         view.setProfitLoss(profitLoss)
     }
@@ -217,7 +249,7 @@ fun updateQuoteList(
 fun setAdapterOrderPortfolio(
     recycler: RecyclerView,
     items: MutableList<OrderPortfolioItem>,
-    activedColumn: List<String>,
+    activedColumn: List<String> = emptyList(),
     viewModel: PortFolioViewModel
 ) {
     if (recycler.adapter == null) {

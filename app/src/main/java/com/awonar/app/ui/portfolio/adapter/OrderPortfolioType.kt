@@ -7,4 +7,5 @@ object OrderPortfolioType {
     const val EMPTY_PORTFOLIO = 2
     const val INSTRUMENT_POSITION_CARD = 3
     const val COPY_POSITION_CARD = 4
+    const val EXPOSURE_PIECHART = 5
 }

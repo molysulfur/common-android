@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.awonar.android.model.portfolio.Position
 import com.awonar.app.domain.portfolio.*
+import timber.log.Timber
 
 @HiltViewModel
 class PortFolioViewModel @Inject constructor(
@@ -40,6 +41,8 @@ class PortFolioViewModel @Inject constructor(
     private var convertPositionWithCopierUseCase: ConvertPositionWithCopierUseCase,
     private var convertPositionToCardItemUseCase: ConvertPositionToCardItemUseCase,
     private var convertCopierToCardItemUseCase: ConvertCopierToCardItemUseCase,
+    private var getStatisicExposuresUseCase: GetStatisicExposuresUseCase,
+    private var convertExposureToPieChartUseCase: ConvertExposureToPieChartUseCase,
 ) : ViewModel() {
 
     private val _portfolioType = MutableStateFlow("market")
@@ -248,6 +251,15 @@ class PortFolioViewModel @Inject constructor(
                 itemList.addAll(positionResult)
                 itemList.addAll(copierResult)
                 _positionOrderList.emit(itemList)
+            }
+        }
+    }
+
+    fun getPieChartExposure() {
+        viewModelScope.launch {
+            getStatisicExposuresUseCase(Unit).collect {
+                val result = convertExposureToPieChartUseCase(it.successOr(emptyMap()))
+                _positionOrderList.emit(result.successOr(emptyList()).toMutableList())
             }
         }
     }

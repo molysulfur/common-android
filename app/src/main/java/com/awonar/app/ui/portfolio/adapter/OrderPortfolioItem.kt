@@ -6,6 +6,7 @@ import com.awonar.android.model.portfolio.Position
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.COPYTRADE_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.COPY_POSITION_CARD
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.EMPTY_PORTFOLIO
+import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.EXPOSURE_PIECHART
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.INSTRUMENT_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.INSTRUMENT_POSITION_CARD
 import kotlinx.parcelize.Parcelize
@@ -78,4 +79,10 @@ sealed class OrderPortfolioItem(
         var value: Float,
         var profitLoss: Float
     ) : OrderPortfolioItem(COPY_POSITION_CARD)
+
+    @Parcelize
+    class PieChartExposureItem(
+        val name: String,
+        val exposure: Float
+    ) : OrderPortfolioItem(EXPOSURE_PIECHART)
 }
