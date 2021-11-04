@@ -47,7 +47,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
                     android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
-                    android:text="@{`Available : $`+ viewModel.portfolioState.available}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="@string/awonar_example_name" />
@@ -58,7 +57,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
-                    android:text="@{`Allocate : $`+ viewModel.portfolioState.totalAllocated}"
                     app:layout_constraintStart_toStartOf="@+id/awonar_portfolio_text_title_available"
                     app:layout_constraintTop_toBottomOf="@+id/awonar_portfolio_text_title_available"
                     tools:text="@string/awonar_example_name" />
@@ -139,17 +137,17 @@
                     app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_text_title_section" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <include
-                    android:id="@+id/awonar_portfolio_include_column"
-                    column1="@{column1}"
-                    column2="@{column2}"
-                    column3="@{column3}"
-                    column4="@{column4}"
-                    layout="@layout/awonar_include_column"
-                    app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <include
+                android:id="@+id/awonar_portfolio_include_column"
+                column1="@{column1}"
+                column2="@{column2}"
+                column3="@{column3}"
+                column4="@{column4}"
+                layout="@layout/awonar_include_column"
+                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </com.google.android.material.appbar.AppBarLayout>
 

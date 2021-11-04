@@ -3,17 +3,42 @@ package com.awonar.app.ui.portfolio.adapter
 import android.os.Parcelable
 import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.portfolio.Position
+import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.BUTTON_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.COPYTRADE_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.COPY_POSITION_CARD
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.EMPTY_PORTFOLIO
-import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.EXPOSURE_PIECHART
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.INSTRUMENT_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.INSTRUMENT_POSITION_CARD
+import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.LIST_ITEM_PORTFOLIO
+import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.PIECHART_PORTFOLIO
+import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.SUBTITLE_CENTER_PORTFOLIO
+import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.TITLE_CENTER_PORTFOLIO
+import com.github.mikephil.charting.data.PieEntry
 import kotlinx.parcelize.Parcelize
 
 sealed class OrderPortfolioItem(
     val type: Int,
 ) : Parcelable {
+
+    @Parcelize
+    class PieChartItem(
+        val entries: List<PieEntry>
+    ) : OrderPortfolioItem(PIECHART_PORTFOLIO)
+
+    @Parcelize
+    class ButtonItem(
+        val buttonText: String
+    ) : OrderPortfolioItem(BUTTON_PORTFOLIO)
+
+    @Parcelize
+    class TitleItem(
+        val title: String
+    ) : OrderPortfolioItem(TITLE_CENTER_PORTFOLIO)
+
+    @Parcelize
+    class SubTitleItem(
+        val subTitle: String
+    ) : OrderPortfolioItem(SUBTITLE_CENTER_PORTFOLIO)
 
     @Parcelize
     class EmptyItem : OrderPortfolioItem(EMPTY_PORTFOLIO)
@@ -81,8 +106,8 @@ sealed class OrderPortfolioItem(
     ) : OrderPortfolioItem(COPY_POSITION_CARD)
 
     @Parcelize
-    class PieChartExposureItem(
+    class ListItem(
         val name: String,
-        val exposure: Float
-    ) : OrderPortfolioItem(EXPOSURE_PIECHART)
+        val value: Float
+    ) : OrderPortfolioItem(LIST_ITEM_PORTFOLIO)
 }

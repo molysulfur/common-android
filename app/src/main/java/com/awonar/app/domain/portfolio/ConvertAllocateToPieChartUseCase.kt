@@ -8,12 +8,12 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 
-class ConvertExposureToPieChartUseCase @Inject constructor(
+class ConvertAllocateToPieChartUseCase @Inject constructor(
     @IoDispatcher dispatcher: CoroutineDispatcher
 ) : UseCase<Map<String, Double>, List<OrderPortfolioItem>>(dispatcher) {
     override suspend fun execute(parameters: Map<String, Double>): List<OrderPortfolioItem> {
         val itemList = mutableListOf<OrderPortfolioItem>()
-        itemList.add(OrderPortfolioItem.TitleItem("Exposure"))
+        itemList.add(OrderPortfolioItem.TitleItem("Allocate"))
         itemList.add(OrderPortfolioItem.SubTitleItem("Click on the pie chart or legend item to drill down"))
         val entries = arrayListOf<PieEntry>()
         for ((k, v) in parameters) {
@@ -27,7 +27,7 @@ class ConvertExposureToPieChartUseCase @Inject constructor(
                 )
             )
         }
-        itemList.add(OrderPortfolioItem.ButtonItem("Allocate"))
+        itemList.add(OrderPortfolioItem.ButtonItem("Exposure"))
         return itemList
     }
 

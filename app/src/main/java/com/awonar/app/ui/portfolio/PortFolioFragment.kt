@@ -46,6 +46,14 @@ class PortFolioFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         launchAndRepeatWithViewLifecycle {
+            portViewModel.portfolioState.collect {
+                binding.awonarPortfolioTextTitleAvailable.text =
+                    "Available : \$%.2f".format(it?.available ?: 0f)
+                binding.awonarPortfolioTextTitleTotalAllocate.text =
+                    "Allocate : \$%.2f".format(it?.totalAllocated ?: 0f)
+            }
+        }
+        launchAndRepeatWithViewLifecycle {
             portViewModel.navigateInsideInstrumentPortfolio.collect {
                 when (it.second) {
                     "instrument" -> findNavController()

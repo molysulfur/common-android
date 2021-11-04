@@ -42,7 +42,9 @@ class PortFolioViewModel @Inject constructor(
     private var convertPositionToCardItemUseCase: ConvertPositionToCardItemUseCase,
     private var convertCopierToCardItemUseCase: ConvertCopierToCardItemUseCase,
     private var getStatisicExposuresUseCase: GetStatisicExposuresUseCase,
+    private var getStatisicAllocateUseCase: GetStatisicAllocateUseCase,
     private var convertExposureToPieChartUseCase: ConvertExposureToPieChartUseCase,
+    private var convertAllocateToPieChartUseCase: ConvertAllocateToPieChartUseCase,
 ) : ViewModel() {
 
     private val _portfolioType = MutableStateFlow("market")
@@ -259,6 +261,15 @@ class PortFolioViewModel @Inject constructor(
         viewModelScope.launch {
             getStatisicExposuresUseCase(Unit).collect {
                 val result = convertExposureToPieChartUseCase(it.successOr(emptyMap()))
+                _positionOrderList.emit(result.successOr(emptyList()).toMutableList())
+            }
+        }
+    }
+
+    fun getPieChartAllocate() {
+        viewModelScope.launch {
+            getStatisicAllocateUseCase(Unit).collect {
+                val result = convertAllocateToPieChartUseCase(it.successOr(emptyMap()))
                 _positionOrderList.emit(result.successOr(emptyList()).toMutableList())
             }
         }

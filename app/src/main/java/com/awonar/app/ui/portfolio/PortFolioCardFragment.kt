@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.awonar.app.databinding.AwonarFragmentPortfolioCardPositionBinding
 import com.awonar.app.ui.market.MarketViewModel
+import com.awonar.app.ui.portfolio.adapter.OrderPortfolioAdapter
 
 class PortFolioCardFragment : Fragment() {
 

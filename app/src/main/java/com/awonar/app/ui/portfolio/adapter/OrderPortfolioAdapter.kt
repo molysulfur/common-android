@@ -32,6 +32,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
     var onClick: ((String, String) -> Unit)? = null
+    var onButtonClick: ((String) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
@@ -70,13 +71,42 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     false
                 )
             )
-            OrderPortfolioType.EXPOSURE_PIECHART -> ExposureViewHolder(
-                AwonarItemListBinding.inflate(
+            OrderPortfolioType.LIST_ITEM_PORTFOLIO -> ListItemViewHolder(
+                AwonarItemListPiechartBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
             )
+            OrderPortfolioType.TITLE_CENTER_PORTFOLIO -> TitleViewHolder(
+                AwonarItemCenterTitleBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+            OrderPortfolioType.SUBTITLE_CENTER_PORTFOLIO -> SubTitleViewHolder(
+                AwonarItemCenterSubtitleBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+            OrderPortfolioType.BUTTON_PORTFOLIO -> ButtonViewHolder(
+                AwonarItemButtonItemBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+            OrderPortfolioType.PIECHART_PORTFOLIO -> PieChartViewHolder(
+                AwonarItemPiechartBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+
             else -> throw Exception("View Type is not found with $viewType")
         }
 
@@ -103,8 +133,21 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 item as OrderPortfolioItem.CopierPositionCardItem,
                 quote
             )
-            is ExposureViewHolder -> holder.bind(
-                item as OrderPortfolioItem.PieChartExposureItem
+            is ListItemViewHolder -> holder.bind(
+                item as OrderPortfolioItem.ListItem
+            )
+            is TitleViewHolder -> holder.bind(
+                item as OrderPortfolioItem.TitleItem
+            )
+            is SubTitleViewHolder -> holder.bind(
+                item as OrderPortfolioItem.SubTitleItem
+            )
+            is ButtonViewHolder -> holder.bind(
+                item as OrderPortfolioItem.ButtonItem,
+                onButtonClick
+            )
+            is PieChartViewHolder -> holder.bind(
+                item as OrderPortfolioItem.PieChartItem
             )
         }
     }

@@ -19,9 +19,12 @@ import com.awonar.app.widget.CopierPositionCardView
 import com.awonar.app.widget.InstrumentOrderView
 import com.awonar.app.widget.InstrumentPositionCardView
 import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.appbar.MaterialToolbar
 import timber.log.Timber
@@ -29,30 +32,36 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
 
-@BindingAdapter("setPieChartExposure")
-fun setPieChartExposure(
-    view: PieChart,
-    position: MutableList<OrderPortfolioItem>
+@BindingAdapter("setPieChartAdapter", "viewModel")
+fun setPieChartAdapter(
+    recycler: RecyclerView,
+    items: MutableList<OrderPortfolioItem>,
+    viewModel: PortFolioViewModel
 ) {
-    if (position.isNotEmpty()) {
-        val entries = arrayListOf<PieEntry>()
-        position.forEach {
-            if (it is OrderPortfolioItem.PieChartExposureItem) {
-                entries.add(PieEntry(it.exposure, it.name))
+    if (recycler.adapter == null) {
+        recycler.apply {
+            layoutManager =
+                LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
+            adapter = OrderPortfolioAdapter().apply {
+                onButtonClick = { text ->
+                    when (text.lowercase()) {
+                        "allocate" -> viewModel.getPieChartAllocate()
+                        "exposure" -> viewModel.getPieChartExposure()
+                    }
+                }
             }
         }
-        val dataSet = PieDataSet(entries, "Exposure")
-        dataSet.colors = ColorTemplate.MATERIAL_COLORS.toMutableList()
-        view.data = PieData(dataSet)
+        val callback = PortfolioListItemTouchHelperCallback(recycler.context)
+        val helper = ItemTouchHelper(callback)
+        helper.attachToRecyclerView(recycler)
+        recycler.addItemDecoration(object : RecyclerView.ItemDecoration() {
+            override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+                super.onDraw(c, parent, state)
+                callback.onDraw(c)
+            }
+        })
     }
-    view.apply {
-        isRotationEnabled = false
-        legend.isEnabled = false
-        setDrawCenterText(false)
-        setUsePercentValues(true)
-        description.isEnabled = false
-        invalidate()
-    }
+    (recycler.adapter as OrderPortfolioAdapter).itemLists = items
 }
 
 @BindingAdapter("initCopierCard")
@@ -115,7 +124,7 @@ fun setInsturmentPositionCardWithQuote(
 }
 
 @BindingAdapter("setItemListCard")
-fun setItemListCard(
+fun setPositionCardAdapter(
     recycler: RecyclerView,
     items: MutableList<OrderPortfolioItem>
 ) {
@@ -491,7 +500,7 @@ private fun getPositionValueByColumn(
     "P/L(%)" -> "%.2f%s".format(item.profitLossPercent, "%")
     "Pip Change" -> "%s".format(item.pipChange)
     "Leverage" -> "%s".format(item.leverage.toFloat())
-    "Value" -> "$%s".format(item.value)
+    "Value" -> "$%.2f".format(item.value)
     "Fee" -> "$%s".format(item.fees)
     "Execute at" -> "$%s".format(item.invested)
     "SL" -> "%s".format(item.stopLoss)

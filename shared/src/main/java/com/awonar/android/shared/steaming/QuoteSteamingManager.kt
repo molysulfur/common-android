@@ -48,7 +48,6 @@ class QuoteSteamingManager @Inject constructor(private val networkClient: Networ
 
 
     fun send(event: String, data: String) {
-        Timber.d("$event, $data")
         val request = "{\"event\":\"${event}\",\"data\":\"${data}\"}"
         webSocket?.send(request)
     }
