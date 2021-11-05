@@ -45,12 +45,22 @@ fun setPieChartAdapter(
             adapter = OrderPortfolioAdapter().apply {
                 onButtonClick = { text ->
                     when (text.lowercase()) {
-                        "allocate" -> viewModel.getAllocate()
-                        "exposure" -> viewModel.getPieChartExposure()
+                        "allocate" -> {
+                            this.pieChartType = "allocate"
+                            viewModel.getAllocate()
+                        }
+                        "exposure" -> {
+                            this.pieChartType = "exposure"
+                            viewModel.getExposure()
+                        }
                     }
                 }
                 onPieChartClick = {
-                    viewModel.getAllocate(it)
+                    when (this.pieChartType) {
+                        "allocate" ->viewModel.getAllocate(it)
+                        "exposure" ->viewModel.getExposure(it)
+                    }
+
                 }
 
             }

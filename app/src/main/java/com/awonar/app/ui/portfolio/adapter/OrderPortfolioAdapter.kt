@@ -12,6 +12,8 @@ import com.awonar.app.ui.portfolio.adapter.holder.*
 @SuppressLint("NotifyDataSetChanged")
 class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    var pieChartType: String = "exposure"
+
     var itemLists: MutableList<OrderPortfolioItem> = mutableListOf(OrderPortfolioItem.EmptyItem())
         set(value) {
             field = value
@@ -29,7 +31,6 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             OrderPortfolioDiffCallback(field, value)
             field = value
         }
-
 
     var onClick: ((String, String) -> Unit)? = null
     var onButtonClick: ((String) -> Unit)? = null
@@ -94,7 +95,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 )
             )
             OrderPortfolioType.BUTTON_PORTFOLIO -> ButtonViewHolder(
-                AwonarItemButtonItemBinding.inflate(
+                AwonarItemButtonViewmoreBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false

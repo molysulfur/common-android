@@ -12,21 +12,22 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class GetStatisicExposuresUseCase @Inject constructor(
+class GetPieChartInstrumentExposureUseCase @Inject constructor(
     private val portfolioRepository: PortfolioRepository,
     @IoDispatcher dispatcher: CoroutineDispatcher
 ) : FlowUseCase<Unit, Map<String, Double>>(dispatcher) {
     override fun execute(parameters: Unit): Flow<Result<Map<String, Double>>> = flow {
         portfolioRepository.getMyPositions().collect { result ->
-            val data: List<Position> = result.successOr(emptyList()) ?: emptyList()
-            val totalExposure: Double = data.sumOf { it.exposure.toDouble() }
-            val exposureMap = HashMap<String, Double>()
-            val exposureGroupWithType: Map<String, List<Position>> =
-                data.groupBy { it.instrument.categories?.get(0) ?: "N/A" }
-            for ((k, v) in exposureGroupWithType) {
-                exposureMap[k] = v.sumOf { it.exposure.toDouble() }.div(totalExposure).times(100)
+            val position = result.successOr(null)
+            val totalExposure: Double = position?.sumOf { it.exposure.toDouble() } ?: 0.0
+            val exposure = HashMap<String, Double>()
+            val positionByType: Map<String?, List<Position>> =
+                position?.groupBy { it.instrument.categories?.get(0) } ?: emptyMap()
+            for ((k, v) in positionByType) {
+                exposure[k ?: ""] =
+                    v.sumOf { it.exposure.toDouble() }.div(totalExposure).times(100)
             }
-            emit(Result.Success(exposureMap))
+            emit(Result.Success(exposure))
         }
     }
 }

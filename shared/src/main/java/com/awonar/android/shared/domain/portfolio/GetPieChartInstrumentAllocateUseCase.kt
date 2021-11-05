@@ -31,7 +31,6 @@ class GetPieChartInstrumentAllocateUseCase @Inject constructor(
                 val allocateByType = v.sumOf { it.amount.toDouble() }
                 allocate[k ?: ""] = allocateByType.div(totalAmount).times(100)
             }
-            Timber.e("$allocate")
             emit(Result.Success(allocate))
         }
     }
