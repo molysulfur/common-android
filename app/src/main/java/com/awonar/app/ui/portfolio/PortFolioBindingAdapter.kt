@@ -36,7 +36,7 @@ import kotlin.collections.HashMap
 fun setPieChartAdapter(
     recycler: RecyclerView,
     items: MutableList<OrderPortfolioItem>,
-    viewModel: PortFolioViewModel
+    viewModel: PortfolioPieChartViewModel
 ) {
     if (recycler.adapter == null) {
         recycler.apply {
@@ -45,21 +45,16 @@ fun setPieChartAdapter(
             adapter = OrderPortfolioAdapter().apply {
                 onButtonClick = { text ->
                     when (text.lowercase()) {
-                        "allocate" -> viewModel.getPieChartAllocate()
+                        "allocate" -> viewModel.getAllocate()
                         "exposure" -> viewModel.getPieChartExposure()
                     }
                 }
+                onPieChartClick = {
+                    viewModel.getAllocate(it)
+                }
+
             }
         }
-        val callback = PortfolioListItemTouchHelperCallback(recycler.context)
-        val helper = ItemTouchHelper(callback)
-        helper.attachToRecyclerView(recycler)
-        recycler.addItemDecoration(object : RecyclerView.ItemDecoration() {
-            override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-                super.onDraw(c, parent, state)
-                callback.onDraw(c)
-            }
-        })
     }
     (recycler.adapter as OrderPortfolioAdapter).itemLists = items
 }

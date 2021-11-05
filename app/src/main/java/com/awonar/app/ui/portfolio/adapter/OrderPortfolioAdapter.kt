@@ -33,6 +33,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var onClick: ((String, String) -> Unit)? = null
     var onButtonClick: ((String) -> Unit)? = null
+    var onPieChartClick: ((String?) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
@@ -147,7 +148,8 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 onButtonClick
             )
             is PieChartViewHolder -> holder.bind(
-                item as OrderPortfolioItem.PieChartItem
+                item as OrderPortfolioItem.PieChartItem,
+                onPieChartClick
             )
         }
     }

@@ -14,26 +14,32 @@ import com.github.mikephil.charting.utils.ColorTemplate
 class PieChartViewHolder constructor(private val binding: AwonarItemPiechartBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    private val listener = object : OnChartValueSelectedListener {
-        override fun onValueSelected(e: Entry?, h: Highlight?) {
-            if (e != null) {
-                binding.awonrItemPiechart.apply {
-                    centerText =
-                        "$%.2f %s}".format((e as? PieEntry)?.value, (e as? PieEntry)?.label)
-                }
-            }
-        }
 
-        override fun onNothingSelected() {
-        }
-
-    }
-
-    fun bind(item: OrderPortfolioItem.PieChartItem) {
+    fun bind(item: OrderPortfolioItem.PieChartItem, onPieChartClick: ((String?) -> Unit)?) {
         val dataSet = PieDataSet(item.entries, "Exposure")
         dataSet.colors = ColorTemplate.MATERIAL_COLORS.toMutableList()
         binding.awonrItemPiechart.apply {
-            setOnChartValueSelectedListener(listener)
+            setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+                override fun onValueSelected(e: Entry?, h: Highlight?) {
+                    if (e != null) {
+                        if (binding.awonrItemPiechart.tag == (e as? PieEntry)?.label) {
+                            onPieChartClick?.invoke(binding.awonrItemPiechart.tag.toString())
+                        }
+                        binding.awonrItemPiechart.tag = (e as? PieEntry)?.label
+                        binding.awonrItemPiechart.apply {
+                            centerText =
+                                "%.2f %s".format(
+                                    (e as? PieEntry)?.value,
+                                    (e as? PieEntry)?.label
+                                )
+                        }
+                    }
+                }
+
+                override fun onNothingSelected() {
+                }
+
+            })
             isRotationEnabled = false
             legend.isEnabled = false
             setUsePercentValues(true)

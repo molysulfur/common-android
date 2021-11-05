@@ -6,7 +6,7 @@
 
         <variable
             name="viewModel"
-            type="com.awonar.app.ui.portfolio.PortFolioViewModel" />
+            type="com.awonar.app.ui.portfolio.PortfolioPieChartViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

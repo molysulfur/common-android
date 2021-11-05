@@ -14,7 +14,7 @@ import com.github.mikephil.charting.utils.ColorTemplate
 
 class PortfolioPieChartFragment : Fragment() {
 
-    private val portViewModel: PortFolioViewModel by activityViewModels()
+    private val viewModel: PortfolioPieChartViewModel by activityViewModels()
 
     private val binding: AwonarFragmentPortfolioPiechartBinding by lazy {
         AwonarFragmentPortfolioPiechartBinding.inflate(layoutInflater)
@@ -25,7 +25,7 @@ class PortfolioPieChartFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding.viewModel = portViewModel
+        binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
@@ -33,6 +33,6 @@ class PortfolioPieChartFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        portViewModel.getPieChartExposure()
+        viewModel.getPieChartExposure()
     }
 }

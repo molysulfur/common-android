@@ -1,5 +1,6 @@
 package com.awonar.android.shared.domain.portfolio
 
+import com.awonar.android.model.portfolio.Position
 import com.awonar.android.shared.di.IoDispatcher
 import com.awonar.android.shared.repos.PortfolioRepository
 import com.molysulfur.library.result.Result
@@ -9,7 +10,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
-class GetStatisicAllocateUseCase @Inject constructor(
+class GetPieChartMarketAllocateUseCase @Inject constructor(
     private val portfolioRepository: PortfolioRepository,
     @IoDispatcher dispatcher: CoroutineDispatcher
 ) : FlowUseCase<Unit, Map<String, Double>>(dispatcher) {
@@ -17,21 +18,14 @@ class GetStatisicAllocateUseCase @Inject constructor(
     override fun execute(parameters: Unit): Flow<Result<Map<String, Double>>> = flow {
         portfolioRepository.getUserPortfolio().collect { result ->
             val position = result.successOr(null)
-            val portfolio = portfolioRepository.getPortFolio().last().successOr(null)
-            val totalAmount = portfolio?.totalAllocated?.plus(portfolio.available) ?: 0f
-            val balance: Double =
-                portfolio?.available?.plus(position?.orders?.sumOf { it.amount.toDouble() }
-                    ?: 0.0)?.div(totalAmount)?.times(100)
-                    ?: 0.0
             val allocate = HashMap<String, Double>()
-            allocate["balance"] = balance
-            val allocateMarket: Double =
-                position?.positions?.sumOf { it.amount.toDouble() }
-                    ?.div(totalAmount)?.times(100)
-                    ?: 0.0
-            allocate["market"] = allocateMarket
-            allocate["People"] = position?.copies?.sumOf { it.investAmount.toDouble() }
-                ?.div(totalAmount)?.times(100) ?: 0.0
+            val totalAmount = position?.positions?.sumOf { it.amount.toDouble() } ?: 0.0
+            val positionByType: Map<String?, List<Position>> =
+                position?.positions?.groupBy { it.instrument.categories?.get(0) } ?: emptyMap()
+            for ((k, v) in positionByType) {
+                val allocateByType = v.sumOf { it.amount.toDouble() }
+                allocate[k ?: ""] = allocateByType.div(totalAmount).times(100)
+            }
             emit(Result.Success(allocate))
         }
     }

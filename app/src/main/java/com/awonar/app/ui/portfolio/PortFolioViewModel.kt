@@ -18,7 +18,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.awonar.android.model.portfolio.Position
 import com.awonar.app.domain.portfolio.*
-import timber.log.Timber
 
 @HiltViewModel
 class PortFolioViewModel @Inject constructor(
@@ -40,11 +39,7 @@ class PortFolioViewModel @Inject constructor(
     private var convertGroupPositionToItemUseCase: ConvertGroupPositionToItemUseCase,
     private var convertPositionWithCopierUseCase: ConvertPositionWithCopierUseCase,
     private var convertPositionToCardItemUseCase: ConvertPositionToCardItemUseCase,
-    private var convertCopierToCardItemUseCase: ConvertCopierToCardItemUseCase,
-    private var getStatisicExposuresUseCase: GetStatisicExposuresUseCase,
-    private var getStatisicAllocateUseCase: GetStatisicAllocateUseCase,
-    private var convertExposureToPieChartUseCase: ConvertExposureToPieChartUseCase,
-    private var convertAllocateToPieChartUseCase: ConvertAllocateToPieChartUseCase,
+    private var convertCopierToCardItemUseCase: ConvertCopierToCardItemUseCase
 ) : ViewModel() {
 
     private val _portfolioType = MutableStateFlow("market")
@@ -257,22 +252,5 @@ class PortFolioViewModel @Inject constructor(
         }
     }
 
-    fun getPieChartExposure() {
-        viewModelScope.launch {
-            getStatisicExposuresUseCase(Unit).collect {
-                val result = convertExposureToPieChartUseCase(it.successOr(emptyMap()))
-                _positionOrderList.emit(result.successOr(emptyList()).toMutableList())
-            }
-        }
-    }
-
-    fun getPieChartAllocate() {
-        viewModelScope.launch {
-            getStatisicAllocateUseCase(Unit).collect {
-                val result = convertAllocateToPieChartUseCase(it.successOr(emptyMap()))
-                _positionOrderList.emit(result.successOr(emptyList()).toMutableList())
-            }
-        }
-    }
 
 }
