@@ -187,9 +187,9 @@ class PortFolioViewModel @Inject constructor(
         }
     }
 
-    fun getPosition(id: String) {
+    fun getPosition(instrumentId: Int) {
         viewModelScope.launch {
-            getPositionUseCase(id).collect {
+            getPositionUseCase(instrumentId).collect {
                 val position = it.successOr(emptyList())
                 _positionOrderList.emit(
                     convertPositionToItemUseCase(position).successOr(emptyList()).toMutableList()

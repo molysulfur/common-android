@@ -12,6 +12,7 @@ import com.awonar.app.ui.market.MarketViewModel
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class PortFolioInsideInstrumentFragment : Fragment() {
 
@@ -55,12 +56,20 @@ class PortFolioInsideInstrumentFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        portFolioViewModel.activedColumnChange("manual")
+        launchAndRepeatWithViewLifecycle {
+            marketViewModel.quoteSteamingState.collect { quotes ->
+                val quote = quotes.find { it.id == args.instrumentId }
+                binding.awonarPortfolioButtonBuy.text = "${quote?.bid ?: 0f}"
+                binding.awonarPortfolioButtonSell.text = "${quote?.ask ?: 0f}"
+            }
+        }
         args.copier?.let { copier ->
             args.instrumentId.let { instrumentId ->
                 portFolioViewModel.getPosition(copier, instrumentId)
             }
         }
-        args.positionId?.let {
+        args.instrumentId.let {
             portFolioViewModel.getPosition(it)
         }
     }

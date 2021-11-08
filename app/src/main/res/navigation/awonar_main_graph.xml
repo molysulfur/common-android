@@ -39,11 +39,6 @@
         android:id="@+id/portFolioInsideInstrumentPortfolioFragment"
         android:name="com.awonar.app.ui.portfolio.PortFolioInsideInstrumentFragment"
         android:label="PortFolioInsideInstrumentPortfolioFragment">
-        <argument
-            android:name="positionId"
-            android:defaultValue="null"
-            app:argType="string"
-            app:nullable="true" />
 
         <argument
             android:name="copier"

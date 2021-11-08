@@ -60,7 +60,7 @@ class PortFolioFragment : Fragment() {
                         .navigate(
                             PortFolioFragmentDirections.actionPortFolioFragmentToPortFolioInsideInstrumentPortfolioFragment()
                                 .apply {
-                                    positionId = it.first
+                                    instrumentId = it.first.toInt()
                                 }
                         )
                     "copier" -> findNavController()

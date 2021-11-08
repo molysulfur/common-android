@@ -18,16 +18,7 @@ import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
 import com.awonar.app.widget.CopierPositionCardView
 import com.awonar.app.widget.InstrumentOrderView
 import com.awonar.app.widget.InstrumentPositionCardView
-import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.highlight.Highlight
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener
-import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.appbar.MaterialToolbar
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
@@ -343,7 +334,7 @@ fun setItemPositionOrderPortfolio(
             view.setImage(position.instrument.logo ?: "")
             view.setTitle("${if (position.isBuy) "BUY" else "SELL"} ${position.instrument.symbol}")
             val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
-            val formatter = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+            val formatter = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault())
             val date = parser.parse(position.openDateTime)
             date?.let {
                 view.setDescription(formatter.format(date))
@@ -503,10 +494,10 @@ private fun getPositionValueByColumn(
     "Current" -> "%s".format(item.current)
     "P/L($)" -> "$%.2f".format(item.profitLoss)
     "P/L(%)" -> "%.2f%s".format(item.profitLossPercent, "%")
-    "Pip Change" -> "%s".format(item.pipChange)
+    "Pip Change" -> "%s".format(item.pipChange.toInt())
     "Leverage" -> "%s".format(item.leverage.toFloat())
     "Value" -> "$%.2f".format(item.value)
-    "Fee" -> "$%s".format(item.fees)
+    "Fee" -> "$%.2f".format(item.fees)
     "Execute at" -> "$%s".format(item.invested)
     "SL" -> "%s".format(item.stopLoss)
     "TP" -> "%s".format(item.takeProfit)

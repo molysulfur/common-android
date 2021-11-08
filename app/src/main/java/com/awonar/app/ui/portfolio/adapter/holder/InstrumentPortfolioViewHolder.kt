@@ -37,7 +37,7 @@ class InstrumentPortfolioViewHolder constructor(
         }
         binding.awonarInsturmentOrderItem.setOnClickListener {
             item.position.let {
-                onClick?.invoke(it.id, "instrument")
+                onClick?.invoke("${it.instrumentId}", "instrument")
             }
         }
         if (columns.isNotEmpty()) {

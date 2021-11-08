@@ -40,12 +40,12 @@ class CopyTradePortfolioViewHolder constructor(
         }
         val pl = sumFloatingPL.plus(item.copier.closedPositionsNetProfit)
         val plPercent = pl.div(item.invested)
-        val value = pl.plus(item.invested)
+        val moneyInOut = item.copier.depositSummary.minus(item.copier.withdrawalSummary)
+        val value = item.copier.initialInvestment.plus(moneyInOut).plus(pl)
         item.profitLoss = pl
         item.profitLossPercent = plPercent
         item.value = value
         if (columns.isNotEmpty()) {
-            Timber.e("$columns")
             binding.column1 = columns[0]
             binding.column2 = columns[1]
             binding.column3 = columns[2]
