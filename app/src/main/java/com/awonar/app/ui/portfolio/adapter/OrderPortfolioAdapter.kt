@@ -136,7 +136,8 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 quote
             )
             is ListItemViewHolder -> holder.bind(
-                item as OrderPortfolioItem.ListItem
+                item as OrderPortfolioItem.ListItem,
+                position
             )
             is TitleViewHolder -> holder.bind(
                 item as OrderPortfolioItem.TitleItem

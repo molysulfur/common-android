@@ -18,6 +18,7 @@
         android:padding="@dimen/awonar_size_margin_padding_normal">
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_item_list_piechart_title"
             style="@style/Awonar.Text.Bold.Normal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -27,6 +28,7 @@
             tools:text="@string/awonar_example_name" />
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_item_list_piechart_value"
             style="@style/Awonar.Text.Bold.Normal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

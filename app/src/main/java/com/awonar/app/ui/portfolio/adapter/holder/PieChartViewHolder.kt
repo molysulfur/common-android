@@ -24,6 +24,8 @@ class PieChartViewHolder constructor(private val binding: AwonarItemPiechartBind
                     if (e != null) {
                         if (binding.awonrItemPiechart.tag == (e as? PieEntry)?.label) {
                             onPieChartClick?.invoke(binding.awonrItemPiechart.tag.toString())
+                            binding.awonrItemPiechart.centerText = ""
+                            binding.awonrItemPiechart.tag = ""
                         }
                         binding.awonrItemPiechart.tag = (e as? PieEntry)?.label
                         binding.awonrItemPiechart.apply {

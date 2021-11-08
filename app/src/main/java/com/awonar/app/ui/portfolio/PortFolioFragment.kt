@@ -124,20 +124,28 @@ class PortFolioFragment : Fragment() {
         val action: NavDirections = when (tag) {
             "market" -> {
                 tag = "manual"
+                binding.awonarPortfolioIncludeColumn.awonarIncludeColumnContainer.visibility =
+                    View.VISIBLE
                 binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_chart)
                 PortFolioMarketFragmentDirections.portFolioMarketFragmentToPortFolioMaunalFragment()
             }
             "manual" -> {
                 tag = "card"
+                binding.awonarPortfolioIncludeColumn.awonarIncludeColumnContainer.visibility =
+                    View.GONE
                 binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_list)
                 PortFolioMaunalFragmentDirections.portFolioMaunalFragmentToPortFolioCardFragment()
             }
             "card" -> {
                 tag = "piechart"
+                binding.awonarPortfolioIncludeColumn.awonarIncludeColumnContainer.visibility =
+                    View.GONE
                 PortFolioCardFragmentDirections.portFolioCardFragmentToPortFolioPieChartFragment()
             }
             else -> {
                 tag = "market"
+                binding.awonarPortfolioIncludeColumn.awonarIncludeColumnContainer.visibility =
+                    View.VISIBLE
                 PortfolioPieChartFragmentDirections.portfolioPieChartFragmentToPortFolioMarketFragment()
             }
         }

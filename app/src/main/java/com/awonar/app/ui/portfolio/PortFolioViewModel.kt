@@ -91,20 +91,7 @@ class PortFolioViewModel @Inject constructor(
     private val _copierState = MutableStateFlow<Copier?>(null)
     val copierState: StateFlow<Copier?> get() = _copierState
 
-    init {
-        viewModelScope.launch {
-            getPositionMarketUseCase(Unit).collect {
-                val data = it.successOr(null)
-                if (data != null) {
-                    convertToItem(data.positions, data.copies)
-                }
-            }
-        }
-        viewModelScope.launch {
-            val list = getActivedMarketColumnUseCase(Unit).successOr(emptyList())
-            _activedColumnState.emit(list)
-        }
-
+    fun getManualPosition() {
         viewModelScope.launch {
             getPositionManualUseCase(Unit).collect { result ->
                 val positionItemResult =
@@ -112,6 +99,19 @@ class PortFolioViewModel @Inject constructor(
                 _subscricbeQuote.send(result.successOr(emptyList()).map { it.instrumentId })
                 _positionOrderList.emit(positionItemResult.toMutableList())
             }
+        }
+    }
+
+    fun getMarketPosition() {
+        viewModelScope.launch {
+            getPositionMarketUseCase(Unit).collect {
+                val data = it.successOr(null)
+                if (data != null) {
+                    convertToItem(data.positions, data.copies)
+                }
+            }
+            val list = getActivedMarketColumnUseCase(Unit).successOr(emptyList())
+            _activedColumnState.emit(list)
         }
     }
 
