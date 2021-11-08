@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.market.Quote
 import com.awonar.app.databinding.*
 import com.awonar.app.ui.portfolio.adapter.holder.*
+import timber.log.Timber
 
 @SuppressLint("NotifyDataSetChanged")
 class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -28,8 +29,9 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var quote: Array<Quote> = emptyArray()
         set(value) {
-            OrderPortfolioDiffCallback(field, value)
+            val oldList = field
             field = value
+            OrderPortfolioDiffCallback(oldList, value)
         }
 
     var onClick: ((String, String) -> Unit)? = null
@@ -59,7 +61,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     false
                 )
             )
-            OrderPortfolioType.INSTRUMENT_POSITION_CARD -> InstrumentPositionViewHolder(
+            OrderPortfolioType.INSTRUMENT_POSITION_CARD -> InstrumentPositionCardViewHolder(
                 AwonarItemInstrumentPositionBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -127,7 +129,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 quote,
                 onClick
             )
-            is InstrumentPositionViewHolder -> holder.bind(
+            is InstrumentPositionCardViewHolder -> holder.bind(
                 item as OrderPortfolioItem.InstrumentPositionCardItem,
                 quote
             )
@@ -136,8 +138,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 quote
             )
             is ListItemViewHolder -> holder.bind(
-                item as OrderPortfolioItem.ListItem,
-                position
+                item as OrderPortfolioItem.ListItem
             )
             is TitleViewHolder -> holder.bind(
                 item as OrderPortfolioItem.TitleItem

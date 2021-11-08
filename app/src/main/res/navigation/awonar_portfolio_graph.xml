@@ -11,8 +11,8 @@
         <action
             android:id="@+id/portFolioMaunalFragment_to_portFolioCardFragment"
             app:destination="@+id/portFolioCardFragment"
-            app:popUpToInclusive="true"
-            app:restoreState="true" />
+            app:popUpTo="@+id/portFolioCardFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -22,9 +22,8 @@
         <action
             android:id="@+id/portFolioMarketFragment_to_portFolioMaunalFragment"
             app:destination="@+id/portFolioMaunalFragment"
-            app:popUpTo="@+id/portFolioFragment"
-            app:popUpToInclusive="true"
-            app:restoreState="true" />
+            app:popUpTo="@+id/portFolioMaunalFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -35,9 +34,8 @@
         <action
             android:id="@+id/portFolioCardFragment_to_portFolioPieChartFragment"
             app:destination="@+id/portfolioPieChartFragment"
-            app:popUpTo="@+id/portFolioFragment"
-            app:popUpToInclusive="true"
-            app:restoreState="true" />
+            app:popUpTo="@+id/portfolioPieChartFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -48,9 +46,8 @@
         <action
             android:id="@+id/portfolioPieChartFragment_to_portFolioMarketFragment"
             app:destination="@+id/portFolioMarketFragment"
-            app:popUpTo="@+id/portFolioFragment"
-            app:popUpToInclusive="true"
-            app:restoreState="true" />
+            app:popUpTo="@+id/portFolioMarketFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
 </navigation>

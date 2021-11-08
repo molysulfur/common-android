@@ -65,11 +65,6 @@ class MarketFragment : Fragment(), TabLayout.OnTabSelectedListener {
         return binding.root
     }
 
-    override fun onStart() {
-        super.onStart()
-        viewModel.setNewQuoteListener()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViewPager()

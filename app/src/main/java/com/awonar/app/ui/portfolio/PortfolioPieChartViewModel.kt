@@ -22,7 +22,7 @@ class PortfolioPieChartViewModel @Inject constructor(
     private var convertAllocateToPieChartUseCase: ConvertAllocateToPieChartUseCase,
     private val getPieChartMarketAllocateUseCase: GetPieChartMarketAllocateUseCase,
     private val getPieChartInstrumentAllocateUseCase: GetPieChartInstrumentAllocateUseCase,
-    private val getPieChartInstrumentExposureUseCase: GetPieChartInstrumentExposureUseCase,
+    private val getPieChartInstrumentExposureUseCase: GetPieChartInstrumentExposureUseCase
 ) : ViewModel() {
 
     private val _positionOrderList: MutableStateFlow<MutableList<OrderPortfolioItem>> =
@@ -33,7 +33,7 @@ class PortfolioPieChartViewModel @Inject constructor(
     fun getExposure(type: String? = null) {
         viewModelScope.launch {
             when (type) {
-                "stocks", "currencies", "crypto" -> getPieChartInstrumentAllocateUseCase(type)
+                "stocks", "currencies", "crypto" -> getPieChartInstrumentExposureUseCase(Unit)
                 else -> getPieChartExposureUseCase(Unit)
             }.collect {
                 val data = it.successOr(emptyMap())

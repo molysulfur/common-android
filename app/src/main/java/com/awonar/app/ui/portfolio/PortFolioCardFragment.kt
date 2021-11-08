@@ -36,6 +36,5 @@ class PortFolioCardFragment : Fragment() {
         viewModel.getActivedColoumn()
         viewModel.getCardPosition()
         marketViewModel.subscribe()
-        marketViewModel.setNewQuoteListener()
     }
 }

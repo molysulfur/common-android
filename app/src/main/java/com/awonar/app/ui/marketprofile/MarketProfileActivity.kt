@@ -48,7 +48,6 @@ class MarketProfileActivity : BaseActivity() {
                 marketViewModel.subscribe(instrumentId)
             }
         }
-        marketViewModel.setNewQuoteListener()
     }
 
     private fun observe() {

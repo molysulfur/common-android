@@ -10,15 +10,8 @@ class ListItemViewHolder constructor(
     private val binding: AwonarItemListPiechartBinding,
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: OrderPortfolioItem.ListItem, position: Int) {
-        val color = ColorTemplate.MATERIAL_COLORS.toMutableList()
+    fun bind(item: OrderPortfolioItem.ListItem) {
         binding.label = item.name
-        binding.awonarItemListPiechartTitle.setTextColor(
-            ContextCompat.getColor(
-                binding.root.context,
-                color[position]
-            )
-        )
         binding.value = "%.2f%s".format(item.value, "%")
     }
 }

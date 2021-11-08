@@ -104,7 +104,6 @@ class PortFolioFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        marketViewModel.setNewQuoteListener()
         binding.awonarPortfolioImageIconList.setOnClickListener {
             val tag = binding.awonarPortfolioImageChangeStyle.tag
             openActivityCompatForResult(

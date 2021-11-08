@@ -27,6 +27,7 @@ class ConvertAllocateToPieChartUseCase @Inject constructor(
                 )
             )
         }
+        itemList.add(OrderPortfolioItem.ButtonItem("View All"))
         itemList.add(OrderPortfolioItem.ButtonItem("Exposure"))
         return itemList
     }

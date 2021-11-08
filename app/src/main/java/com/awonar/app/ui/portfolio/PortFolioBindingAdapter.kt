@@ -217,7 +217,7 @@ fun setInstrumentPositionCard(
     }
 }
 
-@BindingAdapter("position", "isBuy", "conversionRate", "updateQuote")
+@BindingAdapter("position", "isBuy", "conversionRate", "quotes")
 fun updateQuoteInstrumentPosition(
     view: InstrumentPositionCardView,
     position: Position?,

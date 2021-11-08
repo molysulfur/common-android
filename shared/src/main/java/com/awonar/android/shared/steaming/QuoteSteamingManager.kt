@@ -24,6 +24,7 @@ object QuoteSteamingEvent {
     const val unsubscribe = "unsubscribe"
 }
 
+@Singleton
 class QuoteSteamingManager @Inject constructor(private val networkClient: NetworkClient) :
     WebSocketListener() {
 

@@ -5,8 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.awonar.android.model.market.Instrument
 import com.awonar.android.model.market.MarketViewMoreArg
 import com.awonar.android.model.market.Quote
-import com.awonar.android.model.order.OpenOrderRequest
-import com.awonar.android.model.order.Price
 import com.awonar.android.model.portfolio.Position
 import com.awonar.android.model.tradingdata.TradingData
 import com.awonar.android.shared.domain.market.GetConversionByInstrumentUseCase
@@ -75,16 +73,17 @@ class MarketViewModel @Inject constructor(
         }
     }
 
+    init {
+        quoteSteamingManager.setListener(listener)
+        subscribe()
+    }
+
     fun getTradingData(intrumentId: Int) {
         viewModelScope.launch {
             getTradingDataByInstrumentIdUseCase(intrumentId).collect {
                 tradingDataState.emit(it.successOr(null))
             }
         }
-    }
-
-
-    fun setNewQuoteListener() {
     }
 
     fun convertInstrumentToItem() {

@@ -6,7 +6,7 @@ import com.awonar.app.databinding.AwonarItemInstrumentPositionBinding
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
 import timber.log.Timber
 
-class InstrumentPositionViewHolder constructor(private val binding: AwonarItemInstrumentPositionBinding) :
+class InstrumentPositionCardViewHolder constructor(private val binding: AwonarItemInstrumentPositionBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: OrderPortfolioItem.InstrumentPositionCardItem, quotes: Array<Quote>?) {

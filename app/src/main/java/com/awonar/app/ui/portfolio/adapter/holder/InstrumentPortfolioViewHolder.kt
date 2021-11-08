@@ -33,6 +33,7 @@ class InstrumentPortfolioViewHolder constructor(
             item.pipChange = pipChange
             item.value = value
             item.profitLossPercent = plPercent
+            Timber.e("$item $pl")
         }
         binding.awonarInsturmentOrderItem.setOnClickListener {
             item.position.let {
