@@ -34,6 +34,7 @@
         <entry key="app/src/main/res/drawable/awonar_selector_navigation.xml" value="0.38425925925925924" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.128125" />
         <entry key="app/src/main/res/layout-v23/awonar_activity_personal_info.xml" value="0.13020833333333334" />
+        <entry key="app/src/main/res/layout/awoanr_bottom_dialog_menu.xml" value="0.10989583333333333" />
         <entry key="app/src/main/res/layout/awonar_activity_about_me.xml" value="0.13697916666666668" />
         <entry key="app/src/main/res/layout/awonar_activity_auth.xml" value="0.21979166666666666" />
         <entry key="app/src/main/res/layout/awonar_activity_bank_account.xml" value="0.1796875" />

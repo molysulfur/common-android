@@ -16,12 +16,13 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentPortfolioBinding
+import com.awonar.app.dialog.menu.MenuDialog
+import com.awonar.app.dialog.menu.MenuDialogButtonSheet
 import com.awonar.app.ui.market.MarketViewModel
 import com.molysulfur.library.extension.openActivityCompatForResult
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class PortFolioFragment : Fragment() {
 
@@ -104,6 +105,21 @@ class PortFolioFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val menus = arrayListOf(
+            MenuDialog(
+                key = "1",
+                text = "test"
+            )
+        )
+        val modalBottomSheet = MenuDialogButtonSheet.Builder()
+            .setListener(object : MenuDialogButtonSheet.MenuDialogButtonSheetListener {
+                override fun onMenuClick(menu: MenuDialog) {
+
+                }
+            })
+            .setMenus(menus)
+            .build()
+        modalBottomSheet.show(parentFragmentManager, MenuDialogButtonSheet.TAG)
         binding.awonarPortfolioImageIconList.setOnClickListener {
             val tag = binding.awonarPortfolioImageChangeStyle.tag
             openActivityCompatForResult(
