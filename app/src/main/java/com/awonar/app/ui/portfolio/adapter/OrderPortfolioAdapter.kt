@@ -178,6 +178,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 }
             }
         }
+        notifyDataSetChanged()
     }
 
     private fun sortCopier(

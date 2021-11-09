@@ -12,7 +12,6 @@ import com.awonar.app.ui.market.MarketViewModel
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class PortFolioInsideInstrumentFragment : Fragment() {
 

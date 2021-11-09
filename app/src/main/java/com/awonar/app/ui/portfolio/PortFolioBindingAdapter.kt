@@ -1,7 +1,9 @@
 package com.awonar.app.ui.portfolio
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.graphics.Canvas
+import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +24,67 @@ import com.google.android.material.appbar.MaterialToolbar
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
+
+@BindingAdapter("setTotalInvested")
+fun setTotalInvested(
+    textView: TextView,
+    copier: Copier?,
+) {
+    copier?.let {
+        textView.text = "$%.2f".format(it.investAmount)
+    }
+}
+
+@BindingAdapter("setTotalProfitLossPercent", "quotes")
+fun setTotalProfitLossPercent(
+    textView: TextView,
+    copier: Copier?,
+    quotes: Array<Quote>
+) {
+    copier?.let { copier ->
+        var sumFloatingPL = PortfolioUtil.getFloatingPL(copier.positions ?: emptyList(), quotes)
+        textView.text = "$%.2f".format(
+            copier.closedPositionsNetProfit.plus(sumFloatingPL).div(copier.initialInvestment)
+                .times(100)
+        )
+    }
+}
+
+@BindingAdapter("setTotalProfitLoss", "quotes")
+fun setTotalProfitLoss(
+    textView: TextView,
+    copier: Copier?,
+    quotes: Array<Quote>
+) {
+    copier?.let { copier ->
+        var sumFloatingPL = PortfolioUtil.getFloatingPL(copier.positions ?: emptyList(), quotes)
+        textView.text = "$%.2f".format(copier.closedPositionsNetProfit.plus(sumFloatingPL))
+    }
+}
+
+@SuppressLint("SetTextI18n")
+@BindingAdapter("setTotalOpen", "quotes")
+fun setTotalOpen(
+    textView: TextView,
+    copier: Copier?,
+    quotes: Array<Quote>
+) {
+    copier?.let {
+
+        textView.text = "fee : ${it.totalFees} pl : ${it.closedPositionsNetProfit}"
+    }
+}
+
+@SuppressLint("SetTextI18n")
+@BindingAdapter("setTotalClose")
+fun setTotalClose(
+    textView: TextView,
+    copier: Copier?
+) {
+    copier?.let {
+        textView.text = "fee : $%.2f pl : $%.2f".format(it.totalFees, it.closedPositionsNetProfit)
+    }
+}
 
 @BindingAdapter("setPieChartAdapter", "viewModel")
 fun setPieChartAdapter(
@@ -48,8 +111,8 @@ fun setPieChartAdapter(
                 }
                 onPieChartClick = {
                     when (this.pieChartType) {
-                        "allocate" ->viewModel.getAllocate(it)
-                        "exposure" ->viewModel.getExposure(it)
+                        "allocate" -> viewModel.getAllocate(it)
+                        "exposure" -> viewModel.getExposure(it)
                     }
 
                 }
