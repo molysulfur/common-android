@@ -52,7 +52,8 @@ class GetPieChartAllocateUseCase @Inject constructor(
                     }
                 }
                 totalPL = totalPL.plus(peoplePL)
-                copier.initialInvestment.plus(peoplePL).toDouble()
+                copier.initialInvestment.plus(copier.depositSummary.minus(copier.withdrawalSummary))
+                    .plus(peoplePL).toDouble()
             } ?: 0.0
             val allocate = HashMap<String, Double>()
             allocate["balance"] = balance.div(totalAmount + totalPL).times(100)
