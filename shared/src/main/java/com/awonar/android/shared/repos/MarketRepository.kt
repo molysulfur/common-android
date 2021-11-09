@@ -3,6 +3,7 @@ package com.awonar.android.shared.repos
 import com.awonar.android.model.market.Instrument
 import com.awonar.android.model.market.InstrumentProfile
 import com.awonar.android.model.market.InstrumentResponse
+import com.awonar.android.model.market.Quote
 import com.awonar.android.shared.api.InstrumentService
 import com.awonar.android.model.tradingdata.TradingData
 import com.awonar.android.shared.db.room.trading.TradingDataDao
@@ -17,6 +18,16 @@ class MarketRepository @Inject constructor(
     private val instrumentService: InstrumentService,
     private val tradingDataDao: TradingDataDao
 ) {
+
+    fun getLastPriceWithId(id: Int) = object : DirectNetworkFlow<Int, Quote, List<Quote>>() {
+        override fun createCall(): Response<List<Quote>> =
+            instrumentService.getLastQuote(listOf(id)).execute()
+
+        override fun convertToResultType(response: List<Quote>): Quote = response[0]
+        override fun onFetchFailed(errorMessage: String) {
+            println(errorMessage)
+        }
+    }.asFlow()
 
     fun getTradingDataById(id: Int): TradingData {
         return tradingDataDao.loadById(id)
