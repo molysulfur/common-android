@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.awonar.android.model.portfolio.Position
 import com.awonar.app.domain.portfolio.*
+import timber.log.Timber
 
 @HiltViewModel
 class PortFolioViewModel @Inject constructor(
@@ -26,6 +27,7 @@ class PortFolioViewModel @Inject constructor(
     private var getPositionMarketUseCase: GetPositionMarketUseCase,
     private val getPositionUseCase: GetPositionUseCase,
     private val getCopierUseCase: GetCopierUseCase,
+    private val getPendingOrdersUseCase: GetPendingOrdersUseCase,
     private var getActivedManualColumnUseCase: GetActivedManualColumnUseCase,
     private var getActivedMarketColumnUseCase: GetActivedMarketColumnUseCase,
     private var getManualColumnListUseCase: GetManualColumnListUseCase,
@@ -39,7 +41,8 @@ class PortFolioViewModel @Inject constructor(
     private var convertGroupPositionToItemUseCase: ConvertGroupPositionToItemUseCase,
     private var convertPositionWithCopierUseCase: ConvertPositionWithCopierUseCase,
     private var convertPositionToCardItemUseCase: ConvertPositionToCardItemUseCase,
-    private var convertCopierToCardItemUseCase: ConvertCopierToCardItemUseCase
+    private var convertCopierToCardItemUseCase: ConvertCopierToCardItemUseCase,
+    private var convertOrderPositionToItemUseCase: ConvertOrderPositionToItemUseCase,
 ) : ViewModel() {
 
     private val _portfolioType = MutableStateFlow("market")
@@ -248,6 +251,17 @@ class PortFolioViewModel @Inject constructor(
                 itemList.addAll(positionResult)
                 itemList.addAll(copierResult)
                 _positionOrderList.emit(itemList)
+            }
+        }
+    }
+
+    fun getOrdersPosition() {
+        viewModelScope.launch {
+            getPendingOrdersUseCase(Unit).collect {
+                val data = it.successOr(emptyList())
+                _positionOrderList.emit(
+                    convertOrderPositionToItemUseCase(data).successOr(emptyList()).toMutableList()
+                )
             }
         }
     }

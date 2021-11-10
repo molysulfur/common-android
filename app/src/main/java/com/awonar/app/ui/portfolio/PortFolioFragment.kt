@@ -29,6 +29,37 @@ class PortFolioFragment : Fragment() {
     private val portViewModel: PortFolioViewModel by activityViewModels()
     private val marketViewModel: MarketViewModel by activityViewModels()
 
+    private val sectorDialog: MenuDialogButtonSheet by lazy {
+        val menus = arrayListOf(
+            MenuDialog(
+                key = "com.awonar.app.ui.portfolio.sector.history",
+                text = "History"
+            ),
+            MenuDialog(
+                key = "com.awonar.app.ui.portfolio.sector.orders",
+                text = "Orders"
+            )
+        )
+        MenuDialogButtonSheet.Builder()
+            .setListener(object : MenuDialogButtonSheet.MenuDialogButtonSheetListener {
+                override fun onMenuClick(menu: MenuDialog) {
+                    var title = ""
+                    when (menu.key) {
+                        "com.awonar.app.ui.portfolio.sector.orders" -> {
+                            title = "Orders"
+                            portViewModel.togglePortfolio(title)
+                        }
+                        else -> {
+                        }
+                    }
+                    binding.awonarPortfolioTextTitleSection.text = title
+                }
+            })
+            .setMenus(menus)
+            .build()
+    }
+
+
     private val activityResult: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
             if (activityResult.resultCode == Activity.RESULT_OK) {
@@ -105,21 +136,9 @@ class PortFolioFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val menus = arrayListOf(
-            MenuDialog(
-                key = "1",
-                text = "test"
-            )
-        )
-        val modalBottomSheet = MenuDialogButtonSheet.Builder()
-            .setListener(object : MenuDialogButtonSheet.MenuDialogButtonSheetListener {
-                override fun onMenuClick(menu: MenuDialog) {
-
-                }
-            })
-            .setMenus(menus)
-            .build()
-        modalBottomSheet.show(parentFragmentManager, MenuDialogButtonSheet.TAG)
+        binding.awonarPortfolioTextTitleSection.setOnClickListener {
+            sectorDialog.show(parentFragmentManager, MenuDialogButtonSheet.TAG)
+        }
         binding.awonarPortfolioImageIconList.setOnClickListener {
             val tag = binding.awonarPortfolioImageChangeStyle.tag
             openActivityCompatForResult(

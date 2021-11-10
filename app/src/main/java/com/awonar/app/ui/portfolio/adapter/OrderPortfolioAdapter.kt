@@ -54,6 +54,13 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     false
                 )
             )
+            OrderPortfolioType.ORDER_PORTFOLIO -> OrderPortfolioViewHolder(
+                AwonarItemInstrumentOrderBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
             OrderPortfolioType.COPYTRADE_PORTFOLIO -> CopyTradePortfolioViewHolder(
                 AwonarItemInstrumentOrderBinding.inflate(
                     LayoutInflater.from(parent.context),
@@ -153,6 +160,12 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is PieChartViewHolder -> holder.bind(
                 item as OrderPortfolioItem.PieChartItem,
                 onPieChartClick
+            )
+            is OrderPortfolioViewHolder -> holder.bind(
+                item as OrderPortfolioItem.InstrumentOrderItem,
+                columns,
+                quote,
+                onClick
             )
         }
     }

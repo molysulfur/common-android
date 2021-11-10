@@ -21,9 +21,42 @@ import com.awonar.app.widget.CopierPositionCardView
 import com.awonar.app.widget.InstrumentOrderView
 import com.awonar.app.widget.InstrumentPositionCardView
 import com.google.android.material.appbar.MaterialToolbar
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
+
+@BindingAdapter("setOrderAdapter", "activedColumn", "viewModel")
+fun setOrderAdapter(
+    recycler: RecyclerView,
+    items: MutableList<OrderPortfolioItem>,
+    activedColumn: List<String> = emptyList(),
+    viewModel: PortFolioViewModel
+) {
+    if (recycler.adapter == null) {
+        recycler.apply {
+            layoutManager =
+                LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
+            adapter = OrderPortfolioAdapter().apply {
+                onClick = { it, type ->
+                }
+            }
+        }
+        val callback = PortfolioListItemTouchHelperCallback(recycler.context)
+        val helper = ItemTouchHelper(callback)
+        helper.attachToRecyclerView(recycler)
+        recycler.addItemDecoration(object : RecyclerView.ItemDecoration() {
+            override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+                super.onDraw(c, parent, state)
+                callback.onDraw(c)
+            }
+        })
+    }
+    Timber.e("$items")
+    val adapter = recycler.adapter as OrderPortfolioAdapter
+    adapter.columns = activedColumn
+    adapter.itemLists = items
+}
 
 @BindingAdapter("setTotalInvested")
 fun setTotalInvested(
@@ -393,6 +426,64 @@ fun setItemPositionOrderPortfolio(
     column4: String?,
 ) {
     when (item) {
+        is OrderPortfolioItem.InstrumentOrderItem -> item.position.let { position ->
+            view.setImage(position.instrument.logo ?: "")
+            view.setTitle("${if (position.isBuy) "BUY" else "SELL"} ${position.instrument.symbol}")
+            val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+            val formatter = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault())
+            val date = parser.parse(position.openDateTime)
+            date?.let {
+                view.setDescription(formatter.format(date))
+            }
+            view.setTextColumnOne(
+                getPositionValueByColumn(
+                    item,
+                    column1 ?: ""
+                )
+            )
+            view.setTextColumnTwo(
+                getPositionValueByColumn(
+                    item,
+                    column2 ?: ""
+                )
+            )
+            view.setTextColumnThree(
+                getPositionValueByColumn(
+                    item,
+                    column3 ?: ""
+                )
+            )
+            view.setTextColumnFour(
+                getPositionValueByColumn(
+                    item,
+                    column4 ?: ""
+                )
+            )
+            view.setTextColorColumnOne(
+                getPositionColorColoumn(
+                    item,
+                    column1 ?: ""
+                )
+            )
+            view.setTextColorColumnTwo(
+                getPositionColorColoumn(
+                    item,
+                    column2 ?: ""
+                )
+            )
+            view.setTextColorColumnThree(
+                getPositionColorColoumn(
+                    item,
+                    column3 ?: ""
+                )
+            )
+            view.setTextColorColumnFour(
+                getPositionColorColoumn(
+                    item,
+                    column4 ?: ""
+                )
+            )
+        }
         is OrderPortfolioItem.InstrumentPortfolioItem -> item.position.let { position ->
             view.setImage(position.instrument.logo ?: "")
             view.setTitle("${if (position.isBuy) "BUY" else "SELL"} ${position.instrument.symbol}")
@@ -547,8 +638,45 @@ private fun getPositionColorColoumn(
     else -> 0
 }
 
+private fun getPositionColorColoumn(
+    item: OrderPortfolioItem.InstrumentOrderItem,
+    column: String
+): Int = when {
+    column == "P/L($)" && item.profitLoss < 0 -> R.color.awonar_color_orange
+    column == "P/L($)" && item.profitLoss >= 0 -> R.color.awonar_color_green
+    column == "P/L(%)" && item.profitLossPercent < 0 -> R.color.awonar_color_orange
+    column == "P/L(%)" && item.profitLossPercent >= 0 -> R.color.awonar_color_green
+    column == "Pip Change" && item.pipChange < 0 -> R.color.awonar_color_orange
+    column == "Pip Change" && item.pipChange >= 0 -> R.color.awonar_color_green
+    else -> 0
+}
+
 private fun getPositionValueByColumn(
     item: OrderPortfolioItem.InstrumentPortfolioItem,
+    column: String
+): String = when (column) {
+    "Invested" -> "$%.2f".format(item.invested)
+    "Units" -> "%.2f".format(item.units)
+    "Open" -> "%s".format(item.open)
+    "Current" -> "%s".format(item.current)
+    "P/L($)" -> "$%.2f".format(item.profitLoss)
+    "P/L(%)" -> "%.2f%s".format(item.profitLossPercent, "%")
+    "Pip Change" -> "%s".format(item.pipChange.toInt())
+    "Leverage" -> "%s".format(item.leverage.toFloat())
+    "Value" -> "$%.2f".format(item.value)
+    "Fee" -> "$%.2f".format(item.fees)
+    "Execute at" -> "$%s".format(item.invested)
+    "SL" -> "%s".format(item.stopLoss)
+    "TP" -> "%s".format(item.takeProfit)
+    "SL($)" -> "$%.2f".format(item.amountStopLoss)
+    "TP($)" -> "$%.2f".format(item.amountTakeProfit)
+    "SL(%)" -> "%.2f%s".format(item.stopLossPercent, "%")
+    "TP(%)" -> "%.2f%s".format(item.takeProfitPercent, "%")
+    else -> ""
+}
+
+private fun getPositionValueByColumn(
+    item: OrderPortfolioItem.InstrumentOrderItem,
     column: String
 ): String = when (column) {
     "Invested" -> "$%.2f".format(item.invested)

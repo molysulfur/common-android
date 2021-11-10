@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
+import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentPortfolioMarketBinding
 import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioAdapter
@@ -28,6 +30,13 @@ class PortFolioMarketFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         launchAndRepeatWithViewLifecycle {
+            launch {
+                viewModel.portfolioType.collect {
+                    if (it.lowercase() == "orders") {
+                        findNavController().navigate(R.id.portfolioOrdersFragment)
+                    }
+                }
+            }
             launch {
                 viewModel.sortColumnState.collect {
                     if (binding.awonarPortfolioMarketRecyclerContainer.adapter != null) {

@@ -1,6 +1,5 @@
 package com.awonar.android.shared.domain.portfolio
 
-import com.awonar.android.model.market.Quote
 import com.awonar.android.model.portfolio.Position
 import com.awonar.android.shared.di.IoDispatcher
 import com.awonar.android.shared.repos.CurrenciesRepository
@@ -13,10 +12,7 @@ import com.molysulfur.library.result.succeeded
 import com.molysulfur.library.result.successOr
 import com.molysulfur.library.usecase.FlowUseCase
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.*
-import okhttp3.internal.wait
 import timber.log.Timber
 import javax.inject.Inject
 

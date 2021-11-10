@@ -12,5 +12,6 @@ object OrderPortfolioType {
     const val SUBTITLE_CENTER_PORTFOLIO = 7
     const val BUTTON_PORTFOLIO = 8
     const val PIECHART_PORTFOLIO = 9
+    const val ORDER_PORTFOLIO = 10
 
 }

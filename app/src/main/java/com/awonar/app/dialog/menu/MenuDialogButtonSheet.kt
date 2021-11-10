@@ -32,7 +32,7 @@ class MenuDialogButtonSheet(private val listener: MenuDialogButtonSheetListener?
         menus = arguments?.getParcelableArrayList(EXTRA_MENUS) ?: arrayListOf()
         val adapterDialog = MenuDialogButtonSheetAdapter {
             listener?.onMenuClick(it)
-            dismiss()
+            dialog?.dismiss()
         }
         binding.awonarDialogBottomMenuContainer.apply {
             layoutManager =

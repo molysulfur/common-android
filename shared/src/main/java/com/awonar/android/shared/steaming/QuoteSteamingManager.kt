@@ -81,7 +81,7 @@ class QuoteSteamingManager @Inject constructor(private val networkClient: Networ
     }
 
     private fun prase(message: String) {
-        Timber.d(message)
+//        Timber.d(message)
         val obj = JSONObject(message)
         val event = obj.get(EVENT_KEY).toString()
         val data = obj.get(DATA_KEY).toString()

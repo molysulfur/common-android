@@ -2,6 +2,8 @@ package com.awonar.app.ui.portfolio.adapter
 
 import android.os.Parcelable
 import com.awonar.android.model.portfolio.Copier
+import com.awonar.android.model.portfolio.OrderPortfolio
+import com.awonar.android.model.portfolio.PendingOrder
 import com.awonar.android.model.portfolio.Position
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.BUTTON_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.COPYTRADE_PORTFOLIO
@@ -10,6 +12,7 @@ import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.EMPTY_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.INSTRUMENT_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.INSTRUMENT_POSITION_CARD
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.LIST_ITEM_PORTFOLIO
+import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.ORDER_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.PIECHART_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.SUBTITLE_CENTER_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.TITLE_CENTER_PORTFOLIO
@@ -110,4 +113,26 @@ sealed class OrderPortfolioItem(
         val name: String,
         val value: Float
     ) : OrderPortfolioItem(LIST_ITEM_PORTFOLIO)
+
+    @Parcelize
+    class InstrumentOrderItem(
+        val position: PendingOrder,
+        val conversionRate: Float,
+        var invested: Float,
+        var units: Float,
+        var open: Float,
+        var current: Float,
+        var stopLoss: Float,
+        var takeProfit: Float,
+        var profitLoss: Float,
+        var profitLossPercent: Float,
+        var pipChange: Float,
+        var leverage: Int,
+        var value: Float,
+        var fees: Float,
+        var amountStopLoss: Float,
+        var amountTakeProfit: Float,
+        var stopLossPercent: Float,
+        var takeProfitPercent: Float,
+    ) : OrderPortfolioItem(ORDER_PORTFOLIO)
 }

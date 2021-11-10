@@ -2,10 +2,7 @@ package com.awonar.android.shared.repos
 
 import com.awonar.android.constrant.manualColumns
 import com.awonar.android.constrant.marketColumns
-import com.awonar.android.model.portfolio.Copier
-import com.awonar.android.model.portfolio.Portfolio
-import com.awonar.android.model.portfolio.Position
-import com.awonar.android.model.portfolio.UserPortfolioResponse
+import com.awonar.android.model.portfolio.*
 import com.awonar.android.shared.api.PortfolioService
 import com.awonar.android.shared.db.hawk.PortfolioActivedColumnManager
 import com.molysulfur.library.network.DirectNetworkFlow
@@ -16,6 +13,19 @@ class PortfolioRepository @Inject constructor(
     private val portfolioService: PortfolioService,
     private val preference: PortfolioActivedColumnManager
 ) {
+
+    fun getPendingOrders() =
+        object : DirectNetworkFlow<Unit, List<PendingOrder>, List<PendingOrder>>() {
+            override fun createCall(): Response<List<PendingOrder>> =
+                portfolioService.getPendingOrders().execute()
+
+            override fun convertToResultType(response: List<PendingOrder>): List<PendingOrder> =
+                response
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+        }.asFlow()
 
 
     fun getMyCopier() = object : DirectNetworkFlow<Unit, List<Copier>, List<Copier>>() {

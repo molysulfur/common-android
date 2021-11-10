@@ -50,4 +50,9 @@
             app:popUpToInclusive="true" />
     </fragment>
 
+    <fragment
+        android:id="@+id/portfolioOrdersFragment"
+        android:name="com.awonar.app.ui.portfolio.orders.PortfolioOrdersFragment"
+        android:label="PortfolioOrdersFragment" />
+
 </navigation>
