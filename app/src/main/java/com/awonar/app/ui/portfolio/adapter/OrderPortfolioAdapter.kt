@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.market.Quote
 import com.awonar.app.databinding.*
 import com.awonar.app.ui.portfolio.adapter.holder.*
-import timber.log.Timber
 
 @SuppressLint("NotifyDataSetChanged")
 class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -103,7 +102,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     false
                 )
             )
-            OrderPortfolioType.BUTTON_PORTFOLIO -> ButtonViewHolder(
+            OrderPortfolioType.BUTTON_PORTFOLIO -> PieChartTypeButtonViewHolder(
                 AwonarItemButtonViewmoreBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -153,7 +152,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is SubTitleViewHolder -> holder.bind(
                 item as OrderPortfolioItem.SubTitleItem
             )
-            is ButtonViewHolder -> holder.bind(
+            is PieChartTypeButtonViewHolder -> holder.bind(
                 item as OrderPortfolioItem.ButtonItem,
                 onButtonClick
             )

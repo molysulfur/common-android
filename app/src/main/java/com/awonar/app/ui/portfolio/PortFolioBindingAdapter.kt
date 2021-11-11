@@ -26,6 +26,18 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
 
+@BindingAdapter("quotes")
+fun updateQuoteList(
+    recycler: RecyclerView,
+    quote: Array<Quote>
+) {
+    if (recycler.adapter != null) {
+        val adapter = recycler.adapter as OrderPortfolioAdapter
+        adapter.quote = quote
+    }
+}
+
+
 @BindingAdapter("setOrderAdapter", "activedColumn", "viewModel")
 fun setOrderAdapter(
     recycler: RecyclerView,
@@ -52,7 +64,6 @@ fun setOrderAdapter(
             }
         })
     }
-    Timber.e("$items")
     val adapter = recycler.adapter as OrderPortfolioAdapter
     adapter.columns = activedColumn
     adapter.itemLists = items
@@ -103,7 +114,6 @@ fun setTotalOpen(
     quotes: Array<Quote>
 ) {
     copier?.let {
-
         textView.text = "fee : ${it.totalFees} pl : ${it.closedPositionsNetProfit}"
     }
 }
@@ -117,43 +127,6 @@ fun setTotalClose(
     copier?.let {
         textView.text = "fee : $%.2f pl : $%.2f".format(it.totalFees, it.closedPositionsNetProfit)
     }
-}
-
-@BindingAdapter("setPieChartAdapter", "viewModel")
-fun setPieChartAdapter(
-    recycler: RecyclerView,
-    items: MutableList<OrderPortfolioItem>,
-    viewModel: PortfolioPieChartViewModel
-) {
-    if (recycler.adapter == null) {
-        recycler.apply {
-            layoutManager =
-                LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
-            adapter = OrderPortfolioAdapter().apply {
-                onButtonClick = { text ->
-                    when (text.lowercase()) {
-                        "allocate" -> {
-                            this.pieChartType = "allocate"
-                            viewModel.getAllocate()
-                        }
-                        "exposure" -> {
-                            this.pieChartType = "exposure"
-                            viewModel.getExposure()
-                        }
-                    }
-                }
-                onPieChartClick = {
-                    when (this.pieChartType) {
-                        "allocate" -> viewModel.getAllocate(it)
-                        "exposure" -> viewModel.getExposure(it)
-                    }
-
-                }
-
-            }
-        }
-    }
-    (recycler.adapter as OrderPortfolioAdapter).itemLists = items
 }
 
 @BindingAdapter("initCopierCard")
@@ -334,20 +307,8 @@ fun updateQuoteInstrumentPosition(
     }
 }
 
-@BindingAdapter("updateQuote")
-fun updateQuoteList(
-    recycler: RecyclerView,
-    quote: Array<Quote>
-) {
-    if (recycler.adapter != null) {
-        val adapter = recycler.adapter as OrderPortfolioAdapter
-        adapter.quote = quote
-    }
-}
-
-
-@BindingAdapter("setOrderPortfolio", "activedColumn", "viewModel")
-fun setAdapterOrderPortfolio(
+@BindingAdapter("setPositionAdapter", "activedColumn", "viewModel")
+fun setPositionAdapter(
     recycler: RecyclerView,
     items: MutableList<OrderPortfolioItem>,
     activedColumn: List<String> = emptyList(),
@@ -360,6 +321,25 @@ fun setAdapterOrderPortfolio(
             adapter = OrderPortfolioAdapter().apply {
                 onClick = { it, type ->
                     viewModel.navigateInsidePortfolio(it, type)
+                }
+                onButtonClick = { text ->
+                    when (text.lowercase()) {
+                        "allocate" -> {
+                            this.pieChartType = "allocate"
+                            viewModel.getAllocate()
+                        }
+                        "exposure" -> {
+                            this.pieChartType = "exposure"
+                            viewModel.getExposure()
+                        }
+                    }
+                }
+                onPieChartClick = {
+                    when (this.pieChartType) {
+                        "allocate" -> viewModel.getAllocate(it)
+                        "exposure" -> viewModel.getExposure(it)
+                    }
+
                 }
             }
         }
@@ -374,8 +354,10 @@ fun setAdapterOrderPortfolio(
         })
     }
     val adapter = recycler.adapter as OrderPortfolioAdapter
-    adapter.columns = activedColumn
-    adapter.itemLists = items
+    adapter.apply {
+        columns = activedColumn
+        itemLists = items
+    }
 }
 
 @BindingAdapter("setActivedColumn", "viewModel")

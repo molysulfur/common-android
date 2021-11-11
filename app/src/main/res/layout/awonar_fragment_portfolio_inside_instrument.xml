@@ -88,8 +88,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/awonar_portfolio_recycler_container"
                 activedColumn="@{viewModel.activedColumnState}"
-                setOrderPortfolio="@{viewModel.positionOrderList}"
-                updateQuote="@{marketViewModel.quoteSteamingState}"
+                setPositionAdapter="@{viewModel.positionOrderList}"
+                quotes="@{marketViewModel.quoteSteamingState}"
                 viewModel="@{viewModel}"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"

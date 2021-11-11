@@ -29,7 +29,7 @@ class PortfolioOrdersFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getActivedColoumn("manual")
         viewModel.getOrdersPosition()
+        viewModel.getActivedColoumn("manual")
     }
 }

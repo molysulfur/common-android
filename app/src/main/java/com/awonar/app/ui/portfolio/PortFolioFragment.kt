@@ -23,6 +23,7 @@ import com.molysulfur.library.extension.openActivityCompatForResult
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class PortFolioFragment : Fragment() {
 
@@ -47,7 +48,8 @@ class PortFolioFragment : Fragment() {
                     when (menu.key) {
                         "com.awonar.app.ui.portfolio.sector.orders" -> {
                             title = "Orders"
-                            portViewModel.togglePortfolio(title)
+                            portViewModel.getOrdersPosition()
+//                            portViewModel.togglePortfolio(title)
                         }
                         else -> {
                         }
@@ -130,14 +132,18 @@ class PortFolioFragment : Fragment() {
             }
         }
         binding.viewModel = portViewModel
+        binding.market = marketViewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.awonarPortfolioImageChangeStyle.tag = "market"
+        portViewModel.getMarketPosition()
+        marketViewModel.subscribe()
         binding.awonarPortfolioTextTitleSection.setOnClickListener {
-            sectorDialog.show(parentFragmentManager, MenuDialogButtonSheet.TAG)
+            sectorDialog.show(childFragmentManager, MenuDialogButtonSheet.TAG)
         }
         binding.awonarPortfolioImageIconList.setOnClickListener {
             val tag = binding.awonarPortfolioImageChangeStyle.tag
@@ -155,37 +161,34 @@ class PortFolioFragment : Fragment() {
 
     private fun toggle() {
         var tag = binding.awonarPortfolioImageChangeStyle.tag
-        val action: NavDirections = when (tag) {
+        when (tag) {
             "market" -> {
                 tag = "manual"
                 binding.awonarPortfolioIncludeColumn.awonarIncludeColumnContainer.visibility =
                     View.VISIBLE
+                portViewModel.getManualPosition()
                 binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_chart)
-                PortFolioMarketFragmentDirections.portFolioMarketFragmentToPortFolioMaunalFragment()
             }
             "manual" -> {
                 tag = "card"
                 binding.awonarPortfolioIncludeColumn.awonarIncludeColumnContainer.visibility =
                     View.GONE
+                portViewModel.getCardPosition()
                 binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_list)
-                PortFolioMaunalFragmentDirections.portFolioMaunalFragmentToPortFolioCardFragment()
             }
             "card" -> {
                 tag = "piechart"
+                portViewModel.getAllocate()
                 binding.awonarPortfolioIncludeColumn.awonarIncludeColumnContainer.visibility =
                     View.GONE
-                PortFolioCardFragmentDirections.portFolioCardFragmentToPortFolioPieChartFragment()
             }
             else -> {
                 tag = "market"
+                portViewModel.getMarketPosition()
                 binding.awonarPortfolioIncludeColumn.awonarIncludeColumnContainer.visibility =
                     View.VISIBLE
-                PortfolioPieChartFragmentDirections.portfolioPieChartFragmentToPortFolioMarketFragment()
             }
         }
-        Navigation
-            .findNavController(binding.awonarPortfolioNavigationHostPortfolio)
-            .navigate(action)
         binding.awonarPortfolioImageChangeStyle.tag = tag
         portViewModel.togglePortfolio(tag)
     }

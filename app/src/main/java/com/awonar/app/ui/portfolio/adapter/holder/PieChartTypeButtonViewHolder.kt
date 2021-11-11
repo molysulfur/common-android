@@ -5,7 +5,7 @@ import com.awonar.app.databinding.AwonarItemButtonItemBinding
 import com.awonar.app.databinding.AwonarItemButtonViewmoreBinding
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
 
-class ButtonViewHolder constructor(private val binding: AwonarItemButtonViewmoreBinding) :
+class PieChartTypeButtonViewHolder constructor(private val binding: AwonarItemButtonViewmoreBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: OrderPortfolioItem.ButtonItem, onButtonClick: ((String) -> Unit)?) {

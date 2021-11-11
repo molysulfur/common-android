@@ -10,6 +10,10 @@
             type="com.awonar.app.ui.portfolio.PortFolioViewModel" />
 
         <variable
+            name="market"
+            type="com.awonar.app.ui.market.MarketViewModel" />
+
+        <variable
             name="column1"
             type="String" />
 
@@ -151,14 +155,16 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.fragment.app.FragmentContainerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/awonar_portfolio_navigation_host_portfolio"
             android:name="androidx.navigation.fragment.NavHostFragment"
+            activedColumn="@{viewModel.activedColumnState}"
+            setPositionAdapter="@{viewModel.positionOrderList}"
+            viewModel="@{viewModel}"
+            quotes="@{market.quoteSteamingState}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:defaultNavHost="true"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-            app:navGraph="@navigation/awonar_portfolio_graph" />
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

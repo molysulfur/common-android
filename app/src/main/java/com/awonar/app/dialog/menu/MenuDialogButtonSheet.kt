@@ -15,16 +15,15 @@ class MenuDialogButtonSheet(private val listener: MenuDialogButtonSheetListener?
 
     private var menus: ArrayList<MenuDialog> = arrayListOf()
 
-    private val binding: AwonarDialogBottomMenuBinding by lazy {
-        AwonarDialogBottomMenuBinding.inflate(layoutInflater)
-    }
+    private var binding: AwonarDialogBottomMenuBinding? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        return binding.root
+    ): View? {
+        binding = AwonarDialogBottomMenuBinding.inflate(layoutInflater)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -34,7 +33,7 @@ class MenuDialogButtonSheet(private val listener: MenuDialogButtonSheetListener?
             listener?.onMenuClick(it)
             dialog?.dismiss()
         }
-        binding.awonarDialogBottomMenuContainer.apply {
+        binding?.awonarDialogBottomMenuContainer?.apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             this.adapter = adapterDialog
@@ -72,6 +71,11 @@ class MenuDialogButtonSheet(private val listener: MenuDialogButtonSheetListener?
                     putParcelableArrayList(EXTRA_MENUS, menus)
                 }
             }
+    }
+
+    override fun dismiss() {
+        super.dismiss()
+        binding = null
     }
 
 }

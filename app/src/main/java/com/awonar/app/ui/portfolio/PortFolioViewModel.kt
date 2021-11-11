@@ -43,6 +43,13 @@ class PortFolioViewModel @Inject constructor(
     private var convertPositionToCardItemUseCase: ConvertPositionToCardItemUseCase,
     private var convertCopierToCardItemUseCase: ConvertCopierToCardItemUseCase,
     private var convertOrderPositionToItemUseCase: ConvertOrderPositionToItemUseCase,
+    private var getPieChartExposureUseCase: GetPieChartExposureUseCase,
+    private var getPieChartAllocateUseCase: GetPieChartAllocateUseCase,
+    private var convertExposureToPieChartUseCase: ConvertExposureToPieChartUseCase,
+    private var convertAllocateToPieChartUseCase: ConvertAllocateToPieChartUseCase,
+    private val getPieChartMarketAllocateUseCase: GetPieChartMarketAllocateUseCase,
+    private val getPieChartInstrumentAllocateUseCase: GetPieChartInstrumentAllocateUseCase,
+    private val getPieChartInstrumentExposureUseCase: GetPieChartInstrumentExposureUseCase
 ) : ViewModel() {
 
     private val _portfolioType = MutableStateFlow("market")
@@ -81,12 +88,8 @@ class PortFolioViewModel @Inject constructor(
     }.stateIn(viewModelScope, WhileViewSubscribed, null)
 
     private val _positionOrderList: MutableStateFlow<MutableList<OrderPortfolioItem>> =
-        MutableStateFlow(mutableListOf())
+        MutableStateFlow(mutableListOf(OrderPortfolioItem.EmptyItem()))
     val positionOrderList: StateFlow<MutableList<OrderPortfolioItem>> get() = _positionOrderList
-
-    private val _positionMarketState: MutableStateFlow<MutableList<OrderPortfolioItem>> =
-        MutableStateFlow(mutableListOf())
-    val positionMarketState: StateFlow<MutableList<OrderPortfolioItem>> get() = _positionMarketState
 
     private val _positionState = MutableStateFlow<List<Position>>(emptyList())
     val positionState: StateFlow<List<Position>> get() = _positionState
@@ -124,7 +127,7 @@ class PortFolioViewModel @Inject constructor(
         itemList.addAll(positionItems)
         val copierItems = convertCopierToItemUseCase(copies).successOr(emptyList())
         itemList.addAll(copierItems)
-        _positionMarketState.emit(itemList)
+        _positionOrderList.emit(itemList)
     }
 
     fun activedColumnChange(text: String) {
@@ -212,8 +215,7 @@ class PortFolioViewModel @Inject constructor(
                                 instrumentFilterId = id,
                                 positions = result.data.positions ?: emptyList()
                             )
-                        ).successOr(emptyList())
-                            .toMutableList()
+                        ).successOr(listOf(OrderPortfolioItem.EmptyItem())).toMutableList()
                     )
                 _positionState.emit(result.data?.positions ?: emptyList())
             }
@@ -258,10 +260,38 @@ class PortFolioViewModel @Inject constructor(
     fun getOrdersPosition() {
         viewModelScope.launch {
             getPendingOrdersUseCase(Unit).collect {
-                val data = it.successOr(emptyList())
+                val data = it.successOr(mutableListOf())
                 _positionOrderList.emit(
-                    convertOrderPositionToItemUseCase(data).successOr(emptyList()).toMutableList()
+                    convertOrderPositionToItemUseCase(data).successOr(listOf(OrderPortfolioItem.EmptyItem()))
+                        .toMutableList()
                 )
+            }
+        }
+    }
+
+    fun getExposure(type: String? = null) {
+        viewModelScope.launch {
+            when (type) {
+                "stocks", "currencies", "crypto" -> getPieChartInstrumentExposureUseCase(Unit)
+                else -> getPieChartExposureUseCase(Unit)
+            }.collect {
+                val data = it.successOr(emptyMap())
+                val items = convertExposureToPieChartUseCase(data).successOr(emptyList())
+                _positionOrderList.emit(items.toMutableList())
+            }
+        }
+    }
+
+    fun getAllocate(type: String? = null) {
+        viewModelScope.launch {
+            when (type) {
+                "market" -> getPieChartMarketAllocateUseCase(Unit)
+                "stocks", "currencies", "crypto" -> getPieChartInstrumentAllocateUseCase(type)
+                else -> getPieChartAllocateUseCase(Unit)
+            }.collect {
+                val data = it.successOr(emptyMap())
+                val items = convertAllocateToPieChartUseCase(data).successOr(emptyList())
+                _positionOrderList.emit(items.toMutableList())
             }
         }
     }
