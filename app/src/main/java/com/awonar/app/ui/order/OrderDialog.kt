@@ -23,6 +23,7 @@ import com.awonar.app.databinding.AwonarDialogOrderBinding
 import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.awonar.app.utils.ColorChangingUtil
+import com.awonar.app.utils.loadImage
 import com.molysulfur.library.extension.toast
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
@@ -289,7 +290,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
 
     private fun initHeaderDialog() {
         instrument?.let {
-            binding.awonarDialogOrderImageAvatar.load(BuildConfig.BASE_IMAGE_URL + it.logo)
+            binding.awonarDialogOrderImageAvatar.loadImage(it.logo)
             binding.awonarDialogOrderTextTitle.text = it.symbol
             binding.awonarDialogOrderTextDescription.text = it.industry
             marketViewModel.getTradingData(it.id)

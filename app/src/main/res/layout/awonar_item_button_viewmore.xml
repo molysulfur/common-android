@@ -9,10 +9,11 @@
     </data>
 
     <androidx.appcompat.widget.AppCompatButton xmlns:android="http://schemas.android.com/apk/res/android"
-        style="@style/Awonar.Button.Default.LightGray"
         android:id="@+id/awonar_button_viewmore_button_item"
+        style="@style/Awonar.Button.Default.LightGray"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/awonar_size_margin_padding_normal"
         android:text="@{buttonText}"
         android:textColor="@color/awonar_color_primary"
         tools:text="@string/awonar_example_name" />

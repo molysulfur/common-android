@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.awonar.android.model.market.Instrument
 import com.awonar.android.model.market.MarketViewMoreArg
 import com.awonar.android.model.market.Quote
-import com.awonar.android.model.order.OpenOrderRequest
-import com.awonar.android.model.order.Price
+import com.awonar.android.model.portfolio.Position
 import com.awonar.android.model.tradingdata.TradingData
+import com.awonar.android.shared.domain.market.GetConversionByInstrumentUseCase
 import com.awonar.android.shared.domain.market.GetInstrumentListUseCase
 import com.awonar.android.shared.domain.order.GetTradingDataByInstrumentIdUseCase
 import com.awonar.android.shared.steaming.QuoteSteamingEvent
@@ -22,6 +22,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,16 +32,23 @@ class MarketViewModel @Inject constructor(
     private val convertInstrumentStockToItemUseCase: ConvertInstrumentStockToItemUseCase,
     private val convertInstrumentToItemUseCase: ConvertInstrumentToItemUseCase,
     private val getTradingDataByInstrumentIdUseCase: GetTradingDataByInstrumentIdUseCase,
+    private val getConversionByInstrumentUseCase: GetConversionByInstrumentUseCase,
     private val quoteSteamingManager: QuoteSteamingManager
 ) : ViewModel() {
 
     val tradingDataState = MutableSharedFlow<TradingData?>()
 
+    private val _conversionRateState = MutableStateFlow(0f)
+    val conversionRateState: StateFlow<Float> get() = _conversionRateState
+
+    private val _conversionRateListState = MutableStateFlow<HashMap<Int, Float>>(hashMapOf())
+    val conversionRateListState: StateFlow<HashMap<Int, Float>> get() = _conversionRateListState
+
     private val _viewMoreState = Channel<MarketViewMoreArg?>(capacity = Channel.CONFLATED)
     val viewMoreState = _viewMoreState.receiveAsFlow()
 
     private val _quoteSteamingState = MutableStateFlow<Array<Quote>>(emptyArray())
-    val quoteSteamingState: SharedFlow<Array<Quote>> get() = _quoteSteamingState
+    val quoteSteamingState: StateFlow<Array<Quote>> get() = _quoteSteamingState
 
     private val _marketTabState =
         MutableSharedFlow<MarketFragment.Companion.MarketTabSelectedState>(replay = 0)
@@ -65,17 +73,17 @@ class MarketViewModel @Inject constructor(
         }
     }
 
+    init {
+        quoteSteamingManager.setListener(listener)
+        subscribe()
+    }
+
     fun getTradingData(intrumentId: Int) {
         viewModelScope.launch {
             getTradingDataByInstrumentIdUseCase(intrumentId).collect {
                 tradingDataState.emit(it.successOr(null))
             }
         }
-    }
-
-
-    fun setNewQuoteListener() {
-        quoteSteamingManager.setListener(listener)
     }
 
     fun convertInstrumentToItem() {
@@ -138,6 +146,7 @@ class MarketViewModel @Inject constructor(
             QuoteSteamingEvent.subscribe,
             "$id"
         )
+        quoteSteamingManager.setListener(listener)
     }
 
     fun subscribe() {
@@ -152,6 +161,7 @@ class MarketViewModel @Inject constructor(
 
             }
         }
+        quoteSteamingManager.setListener(listener)
     }
 
     fun unsubscribe() {
@@ -187,6 +197,22 @@ class MarketViewModel @Inject constructor(
                 instruments.value.filter { it.categories?.contains(instrumentType) ?: false }
             _instrumentItem.value =
                 convertInstrumentToItemUseCase(instrumentList).data ?: arrayListOf()
+        }
+    }
+
+    fun getConversionsRate(instrumentId: Int) {
+        viewModelScope.launch {
+            _conversionRateState.emit(getConversionByInstrumentUseCase(instrumentId).successOr(1f))
+        }
+    }
+
+    fun getConversionsRateList(list: List<Position>) {
+        viewModelScope.launch {
+            val conversions = HashMap<Int, Float>()
+            list.forEach {
+                val conversion = getConversionByInstrumentUseCase(it.instrumentId).successOr(1f)
+                conversions[it.instrumentId] = conversion
+            }
         }
     }
 

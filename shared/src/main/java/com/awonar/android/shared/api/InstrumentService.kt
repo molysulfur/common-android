@@ -2,6 +2,7 @@ package com.awonar.android.shared.api
 
 import com.awonar.android.model.market.InstrumentProfile
 import com.awonar.android.model.market.InstrumentResponse
+import com.awonar.android.model.market.Quote
 import com.awonar.android.shared.constrant.BuildConfig
 import com.awonar.android.model.tradingdata.TradingData
 import retrofit2.Call
@@ -9,8 +10,12 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface InstrumentService {
+
+    @GET("api/v1/instruments/last-quote")
+    fun getLastQuote(@Query("ids") ids: List<Int>): Call<List<Quote>>
 
     @GET("api/v1/trading-data")
     fun getTradingData(): Call<List<TradingData>>

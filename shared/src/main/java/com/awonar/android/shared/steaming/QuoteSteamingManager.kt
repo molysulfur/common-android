@@ -11,6 +11,7 @@ import java.lang.Exception
 import java.util.*
 import java.util.Date.from
 import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.collections.ArrayList
 
 interface QuoteSteamingListener {
@@ -23,6 +24,7 @@ object QuoteSteamingEvent {
     const val unsubscribe = "unsubscribe"
 }
 
+@Singleton
 class QuoteSteamingManager @Inject constructor(private val networkClient: NetworkClient) :
     WebSocketListener() {
 
@@ -47,7 +49,6 @@ class QuoteSteamingManager @Inject constructor(private val networkClient: Networ
 
 
     fun send(event: String, data: String) {
-        Timber.d("$event, $data")
         val request = "{\"event\":\"${event}\",\"data\":\"${data}\"}"
         webSocket?.send(request)
     }

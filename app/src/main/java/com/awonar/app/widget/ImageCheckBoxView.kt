@@ -18,6 +18,7 @@ import com.awonar.android.shared.constrant.BuildConfig
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarWidgetGoogleBinding
 import com.awonar.app.databinding.AwonarWidgetImageCheckboxBinding
+import com.awonar.app.utils.loadImage
 import com.molysulfur.library.extension.readBooleanUsingCompat
 import com.molysulfur.library.extension.writeBooleanUsingCompat
 import com.molysulfur.library.widget.BaseViewGroup
@@ -79,7 +80,7 @@ class ImageCheckBoxView : BaseViewGroup {
     private fun updateIcon() {
         when {
             icon != null -> {
-                imageView.load(BuildConfig.BASE_IMAGE_URL + icon)
+                imageView.loadImage(icon)
                 imageView.visibility = VISIBLE
 
             }

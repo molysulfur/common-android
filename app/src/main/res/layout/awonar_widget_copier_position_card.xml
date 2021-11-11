@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="title"
+            type="String" />
+
+        <variable
+            name="description"
+            type="String" />
+
+        <variable
+            name="invested"
+            type="Float" />
+
+        <variable
+            name="money"
+            type="Float" />
+
+        <variable
+            name="valueInvest"
+            type="Float" />
+
+        <variable
+            name="units"
+            type="Float" />
+
+        <variable
+            name="profitLoss"
+            type="Float" />
+
+        <variable
+            name="avgOpen"
+            type="Float" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/awonar_size_margin_padding_normal">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/awonar_ripple_light_gray"
+            android:padding="@dimen/awonar_size_margin_padding_extra_small"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/awonar_copier_position_card_image_logo"
+            app:srcCompat="@drawable/awonar_ic_setting" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/awonar_copier_position_card_image_logo"
+            android:layout_width="@dimen/awonar_size_avatar"
+            android:layout_height="@dimen/awonar_size_avatar"
+            app:layout_constraintBottom_toTopOf="@+id/awonar_copier_position_card_text_title_invested"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:srcCompat="@drawable/awonar_placeholder_avatar" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_copier_position_card_text_title"
+            style="@style/Awonar.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
+            android:text="@{title}"
+            app:layout_constraintStart_toEndOf="@+id/awonar_copier_position_card_image_logo"
+            app:layout_constraintTop_toTopOf="@+id/awonar_copier_position_card_image_logo"
+            tools:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_copier_position_card_text_description"
+            style="@style/Awonar.Description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{description}"
+            app:layout_constraintStart_toStartOf="@+id/awonar_copier_position_card_text_title"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_copier_position_card_text_title"
+            tools:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_copier_position_card_text_title_invested"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+            android:text="Invested"
+            app:layout_constraintBottom_toTopOf="@+id/awonar_copier_position_card_text_money"
+            app:layout_constraintStart_toStartOf="@+id/awonar_copier_position_card_image_logo"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_copier_position_card_image_logo" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_copier_position_card_text_invested"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+            android:text="@{invested.toString()}"
+            app:layout_constraintEnd_toStartOf="@+id/view"
+            app:layout_constraintTop_toTopOf="@+id/awonar_copier_position_card_text_title_invested"
+            tools:text="@string/awonar_example_name" />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:background="@color/awonar_color_gray"
+            app:layout_constraintBottom_toBottomOf="@+id/awonar_copier_position_card_text_money"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/awonar_copier_position_card_text_invested" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_copier_position_card_text_title_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
+            android:text="Value"
+            app:layout_constraintStart_toEndOf="@+id/view"
+            app:layout_constraintTop_toTopOf="@+id/awonar_copier_position_card_text_value" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_copier_position_card_text_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+            android:text="@{valueInvest.toString()}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_copier_position_card_text_description"
+            tools:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_copier_position_card_title_text_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Money In/Out"
+            app:layout_constraintStart_toStartOf="@+id/awonar_copier_position_card_text_title_invested"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_copier_position_card_text_title_invested" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_copier_position_card_text_money"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{money.toString()}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/awonar_copier_position_card_text_invested"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_copier_position_card_text_title_invested"
+            tools:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_copier_position_card_text_title_profitloss"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
+            android:layout_marginTop="@dimen/awonar_size_margin_padding_small"
+            android:text="P/L"
+            app:layout_constraintStart_toEndOf="@+id/view"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_copier_position_card_text_title_invested" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_copier_position_card_text_profitloss"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
+            android:text="@{profitLoss.toString()}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/awonar_copier_position_card_text_title_profitloss"
+            tools:text="@string/awonar_example_name" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

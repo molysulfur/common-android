@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="title"
+            type="String" />
+
+        <variable
+            name="subTitle"
+            type="String" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/awonar_size_margin_padding_normal">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/awonar_item_empty_image_logo"
+            android:layout_width="@dimen/awonar_size_avatar"
+            android:layout_height="@dimen/awonar_size_avatar"
+            app:layout_constraintBottom_toTopOf="@+id/awonar_item_empty_text_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_item_empty_text_title"
+            style="@style/Awonar.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{title}"
+            app:layout_constraintBottom_toTopOf="@+id/awonar_item_empty_text_subtitle"
+            app:layout_constraintEnd_toEndOf="@+id/awonar_item_empty_image_logo"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/awonar_item_empty_image_logo"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_item_empty_image_logo"
+            tools:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_item_empty_text_subtitle"
+            style="@style/Awonar.SubTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{subTitle}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/awonar_item_empty_image_logo"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/awonar_item_empty_image_logo"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_item_empty_text_title"
+            tools:text="@string/awonar_example_name" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
