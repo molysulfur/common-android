@@ -5,11 +5,13 @@ import androidx.paging.PagingState
 import com.awonar.android.model.history.History
 import com.awonar.android.model.history.HistoryResponse
 import com.awonar.android.shared.api.HistoryService
+import java.sql.Timestamp
 import java.util.*
 import javax.inject.Inject
 
 class HistoryPagingSource @Inject constructor(
     private val service: HistoryService,
+    private val timestamp: Long,
 ) : PagingSource<Int, History>() {
     override fun getRefreshKey(state: PagingState<Int, History>): Int? {
         return state.anchorPosition?.let { postition ->
@@ -20,15 +22,17 @@ class HistoryPagingSource @Inject constructor(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, History> {
         val page = params.key ?: 1
-        val prev7Day = Calendar.getInstance()
-        prev7Day.add(Calendar.DATE, -7)
         return try {
             val response =
                 service.getHistory(
                     page = page,
                     limit = 10,
-                    startDate = prev7Day.timeInMillis / 1000
+                    startDate = timestamp
                 )
+            response.histories?.forEachIndexed { index, history ->
+                val master = response.masters?.find { it.id == history.masterId }
+                master.also { response.histories?.get(index)?.master = it }
+            }
             LoadResult.Page(
                 response.histories ?: emptyList(),
                 prevKey = null,

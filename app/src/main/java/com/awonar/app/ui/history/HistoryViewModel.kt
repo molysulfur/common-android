@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import com.awonar.android.model.history.Aggregate
 import com.awonar.android.model.history.History
-import com.awonar.android.model.history.HistoryResponse
 import com.awonar.android.shared.domain.history.GetAggregateUseCase
 import com.awonar.android.shared.domain.history.GetColumnHistoryUseCase
 import com.awonar.android.shared.domain.history.GetHistoryUseCase
@@ -13,6 +12,7 @@ import com.awonar.android.shared.utils.WhileViewSubscribed
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -28,17 +28,41 @@ class HistoryViewModel @Inject constructor(
         emit(data)
     }.stateIn(viewModelScope, WhileViewSubscribed, emptyList())
 
-    val aggregateState: StateFlow<Aggregate?> = flow {
+    private val _aggregateState = MutableStateFlow<Aggregate?>(null)
+    val aggregateState: StateFlow<Aggregate?> = _aggregateState
+
+    private val _historiesState = MutableStateFlow<PagingData<History>>(PagingData.empty())
+    val historiesState: StateFlow<PagingData<History>> = _historiesState
+
+    init {
         val prev7Day = Calendar.getInstance()
         prev7Day.add(Calendar.DATE, -7)
-        getAggregateUseCase(prev7Day.timeInMillis / 1000).collect {
-            emit(it.successOr(null))
+        val timestamp = prev7Day.timeInMillis / 1000
+        viewModelScope.launch {
+            getAggregateUseCase(timestamp).collect {
+                _aggregateState.emit(it.successOr(null))
+            }
         }
-    }.stateIn(viewModelScope, WhileViewSubscribed, null)
+        viewModelScope.launch {
+            getHistoryUseCase(timestamp).collect {
+                _historiesState.emit(it.successOr(PagingData.empty()))
+            }
+        }
+    }
 
-    val historiesState: StateFlow<PagingData<History>> = flow {
-        getHistoryUseCase(1).collect {
-            emit(it.successOr(PagingData.empty()))
+    fun getAggregate(timestamp: Long) {
+        viewModelScope.launch {
+            getAggregateUseCase(timestamp).collect {
+                _aggregateState.value = it.successOr(null)
+            }
         }
-    }.stateIn(viewModelScope, WhileViewSubscribed, PagingData.empty())
+    }
+
+    fun getHistory(timestamp: Long) {
+        viewModelScope.launch {
+            getHistoryUseCase(timestamp).collect {
+                _historiesState.emit(it.successOr(PagingData.empty()))
+            }
+        }
+    }
 }

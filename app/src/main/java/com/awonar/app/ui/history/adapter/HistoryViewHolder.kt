@@ -29,6 +29,7 @@ class HistoryViewHolder constructor(private val binding: AwonarItemHistoryBindin
             5 -> view.setImage(R.drawable.awoanr_ic_deposit_reverse)
             6 -> view.setImage(R.drawable.awoanr_ic_deposit_cenceled)
             7 -> view.setImage(R.drawable.awonar_ic_deposit_compensation)
+            11 -> view.setImage(history.master?.picture ?: "")
             else -> setupImageWithCloseType(history)
         }
     }

@@ -5,7 +5,6 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.awonar.android.model.history.Aggregate
 import com.awonar.android.model.history.History
-import com.awonar.android.model.history.HistoryResponse
 import com.awonar.android.shared.api.HistoryService
 import com.awonar.android.shared.constrant.Columns.DEFAULT_COLUMN_HISTORY
 import com.awonar.android.shared.data.HistoryPagingSource
@@ -25,10 +24,15 @@ class HistoryRepository @Inject constructor(
         private const val NETWORK_PAGE_SIZE = 10
     }
 
-    fun getHistory(): Flow<PagingData<History>> {
+    fun getHistory(request: Long): Flow<PagingData<History>> {
         return Pager(
             config = PagingConfig(enablePlaceholders = false, pageSize = NETWORK_PAGE_SIZE),
-            pagingSourceFactory = { HistoryPagingSource(historyService) }
+            pagingSourceFactory = {
+                HistoryPagingSource(
+                    historyService,
+                    request
+                )
+            }
         ).flow
     }
 

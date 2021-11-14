@@ -47,6 +47,11 @@ fun setHistory(
                 view.setDescription("")
                 view.setTextColumnOne("$%.2f".format(it.amount))
             }
+            11 -> {
+                view.setTitle(it.detail)
+                view.setDescription(it.master?.firstName ?: "")
+                view.setTextColumnOne("$%.2f".format(it.amount))
+            }
             else -> setPositionHistoryItem(view, history, column1, column2, column3, column4)
         }
     }
@@ -61,7 +66,6 @@ private fun setPositionHistoryItem(
     column3: String,
     column4: String,
 ) {
-    view.setTitle("${if (history.position?.isBuy == true) "BUY" else "SELL"} ${history.position?.instrument?.symbol}")
     view.setTextColumnOne(setColumnPositionHistory(column1, history))
     view.setTextColumnTwo(setColumnPositionHistory(column2, history))
     view.setTextColumnThree(setColumnPositionHistory(column3, history))

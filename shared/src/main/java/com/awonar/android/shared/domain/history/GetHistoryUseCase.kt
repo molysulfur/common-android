@@ -2,7 +2,6 @@ package com.awonar.android.shared.domain.history
 
 import androidx.paging.PagingData
 import com.awonar.android.model.history.History
-import com.awonar.android.model.history.HistoryResponse
 import com.awonar.android.shared.di.IoDispatcher
 import com.awonar.android.shared.repos.HistoryRepository
 import com.molysulfur.library.result.Result
@@ -16,9 +15,9 @@ import javax.inject.Inject
 class GetHistoryUseCase @Inject constructor(
     private val historyRepository: HistoryRepository,
     @IoDispatcher dispatcher: CoroutineDispatcher
-) : FlowUseCase<Int, PagingData<History>>(dispatcher) {
-    override fun execute(parameters: Int): Flow<Result<PagingData<History>>> = flow {
-        historyRepository.getHistory().collect {
+) : FlowUseCase<Long, PagingData<History>>(dispatcher) {
+    override fun execute(parameters: Long): Flow<Result<PagingData<History>>> = flow {
+        historyRepository.getHistory(parameters).collect {
             emit(Result.Success(it))
         }
     }
