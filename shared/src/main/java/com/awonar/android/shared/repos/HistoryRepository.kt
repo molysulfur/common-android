@@ -7,6 +7,7 @@ import com.awonar.android.model.history.Aggregate
 import com.awonar.android.model.history.History
 import com.awonar.android.model.history.HistoryResponse
 import com.awonar.android.shared.api.HistoryService
+import com.awonar.android.shared.constrant.Columns.DEFAULT_COLUMN_HISTORY
 import com.awonar.android.shared.data.HistoryPagingSource
 import com.molysulfur.library.network.DirectNetworkFlow
 import com.molysulfur.library.result.Result
@@ -44,4 +45,6 @@ class HistoryRepository @Inject constructor(
             }
 
         }.asFlow()
+
+    fun getActivedColumn(): List<String> = DEFAULT_COLUMN_HISTORY
 }

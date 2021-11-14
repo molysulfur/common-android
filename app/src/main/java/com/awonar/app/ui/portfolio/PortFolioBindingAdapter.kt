@@ -17,6 +17,7 @@ import com.awonar.app.R
 import com.awonar.app.ui.portfolio.activedadapter.ActivedColumnAdapter
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioAdapter
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
+import com.awonar.app.utils.DateUtils
 import com.awonar.app.widget.CopierPositionCardView
 import com.awonar.app.widget.InstrumentOrderView
 import com.awonar.app.widget.InstrumentPositionCardView
@@ -411,12 +412,7 @@ fun setItemPositionOrderPortfolio(
         is OrderPortfolioItem.InstrumentOrderItem -> item.position.let { position ->
             view.setImage(position.instrument.logo ?: "")
             view.setTitle("${if (position.isBuy) "BUY" else "SELL"} ${position.instrument.symbol}")
-            val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
-            val formatter = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault())
-            val date = parser.parse(position.openDateTime)
-            date?.let {
-                view.setDescription(formatter.format(date))
-            }
+            view.setDescription(DateUtils.getDate(position.openDateTime))
             view.setTextColumnOne(
                 getPositionValueByColumn(
                     item,

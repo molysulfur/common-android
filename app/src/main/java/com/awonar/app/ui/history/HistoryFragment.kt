@@ -14,6 +14,7 @@ import com.awonar.app.utils.ColorChangingUtil
 import com.molysulfur.library.utils.ColorUtils
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class HistoryFragment : Fragment() {
 
@@ -28,42 +29,46 @@ class HistoryFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        binding.historyViewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         launchAndRepeatWithViewLifecycle {
-            viewModel.aggregateState.collect { aggregate ->
-                aggregate?.let {
-                    binding.startValue = "$%.2f".format(it.startEquity)
-                    binding.endValue = "$%.2f".format(it.endEquity)
-                    binding.moneyIn = "$%.2f".format(it.totalMoneyIn)
-                    binding.moneyOut = "$%.2f".format(it.totalMoneyOut)
-                    binding.profitLoss = "$%.2f".format(it.totalNetProfit)
-                    binding.awonarHistoryTextProfitloss.setTextColor(
-                        ColorChangingUtil.getTextColorChange(
-                            requireContext(),
-                            it.totalNetProfit
-                        )
-                    )
-                }
-            }
-        }
-        launchAndRepeatWithViewLifecycle {
-            viewModel.historiesState.collect {
-                if (binding.awonarHistoryRecyclerItems.adapter == null) {
-                    binding.awonarHistoryRecyclerItems.apply {
-                        adapter = HistoryAdapter()
-                        layoutManager = LinearLayoutManager(
-                            requireContext(),
-                            LinearLayoutManager.VERTICAL,
-                            false
-                        )
+            launch {
+                viewModel.historiesState.collect {
+                    if (binding.awonarHistoryRecyclerItems.adapter == null) {
+                        binding.awonarHistoryRecyclerItems.apply {
+                            adapter = HistoryAdapter()
+                            layoutManager = LinearLayoutManager(
+                                requireContext(),
+                                LinearLayoutManager.VERTICAL,
+                                false
+                            )
+                        }
+                    }
+                    (binding.awonarHistoryRecyclerItems.adapter as HistoryAdapter).apply {
+                        submitData(it)
                     }
                 }
-                (binding.awonarHistoryRecyclerItems.adapter as HistoryAdapter).apply {
-                    submitData(it)
+            }
+            launch {
+                viewModel.aggregateState.collect { aggregate ->
+                    aggregate?.let {
+                        binding.startValue = "$%.2f".format(it.startEquity)
+                        binding.endValue = "$%.2f".format(it.endEquity)
+                        binding.moneyIn = "$%.2f".format(it.totalMoneyIn)
+                        binding.moneyOut = "$%.2f".format(it.totalMoneyOut)
+                        binding.profitLoss = "$%.2f".format(it.totalNetProfit)
+                        binding.awonarHistoryTextProfitloss.setTextColor(
+                            ColorChangingUtil.getTextColorChange(
+                                requireContext(),
+                                it.totalNetProfit
+                            )
+                        )
+                    }
                 }
             }
         }

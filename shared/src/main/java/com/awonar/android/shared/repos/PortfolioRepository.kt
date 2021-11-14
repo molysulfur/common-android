@@ -4,6 +4,8 @@ import com.awonar.android.constrant.manualColumns
 import com.awonar.android.constrant.marketColumns
 import com.awonar.android.model.portfolio.*
 import com.awonar.android.shared.api.PortfolioService
+import com.awonar.android.shared.constrant.Columns.DEFAULT_COLUMN_MARKET
+import com.awonar.android.shared.constrant.Columns.DEFAULT_COLUMN_POSITION
 import com.awonar.android.shared.db.hawk.PortfolioActivedColumnManager
 import com.molysulfur.library.network.DirectNetworkFlow
 import retrofit2.Response
@@ -76,20 +78,10 @@ class PortfolioRepository @Inject constructor(
         }.asFlow()
 
     fun getActivedManualColumn(): List<String> =
-        preference.getManual() ?: listOf(
-            "Invested",
-            "Execute at",
-            "Current",
-            "Pip Change"
-        )
+        preference.getManual() ?: DEFAULT_COLUMN_POSITION
 
     fun getActivedMarketColumn(): List<String> =
-        preference.getMarket() ?: listOf(
-            "Units",
-            "Avg. Open",
-            "Invested",
-            "P/L($)"
-        )
+        preference.getMarket() ?: DEFAULT_COLUMN_MARKET
 
 
     fun getPortfolioMarketColumns(activedList: List<String>): List<String> {

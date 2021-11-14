@@ -62,7 +62,7 @@ data class EntryOrderPortfolio(
     @SerializedName("ip") val ip: String,
     @SerializedName("isBuy") val isBuy: Boolean,
     @SerializedName("leverage") val leverage: Int,
-    @SerializedName("openDateTime") val openDateTime: String,
+    @SerializedName("openDateTime") val openDateTime: String?,
     @SerializedName("orderNo") val orderNo: String,
     @SerializedName("parentPositionId") val parentPositionId: String,
     @SerializedName("parentUid") val parentUid: String,
@@ -82,7 +82,7 @@ data class OrderPortfolio(
     @SerializedName("ip") val ip: String,
     @SerializedName("isBuy") val isBuy: Boolean,
     @SerializedName("leverage") val leverage: Int,
-    @SerializedName("openDateTime") val openDateTime: String,
+    @SerializedName("openDateTime") val openDateTime: String?,
     @SerializedName("orderNo") val orderNo: String,
     @SerializedName("parentOrderId") val parentOrderId: String,
     @SerializedName("rate") val rate: Float,
@@ -105,7 +105,7 @@ data class Position(
     @SerializedName("exitOrder") val exitOrder: ExitOrder?,
     @SerializedName("exposure") val exposure: Float,
     @SerializedName("instrument") val instrument: Instrument,
-    @SerializedName("openDateTime") val openDateTime: String,
+    @SerializedName("openDateTime") val openDateTime: String?,
     @SerializedName("openRate") val openRate: Float,
     @SerializedName("orderNo") val orderNo: String,
     @SerializedName("parentPositionId") val parentPositionId: String,
@@ -118,6 +118,9 @@ data class Position(
     @SerializedName("takeProfitRate") val takeProfitRate: Float,
     @SerializedName("totalFees") val totalFees: Float,
     @SerializedName("units") val units: Float,
+    @SerializedName("closeRate") val closeRate: Float,
+    @SerializedName("closeType") val closeType: Int,
+    @SerializedName("closeDateTime") val closeDateTime: String?,
 ) : Parcelable
 
 

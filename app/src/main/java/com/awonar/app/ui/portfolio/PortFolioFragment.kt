@@ -51,7 +51,6 @@ class PortFolioFragment : Fragment() {
                             portViewModel.getOrdersPosition()
                         }
                         "com.awonar.app.ui.portfolio.sector.history" -> {
-                            title = "History"
                             findNavController().navigate(PortFolioFragmentDirections.actionPortFolioFragmentToHistoryFragment())
                         }
                         else -> {

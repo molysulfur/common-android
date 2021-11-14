@@ -6,7 +6,6 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.awonar.android.model.history.History
 import com.awonar.app.databinding.AwonarItemHistoryBinding
-import com.awonar.app.databinding.AwonarItemInstrumentOrderBinding
 
 class HistoryAdapter(
     private val diff: DiffUtil.ItemCallback<History> = object :
@@ -27,10 +26,16 @@ class HistoryAdapter(
     }
 ) : PagingDataAdapter<History, HistoryViewHolder>(diff) {
 
+    var columns: List<String> = emptyList()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
+
     override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
         val item = getItem(position)
-        item?.let{
-            holder.bind(item)
+        item?.let {
+            holder.bind(item,columns)
         }
     }
 
