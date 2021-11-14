@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="column1"
+            type="String" />
+
+        <variable
+            name="column2"
+            type="String" />
+
+        <variable
+            name="column3"
+            type="String" />
+
+        <variable
+            name="column4"
+            type="String" />
+
+        <variable
+            name="history"
+            type="com.awonar.android.model.history.History" />
+
+
+    </data>
+
+    <com.awonar.app.widget.InstrumentOrderView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/awonar_insturment_order_item"
+        setHistory="@{history}"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/awonar_ripple_white"
+        android:padding="@dimen/awonar_size_margin_padding_normal" />
+
+</layout>

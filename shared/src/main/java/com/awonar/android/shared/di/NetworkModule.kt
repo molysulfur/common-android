@@ -64,4 +64,10 @@ class NetworkModule {
     fun provideOrderService(client: NetworkClient): OrderService {
         return OrderService.create(client)
     }
+
+    @Singleton
+    @Provides
+    fun provideHistoryService(client: NetworkClient): HistoryService {
+        return HistoryService.create(client)
+    }
 }

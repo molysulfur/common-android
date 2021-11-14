@@ -62,4 +62,5 @@
     <string name="awonar_text_rate">Rate</string>
     <string name="awonar_text_market">Market</string>
     <string name="awonar_text_total_open">Total Open</string>
+    <string name="awonar_title_history">History</string>
 </resources>
