@@ -96,6 +96,10 @@ class PortFolioFragment : Fragment() {
         launchAndRepeatWithViewLifecycle {
             launch {
                 portViewModel.portfolioType.collect {
+                    binding.awonarPortfolioImageChangeStyle.tag = it
+                    fetchPosition(it)
+                    visibleColumns(it)
+                    setupPositionType(it)
                     columnsViewModel.setColumnType(it)
                 }
             }
@@ -112,6 +116,37 @@ class PortFolioFragment : Fragment() {
         binding.market = marketViewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
+    }
+
+    private fun setupPositionType(type: String) {
+        val iconRes = when (type) {
+            "market" -> R.drawable.awonar_ic_list
+            "manual" -> R.drawable.awonar_ic_card_list
+            "card" -> R.drawable.awonar_ic_chart
+            "piechart" -> R.drawable.awonar_ic_list
+            else -> 0
+        }
+        binding.awonarPortfolioImageChangeStyle.setImageResource(iconRes)
+    }
+
+    private fun visibleColumns(type: String) {
+        when (type) {
+            "market" -> portViewModel.getMarketPosition()
+            "manual" -> portViewModel.getManualPosition()
+            "card" -> portViewModel.getCardPosition()
+            "piechart" -> portViewModel.getExposure()
+        }
+    }
+
+    private fun fetchPosition(type: String) {
+        val visible = when (type) {
+            "market" -> View.VISIBLE
+            "manual" -> View.VISIBLE
+            "card" -> View.GONE
+            "piechart" -> View.GONE
+            else -> View.GONE
+        }
+        binding.awonarPortfolioIncludeColumn.awonarIncludeColumnContainer.visibility = visible
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -176,35 +211,12 @@ class PortFolioFragment : Fragment() {
 
     private fun toggle() {
         var tag = binding.awonarPortfolioImageChangeStyle.tag
-        when (tag) {
-            "market" -> {
-                tag = "manual"
-                binding.awonarPortfolioIncludeColumn.awonarIncludeColumnContainer.visibility =
-                    View.VISIBLE
-                portViewModel.getManualPosition()
-                binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_chart)
-            }
-            "manual" -> {
-                tag = "card"
-                binding.awonarPortfolioIncludeColumn.awonarIncludeColumnContainer.visibility =
-                    View.GONE
-                portViewModel.getCardPosition()
-                binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_list)
-            }
-            "card" -> {
-                tag = "piechart"
-                portViewModel.getAllocate()
-                binding.awonarPortfolioIncludeColumn.awonarIncludeColumnContainer.visibility =
-                    View.GONE
-            }
-            else -> {
-                tag = "market"
-                portViewModel.getMarketPosition()
-                binding.awonarPortfolioIncludeColumn.awonarIncludeColumnContainer.visibility =
-                    View.VISIBLE
-            }
+        tag = when (tag) {
+            "market" -> "manual"
+            "manual" -> "card"
+            "card" -> "piechart"
+            else -> "market"
         }
-        binding.awonarPortfolioImageChangeStyle.tag = tag
         portViewModel.togglePortfolio(tag)
     }
 

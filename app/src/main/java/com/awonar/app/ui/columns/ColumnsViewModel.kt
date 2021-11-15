@@ -51,13 +51,6 @@ class ColumnsViewModel @Inject constructor(
         }
     }
 
-    fun getHistoryColumn() {
-        viewModelScope.launch {
-            val columns = getHistoryColumnUseCase(_activedColumnState.value).successOr(emptyList())
-            _columnState.emit(columns)
-        }
-    }
-
     fun replaceActivedColumn(oldColumn: String, newColumn: String) {
         viewModelScope.launch {
             val activedList = _activedColumnState.value.toMutableList()
@@ -105,9 +98,26 @@ class ColumnsViewModel @Inject constructor(
         val data = when (type?.lowercase()) {
             "market" -> getActivedMarketColumnUseCase(Unit).successOr(emptyList())
             "manual" -> getActivedManualColumnUseCase(Unit).successOr(emptyList())
-            else -> getHistoryActivedColumnUseCase(Unit).successOr(emptyList())
+            "history" -> getHistoryActivedColumnUseCase(Unit).successOr(emptyList())
+            "card" -> emptyList()
+            "piechart" -> emptyList()
+            else -> throw Error("column type is not found!")
         }
         _activedColumnState.emit(data)
+    }
+
+    fun getColumn() {
+        viewModelScope.launch {
+            val columns = when (_columnType.value?.lowercase()) {
+                "market" -> getMarketColumnListUseCase(_activedColumnState.value).successOr(emptyList())
+                "manual" -> getManualColumnListUseCase(_activedColumnState.value).successOr(emptyList())
+                "history" -> getHistoryColumnUseCase(_activedColumnState.value).successOr(emptyList())
+                "card" -> emptyList()
+                "piechart" -> emptyList()
+                else -> throw Error("column type is not found!")
+            }
+            _columnState.emit(columns)
+        }
     }
 
 }

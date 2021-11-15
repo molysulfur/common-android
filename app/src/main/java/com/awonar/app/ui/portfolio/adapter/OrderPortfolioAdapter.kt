@@ -35,6 +35,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var onClick: ((String, String) -> Unit)? = null
     var onButtonClick: ((String) -> Unit)? = null
+    var onViewAllClick: (() -> Unit)? = null
     var onPieChartClick: ((String?) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
@@ -109,6 +110,13 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     false
                 )
             )
+            OrderPortfolioType.VIEWALL_BUTTON -> ViewAllViewHolder(
+                AwonarItemButtonViewmoreBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
             OrderPortfolioType.PIECHART_PORTFOLIO -> PieChartViewHolder(
                 AwonarItemPiechartBinding.inflate(
                     LayoutInflater.from(parent.context),
@@ -165,6 +173,10 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 columns,
                 quote,
                 onClick
+            )
+            is ViewAllViewHolder -> holder.bind(
+                item as OrderPortfolioItem.ViewAllItem,
+                onViewAllClick
             )
         }
     }

@@ -14,15 +14,13 @@ import com.awonar.android.model.portfolio.Position
 import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.app.R
-import com.awonar.app.ui.columns.ColumnsViewModel
-import com.awonar.app.ui.columns.activedadapter.ActivedColumnAdapter
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioAdapter
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
 import com.awonar.app.utils.DateUtils
 import com.awonar.app.widget.CopierPositionCardView
 import com.awonar.app.widget.InstrumentOrderView
 import com.awonar.app.widget.InstrumentPositionCardView
-import com.google.android.material.appbar.MaterialToolbar
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
@@ -324,6 +322,10 @@ fun setPositionAdapter(
                 onClick = { it, type ->
                     viewModel.navigateInsidePortfolio(it, type)
                 }
+                onViewAllClick = {
+                    Timber.e("market view all")
+                    viewModel.togglePortfolio("market")
+                }
                 onButtonClick = { text ->
                     when (text.lowercase()) {
                         "allocate" -> {
@@ -603,7 +605,7 @@ private fun getPositionValueByColumn(
     "P/L($)" -> "$%.2f".format(item.profitLoss)
     "P/L(%)" -> "%.2f%s".format(item.profitLossPercent, "%")
     "Pip Change" -> "%s".format(item.pipChange.toInt())
-    "Leverage" -> "%s".format(item.leverage.toFloat())
+    "Leverage" -> "%s".format(item.leverage)
     "Value" -> "$%.2f".format(item.value)
     "Fee" -> "$%.2f".format(item.fees)
     "Execute at" -> "$%s".format(item.invested)
@@ -627,7 +629,7 @@ private fun getPositionValueByColumn(
     "P/L($)" -> "$%.2f".format(item.profitLoss)
     "P/L(%)" -> "%.2f%s".format(item.profitLossPercent, "%")
     "Pip Change" -> "%s".format(item.pipChange.toInt())
-    "Leverage" -> "%s".format(item.leverage.toFloat())
+    "Leverage" -> "%s".format(item.leverage)
     "Value" -> "$%.2f".format(item.value)
     "Fee" -> "$%.2f".format(item.fees)
     "Execute at" -> "$%s".format(item.invested)

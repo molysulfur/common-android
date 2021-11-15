@@ -45,7 +45,7 @@ class ColumnsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getHistoryColumn()
+        viewModel.getColumn()
         binding.awonarPortfolioColumnToolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
