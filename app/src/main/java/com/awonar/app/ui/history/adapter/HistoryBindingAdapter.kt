@@ -57,7 +57,6 @@ fun setHistory(
     }
 }
 
-
 private fun setPositionHistoryItem(
     view: InstrumentOrderView,
     history: History,
@@ -66,6 +65,7 @@ private fun setPositionHistoryItem(
     column3: String,
     column4: String,
 ) {
+    view.setTitle(if (history.position?.isBuy == true) "BUY" else "SELL" + history.position?.instrument?.symbol)
     view.setTextColumnOne(setColumnPositionHistory(column1, history))
     view.setTextColumnTwo(setColumnPositionHistory(column2, history))
     view.setTextColumnThree(setColumnPositionHistory(column3, history))

@@ -23,63 +23,7 @@ import java.util.*
 
 class HistoryFragment : Fragment() {
 
-    private val filterDialog: MenuDialogButtonSheet by lazy {
-        val menus = arrayListOf(
-            MenuDialog(
-                key = "7D",
-                text = "7D"
-            ),
-            MenuDialog(
-                key = "30D",
-                text = "30D"
-            ),
-            MenuDialog(
-                key = "3M",
-                text = "3M"
-            ),
-            MenuDialog(
-                key = "6M",
-                text = "6M"
-            ),
-            MenuDialog(
-                key = "1Y",
-                text = "1Y"
-            ),
-        )
-        MenuDialogButtonSheet.Builder()
-            .setListener(object : MenuDialogButtonSheet.MenuDialogButtonSheetListener {
-                override fun onMenuClick(menu: MenuDialog) {
-                    val prevTime = Calendar.getInstance()
-                    val timeStamp: Long = when (menu.key) {
-                        "30D" -> {
-                            prevTime.add(Calendar.DATE, -30)
-                            prevTime.timeInMillis
-                        }
-                        "3M" -> {
-                            prevTime.add(Calendar.MONTH, -3)
-                            prevTime.timeInMillis
-                        }
-                        "6M" -> {
-                            prevTime.add(Calendar.MONTH, -6)
-                            prevTime.timeInMillis
-                        }
-                        "1Y" -> {
-                            prevTime.add(Calendar.YEAR, -1)
-                            prevTime.timeInMillis
-                        }
-                        else -> {
-                            prevTime.add(Calendar.DATE, -7)
-                            prevTime.timeInMillis
-                        }
-                    }
-                    viewModel.getHistory(timeStamp / 1000)
-                    viewModel.getAggregate(timeStamp / 1000)
-                }
-            })
-            .setMenus(menus)
-            .build()
-    }
-
+    private lateinit var filterDialog: MenuDialogButtonSheet
 
     private val viewModel: HistoryViewModel by activityViewModels()
 
@@ -139,7 +83,64 @@ class HistoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val menus = arrayListOf(
+            MenuDialog(
+                key = "7D",
+                text = "7D"
+            ),
+            MenuDialog(
+                key = "30D",
+                text = "30D"
+            ),
+            MenuDialog(
+                key = "3M",
+                text = "3M"
+            ),
+            MenuDialog(
+                key = "6M",
+                text = "6M"
+            ),
+            MenuDialog(
+                key = "1Y",
+                text = "1Y"
+            ),
+        )
+        filterDialog = MenuDialogButtonSheet.Builder()
+            .setListener(object : MenuDialogButtonSheet.MenuDialogButtonSheetListener {
+                override fun onMenuClick(menu: MenuDialog) {
+                    val prevTime = Calendar.getInstance()
+                    val timeStamp: Long = when (menu.key) {
+                        "30D" -> {
+                            prevTime.add(Calendar.DATE, -30)
+                            prevTime.timeInMillis
+                        }
+                        "3M" -> {
+                            prevTime.add(Calendar.MONTH, -3)
+                            prevTime.timeInMillis
+                        }
+                        "6M" -> {
+                            prevTime.add(Calendar.MONTH, -6)
+                            prevTime.timeInMillis
+                        }
+                        "1Y" -> {
+                            prevTime.add(Calendar.YEAR, -1)
+                            prevTime.timeInMillis
+                        }
+                        else -> {
+                            prevTime.add(Calendar.DATE, -7)
+                            prevTime.timeInMillis
+                        }
+                    }
+                    viewModel.getHistory(timeStamp / 1000)
+                    viewModel.getAggregate(timeStamp / 1000)
+                }
+            })
+            .setMenus(menus)
+            .build()
         binding.awonarHistoryButtonFilter.setOnClickListener {
+            if (filterDialog.isAdded) {
+                filterDialog.dismiss()
+            }
             filterDialog.show(childFragmentManager, MenuDialogButtonSheet.TAG)
         }
     }

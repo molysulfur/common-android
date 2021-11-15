@@ -30,38 +30,7 @@ class PortFolioFragment : Fragment() {
     private val portViewModel: PortFolioViewModel by activityViewModels()
     private val marketViewModel: MarketViewModel by activityViewModels()
 
-    private val sectorDialog: MenuDialogButtonSheet by lazy {
-        val menus = arrayListOf(
-            MenuDialog(
-                key = "com.awonar.app.ui.portfolio.sector.history",
-                text = "History"
-            ),
-            MenuDialog(
-                key = "com.awonar.app.ui.portfolio.sector.orders",
-                text = "Orders"
-            )
-        )
-        MenuDialogButtonSheet.Builder()
-            .setListener(object : MenuDialogButtonSheet.MenuDialogButtonSheetListener {
-                override fun onMenuClick(menu: MenuDialog) {
-                    var title = ""
-                    when (menu.key) {
-                        "com.awonar.app.ui.portfolio.sector.orders" -> {
-                            title = "Orders"
-                            portViewModel.getOrdersPosition()
-                        }
-                        "com.awonar.app.ui.portfolio.sector.history" -> {
-                            findNavController().navigate(PortFolioFragmentDirections.actionPortFolioFragmentToHistoryFragment())
-                        }
-                        else -> {
-                        }
-                    }
-                    binding.awonarPortfolioTextTitleSection.text = title
-                }
-            })
-            .setMenus(menus)
-            .build()
-    }
+    private lateinit var sectorDialog: MenuDialogButtonSheet
 
 
     private val activityResult: ActivityResultLauncher<Intent> =
@@ -141,10 +110,43 @@ class PortFolioFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val menus = arrayListOf(
+            MenuDialog(
+                key = "com.awonar.app.ui.portfolio.sector.history",
+                text = "History"
+            ),
+            MenuDialog(
+                key = "com.awonar.app.ui.portfolio.sector.orders",
+                text = "Orders"
+            )
+        )
+        sectorDialog = MenuDialogButtonSheet.Builder()
+            .setListener(object : MenuDialogButtonSheet.MenuDialogButtonSheetListener {
+                override fun onMenuClick(menu: MenuDialog) {
+                    var title = binding.awonarPortfolioTextTitleSection.text
+                    when (menu.key) {
+                        "com.awonar.app.ui.portfolio.sector.orders" -> {
+                            title = "Orders"
+                            portViewModel.getOrdersPosition()
+                        }
+                        "com.awonar.app.ui.portfolio.sector.history" -> {
+                            findNavController().navigate(PortFolioFragmentDirections.actionPortFolioFragmentToHistoryFragment())
+                        }
+                        else -> {
+                        }
+                    }
+                    binding.awonarPortfolioTextTitleSection.text = title
+                }
+            })
+            .setMenus(menus)
+            .build()
         binding.awonarPortfolioImageChangeStyle.tag = "market"
         portViewModel.getMarketPosition()
         marketViewModel.subscribe()
         binding.awonarPortfolioTextTitleSection.setOnClickListener {
+            if (sectorDialog.isAdded) {
+                sectorDialog.dismiss()
+            }
             sectorDialog.show(childFragmentManager, MenuDialogButtonSheet.TAG)
         }
         binding.awonarPortfolioImageIconList.setOnClickListener {

@@ -76,7 +76,7 @@ fun setTotalInvested(
     copier: Copier?,
 ) {
     copier?.let {
-        textView.text = "$%.2f".format(it.investAmount)
+        textView.text = "Invested: $%.2f".format(it.investAmount)
     }
 }
 
@@ -88,7 +88,7 @@ fun setTotalProfitLossPercent(
 ) {
     copier?.let { copier ->
         var sumFloatingPL = PortfolioUtil.getFloatingPL(copier.positions ?: emptyList(), quotes)
-        textView.text = "$%.2f".format(
+        textView.text = "P/L(%s): $%.2f".format("%",
             copier.closedPositionsNetProfit.plus(sumFloatingPL).div(copier.initialInvestment)
                 .times(100)
         )
@@ -103,7 +103,7 @@ fun setTotalProfitLoss(
 ) {
     copier?.let { copier ->
         var sumFloatingPL = PortfolioUtil.getFloatingPL(copier.positions ?: emptyList(), quotes)
-        textView.text = "$%.2f".format(copier.closedPositionsNetProfit.plus(sumFloatingPL))
+        textView.text = "P/L($): $%.2f".format(copier.closedPositionsNetProfit.plus(sumFloatingPL))
     }
 }
 
@@ -115,7 +115,7 @@ fun setTotalOpen(
     quotes: Array<Quote>
 ) {
     copier?.let {
-        textView.text = "fee : ${it.totalFees} pl : ${it.closedPositionsNetProfit}"
+        textView.text = "fee : $%.2f pl : $%.2f".format(it.totalFees, it.closedPositionsNetProfit)
     }
 }
 
@@ -650,6 +650,7 @@ private fun getPositionValueByColumn(
     "TP($)" -> "$%.2f".format(item.amountTakeProfit)
     "SL(%)" -> "%.2f%s".format(item.stopLossPercent, "%")
     "TP(%)" -> "%.2f%s".format(item.takeProfitPercent, "%")
+    "Avg. Open" -> "%.2f%s".format(item.open, "%")
     else -> ""
 }
 
