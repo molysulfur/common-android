@@ -58,9 +58,6 @@ class PortFolioViewModel @Inject constructor(
     private val _subscricbeQuote = Channel<List<Int>>(capacity = Channel.CONFLATED)
     val subscricbeQuote: Flow<List<Int>> = _subscricbeQuote.receiveAsFlow()
 
-    private val _activedColumnState: MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
-    val activedColumnState: StateFlow<List<String>> get() = _activedColumnState
-
     val portfolioState: StateFlow<Portfolio?> = flow {
         getMyPortFolioUseCase(true).collect {
             this.emit(it.successOr(null))

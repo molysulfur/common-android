@@ -54,11 +54,23 @@ class PortFolioFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         launchAndRepeatWithViewLifecycle {
-            portViewModel.portfolioState.collect {
-                binding.awonarPortfolioTextTitleAvailable.text =
-                    "Available : \$%.2f".format(it?.available ?: 0f)
-                binding.awonarPortfolioTextTitleTotalAllocate.text =
-                    "Allocate : \$%.2f".format(it?.totalAllocated ?: 0f)
+            launch {
+                columnsViewModel.activedColumnState.collect {
+                    if (it.size >= 4) {
+                        binding.column1 = it[0]
+                        binding.column2 = it[1]
+                        binding.column3 = it[2]
+                        binding.column4 = it[3]
+                    }
+                }
+            }
+            launch {
+                portViewModel.portfolioState.collect {
+                    binding.awonarPortfolioTextTitleAvailable.text =
+                        "Available : \$%.2f".format(it?.available ?: 0f)
+                    binding.awonarPortfolioTextTitleTotalAllocate.text =
+                        "Allocate : \$%.2f".format(it?.totalAllocated ?: 0f)
+                }
             }
         }
         launchAndRepeatWithViewLifecycle {
@@ -94,18 +106,9 @@ class PortFolioFragment : Fragment() {
                     }
                 }
             }
-            launch {
-                portViewModel.activedColumnState.collect { newColumn ->
-                    if (newColumn.isNotEmpty()) {
-                        binding.column1 = newColumn[0]
-                        binding.column2 = newColumn[1]
-                        binding.column3 = newColumn[2]
-                        binding.column4 = newColumn[3]
-                    }
-                }
-            }
         }
         binding.viewModel = portViewModel
+        binding.columnViewModel = columnsViewModel
         binding.market = marketViewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
@@ -113,6 +116,32 @@ class PortFolioFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupDialog()
+        binding.awonarPortfolioImageChangeStyle.tag = "market"
+        columnsViewModel.setColumnType("${binding.awonarPortfolioImageChangeStyle.tag}")
+        portViewModel.getMarketPosition()
+        marketViewModel.subscribe()
+        binding.awonarPortfolioTextTitleSection.setOnClickListener {
+            if (sectorDialog.isAdded) {
+                sectorDialog.dismiss()
+            }
+            sectorDialog.show(childFragmentManager, MenuDialogButtonSheet.TAG)
+        }
+        binding.awonarPortfolioImageIconList.setOnClickListener {
+            val tag = binding.awonarPortfolioImageChangeStyle.tag
+            openActivityCompatForResult(
+                activityResult, ColumnsActivedActivity::class.java, bundleOf(
+                    ColumnsActivedActivity.EXTRA_COLUMNS_ACTIVED to tag
+                )
+            )
+        }
+        binding.awonarPortfolioImageChangeStyle.setOnClickListener {
+            toggle()
+        }
+        setColumnListener()
+    }
+
+    private fun setupDialog() {
         val menus = arrayListOf(
             MenuDialog(
                 key = "com.awonar.app.ui.portfolio.sector.history",
@@ -143,27 +172,6 @@ class PortFolioFragment : Fragment() {
             })
             .setMenus(menus)
             .build()
-        binding.awonarPortfolioImageChangeStyle.tag = "market"
-        portViewModel.getMarketPosition()
-        marketViewModel.subscribe()
-        binding.awonarPortfolioTextTitleSection.setOnClickListener {
-            if (sectorDialog.isAdded) {
-                sectorDialog.dismiss()
-            }
-            sectorDialog.show(childFragmentManager, MenuDialogButtonSheet.TAG)
-        }
-        binding.awonarPortfolioImageIconList.setOnClickListener {
-            val tag = binding.awonarPortfolioImageChangeStyle.tag
-            openActivityCompatForResult(
-                activityResult, ColumnsActivedActivity::class.java, bundleOf(
-                    ColumnsActivedActivity.EXTRA_COLUMNS_ACTIVED to tag
-                )
-            )
-        }
-        binding.awonarPortfolioImageChangeStyle.setOnClickListener {
-            toggle()
-        }
-        setColumnListener()
     }
 
     private fun toggle() {

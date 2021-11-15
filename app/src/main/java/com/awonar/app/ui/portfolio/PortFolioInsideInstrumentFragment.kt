@@ -18,7 +18,7 @@ class PortFolioInsideInstrumentFragment : Fragment() {
 
     private val portFolioViewModel: PortFolioViewModel by activityViewModels()
     private val marketViewModel: MarketViewModel by activityViewModels()
-    private val columnViewModel: ColumnsViewModel by activityViewModels()
+    private val columnsViewModel: ColumnsViewModel by activityViewModels()
 
     private val args: PortFolioInsideInstrumentFragmentArgs by navArgs()
 
@@ -33,7 +33,7 @@ class PortFolioInsideInstrumentFragment : Fragment() {
     ): View {
         launchAndRepeatWithViewLifecycle {
             launch {
-                columnViewModel.activedColumnState.collect { newColumn ->
+                columnsViewModel.activedColumnState.collect { newColumn ->
                     binding.column1 = newColumn[0]
                     binding.column2 = newColumn[1]
                     binding.column3 = newColumn[2]
@@ -43,13 +43,14 @@ class PortFolioInsideInstrumentFragment : Fragment() {
             launch {
                 portFolioViewModel.positionState.collect {
                     if (it.isNotEmpty()) {
-                        columnViewModel.getActivedColumns()
+                        columnsViewModel.getActivedColumns()
                         marketViewModel.getConversionsRate(it[0].instrumentId)
                     }
                 }
             }
         }
         binding.viewModel = portFolioViewModel
+        binding.columnsViewModel = columnsViewModel
         binding.marketViewModel = marketViewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
@@ -57,7 +58,7 @@ class PortFolioInsideInstrumentFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        columnViewModel.setColumnType("manual")
+        columnsViewModel.setColumnType("manual")
         launchAndRepeatWithViewLifecycle {
             marketViewModel.quoteSteamingState.collect { quotes ->
                 val quote = quotes.find { it.id == args.instrumentId }

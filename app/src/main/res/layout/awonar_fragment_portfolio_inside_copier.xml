@@ -10,6 +10,10 @@
             type="com.awonar.app.ui.portfolio.PortFolioViewModel" />
 
         <variable
+            name="columnsViewModel"
+            type="com.awonar.app.ui.columns.ColumnsViewModel" />
+
+        <variable
             name="marketViewModel"
             type="com.awonar.app.ui.market.MarketViewModel" />
 
@@ -85,7 +89,7 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/awonar_portfolio_inside_copier_recycler"
-                activedColumn="@{viewModel.activedColumnState}"
+                activedColumn="@{columnsViewModel.activedColumnState}"
                 quotes="@{marketViewModel.quoteSteamingState}"
                 setPositionAdapter="@{viewModel.positionOrderList}"
                 viewModel="@{viewModel}"

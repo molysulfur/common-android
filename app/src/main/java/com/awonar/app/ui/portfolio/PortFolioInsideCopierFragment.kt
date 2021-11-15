@@ -60,7 +60,7 @@ class PortFolioInsideCopierFragment : Fragment() {
             }
 
             launch {
-                portFolioViewModel.activedColumnState.collect { newColumn ->
+                columnsViewModel.activedColumnState.collect { newColumn ->
                     if (newColumn.isNotEmpty()) {
                         binding.column1 = newColumn[0]
                         binding.column2 = newColumn[1]
@@ -71,6 +71,7 @@ class PortFolioInsideCopierFragment : Fragment() {
             }
         }
         binding.viewModel = portFolioViewModel
+        binding.columnsViewModel = columnsViewModel
         binding.marketViewModel = marketViewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
