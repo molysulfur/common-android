@@ -106,4 +106,18 @@ class ConvertGroupPositionToItemUseCase @Inject constructor(
         }
         return 0f
     }
+
+    private fun calAvgOpen(buyPositions: List<Position>, sellPosition: List<Position>): Double {
+        val sumBuyOpen = buyPositions.sumOf {
+            (it.units * it.openRate).toDouble()
+        }
+        val sumSellOpen = buyPositions.sumOf {
+            (it.units * it.openRate).toDouble()
+        }
+        val sumBuyUnit = buyPositions.sumOf { it.units.toDouble() }
+        val sumSellUnit = sellPosition.sumOf { it.units.toDouble() }
+
+        return (sumBuyOpen.minus(sumSellOpen)).div((sumBuyUnit - sumSellUnit))
+    }
 }
+

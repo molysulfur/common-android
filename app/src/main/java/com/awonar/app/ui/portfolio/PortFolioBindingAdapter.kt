@@ -650,7 +650,7 @@ private fun getPositionValueByColumn(
     "TP($)" -> "$%.2f".format(item.amountTakeProfit)
     "SL(%)" -> "%.2f%s".format(item.stopLossPercent, "%")
     "TP(%)" -> "%.2f%s".format(item.takeProfitPercent, "%")
-    "Avg. Open" -> "%.2f%s".format(item.open, "%")
+    "Avg. Open" -> "%s".format(item.open)
     else -> ""
 }
 
