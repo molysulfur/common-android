@@ -28,14 +28,6 @@ class PortFolioViewModel @Inject constructor(
     private val getPositionUseCase: GetPositionUseCase,
     private val getCopierUseCase: GetCopierUseCase,
     private val getPendingOrdersUseCase: GetPendingOrdersUseCase,
-    private var getActivedManualColumnUseCase: GetActivedManualColumnUseCase,
-    private var getActivedMarketColumnUseCase: GetActivedMarketColumnUseCase,
-    private var getManualColumnListUseCase: GetManualColumnListUseCase,
-    private var getMarketColumnListUseCase: GetMarketColumnListUseCase,
-    private var updateManualColumnUseCase: UpdateManualColumnUseCase,
-    private var updateMarketColumnUseCase: UpdateMarketColumnUseCase,
-    private var resetManualColumnUseCase: ResetManualColumnUseCase,
-    private var resetMarketColumnUseCase: ResetMarketColumnUseCase,
     private var convertPositionToItemUseCase: ConvertPositionToItemUseCase,
     private var convertCopierToItemUseCase: ConvertCopierToItemUseCase,
     private var convertGroupPositionToItemUseCase: ConvertGroupPositionToItemUseCase,
@@ -55,8 +47,6 @@ class PortFolioViewModel @Inject constructor(
     private val _portfolioType = MutableStateFlow("market")
     val portfolioType: StateFlow<String> get() = _portfolioType
 
-    private val _navigateActivedColumn = Channel<String>(capacity = Channel.CONFLATED)
-    val navigateActivedColumn: Flow<String> = _navigateActivedColumn.receiveAsFlow()
     private val _navigateInsideInstrumentPortfolio =
         Channel<Pair<String, String>>(capacity = Channel.CONFLATED)
     val navigateInsideInstrumentPortfolio: Flow<Pair<String, String>> =
@@ -70,16 +60,6 @@ class PortFolioViewModel @Inject constructor(
 
     private val _activedColumnState: MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
     val activedColumnState: StateFlow<List<String>> get() = _activedColumnState
-
-    val columnState: StateFlow<List<String>> = flow {
-        val list = when (_portfolioType.value) {
-            "manual" -> getManualColumnListUseCase(_activedColumnState.value).successOr(
-                emptyList()
-            )
-            else -> getMarketColumnListUseCase(_activedColumnState.value).successOr(emptyList())
-        }
-        emit(list)
-    }.stateIn(viewModelScope, WhileViewSubscribed, emptyList())
 
     val portfolioState: StateFlow<Portfolio?> = flow {
         getMyPortFolioUseCase(true).collect {
@@ -116,8 +96,6 @@ class PortFolioViewModel @Inject constructor(
                     convertToItem(data.positions, data.copies)
                 }
             }
-            val list = getActivedMarketColumnUseCase(Unit).successOr(emptyList())
-            _activedColumnState.emit(list)
         }
     }
 
@@ -130,54 +108,9 @@ class PortFolioViewModel @Inject constructor(
         _positionOrderList.emit(itemList)
     }
 
-    fun activedColumnChange(text: String) {
-        viewModelScope.launch {
-            _navigateActivedColumn.send(text)
-        }
-    }
-
-    fun replaceActivedColumn(oldColumn: String, newColumn: String) {
-        viewModelScope.launch {
-            val activedList = _activedColumnState.value.toMutableList()
-            val index = activedList.indexOf(oldColumn)
-            activedList[index] = newColumn
-            _activedColumnState.emit(activedList)
-        }
-    }
-
-    fun saveActivedColumn() {
-        viewModelScope.launch {
-            val activedList = _activedColumnState.value.toMutableList()
-            when (_portfolioType.value) {
-                "manual" -> updateManualColumnUseCase(activedList)
-                "market" -> updateMarketColumnUseCase(activedList)
-            }
-        }
-    }
-
-    fun resetActivedColumn() {
-        viewModelScope.launch {
-            when (_portfolioType.value) {
-                "manual" -> resetManualColumnUseCase(Unit)
-                "market" -> resetMarketColumnUseCase(Unit)
-            }
-        }
-    }
-
     fun sortColumn(coloumn: String, isDesc: Boolean) {
         viewModelScope.launch {
             _sortColumnState.send(Pair(coloumn, isDesc))
-        }
-    }
-
-    fun getActivedColoumn(type: String = "market") {
-        viewModelScope.launch {
-            val actived = when (type) {
-                "market" -> getActivedMarketColumnUseCase(Unit).successOr(emptyList())
-                "manual" -> getActivedManualColumnUseCase(Unit).successOr(emptyList())
-                else -> emptyList()
-            }
-            _activedColumnState.emit(actived)
         }
     }
 

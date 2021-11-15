@@ -50,7 +50,7 @@
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".ui.setting.experience.ExperienceActivity" />
         <activity android:name=".ui.marketprofile.MarketProfileActivity" />
-        <activity android:name=".ui.portfolio.PortFolioColumnActivedActivity" />
+        <activity android:name=".ui.columns.ColumnsActivedActivity" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

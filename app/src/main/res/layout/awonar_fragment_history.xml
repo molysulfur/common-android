@@ -13,6 +13,10 @@
             type="com.awonar.app.ui.history.HistoryViewModel" />
 
         <variable
+            name="columnsViewModel"
+            type="com.awonar.app.ui.columns.ColumnsViewModel" />
+
+        <variable
             name="startValue"
             type="String" />
 
@@ -77,12 +81,25 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/awonar_history_include_allocation_header" />
 
+
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/awonar_history_button_filter"
                     style="@style/Awonar.Button.Icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/awonar_ic_filter"
+                    android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+                    android:src="@drawable/awonar_ic_calendar"
+                    app:layout_constraintBottom_toBottomOf="@+id/awonar_history_text_section"
+                    app:layout_constraintEnd_toStartOf="@+id/awonar_history_button_columns"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_history_text_section"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/awonar_history_button_columns"
+                    style="@style/Awonar.Button.Icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/awonar_ic_list"
                     app:layout_constraintBottom_toBottomOf="@+id/awonar_history_text_section"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/awonar_history_text_section" />
@@ -206,10 +223,6 @@
 
             <include
                 android:id="@+id/awonar_history_include_column"
-                column1="@{historyViewModel.columnState[0]}"
-                column2="@{historyViewModel.columnState[1]}"
-                column3="@{historyViewModel.columnState[2]}"
-                column4="@{historyViewModel.columnState[3]}"
                 layout="@layout/awonar_include_column"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -217,7 +230,7 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/awonar_history_recycler_items"
-                historyColumns="@{historyViewModel.columnState}"
+                historyColumns="@{columnsViewModel.activedColumnState}"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:background="@color/awonar_color_surface"
@@ -230,8 +243,8 @@
                 android:id="@+id/awonar_history_cash_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:layout_marginBottom="@dimen/awonar_size_margin_padding_extra_extra_small"
+                android:gravity="center"
                 android:orientation="horizontal"
                 android:padding="@dimen/awonar_size_margin_padding_normal"
                 app:layout_constraintBottom_toTopOf="@+id/awonar_history_total_fee_container">

@@ -13,6 +13,8 @@ class PortfolioActivedColumnManager @Inject constructor(
             "com.awonar.android.shared.db.hawk.hawk.portfolio.manual_actived_columns"
         const val MARKET_ACTIVED_COLUMNS =
             "com.awonar.android.shared.db.hawk.hawk.portfolio.market_actived_columns"
+        const val HISTORY_ACTIVED_COLUMNS =
+            "com.awonar.android.shared.db.hawk.hawk.history.history_actived_columns"
     }
 
     fun saveMarketColumn(activedList: List<String>) {
@@ -23,8 +25,17 @@ class PortfolioActivedColumnManager @Inject constructor(
         hawk.put(MANUAL_ACTIVED_COLUMNS, activedList)
     }
 
+    fun saveHistoryColumn(activedList: List<String>) {
+        hawk.put(HISTORY_ACTIVED_COLUMNS, activedList)
+    }
+
     fun getManual(): List<String>? = hawk.get<List<String>>(MANUAL_ACTIVED_COLUMNS)
     fun getMarket(): List<String>? = hawk.get<List<String>>(MARKET_ACTIVED_COLUMNS)
+    fun getHistory(): List<String>? = hawk.get<List<String>>(HISTORY_ACTIVED_COLUMNS)
+
+    fun clearHistory() {
+        hawk.delete(HISTORY_ACTIVED_COLUMNS)
+    }
 
     fun clearManual() {
         hawk.delete(MANUAL_ACTIVED_COLUMNS)

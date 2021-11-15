@@ -1,10 +1,15 @@
 package com.awonar.app.ui.history
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -12,9 +17,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.awonar.app.databinding.AwonarFragmentHistoryBinding
 import com.awonar.app.dialog.menu.MenuDialog
 import com.awonar.app.dialog.menu.MenuDialogButtonSheet
+import com.awonar.app.ui.columns.ColumnsActivedActivity
+import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.history.adapter.HistoryAdapter
 import com.awonar.app.ui.portfolio.PortFolioFragmentDirections
 import com.awonar.app.utils.ColorChangingUtil
+import com.molysulfur.library.extension.openActivityCompatForResult
 import com.molysulfur.library.utils.ColorUtils
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
@@ -26,10 +34,18 @@ class HistoryFragment : Fragment() {
     private lateinit var filterDialog: MenuDialogButtonSheet
 
     private val viewModel: HistoryViewModel by activityViewModels()
+    private val columnsViewModel: ColumnsViewModel by activityViewModels()
 
     private val binding: AwonarFragmentHistoryBinding by lazy {
         AwonarFragmentHistoryBinding.inflate(layoutInflater)
     }
+
+    private val activityResult: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
+            if (activityResult.resultCode == Activity.RESULT_OK) {
+                columnsViewModel.getActivedColumns()
+            }
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,6 +53,16 @@ class HistoryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         launchAndRepeatWithViewLifecycle {
+            launch {
+                columnsViewModel.activedColumnState.collect {
+                    if (it.size >= 4) {
+                        binding.awonarHistoryIncludeColumn.column1 = it[0]
+                        binding.awonarHistoryIncludeColumn.column2 = it[1]
+                        binding.awonarHistoryIncludeColumn.column3 = it[2]
+                        binding.awonarHistoryIncludeColumn.column4 = it[3]
+                    }
+                }
+            }
             launch {
                 viewModel.historiesState.collect {
                     if (binding.awonarHistoryRecyclerItems.adapter == null) {
@@ -77,12 +103,14 @@ class HistoryFragment : Fragment() {
             }
         }
         binding.historyViewModel = viewModel
+        binding.columnsViewModel = columnsViewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        columnsViewModel.setColumnType("history")
         val menus = arrayListOf(
             MenuDialog(
                 key = "7D",
@@ -143,6 +171,15 @@ class HistoryFragment : Fragment() {
             }
             filterDialog.show(childFragmentManager, MenuDialogButtonSheet.TAG)
         }
+
+        binding.awonarHistoryButtonColumns.setOnClickListener {
+            openActivityCompatForResult(
+                launcher = activityResult,
+                cls = ColumnsActivedActivity::class.java,
+                bundle = bundleOf(ColumnsActivedActivity.EXTRA_COLUMNS_ACTIVED to "history")
+            )
+        }
+
     }
 
 }

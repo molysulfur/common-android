@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.history.History
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarItemHistoryBinding
+import timber.log.Timber
 
 class HistoryViewHolder constructor(private val binding: AwonarItemHistoryBinding) :
     RecyclerView.ViewHolder(binding.root) {
@@ -12,6 +13,7 @@ class HistoryViewHolder constructor(private val binding: AwonarItemHistoryBindin
     fun bind(history: History, columns: List<String>) {
         binding.history = history
         setupImageWithTransaction(history)
+        Timber.e("${columns.size}")
         if (columns.size >= 4) {
             binding.column1 = columns[0]
             binding.column2 = columns[1]

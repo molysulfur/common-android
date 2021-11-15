@@ -5,7 +5,7 @@
 
         <variable
             name="viewModel"
-            type="com.awonar.app.ui.portfolio.PortFolioViewModel" />
+            type="com.awonar.app.ui.columns.ColumnsViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -31,7 +31,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/awonar_portfolio_column_actived_recycler_list"
-            setActivedColumn="@{viewModel.activedColumnState}"
+            setColumnsAdapter="@{viewModel.activedColumnState}"
             viewModel="@{viewModel}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

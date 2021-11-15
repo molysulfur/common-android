@@ -1,23 +1,19 @@
-package com.awonar.app.ui.portfolio
+package com.awonar.app.ui.columns
 
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.core.os.bundleOf
-import androidx.fragment.app.activityViewModels
-import androidx.navigation.findNavController
-import com.awonar.app.R
 import com.awonar.app.databinding.AwonarActivityPortfolioColumnActivedBinding
 import com.molysulfur.library.activity.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class PortFolioColumnActivedActivity : BaseActivity() {
+class ColumnsActivedActivity : BaseActivity() {
 
-    private val viewModel: PortFolioViewModel by viewModels()
+    private val viewModel: ColumnsViewModel by viewModels()
 
     companion object {
-        const val EXTRA_PORTFOLIO_TYPE =
-            "com.awonar.app.ui.portfolio.actived.column.extra.portfolio_type"
+        const val EXTRA_COLUMNS_ACTIVED =
+            "com.awonar.app.ui.columns.extra.columns.actived_type"
     }
 
     private val binding: AwonarActivityPortfolioColumnActivedBinding by lazy {
@@ -26,11 +22,10 @@ class PortFolioColumnActivedActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding.lifecycleOwner = this
         setContentView(binding.root)
-
-        intent.extras?.getString(EXTRA_PORTFOLIO_TYPE)?.let {
-            viewModel.getActivedColoumn(it)
-            viewModel.togglePortfolio(it)
+        intent.extras?.getString(EXTRA_COLUMNS_ACTIVED)?.let {
+            viewModel.setColumnType(it)
         }
     }
 }

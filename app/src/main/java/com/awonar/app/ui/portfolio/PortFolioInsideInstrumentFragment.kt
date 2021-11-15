@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import com.awonar.app.databinding.AwonarFragmentPortfolioInsideInstrumentBinding
+import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.market.MarketViewModel
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
@@ -17,6 +18,7 @@ class PortFolioInsideInstrumentFragment : Fragment() {
 
     private val portFolioViewModel: PortFolioViewModel by activityViewModels()
     private val marketViewModel: MarketViewModel by activityViewModels()
+    private val columnViewModel: ColumnsViewModel by activityViewModels()
 
     private val args: PortFolioInsideInstrumentFragmentArgs by navArgs()
 
@@ -31,7 +33,7 @@ class PortFolioInsideInstrumentFragment : Fragment() {
     ): View {
         launchAndRepeatWithViewLifecycle {
             launch {
-                portFolioViewModel.activedColumnState.collect { newColumn ->
+                columnViewModel.activedColumnState.collect { newColumn ->
                     binding.column1 = newColumn[0]
                     binding.column2 = newColumn[1]
                     binding.column3 = newColumn[2]
@@ -41,7 +43,7 @@ class PortFolioInsideInstrumentFragment : Fragment() {
             launch {
                 portFolioViewModel.positionState.collect {
                     if (it.isNotEmpty()) {
-                        portFolioViewModel.getActivedColoumn("manual")
+                        columnViewModel.getActivedColumns()
                         marketViewModel.getConversionsRate(it[0].instrumentId)
                     }
                 }
@@ -55,7 +57,7 @@ class PortFolioInsideInstrumentFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        portFolioViewModel.activedColumnChange("manual")
+        columnViewModel.setColumnType("manual")
         launchAndRepeatWithViewLifecycle {
             marketViewModel.quoteSteamingState.collect { quotes ->
                 val quote = quotes.find { it.id == args.instrumentId }

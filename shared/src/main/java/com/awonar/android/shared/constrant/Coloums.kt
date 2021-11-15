@@ -23,4 +23,14 @@ object Columns {
         "P/L"
     )
 
+    val COLUMNS_HISTORY = listOf(
+        "Invested",
+        "Open",
+        "Close",
+        "P/L",
+        "P/L%",
+        "Open Time",
+        "Close Time",
+    )
+
 }

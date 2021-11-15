@@ -1,4 +1,4 @@
-package com.awonar.app.ui.portfolio.activedadapter
+package com.awonar.app.ui.columns.activedadapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

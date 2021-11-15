@@ -14,7 +14,8 @@ import com.awonar.android.model.portfolio.Position
 import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.app.R
-import com.awonar.app.ui.portfolio.activedadapter.ActivedColumnAdapter
+import com.awonar.app.ui.columns.ColumnsViewModel
+import com.awonar.app.ui.columns.activedadapter.ActivedColumnAdapter
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioAdapter
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
 import com.awonar.app.utils.DateUtils
@@ -22,7 +23,6 @@ import com.awonar.app.widget.CopierPositionCardView
 import com.awonar.app.widget.InstrumentOrderView
 import com.awonar.app.widget.InstrumentPositionCardView
 import com.google.android.material.appbar.MaterialToolbar
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
@@ -88,7 +88,8 @@ fun setTotalProfitLossPercent(
 ) {
     copier?.let { copier ->
         var sumFloatingPL = PortfolioUtil.getFloatingPL(copier.positions ?: emptyList(), quotes)
-        textView.text = "P/L(%s): $%.2f".format("%",
+        textView.text = "P/L(%s): $%.2f".format(
+            "%",
             copier.closedPositionsNetProfit.plus(sumFloatingPL).div(copier.initialInvestment)
                 .times(100)
         )
@@ -361,44 +362,6 @@ fun setPositionAdapter(
     }
 }
 
-@BindingAdapter("setActivedColumn", "viewModel")
-fun setActivedColumn(
-    recycler: RecyclerView,
-    activedList: List<String>,
-    viewModel: PortFolioViewModel
-) {
-    if (recycler.adapter == null) {
-        recycler.apply {
-            layoutManager =
-                LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
-            adapter = ActivedColumnAdapter().apply {
-                onClick = { text ->
-                    viewModel.activedColumnChange(text)
-                }
-            }
-        }
-    }
-    (recycler.adapter as ActivedColumnAdapter).itemList = activedList
-}
-
-@BindingAdapter("setActivedColumnToolbar")
-fun setActivedColumnToolbar(toolbar: MaterialToolbar, viewModel: PortFolioViewModel) {
-    toolbar.setNavigationOnClickListener {
-        (toolbar.context as Activity).finish()
-    }
-    toolbar.setOnMenuItemClickListener {
-        when (it.itemId) {
-            R.id.awonar_toolbar_actived_column_save -> viewModel.saveActivedColumn()
-            R.id.awonar_toolbar_actived_column_reset -> viewModel.resetActivedColumn()
-        }
-        (toolbar.context as Activity).run {
-            setResult(Activity.RESULT_OK)
-            finish()
-        }
-        false
-    }
-}
-
 @BindingAdapter("setPositionOrder", "column1", "column2", "column3", "column4")
 fun setItemPositionOrderPortfolio(
     view: InstrumentOrderView,
@@ -635,7 +598,7 @@ private fun getPositionValueByColumn(
 ): String = when (column) {
     "Invested" -> "$%.2f".format(item.invested)
     "Units" -> "%.2f".format(item.units)
-    "Open" -> "%s".format(item.open)
+    "Open", "Avg. Open" -> "%s".format(item.open)
     "Current" -> "%s".format(item.current)
     "P/L($)" -> "$%.2f".format(item.profitLoss)
     "P/L(%)" -> "%.2f%s".format(item.profitLossPercent, "%")
@@ -650,7 +613,6 @@ private fun getPositionValueByColumn(
     "TP($)" -> "$%.2f".format(item.amountTakeProfit)
     "SL(%)" -> "%.2f%s".format(item.stopLossPercent, "%")
     "TP(%)" -> "%.2f%s".format(item.takeProfitPercent, "%")
-    "Avg. Open" -> "%s".format(item.open)
     else -> ""
 }
 

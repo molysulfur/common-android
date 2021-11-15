@@ -10,10 +10,10 @@ import com.awonar.app.widget.InstrumentOrderView
 fun setHistory(
     view: InstrumentOrderView,
     history: History?,
-    column1: String,
-    column2: String,
-    column3: String,
-    column4: String,
+    column1: String?,
+    column2: String?,
+    column3: String?,
+    column4: String?,
 ) {
     history?.let {
         when (it.transactionType) {
@@ -52,7 +52,14 @@ fun setHistory(
                 view.setDescription(it.master?.firstName ?: "")
                 view.setTextColumnOne("$%.2f".format(it.amount))
             }
-            else -> setPositionHistoryItem(view, history, column1, column2, column3, column4)
+            else -> setPositionHistoryItem(
+                view,
+                history,
+                column1 ?: "",
+                column2 ?: "",
+                column3 ?: "",
+                column4 ?: ""
+            )
         }
     }
 }
@@ -75,11 +82,13 @@ private fun setPositionHistoryItem(
 @BindingAdapter("historyColumns")
 fun setHistoryColumns(
     recycler: RecyclerView,
-    columns: List<String>
+    columns: List<String>?
 ) {
-    if (recycler.adapter != null) {
-        (recycler.adapter as HistoryAdapter).apply {
-            this.columns = columns
+    columns?.let {
+        if (recycler.adapter != null) {
+            (recycler.adapter as HistoryAdapter).apply {
+                this.columns = columns
+            }
         }
     }
 }
@@ -91,9 +100,9 @@ private fun setColumnPositionHistory(column: String, history: History?): String 
         "close" -> "$%.2f".format(history?.position?.closeRate)
         "p/l" -> "$%.2f".format(history?.position?.netProfit)
         "units" -> "$%.2f".format(history?.position?.units)
-        "open time" -> "$%.2f".format(DateUtils.getDate(history?.position?.openDateTime))
-        "close time" -> "$%.2f".format(DateUtils.getDate(history?.position?.closeDateTime))
-        "p/l(%)" -> "$%.2f".format(
+        "open time" -> "%s".format(DateUtils.getDate(history?.position?.openDateTime))
+        "close time" -> "%s".format(DateUtils.getDate(history?.position?.closeDateTime))
+        "p/l%" -> "$%.2f".format(
             history?.position?.netProfit?.times(100)?.div(history.amount)
         )
         else -> ""

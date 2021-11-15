@@ -18,6 +18,8 @@ import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentPortfolioBinding
 import com.awonar.app.dialog.menu.MenuDialog
 import com.awonar.app.dialog.menu.MenuDialogButtonSheet
+import com.awonar.app.ui.columns.ColumnsActivedActivity
+import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.market.MarketViewModel
 import com.molysulfur.library.extension.openActivityCompatForResult
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
@@ -29,6 +31,7 @@ class PortFolioFragment : Fragment() {
 
     private val portViewModel: PortFolioViewModel by activityViewModels()
     private val marketViewModel: MarketViewModel by activityViewModels()
+    private val columnsViewModel: ColumnsViewModel by activityViewModels()
 
     private lateinit var sectorDialog: MenuDialogButtonSheet
 
@@ -37,7 +40,7 @@ class PortFolioFragment : Fragment() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
             if (activityResult.resultCode == Activity.RESULT_OK) {
                 val tag = binding.awonarPortfolioImageChangeStyle.tag
-                portViewModel.getActivedColoumn("$tag")
+                columnsViewModel.getActivedColumns()
             }
         }
 
@@ -81,7 +84,7 @@ class PortFolioFragment : Fragment() {
         launchAndRepeatWithViewLifecycle {
             launch {
                 portViewModel.portfolioType.collect {
-                    portViewModel.getActivedColoumn(it)
+                    columnsViewModel.setColumnType(it)
                 }
             }
             launch {
@@ -152,8 +155,8 @@ class PortFolioFragment : Fragment() {
         binding.awonarPortfolioImageIconList.setOnClickListener {
             val tag = binding.awonarPortfolioImageChangeStyle.tag
             openActivityCompatForResult(
-                activityResult, PortFolioColumnActivedActivity::class.java, bundleOf(
-                    PortFolioColumnActivedActivity.EXTRA_PORTFOLIO_TYPE to tag
+                activityResult, ColumnsActivedActivity::class.java, bundleOf(
+                    ColumnsActivedActivity.EXTRA_COLUMNS_ACTIVED to tag
                 )
             )
         }

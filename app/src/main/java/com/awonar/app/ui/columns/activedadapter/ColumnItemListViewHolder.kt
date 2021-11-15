@@ -1,4 +1,4 @@
-package com.awonar.app.ui.portfolio.activedadapter
+package com.awonar.app.ui.columns.activedadapter
 
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.app.databinding.AwonarItemListBinding

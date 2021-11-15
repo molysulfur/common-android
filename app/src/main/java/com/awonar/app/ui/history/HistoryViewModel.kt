@@ -7,26 +7,24 @@ import com.awonar.android.model.history.Aggregate
 import com.awonar.android.model.history.History
 import com.awonar.android.shared.domain.history.GetAggregateUseCase
 import com.awonar.android.shared.domain.history.GetColumnHistoryUseCase
+import com.awonar.android.shared.domain.history.GetHistoryColumnUseCase
 import com.awonar.android.shared.domain.history.GetHistoryUseCase
 import com.awonar.android.shared.utils.WhileViewSubscribed
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class HistoryViewModel @Inject constructor(
-    private val getColumnHistoryUseCase: GetColumnHistoryUseCase,
     private val getAggregateUseCase: GetAggregateUseCase,
     private val getHistoryUseCase: GetHistoryUseCase
 ) : ViewModel() {
-
-    val columnState: StateFlow<List<String>> = flow {
-        val data = getColumnHistoryUseCase(Unit).successOr(emptyList())
-        emit(data)
-    }.stateIn(viewModelScope, WhileViewSubscribed, emptyList())
 
     private val _aggregateState = MutableStateFlow<Aggregate?>(null)
     val aggregateState: StateFlow<Aggregate?> = _aggregateState
@@ -43,6 +41,7 @@ class HistoryViewModel @Inject constructor(
                 _aggregateState.emit(it.successOr(null))
             }
         }
+
         viewModelScope.launch {
             getHistoryUseCase(timestamp).collect {
                 _historiesState.emit(it.successOr(PagingData.empty()))
@@ -65,4 +64,6 @@ class HistoryViewModel @Inject constructor(
             }
         }
     }
+
+
 }

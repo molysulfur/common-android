@@ -51,11 +51,12 @@
         <entry key="app/src/main/res/layout/awonar_bottom_sheet_dialog_account_type.xml" value="0.19010416666666666" />
         <entry key="app/src/main/res/layout/awonar_dialog_order.xml" value="0.16348773841961853" />
         <entry key="app/src/main/res/layout/awonar_drawer_header_main.xml" value="0.3880208333333333" />
+        <entry key="app/src/main/res/layout/awonar_fragment_column_actived.xml" value="0.1" />
         <entry key="app/src/main/res/layout/awonar_fragment_experience.xml" value="0.11875" />
         <entry key="app/src/main/res/layout/awonar_fragment_experience_financial_status.xml" value="0.2374727668845316" />
         <entry key="app/src/main/res/layout/awonar_fragment_experience_financialstatus.xml" value="0.11354166666666667" />
         <entry key="app/src/main/res/layout/awonar_fragment_forgot_password.xml" value="0.309255079006772" />
-        <entry key="app/src/main/res/layout/awonar_fragment_history.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/awonar_fragment_history.xml" value="0.16666666666666666" />
         <entry key="app/src/main/res/layout/awonar_fragment_link_account.xml" value="0.2833333333333333" />
         <entry key="app/src/main/res/layout/awonar_fragment_market.xml" value="0.1" />
         <entry key="app/src/main/res/layout/awonar_fragment_market_categoies.xml" value="0.1421875" />
@@ -69,8 +70,8 @@
         <entry key="app/src/main/res/layout/awonar_fragment_portfoilo.xml" value="0.10729166666666666" />
         <entry key="app/src/main/res/layout/awonar_fragment_portfolio.xml" value="0.11875" />
         <entry key="app/src/main/res/layout/awonar_fragment_portfolio_card_position.xml" value="0.11875" />
-        <entry key="app/src/main/res/layout/awonar_fragment_portfolio_column_actived.xml" value="0.16638655462184873" />
-        <entry key="app/src/main/res/layout/awonar_fragment_portfolio_column_list.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/awonar_fragment_portfolio_column_actived.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/awonar_fragment_portfolio_column_list.xml" value="0.15300546448087432" />
         <entry key="app/src/main/res/layout/awonar_fragment_portfolio_inside_copier.xml" value="0.23267326732673269" />
         <entry key="app/src/main/res/layout/awonar_fragment_portfolio_inside_instrument.xml" value="0.29419354838709677" />
         <entry key="app/src/main/res/layout/awonar_fragment_portfolio_manual.xml" value="0.20416666666666666" />
