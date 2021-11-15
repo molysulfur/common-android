@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.awonar.app.ui.history.HistoryViewModel" />
+
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/awonar_history_appbar_history_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:elevation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/imageView"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/awonar_history_toolbar_history_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:navigationIcon="@drawable/awonar_ic_back"
+                app:title="Trade Story" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/awoanr_history_detail_image_logo"
+                    android:layout_width="@dimen/awonar_size_avatar"
+                    android:layout_height="@dimen/awonar_size_avatar"
+                    android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+                    android:src="@drawable/awonar_placeholder_avatar"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_history_detail_text_title"
+                    style="@style/Awonar.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
+                    app:layout_constraintBottom_toBottomOf="@+id/awoanr_history_detail_image_logo"
+                    app:layout_constraintStart_toEndOf="@+id/awoanr_history_detail_image_logo"
+                    app:layout_constraintTop_toTopOf="@+id/awoanr_history_detail_image_logo"
+                    tools:text="@string/awonar_example_name" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_history_detail_text_title_invested"
+                    style="@style/Awonar.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+                    android:text="@string/awonar_text_invested"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awoanr_history_detail_image_logo" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_history_detail_text_invested"
+                    style="@style/Awonar.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+                    app:layout_constraintBottom_toBottomOf="@+id/awonar_history_detail_text_title_invested"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_history_detail_text_title_invested"
+                    tools:text="@string/awonar_example_name" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_history_detail_text_title_units"
+                    style="@style/Awonar.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+                    android:text="Units"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_history_detail_text_title_invested" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_history_detail_text_units"
+                    style="@style/Awonar.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+                    app:layout_constraintBottom_toBottomOf="@+id/awonar_history_detail_text_title_units"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_history_detail_text_title_units"
+                    tools:text="@string/awonar_example_name" />
+
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_history_detail_text_title_leverage"
+                    style="@style/Awonar.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+                    android:text="Leverage"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_history_detail_text_title_units" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_history_detail_text_leverage"
+                    style="@style/Awonar.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+                    app:layout_constraintBottom_toBottomOf="@+id/awonar_history_detail_text_title_leverage"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_history_detail_text_title_leverage"
+                    tools:text="@string/awonar_example_name" />
+
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_history_detail_text_title_open"
+                    style="@style/Awonar.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+                    android:text="Open"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_history_detail_text_title_leverage" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_history_detail_text_open"
+                    style="@style/Awonar.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+                    app:layout_constraintBottom_toTopOf="@+id/awonar_history_detail_text_open_description"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_history_detail_text_title_open"
+                    tools:text="@string/awonar_example_name" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_history_detail_text_open_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+                    app:layout_constraintBottom_toBottomOf="@+id/awonar_history_detail_text_title_open"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_history_detail_text_open"
+                    tools:text="@string/awonar_example_name" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_history_detail_text_title_close"
+                    style="@style/Awonar.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+                    android:text="Close"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_history_detail_text_title_open" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_history_detail_text_close"
+                    style="@style/Awonar.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+                    app:layout_constraintBottom_toTopOf="@+id/awonar_history_detail_text_close_description"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_history_detail_text_title_close"
+                    tools:text="@string/awonar_example_name" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_history_detail_text_close_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+                    app:layout_constraintBottom_toBottomOf="@+id/awonar_history_detail_text_title_close"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_history_detail_text_close"
+                    app:layout_constraintVertical_bias="0.0"
+                    tools:text="@string/awonar_example_name" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_history_detail_text_title_pl"
+                    style="@style/Awonar.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+                    android:text="P/L"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_history_detail_text_title_close" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_history_detail_text_pl"
+                    style="@style/Awonar.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+                    app:layout_constraintBottom_toBottomOf="@+id/awonar_history_detail_text_title_pl"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_history_detail_text_title_pl"
+                    tools:text="@string/awonar_example_name" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/awonar_history_detail_button_got_it"
+            style="@style/Awonar.Button.Default.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+            android:text="Got It"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

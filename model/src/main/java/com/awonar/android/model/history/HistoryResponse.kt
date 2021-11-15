@@ -16,15 +16,15 @@ data class HistoryResponse(
 @Parcelize
 data class History(
     @SerializedName("amount") val amount: Float,
-    @SerializedName("createdAt") val createdAt: String,
-    @SerializedName("detail") val detail: String,
-    @SerializedName("id") val id: String,
+    @SerializedName("createdAt") val createdAt: String?,
+    @SerializedName("detail") val detail: String?,
+    @SerializedName("id") val id: String?,
     @SerializedName("depositId") val depositId: String?,
     @SerializedName("masterId") val masterId: String?,
     @SerializedName("positionId") val positionId: String?,
-    @SerializedName("transactionNo") val transactionNo: String,
+    @SerializedName("transactionNo") val transactionNo: String?,
     @SerializedName("transactionType") val transactionType: Int,
-    @SerializedName("withdrawId") val withdrawId: String,
+    @SerializedName("withdrawId") val withdrawId: String?,
     @SerializedName("position") val position: Position?,
     @SerializedName("master") var master: Master?,
 ) : Parcelable

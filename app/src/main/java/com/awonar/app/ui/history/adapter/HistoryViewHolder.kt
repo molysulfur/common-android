@@ -10,15 +10,17 @@ class HistoryViewHolder constructor(private val binding: AwonarItemHistoryBindin
     RecyclerView.ViewHolder(binding.root) {
 
 
-    fun bind(history: History, columns: List<String>) {
+    fun bind(history: History, columns: List<String>, onClick: ((History) -> Unit)?) {
         binding.history = history
         setupImageWithTransaction(history)
-        Timber.e("${columns.size}")
         if (columns.size >= 4) {
             binding.column1 = columns[0]
             binding.column2 = columns[1]
             binding.column3 = columns[2]
             binding.column4 = columns[3]
+        }
+        binding.awonarInsturmentOrderItem.setOnClickListener {
+            onClick?.invoke(history)
         }
     }
 

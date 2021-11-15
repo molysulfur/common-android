@@ -32,10 +32,12 @@ class HistoryAdapter(
             notifyDataSetChanged()
         }
 
+    var onClick: ((History) -> Unit)? = null
+
     override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
         val item = getItem(position)
         item?.let {
-            holder.bind(item,columns)
+            holder.bind(item, columns,onClick)
         }
     }
 

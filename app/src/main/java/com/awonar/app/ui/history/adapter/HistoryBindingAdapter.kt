@@ -3,6 +3,7 @@ package com.awonar.app.ui.history.adapter
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.history.History
+import com.awonar.app.ui.history.HistoryViewModel
 import com.awonar.app.utils.DateUtils
 import com.awonar.app.widget.InstrumentOrderView
 
@@ -48,7 +49,7 @@ fun setHistory(
                 view.setTextColumnOne("$%.2f".format(it.amount))
             }
             11 -> {
-                view.setTitle(it.detail)
+                view.setTitle(it.detail ?: "")
                 view.setDescription(it.master?.firstName ?: "")
                 view.setTextColumnOne("$%.2f".format(it.amount))
             }
@@ -82,7 +83,7 @@ private fun setPositionHistoryItem(
 @BindingAdapter("historyColumns")
 fun setHistoryColumns(
     recycler: RecyclerView,
-    columns: List<String>?
+    columns: List<String>?,
 ) {
     columns?.let {
         if (recycler.adapter != null) {

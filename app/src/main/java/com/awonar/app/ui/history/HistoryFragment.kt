@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.awonar.app.databinding.AwonarFragmentHistoryBinding
@@ -27,6 +28,7 @@ import com.molysulfur.library.utils.ColorUtils
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.*
 
 class HistoryFragment : Fragment() {
@@ -67,7 +69,12 @@ class HistoryFragment : Fragment() {
                 viewModel.historiesState.collect {
                     if (binding.awonarHistoryRecyclerItems.adapter == null) {
                         binding.awonarHistoryRecyclerItems.apply {
-                            adapter = HistoryAdapter()
+                            adapter = HistoryAdapter().apply {
+                                onClick = { history ->
+                                    viewModel.addHistoryDetail(history)
+                                    findNavController().navigate(HistoryFragmentDirections.actionHistoryFragmentToHistoryDetailFragment())
+                                }
+                            }
                             layoutManager = LinearLayoutManager(
                                 requireContext(),
                                 LinearLayoutManager.VERTICAL,
