@@ -34,6 +34,9 @@ class ColumnsViewModel @Inject constructor(
     private var getActivedMarketColumnUseCase: GetActivedMarketColumnUseCase
 ) : ViewModel() {
 
+    private val _sortColumnState = Channel<Pair<String, Boolean>>(capacity = Channel.CONFLATED)
+    val sortColumnState: Flow<Pair<String, Boolean>> = _sortColumnState.receiveAsFlow()
+
     private val _navigateActivedColumn = Channel<String>(capacity = Channel.CONFLATED)
     val navigateActivedColumn: Flow<String> = _navigateActivedColumn.receiveAsFlow()
     private val _activedColumnState = MutableStateFlow<List<String>>(emptyList())
@@ -120,4 +123,9 @@ class ColumnsViewModel @Inject constructor(
         }
     }
 
+    fun sortColumn(coloumn: String, isDesc: Boolean) {
+        viewModelScope.launch {
+            _sortColumnState.send(Pair(coloumn, isDesc))
+        }
+    }
 }

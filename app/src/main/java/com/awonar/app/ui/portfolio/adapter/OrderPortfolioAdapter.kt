@@ -217,6 +217,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         "Net Invest" -> item.netInvested
         "CSL" -> item.copyStopLoss
         "CSL(%)" -> item.copyStopLossPercent
+        "Avg. Open" -> item.avgOpen
         else -> 0f
     }
 
@@ -241,6 +242,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         "TP($)" -> item.amountTakeProfit
         "SL(%)" -> item.stopLossPercent
         "TP(%)" -> item.takeProfitPercent
+        "Avg. Open" -> item.open
         else -> 0f
     }
 

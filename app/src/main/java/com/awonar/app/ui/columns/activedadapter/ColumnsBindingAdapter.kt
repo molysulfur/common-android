@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.app.R
 import com.awonar.app.ui.columns.ColumnsViewModel
+import com.awonar.app.ui.portfolio.adapter.OrderPortfolioAdapter
 import com.google.android.material.appbar.MaterialToolbar
 
 @BindingAdapter("setActivedColumnToolbar")

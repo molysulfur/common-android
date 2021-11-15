@@ -52,9 +52,6 @@ class PortFolioViewModel @Inject constructor(
     val navigateInsideInstrumentPortfolio: Flow<Pair<String, String>> =
         _navigateInsideInstrumentPortfolio.receiveAsFlow()
 
-    private val _sortColumnState = Channel<Pair<String, Boolean>>(capacity = Channel.CONFLATED)
-    val sortColumnState: Flow<Pair<String, Boolean>> = _sortColumnState.receiveAsFlow()
-
     private val _subscricbeQuote = Channel<List<Int>>(capacity = Channel.CONFLATED)
     val subscricbeQuote: Flow<List<Int>> = _subscricbeQuote.receiveAsFlow()
 
@@ -103,12 +100,6 @@ class PortFolioViewModel @Inject constructor(
         val copierItems = convertCopierToItemUseCase(copies).successOr(emptyList())
         itemList.addAll(copierItems)
         _positionOrderList.emit(itemList)
-    }
-
-    fun sortColumn(coloumn: String, isDesc: Boolean) {
-        viewModelScope.launch {
-            _sortColumnState.send(Pair(coloumn, isDesc))
-        }
     }
 
     fun togglePortfolio(type: String) {

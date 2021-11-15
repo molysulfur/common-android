@@ -21,6 +21,7 @@ import com.awonar.app.dialog.menu.MenuDialogButtonSheet
 import com.awonar.app.ui.columns.ColumnsActivedActivity
 import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.market.MarketViewModel
+import com.awonar.app.ui.portfolio.adapter.OrderPortfolioAdapter
 import com.molysulfur.library.extension.openActivityCompatForResult
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
@@ -39,7 +40,6 @@ class PortFolioFragment : Fragment() {
     private val activityResult: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
             if (activityResult.resultCode == Activity.RESULT_OK) {
-                val tag = binding.awonarPortfolioImageChangeStyle.tag
                 columnsViewModel.getActivedColumns()
             }
         }
@@ -54,6 +54,13 @@ class PortFolioFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         launchAndRepeatWithViewLifecycle {
+            launch {
+                columnsViewModel.sortColumnState.collect { sort ->
+                    (binding.awonarPortfolioNavigationHostPortfolio.adapter as? OrderPortfolioAdapter)?.let {
+                        it.sortColumn(sort.first, sort.second)
+                    }
+                }
+            }
             launch {
                 columnsViewModel.activedColumnState.collect {
                     if (it.size >= 4) {
@@ -72,28 +79,26 @@ class PortFolioFragment : Fragment() {
                         "Allocate : \$%.2f".format(it?.totalAllocated ?: 0f)
                 }
             }
-        }
-        launchAndRepeatWithViewLifecycle {
-            portViewModel.navigateInsideInstrumentPortfolio.collect {
-                when (it.second) {
-                    "instrument" -> findNavController()
-                        .navigate(
-                            PortFolioFragmentDirections.actionPortFolioFragmentToPortFolioInsideInstrumentPortfolioFragment()
-                                .apply {
-                                    instrumentId = it.first.toInt()
-                                }
-                        )
-                    "copier" -> findNavController()
-                        .navigate(
-                            PortFolioFragmentDirections.actionPortFolioFragmentToPortFolioInsideCopierPortfolioFragment(
-                                it.first
+            launch {
+                portViewModel.navigateInsideInstrumentPortfolio.collect {
+                    when (it.second) {
+                        "instrument" -> findNavController()
+                            .navigate(
+                                PortFolioFragmentDirections.actionPortFolioFragmentToPortFolioInsideInstrumentPortfolioFragment()
+                                    .apply {
+                                        instrumentId = it.first.toInt()
+                                    }
                             )
-                        )
-                }
+                        "copier" -> findNavController()
+                            .navigate(
+                                PortFolioFragmentDirections.actionPortFolioFragmentToPortFolioInsideCopierPortfolioFragment(
+                                    it.first
+                                )
+                            )
+                    }
 
+                }
             }
-        }
-        launchAndRepeatWithViewLifecycle {
             launch {
                 portViewModel.portfolioType.collect {
                     binding.awonarPortfolioImageChangeStyle.tag = it
@@ -224,7 +229,7 @@ class PortFolioFragment : Fragment() {
         binding.awonarPortfolioIncludeColumn.apply {
             awonarIncludeTextColumnOne.setOnClickListener {
                 val tag = awonarIncludeTextColumnOne.tag
-                portViewModel.sortColumn(
+                columnsViewModel.sortColumn(
                     awonarIncludeTextColumnOne.text.toString(),
                     tag == "DESC"
                 )
@@ -232,7 +237,7 @@ class PortFolioFragment : Fragment() {
             }
             awonarIncludeTextColumnTwo.setOnClickListener {
                 val tag = awonarIncludeTextColumnTwo.tag
-                portViewModel.sortColumn(
+                columnsViewModel.sortColumn(
                     awonarIncludeTextColumnTwo.text.toString(),
                     tag == "DESC"
                 )
@@ -240,7 +245,7 @@ class PortFolioFragment : Fragment() {
             }
             awonarIncludeTextColumnThree.setOnClickListener {
                 val tag = awonarIncludeTextColumnThree.tag
-                portViewModel.sortColumn(
+                columnsViewModel.sortColumn(
                     awonarIncludeTextColumnThree.text.toString(),
                     tag == "DESC"
                 )
@@ -248,7 +253,7 @@ class PortFolioFragment : Fragment() {
             }
             awonarIncludeTextColumnFour.setOnClickListener {
                 val tag = awonarIncludeTextColumnFour.tag
-                portViewModel.sortColumn(
+                columnsViewModel.sortColumn(
                     awonarIncludeTextColumnFour.text.toString(),
                     tag == "DESC"
                 )
