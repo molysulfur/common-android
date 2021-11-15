@@ -63,6 +63,8 @@ class HistoryDetailFragment : Fragment() {
                     )
                 )
             }
+            binding.awonarHistoryDetailTextFee.text =
+                "ID #%s Total fees $%.2f".format(history.id, history.position?.totalFees)
         }
     }
 

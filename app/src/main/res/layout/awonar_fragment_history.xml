@@ -77,11 +77,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/awonar_size_margin_padding_normal"
-                    android:drawableEnd="@drawable/awonar_ic_expand"
+                    android:drawableEnd="@drawable/awonar_ic_dropdown_white"
+                    android:drawableTint="@color/black"
                     android:text="@string/awonar_title_history"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/awonar_history_include_allocation_header" />
-
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/awonar_history_button_filter"
@@ -90,6 +90,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
                     android:src="@drawable/awonar_ic_calendar"
+                    android:tint="@color/awonar_color_primary"
                     app:layout_constraintBottom_toBottomOf="@+id/awonar_history_button_columns"
                     app:layout_constraintEnd_toStartOf="@+id/awonar_history_button_columns"
                     app:layout_constraintTop_toTopOf="@+id/awonar_history_button_columns"
@@ -101,10 +102,24 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+                    android:src="@drawable/awonar_ic_setting"
+                    android:tint="@color/awonar_color_primary"
+                    app:layout_constraintBottom_toBottomOf="@+id/awonar_history_text_section"
+                    app:layout_constraintEnd_toStartOf="@+id/awonar_history_button_type"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_history_text_section" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/awonar_history_button_type"
+                    style="@style/Awonar.Button.Icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
                     android:src="@drawable/awonar_ic_list"
+                    android:tint="@color/awonar_color_primary"
                     app:layout_constraintBottom_toBottomOf="@+id/awonar_history_text_section"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/awonar_history_text_section" />
+
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/awonar_history_text_start_value"

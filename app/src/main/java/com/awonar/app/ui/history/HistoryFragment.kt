@@ -118,6 +118,28 @@ class HistoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         columnsViewModel.setColumnType("history")
+        setupDialog()
+        binding.awonarHistoryButtonFilter.setOnClickListener {
+            if (filterDialog.isAdded) {
+                filterDialog.dismiss()
+            }
+            filterDialog.show(childFragmentManager, MenuDialogButtonSheet.TAG)
+        }
+        binding.awonarHistoryButtonColumns.setOnClickListener {
+            openActivityCompatForResult(
+                launcher = activityResult,
+                cls = ColumnsActivedActivity::class.java,
+                bundle = bundleOf(ColumnsActivedActivity.EXTRA_COLUMNS_ACTIVED to "history")
+            )
+        }
+
+        binding.awonarHistoryButtonType.setOnClickListener {
+
+        }
+
+    }
+
+    private fun setupDialog() {
         val menus = arrayListOf(
             MenuDialog(
                 key = "7D",
@@ -172,21 +194,6 @@ class HistoryFragment : Fragment() {
             })
             .setMenus(menus)
             .build()
-        binding.awonarHistoryButtonFilter.setOnClickListener {
-            if (filterDialog.isAdded) {
-                filterDialog.dismiss()
-            }
-            filterDialog.show(childFragmentManager, MenuDialogButtonSheet.TAG)
-        }
-
-        binding.awonarHistoryButtonColumns.setOnClickListener {
-            openActivityCompatForResult(
-                launcher = activityResult,
-                cls = ColumnsActivedActivity::class.java,
-                bundle = bundleOf(ColumnsActivedActivity.EXTRA_COLUMNS_ACTIVED to "history")
-            )
-        }
-
     }
 
 }

@@ -121,7 +121,7 @@ class InstrumentOrderView : BaseViewGroup {
             columnOneColor > 0 -> binding.awonarInstrumentOrderTextValueColumnOne.setTextColor(
                 ContextCompat.getColor(
                     context,
-                    columnTwoColor
+                    columnOneColor
                 )
             )
             else -> binding.awonarInstrumentOrderTextValueColumnOne.setTextColor(

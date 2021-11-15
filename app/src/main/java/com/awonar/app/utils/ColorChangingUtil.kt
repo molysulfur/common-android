@@ -6,6 +6,13 @@ import com.awonar.app.R
 
 object ColorChangingUtil {
 
+    fun getTextColorChange(change: Float): Int = when {
+        change < 0f -> R.color.awonar_color_orange
+        change == 0f -> R.color.awonar_color_gray
+        change > 0f -> R.color.awonar_color_green
+        else -> 0
+    }
+
 
     fun getTextColorChange(context: Context, change: Float): Int = when {
         change < 0f -> ContextCompat.getColor(

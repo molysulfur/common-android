@@ -1,9 +1,12 @@
 package com.awonar.app.ui.history.adapter
 
+import android.content.Context
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.history.History
+import com.awonar.app.R
 import com.awonar.app.ui.history.HistoryViewModel
+import com.awonar.app.utils.ColorChangingUtil
 import com.awonar.app.utils.DateUtils
 import com.awonar.app.widget.InstrumentOrderView
 
@@ -73,11 +76,17 @@ private fun setPositionHistoryItem(
     column3: String,
     column4: String,
 ) {
+    // set text
     view.setTitle("${if (history.position?.isBuy == true) "BUY" else "SELL"} ${history.position?.instrument?.symbol}")
     view.setTextColumnOne(setColumnPositionHistory(column1, history))
     view.setTextColumnTwo(setColumnPositionHistory(column2, history))
     view.setTextColumnThree(setColumnPositionHistory(column3, history))
     view.setTextColumnFour(setColumnPositionHistory(column4, history))
+    // set color
+    view.setTextColorColumnOne(getColumnColor(column1, history))
+    view.setTextColorColumnTwo(getColumnColor(column2, history))
+    view.setTextColorColumnThree(getColumnColor(column3, history))
+    view.setTextColorColumnFour(getColumnColor(column4, history))
 }
 
 @BindingAdapter("historyColumns")
@@ -94,6 +103,12 @@ fun setHistoryColumns(
     }
 }
 
+private fun getColumnColor(column: String, history: History?): Int =
+    when (column.lowercase()) {
+        "p/l", "p/l%" -> ColorChangingUtil.getTextColorChange(history?.position?.netProfit ?: 0f)
+        else -> R.color.awonar_color_text_primary
+    }
+
 private fun setColumnPositionHistory(column: String, history: History?): String =
     when (column.lowercase()) {
         "invested" -> "$%.2f".format(history?.amount)
@@ -103,8 +118,8 @@ private fun setColumnPositionHistory(column: String, history: History?): String 
         "units" -> "$%.2f".format(history?.position?.units)
         "open time" -> "%s".format(DateUtils.getDate(history?.position?.openDateTime))
         "close time" -> "%s".format(DateUtils.getDate(history?.position?.closeDateTime))
-        "p/l%" -> "$%.2f".format(
-            history?.position?.netProfit?.times(100)?.div(history.amount)
+        "p/l%" -> "%.2f%s".format(
+            history?.position?.netProfit?.times(100)?.div(history.amount), "%"
         )
         else -> ""
     }
