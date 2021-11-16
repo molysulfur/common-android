@@ -2,9 +2,7 @@ package com.awonar.app.ui.portfolio
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.awonar.android.model.portfolio.ConvertPositionItemWithCopier
-import com.awonar.android.model.portfolio.Copier
-import com.awonar.android.model.portfolio.Portfolio
+import com.awonar.android.model.portfolio.*
 import com.awonar.android.shared.domain.portfolio.*
 import com.awonar.android.shared.utils.WhileViewSubscribed
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
@@ -16,7 +14,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.awonar.android.model.portfolio.Position
 import com.awonar.app.domain.portfolio.*
 import timber.log.Timber
 
@@ -193,11 +190,14 @@ class PortFolioViewModel @Inject constructor(
     fun getExposure(type: String? = null) {
         viewModelScope.launch {
             when (type) {
-                "stocks", "currencies", "crypto" -> getPieChartInstrumentExposureUseCase(Unit)
+                "stocks", "currencies", "crypto" -> getPieChartInstrumentExposureUseCase(type)
                 else -> getPieChartExposureUseCase(Unit)
             }.collect {
                 val data = it.successOr(emptyMap())
-                val items = convertExposureToPieChartUseCase(data).successOr(emptyList())
+                val items = convertExposureToPieChartUseCase( PieChartRequest(
+                    data,
+                    type in arrayListOf( "stocks", "currencies", "crypto")
+                )).successOr(emptyList())
                 _positionOrderList.emit(items.toMutableList())
             }
         }
@@ -211,7 +211,12 @@ class PortFolioViewModel @Inject constructor(
                 else -> getPieChartAllocateUseCase(Unit)
             }.collect {
                 val data = it.successOr(emptyMap())
-                val items = convertAllocateToPieChartUseCase(data).successOr(emptyList())
+                val items = convertAllocateToPieChartUseCase(
+                    PieChartRequest(
+                        data,
+                        type in arrayListOf("stocks", "currencies", "crypto")
+                    )
+                ).successOr(emptyList())
                 _positionOrderList.emit(items.toMutableList())
             }
         }
