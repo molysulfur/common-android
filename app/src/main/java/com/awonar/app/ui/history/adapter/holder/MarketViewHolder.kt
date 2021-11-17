@@ -1,27 +1,17 @@
-package com.awonar.app.ui.history.adapter
+package com.awonar.app.ui.history.adapter.holder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.history.History
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarItemHistoryBinding
-import timber.log.Timber
+import com.awonar.app.ui.history.adapter.HistoryItem
 
-class HistoryViewHolder constructor(private val binding: AwonarItemHistoryBinding) :
+class MarketViewHolder constructor(private val binding: AwonarItemHistoryBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
+    fun bind(item: HistoryItem.MarketItem, columns: List<String>, onClick: ((History) -> Unit)?) {
+        val history = item.market
 
-    fun bind(history: History, columns: List<String>, onClick: ((History) -> Unit)?) {
-        binding.history = history
-        setupImageWithTransaction(history)
-        if (columns.size >= 4) {
-            binding.column1 = columns[0]
-            binding.column2 = columns[1]
-            binding.column3 = columns[2]
-            binding.column4 = columns[3]
-        }
-        binding.awonarInsturmentOrderItem.setOnClickListener {
-            onClick?.invoke(history)
-        }
     }
 
     private fun setupImageWithTransaction(history: History) {

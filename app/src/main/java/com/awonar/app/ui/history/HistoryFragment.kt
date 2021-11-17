@@ -12,8 +12,12 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.awonar.app.databinding.AwonarFragmentHistoryBinding
 import com.awonar.app.dialog.menu.MenuDialog
@@ -21,12 +25,16 @@ import com.awonar.app.dialog.menu.MenuDialogButtonSheet
 import com.awonar.app.ui.columns.ColumnsActivedActivity
 import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.history.adapter.HistoryAdapter
+import com.awonar.app.ui.history.adapter.HistoryItem
 import com.awonar.app.ui.portfolio.PortFolioFragmentDirections
 import com.awonar.app.utils.ColorChangingUtil
 import com.molysulfur.library.extension.openActivityCompatForResult
 import com.molysulfur.library.utils.ColorUtils
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
@@ -74,6 +82,9 @@ class HistoryFragment : Fragment() {
                                     viewModel.addHistoryDetail(history)
                                     findNavController().navigate(HistoryFragmentDirections.actionHistoryFragmentToHistoryDetailFragment())
                                 }
+                                onLoad = {
+                                    viewModel.getHistory(page = it)
+                                }
                             }
                             layoutManager = LinearLayoutManager(
                                 requireContext(),
@@ -83,7 +94,8 @@ class HistoryFragment : Fragment() {
                         }
                     }
                     (binding.awonarHistoryRecyclerItems.adapter as HistoryAdapter).apply {
-                        submitData(it)
+
+                        itemLists = it.toMutableList()
                     }
                 }
             }
@@ -134,7 +146,10 @@ class HistoryFragment : Fragment() {
         }
 
         binding.awonarHistoryButtonType.setOnClickListener {
-
+            val prev7Day = Calendar.getInstance()
+            prev7Day.add(Calendar.DATE, -7)
+            val timestamp = prev7Day.timeInMillis / 1000
+            viewModel.getMarketHistory(timestamp)
         }
 
     }

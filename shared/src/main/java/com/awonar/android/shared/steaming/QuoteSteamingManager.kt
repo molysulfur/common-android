@@ -9,10 +9,8 @@ import org.json.JSONObject
 import timber.log.Timber
 import java.lang.Exception
 import java.util.*
-import java.util.Date.from
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.collections.ArrayList
 
 interface QuoteSteamingListener {
     fun marketStatusCallback(event: String, data: Any)
@@ -81,7 +79,7 @@ class QuoteSteamingManager @Inject constructor(private val networkClient: Networ
     }
 
     private fun prase(message: String) {
-        Timber.d(message)
+//        Timber.d(message)
         val obj = JSONObject(message)
         val event = obj.get(EVENT_KEY).toString()
         val data = obj.get(DATA_KEY).toString()

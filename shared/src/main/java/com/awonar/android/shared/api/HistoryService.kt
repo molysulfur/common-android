@@ -2,6 +2,8 @@ package com.awonar.android.shared.api
 
 import com.awonar.android.model.history.Aggregate
 import com.awonar.android.model.history.HistoryResponse
+import com.awonar.android.model.history.MarketHistory
+import com.awonar.android.model.history.MarketHistoryResponse
 import com.awonar.android.shared.constrant.BuildConfig
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -11,12 +13,19 @@ import retrofit2.http.Query
 
 interface HistoryService {
 
-    @GET("/api/v1/history")
-    suspend fun getHistory(
+    @GET("/api/v1/history/market")
+    fun getMarketHistory(
         @Query("limit") limit: Int = 10,
         @Query("page") page: Int = 1,
         @Query("startDate") startDate: Long,
-    ): HistoryResponse
+    ): MarketHistoryResponse
+
+    @GET("/api/v1/history")
+    fun getHistory(
+        @Query("limit") limit: Int = 10,
+        @Query("page") page: Int = 1,
+        @Query("startDate") startDate: Long,
+    ): Call<HistoryResponse>
 
     @GET("/api/v1/history/aggregate")
     fun getAggregate(@Query("startDate") startDate: Long): Call<Aggregate>

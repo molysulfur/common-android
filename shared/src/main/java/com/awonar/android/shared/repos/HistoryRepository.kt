@@ -1,46 +1,47 @@
 package com.awonar.android.shared.repos
 
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
-import com.awonar.android.model.history.Aggregate
-import com.awonar.android.model.history.History
+import androidx.paging.*
+import com.awonar.android.model.history.*
 import com.awonar.android.shared.api.HistoryService
 import com.awonar.android.shared.constrant.Columns.COLUMNS_HISTORY
 import com.awonar.android.shared.constrant.Columns.DEFAULT_COLUMN_HISTORY
-import com.awonar.android.shared.data.HistoryPagingSource
 import com.awonar.android.shared.db.hawk.PortfolioActivedColumnManager
 import com.molysulfur.library.network.DirectNetworkFlow
 import com.molysulfur.library.result.Result
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class HistoryRepository @Inject constructor(
-    private val historyService: HistoryService,
+    val historyService: HistoryService,
     private val preference: PortfolioActivedColumnManager
 ) {
 
-    companion object {
-        private const val NETWORK_PAGE_SIZE = 10
-    }
+    fun getHistory(request: HistoryRequest): Flow<Result<HistoryPaging?>> =
+        object : DirectNetworkFlow<Long, HistoryPaging, HistoryResponse>() {
+            override fun createCall(): Response<HistoryResponse> =
+                historyService.getHistory(startDate = request.timestamp, page = request.page)
+                    .execute()
 
-    fun getHistory(request: Long): Flow<PagingData<History>> {
-        return Pager(
-            config = PagingConfig(enablePlaceholders = false, pageSize = NETWORK_PAGE_SIZE),
-            pagingSourceFactory = {
-                HistoryPagingSource(
-                    historyService,
-                    request
+            override fun convertToResultType(response: HistoryResponse): HistoryPaging {
+                response.histories?.forEach { history ->
+                    val master = response.masters?.find { it.id == history.masterId }
+                    history.master = master
+                }
+
+                return HistoryPaging(
+                    response.histories ?: emptyList(),
+                    if (response.meta.hasMore) response.meta.page.plus(1) else 0
                 )
             }
-        ).flow
-    }
 
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+
+        }.asFlow()
 
     fun getAggregate(parameters: Long): Flow<Result<Aggregate?>> =
         object : DirectNetworkFlow<Long, Aggregate, Aggregate>() {
@@ -69,5 +70,9 @@ class HistoryRepository @Inject constructor(
     fun resetColumn(): List<String> {
         preference.clearHistory()
         return getActivedColumn()
+    }
+
+    fun getMarketHistory(request: Long): Flow<PagingData<MarketHistory>> {
+        TODO("")
     }
 }
