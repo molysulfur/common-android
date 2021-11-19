@@ -2,10 +2,10 @@ package com.awonar.app.ui.history.adapter
 
 import android.os.Parcelable
 import com.awonar.android.model.history.History
-import com.awonar.android.model.history.MarketHistory
+import com.awonar.android.model.portfolio.Position
+import com.awonar.android.model.user.Master
 import com.awonar.app.ui.history.adapter.HistoryType.LOADMORE_HISTORY
-import com.awonar.app.ui.history.adapter.HistoryType.MANUAL_HISTORY
-import com.awonar.app.ui.history.adapter.HistoryType.MARKET_HISTORY
+import com.awonar.app.ui.history.adapter.HistoryType.POSITION_HISTORY
 import kotlinx.parcelize.Parcelize
 
 
@@ -13,19 +13,26 @@ sealed class HistoryItem(
     val type: Int,
 ) : Parcelable {
 
+
     @Parcelize
-    data class ManualItem(
-        val history: History
-    ) : HistoryItem(MANUAL_HISTORY)
+    data class PositionItem(
+        val id: String? = null,
+        val invested: Float = 0f,
+        val pl: Float = 0f,
+        val plPercent: Float = 0f,
+        val fee: Float = 0f,
+        val endValue: Float = 0f,
+        val detail: String? = null,
+        val transactionType: Int = 0,
+        val picture: String? = null,
+        val master: Master? = null,
+        val history: History? = null,
+        val positionType: String? = null
+    ) : HistoryItem(POSITION_HISTORY)
 
     @Parcelize
     data class LoadMoreItem(
         val page: Int
     ) : HistoryItem(LOADMORE_HISTORY)
-
-    @Parcelize
-    data class MarketItem(
-        val market: MarketHistory
-    ) : HistoryItem(MARKET_HISTORY)
 
 }

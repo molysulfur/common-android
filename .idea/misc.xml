@@ -58,6 +58,7 @@
         <entry key="app/src/main/res/layout/awonar_fragment_forgot_password.xml" value="0.309255079006772" />
         <entry key="app/src/main/res/layout/awonar_fragment_history.xml" value="0.5" />
         <entry key="app/src/main/res/layout/awonar_fragment_history_detail.xml" value="0.35625" />
+        <entry key="app/src/main/res/layout/awonar_fragment_history_inside_instrument.xml" value="0.11510416666666666" />
         <entry key="app/src/main/res/layout/awonar_fragment_link_account.xml" value="0.2833333333333333" />
         <entry key="app/src/main/res/layout/awonar_fragment_market.xml" value="0.1" />
         <entry key="app/src/main/res/layout/awonar_fragment_market_categoies.xml" value="0.1421875" />

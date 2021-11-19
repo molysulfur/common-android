@@ -13,6 +13,7 @@ data class MarketHistoryResponse(
 
 @Parcelize
 data class MarketHistory(
+    @SerializedName("picture") val picture: String?,
     @SerializedName("endEquity") val endEquity: Float,
     @SerializedName("instrumentId") val instrumentId: Int?,
     @SerializedName("symbol") val symbol: String?,
@@ -20,6 +21,6 @@ data class MarketHistory(
     @SerializedName("totalInvested") val totalInvested: Float,
     @SerializedName("totalNetProfit") val totalNetProfit: Float,
     @SerializedName("totalPositions") val totalPositions: Float,
-    @SerializedName("user") val user: Master?,
+    @SerializedName("user") val master: Master?,
 ) : Parcelable
 

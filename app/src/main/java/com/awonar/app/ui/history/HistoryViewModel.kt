@@ -8,6 +8,7 @@ import com.awonar.android.model.history.HistoryRequest
 import com.awonar.android.shared.domain.history.GetAggregateUseCase
 import com.awonar.android.shared.domain.history.GetHistoryUseCase
 import com.awonar.android.shared.domain.history.GetMarketHistoryUseCase
+import com.awonar.app.domain.history.ConvertHistoryToItemUseCase
 import com.awonar.app.ui.history.adapter.HistoryItem
 import com.awonar.app.ui.history.adapter.HistoryType
 import com.molysulfur.library.result.successOr
@@ -21,7 +22,8 @@ import javax.inject.Inject
 class HistoryViewModel @Inject constructor(
     private val getAggregateUseCase: GetAggregateUseCase,
     private val getHistoryUseCase: GetHistoryUseCase,
-    private val getMarketHistoryUseCase: GetMarketHistoryUseCase
+    private val getMarketHistoryUseCase: GetMarketHistoryUseCase,
+    private val convertHistoryToItemUseCase: ConvertHistoryToItemUseCase
 ) : ViewModel() {
 
     private val _aggregateState = MutableStateFlow<Aggregate?>(null)
@@ -33,18 +35,19 @@ class HistoryViewModel @Inject constructor(
     private val _historyDetailState = MutableStateFlow<History?>(null)
     val historyDetailState: StateFlow<History?> = _historyDetailState
 
-    private var timeStamp: MutableStateFlow<Long>
+    private var _timeStamp: MutableStateFlow<Long>
+    var timeStamp: StateFlow<Long>
 
     init {
         val prev7Day = Calendar.getInstance()
         prev7Day.add(Calendar.DATE, -7)
-        timeStamp = MutableStateFlow(prev7Day.timeInMillis / 1000)
-
+        _timeStamp = MutableStateFlow(prev7Day.timeInMillis / 1000)
+        timeStamp = _timeStamp
         viewModelScope.launch {
-            getAggregate(timeStamp.value)
+            getAggregate(_timeStamp.value)
         }
 
-        getHistory(timestamp = timeStamp.value)
+        getHistory(timestamp = _timeStamp.value)
     }
 
     fun getAggregate(timestamp: Long) {
@@ -57,11 +60,12 @@ class HistoryViewModel @Inject constructor(
 
     fun getHistory(page: Int = 1) {
         viewModelScope.launch {
-            getHistoryUseCase(HistoryRequest(timeStamp.value, page)).collect { result ->
+            getHistoryUseCase(HistoryRequest(_timeStamp.value, page)).collect { result ->
                 val data = result.successOr(null)
-                val itemList: MutableList<HistoryItem> = data?.history?.map {
-                    HistoryItem.ManualItem(it)
-                }?.toMutableList() ?: mutableListOf()
+                val itemList: MutableList<HistoryItem> =
+                    convertHistoryToItemUseCase(
+                        data?.history?.toMutableList() ?: mutableListOf()
+                    ).successOr(mutableListOf())
                 val newPage = data?.page ?: 0
                 if (newPage > 0) {
                     itemList.add(HistoryItem.LoadMoreItem(newPage))
@@ -74,13 +78,13 @@ class HistoryViewModel @Inject constructor(
     fun getHistory(timestamp: Long) {
         viewModelScope.launch {
             _historiesState.emit(emptyList())
-            timeStamp.emit(timestamp)
-            getHistoryUseCase(HistoryRequest(timeStamp.value)).collect {
-                val result = it.successOr(null)
-                val itemList: MutableList<HistoryItem> = result?.history?.map {
-                    HistoryItem.ManualItem(it)
-                }?.toMutableList() ?: mutableListOf()
-                val page = result?.page ?: 0
+            _timeStamp.emit(timestamp)
+            getHistoryUseCase(HistoryRequest(_timeStamp.value)).collect { result ->
+                val data = result.successOr(null)
+                val itemList = convertHistoryToItemUseCase(
+                    data?.history?.toMutableList() ?: mutableListOf()
+                ).successOr(mutableListOf())
+                val page = data?.page ?: 0
                 if (page > 0) {
                     itemList.add(HistoryItem.LoadMoreItem(page))
                 }
@@ -98,12 +102,41 @@ class HistoryViewModel @Inject constructor(
 
     fun addHistoryDetail(history: History?) {
         viewModelScope.launch {
+            getHistoryUseCase(HistoryRequest(_timeStamp.value)).collect { result ->
+                val data = result.successOr(null)
+                val itemList = convertHistoryToItemUseCase(
+                    data?.history?.toMutableList() ?: mutableListOf()
+                ).successOr(mutableListOf())
+                val page = data?.page ?: 0
+                if (page > 0) {
+                    itemList.add(HistoryItem.LoadMoreItem(page))
+                }
+                _historiesState.emit(itemList)
+            }
             _historyDetailState.emit(history)
         }
     }
 
     fun getMarketHistory(timestamp: Long) {
         viewModelScope.launch {
+            _historiesState.emit(emptyList())
+            _timeStamp.emit(timestamp)
+            getMarketHistoryUseCase(HistoryRequest(_timeStamp.value)).collect { result ->
+                val data = result.successOr(null)
+                val items: List<HistoryItem>? = data?.markets?.map {
+                    val picture = it.master?.picture ?: it.picture
+                    HistoryItem.PositionItem(
+                        picture = picture,
+                        invested = it.totalInvested,
+                        pl = it.totalNetProfit,
+                        plPercent = it.totalNetProfit.times(100).div(it.totalInvested),
+                        detail = (it.symbol ?: it.master?.username).toString(),
+                        transactionType = 0,
+                        positionType = "market"
+                    )
+                }
+                _historiesState.emit(items?.toMutableList() ?: mutableListOf())
+            }
         }
     }
 }

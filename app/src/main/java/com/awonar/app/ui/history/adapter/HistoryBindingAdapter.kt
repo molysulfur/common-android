@@ -1,19 +1,32 @@
 package com.awonar.app.ui.history.adapter
 
-import android.content.Context
 import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.awonar.android.model.history.History
 import com.awonar.app.R
-import com.awonar.app.ui.history.HistoryViewModel
 import com.awonar.app.utils.ColorChangingUtil
 import com.awonar.app.utils.DateUtils
 import com.awonar.app.widget.InstrumentOrderView
 
+@BindingAdapter("setHistoryAdapter")
+fun setHistoryAdapter(
+    recycler: RecyclerView,
+    history: MutableList<HistoryItem>
+) {
+    if (recycler.adapter == null) {
+        recycler.apply {
+            adapter = HistoryAdapter()
+            layoutManager =
+                LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
+        }
+    }
+    (recycler.adapter as HistoryAdapter).itemLists = history
+}
+
 @BindingAdapter("setHistory", "column1", "column2", "column3", "column4")
 fun setHistory(
     view: InstrumentOrderView,
-    history: History?,
+    history: HistoryItem.PositionItem?,
     column1: String?,
     column2: String?,
     column3: String?,
@@ -24,37 +37,37 @@ fun setHistory(
             2 -> {
                 view.setTitle("Deposit")
                 view.setDescription("")
-                view.setTextColumnOne("$%.2f".format(it.amount))
+                view.setTextColumnOne("$%.2f".format(it.invested))
             }
             3 -> {
                 view.setTitle("Withdrawal")
                 view.setDescription("Processed")
-                view.setTextColumnOne("$%.2f".format(it.amount))
+                view.setTextColumnOne("$%.2f".format(it.invested))
             }
             4 -> {
                 view.setTitle("Withdrawal")
                 view.setDescription("Processing")
-                view.setTextColumnOne("$%.2f".format(it.amount))
+                view.setTextColumnOne("$%.2f".format(it.invested))
             }
             5 -> {
                 view.setTitle("Reverse Withdrawal")
                 view.setDescription("")
-                view.setTextColumnOne("$%.2f".format(it.amount))
+                view.setTextColumnOne("$%.2f".format(it.invested))
             }
             6 -> {
                 view.setTitle("Withdrawal")
                 view.setDescription("Canceled")
-                view.setTextColumnOne("$%.2f".format(it.amount))
+                view.setTextColumnOne("$%.2f".format(it.invested))
             }
             7 -> {
                 view.setTitle("Compensation")
                 view.setDescription("")
-                view.setTextColumnOne("$%.2f".format(it.amount))
+                view.setTextColumnOne("$%.2f".format(it.invested))
             }
             11 -> {
                 view.setTitle(it.detail ?: "")
                 view.setDescription(it.master?.firstName ?: "")
-                view.setTextColumnOne("$%.2f".format(it.amount))
+                view.setTextColumnOne("$%.2f".format(it.invested))
             }
             else -> setPositionHistoryItem(
                 view,
@@ -70,14 +83,14 @@ fun setHistory(
 
 private fun setPositionHistoryItem(
     view: InstrumentOrderView,
-    history: History,
+    history: HistoryItem.PositionItem,
     column1: String,
     column2: String,
     column3: String,
     column4: String,
 ) {
     // set text
-    view.setTitle("${if (history.position?.isBuy == true) "BUY" else "SELL"} ${history.position?.instrument?.symbol}")
+    view.setTitle("${history.detail}")
     view.setTextColumnOne(setColumnPositionHistory(column1, history))
     view.setTextColumnTwo(setColumnPositionHistory(column2, history))
     view.setTextColumnThree(setColumnPositionHistory(column3, history))
@@ -103,23 +116,23 @@ fun setHistoryColumns(
     }
 }
 
-private fun getColumnColor(column: String, history: History?): Int =
+private fun getColumnColor(column: String, history: HistoryItem.PositionItem?): Int =
     when (column.lowercase()) {
-        "p/l", "p/l%" -> ColorChangingUtil.getTextColorChange(history?.position?.netProfit ?: 0f)
+        "p/l", "p/l%" -> ColorChangingUtil.getTextColorChange(history?.pl ?: 0f)
         else -> R.color.awonar_color_text_primary
     }
 
-private fun setColumnPositionHistory(column: String, history: History?): String =
+private fun setColumnPositionHistory(column: String, history: HistoryItem.PositionItem?): String =
     when (column.lowercase()) {
-        "invested" -> "$%.2f".format(history?.amount)
-        "open" -> "$%.2f".format(history?.position?.openRate)
-        "close" -> "$%.2f".format(history?.position?.closeRate)
-        "p/l" -> "$%.2f".format(history?.position?.netProfit)
-        "units" -> "$%.2f".format(history?.position?.units)
-        "open time" -> "%s".format(DateUtils.getDate(history?.position?.openDateTime))
-        "close time" -> "%s".format(DateUtils.getDate(history?.position?.closeDateTime))
+        "invested" -> "$%.2f".format(history?.invested)
+        "open" -> "$%.2f".format(history?.history?.position?.openRate)
+        "close" -> "$%.2f".format(history?.history?.position?.closeRate)
+        "p/l" -> "$%.2f".format(history?.pl)
+        "units" -> "$%.2f".format(history?.history?.position?.units)
+        "open time" -> "%s".format(DateUtils.getDate(history?.history?.position?.openDateTime))
+        "close time" -> "%s".format(DateUtils.getDate(history?.history?.position?.closeDateTime))
         "p/l%" -> "%.2f%s".format(
-            history?.position?.netProfit?.times(100)?.div(history.amount), "%"
+            history?.plPercent, "%"
         )
         else -> ""
     }

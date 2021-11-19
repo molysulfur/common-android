@@ -11,7 +11,6 @@ import com.awonar.app.databinding.AwonarItemHistoryBinding
 import com.awonar.app.databinding.AwonarItemLoadingBinding
 import com.awonar.app.ui.history.adapter.holder.HistoryViewHolder
 import com.awonar.app.ui.history.adapter.holder.LoadMoreViewHolder
-import com.awonar.app.ui.history.adapter.holder.MarketViewHolder
 
 class HistoryAdapter : RecyclerView.Adapter<ViewHolder>() {
 
@@ -32,12 +31,18 @@ class HistoryAdapter : RecyclerView.Adapter<ViewHolder>() {
 
     var onClick: ((History) -> Unit)? = null
     var onLoad: ((Int) -> Unit)? = null
+    var onShowInsideInstrument: ((String) -> Unit)? = null
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = itemLists[position]
         when (holder) {
-            is HistoryViewHolder -> item?.let {
-                holder.bind(item as HistoryItem.ManualItem, columns, onClick)
+            is HistoryViewHolder -> item.let {
+                holder.bind(
+                    item as HistoryItem.PositionItem,
+                    columns,
+                    onClick,
+                    onShowInsideInstrument
+                )
             }
             is LoadMoreViewHolder -> {
                 onLoad?.invoke((item as HistoryItem.LoadMoreItem).page)
@@ -50,14 +55,7 @@ class HistoryAdapter : RecyclerView.Adapter<ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         when (viewType) {
-            HistoryType.MANUAL_HISTORY -> HistoryViewHolder(
-                AwonarItemHistoryBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
-            )
-            HistoryType.MARKET_HISTORY -> MarketViewHolder(
+            HistoryType.POSITION_HISTORY -> HistoryViewHolder(
                 AwonarItemHistoryBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,

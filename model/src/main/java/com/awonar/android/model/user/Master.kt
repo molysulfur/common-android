@@ -8,10 +8,10 @@ import kotlinx.parcelize.Parcelize
 data class Master(
     @SerializedName("id") val id: String,
     @SerializedName("displayFullName") val displayFullName: Boolean,
-    @SerializedName("firstName") val firstName: String,
-    @SerializedName("middleName") val middleName: String,
-    @SerializedName("lastName") val lastName: String,
-    @SerializedName("picture") val picture: String,
+    @SerializedName("firstName") val firstName: String?,
+    @SerializedName("middleName") val middleName: String?,
+    @SerializedName("lastName") val lastName: String?,
+    @SerializedName("picture") val picture: String?,
     @SerializedName("private") val private: Boolean,
-    @SerializedName("username") val username: Boolean,
+    @SerializedName("username") val username: String?,
 ) : Parcelable

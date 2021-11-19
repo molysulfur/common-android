@@ -2,6 +2,7 @@ package com.awonar.android.shared.steaming
 
 import com.awonar.android.model.market.Quote
 import com.awonar.android.shared.api.NetworkClient
+import com.awonar.android.shared.db.hawk.AccessTokenManager
 import com.google.gson.Gson
 import okhttp3.*
 import okio.ByteString
@@ -23,7 +24,10 @@ object QuoteSteamingEvent {
 }
 
 @Singleton
-class QuoteSteamingManager @Inject constructor(private val networkClient: NetworkClient) :
+class QuoteSteamingManager @Inject constructor(
+    private val accessTokenManager: AccessTokenManager,
+    private val networkClient: NetworkClient
+) :
     WebSocketListener() {
 
     companion object {
@@ -47,7 +51,8 @@ class QuoteSteamingManager @Inject constructor(private val networkClient: Networ
 
 
     fun send(event: String, data: String) {
-        val request = "{\"event\":\"${event}\",\"data\":\"${data}\"}"
+        val request =
+            "{\"event\":\"${event}\",\"data\":\"${data}\",\"id\":\"${accessTokenManager.getAccessToken()}\"}"
         webSocket?.send(request)
     }
 

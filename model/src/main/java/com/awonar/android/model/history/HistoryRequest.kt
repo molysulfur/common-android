@@ -6,5 +6,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class HistoryRequest(
     val timestamp: Long,
-    val page: Int = 1
+    val page: Int = 1,
+    val filter: String? = null,
+    val symbol: String? = null
 ) : Parcelable

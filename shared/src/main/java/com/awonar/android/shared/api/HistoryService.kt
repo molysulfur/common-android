@@ -13,19 +13,38 @@ import retrofit2.http.Query
 
 interface HistoryService {
 
-    @GET("/api/v1/history/market")
-    fun getMarketHistory(
-        @Query("limit") limit: Int = 10,
-        @Query("page") page: Int = 1,
-        @Query("startDate") startDate: Long,
-    ): MarketHistoryResponse
-
     @GET("/api/v1/history")
     fun getHistory(
         @Query("limit") limit: Int = 10,
         @Query("page") page: Int = 1,
+        @Query("filter") filter: String = "",
         @Query("startDate") startDate: Long,
     ): Call<HistoryResponse>
+
+    @GET("/api/v1/history")
+    fun filterHistory(
+        @Query("symbol") symbol: String,
+        @Query("limit") limit: Int = 10,
+        @Query("page") page: Int = 1,
+        @Query("filter") filter: String = "",
+        @Query("startDate") startDate: Long,
+    ): Call<HistoryResponse>
+
+    @GET("/api/v1/history/markets")
+    fun getMarketHistory(
+        @Query("limit") limit: Int = 10,
+        @Query("page") page: Int = 1,
+        @Query("startDate") startDate: Long,
+    ): Call<MarketHistoryResponse>
+
+    @GET("/api/v1/history/markets")
+    fun filterMarketHistory(
+        @Query("symbol") symbol: String,
+        @Query("limit") limit: Int = 10,
+        @Query("page") page: Int = 1,
+        @Query("filter") filter: String = "",
+        @Query("startDate") startDate: Long,
+    ): Call<MarketHistoryResponse>
 
     @GET("/api/v1/history/aggregate")
     fun getAggregate(@Query("startDate") startDate: Long): Call<Aggregate>

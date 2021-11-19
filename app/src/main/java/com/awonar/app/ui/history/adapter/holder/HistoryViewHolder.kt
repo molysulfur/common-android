@@ -9,10 +9,14 @@ import com.awonar.app.ui.history.adapter.HistoryItem
 class HistoryViewHolder constructor(private val binding: AwonarItemHistoryBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: HistoryItem.ManualItem, columns: List<String>, onClick: ((History) -> Unit)?) {
-        val history = item.history
-        binding.history = history
-        setupImageWithTransaction(history)
+    fun bind(
+        item: HistoryItem.PositionItem,
+        columns: List<String>,
+        onClick: ((History) -> Unit)?,
+        onShowInsideInstrument: ((String) -> Unit)?
+    ) {
+        binding.position = item
+        setupImageWithTransaction(item)
         if (columns.size >= 4) {
             binding.column1 = columns[0]
             binding.column2 = columns[1]
@@ -20,11 +24,21 @@ class HistoryViewHolder constructor(private val binding: AwonarItemHistoryBindin
             binding.column4 = columns[3]
         }
         binding.awonarInsturmentOrderItem.setOnClickListener {
-            onClick?.invoke(history)
+            when (item.positionType) {
+                "manual" -> item.history?.let { history ->
+                    onClick?.invoke(history)
+                }
+                "market" -> item.detail?.let {
+                    onShowInsideInstrument?.invoke(it)
+                }
+                else -> {
+                }
+            }
+
         }
     }
 
-    private fun setupImageWithTransaction(history: History) {
+    private fun setupImageWithTransaction(history: HistoryItem.PositionItem) {
         val view = binding.awonarInsturmentOrderItem
         when (history.transactionType) {
             2 -> view.setImage(R.drawable.awonar_ic_deposit)
@@ -38,15 +52,15 @@ class HistoryViewHolder constructor(private val binding: AwonarItemHistoryBindin
         }
     }
 
-    private fun setupImageWithCloseType(history: History) {
+    private fun setupImageWithCloseType(history: HistoryItem.PositionItem) {
         val view = binding.awonarInsturmentOrderItem
-        when (history.position?.closeType) {
+        when (history.history?.position?.closeType) {
             2 -> view.setImage(R.drawable.awonar_ic_tp)
             3 -> view.setImage(R.drawable.awonar_ic_sl)
             4 -> view.setImage(R.drawable.awonar_ic_admin_close)
             5 -> view.setImage(R.drawable.awonar_ic_part_close)
             6 -> view.setImage(R.drawable.awonar_ic_rollover)
-            else -> view.setImage(history.position?.instrument?.logo ?: "")
+            else -> view.setImage(history.picture ?: "")
         }
     }
 }

@@ -72,7 +72,63 @@ class HistoryRepository @Inject constructor(
         return getActivedColumn()
     }
 
-    fun getMarketHistory(request: Long): Flow<PagingData<MarketHistory>> {
-        TODO("")
-    }
+    fun getMarketHistory(request: HistoryRequest): Flow<Result<MarketHistoryPaging?>> =
+        object : DirectNetworkFlow<Long, MarketHistoryPaging, MarketHistoryResponse>() {
+            override fun createCall(): Response<MarketHistoryResponse> =
+                historyService.getMarketHistory(page = request.page, startDate = request.timestamp)
+                    .execute()
+
+            override fun convertToResultType(response: MarketHistoryResponse): MarketHistoryPaging {
+                val page = if (response.meta.hasMore) response.meta.page + 1 else 0
+                return MarketHistoryPaging(response.markets, page)
+            }
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+        }.asFlow()
+
+    fun filterMarketHistory(request: HistoryRequest) =
+        object : DirectNetworkFlow<Long, MarketHistoryPaging, MarketHistoryResponse>() {
+            override fun createCall(): Response<MarketHistoryResponse> =
+                historyService.filterMarketHistory(
+                    page = request.page,
+                    startDate = request.timestamp,
+                    symbol = request.symbol ?: "",
+                    filter = request.filter ?: ""
+                ).execute()
+
+            override fun convertToResultType(response: MarketHistoryResponse): MarketHistoryPaging {
+                val newPage = if (response.meta.hasMore) response.meta.page + 1 else 0
+                return MarketHistoryPaging(response.markets, newPage)
+            }
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+
+
+        }.asFlow()
+
+    fun filterHistory(request: HistoryRequest) =
+        object : DirectNetworkFlow<Long, HistoryPaging, HistoryResponse>() {
+            override fun createCall(): Response<HistoryResponse> =
+                historyService.filterHistory(
+                    page = request.page,
+                    startDate = request.timestamp,
+                    symbol = request.symbol ?: "",
+                    filter = request.filter ?: ""
+                ).execute()
+
+            override fun convertToResultType(response: HistoryResponse): HistoryPaging {
+                val newPage = if (response.meta.hasMore) response.meta.page + 1 else 0
+                return HistoryPaging(response.histories ?: emptyList(), newPage)
+            }
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+
+
+        }.asFlow()
 }
