@@ -12,8 +12,8 @@ class ConvertHistoryToItemUseCase @Inject constructor(
 ) : UseCase<MutableList<History>, MutableList<HistoryItem>>(dispatcher) {
     override suspend fun execute(parameters: MutableList<History>): MutableList<HistoryItem> {
         return parameters.map {
-            if (it.transactionType == 1) {
-                HistoryItem.PositionItem(
+            when (it.transactionType) {
+                1 -> HistoryItem.PositionItem(
                     invested = it.amount,
                     picture = it.position?.instrument?.logo,
                     pl = it.position?.netProfit ?: 0f,
@@ -24,8 +24,18 @@ class ConvertHistoryToItemUseCase @Inject constructor(
                     master = it.master,
                     positionType = "manual"
                 )
-            } else {
-                HistoryItem.PositionItem(
+                11 -> HistoryItem.PositionItem(
+                    invested = it.amount,
+                    picture = it.master?.picture,
+                    pl = it.position?.netProfit ?: 0f,
+                    plPercent = it.position?.netProfit?.times(100)?.div(it.amount) ?: 0f,
+                    detail = it.detail,
+                    transactionType = it.transactionType,
+                    history = it,
+                    master = it.master,
+                    positionType = "user"
+                )
+                else -> HistoryItem.PositionItem(
                     invested = it.amount,
                     picture = it.master?.picture,
                     pl = it.position?.netProfit ?: 0f,

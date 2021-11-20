@@ -131,4 +131,25 @@ class HistoryRepository @Inject constructor(
 
 
         }.asFlow()
+
+    fun getCopiesHistory(
+        username: String,
+        timestamp: Long
+    ): Flow<Result<CopiesAggregateResponse?>> =
+        object : DirectNetworkFlow<Long, CopiesAggregateResponse?, CopiesAggregateResponse?>() {
+            override fun createCall(): Response<CopiesAggregateResponse?> =
+                historyService.getCopiesHistory(
+                    username = username,
+                    startDate = timestamp
+                ).execute()
+
+            override fun convertToResultType(response: CopiesAggregateResponse?): CopiesAggregateResponse? =
+                response
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+
+
+        }.asFlow()
 }

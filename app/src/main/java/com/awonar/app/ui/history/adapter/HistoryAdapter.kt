@@ -31,7 +31,7 @@ class HistoryAdapter : RecyclerView.Adapter<ViewHolder>() {
 
     var onClick: ((History) -> Unit)? = null
     var onLoad: ((Int) -> Unit)? = null
-    var onShowInsideInstrument: ((String) -> Unit)? = null
+    var onShowInsideInstrument: ((String, String?) -> Unit)? = null
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = itemLists[position]

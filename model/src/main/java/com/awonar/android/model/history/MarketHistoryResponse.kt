@@ -23,4 +23,3 @@ data class MarketHistory(
     @SerializedName("totalPositions") val totalPositions: Float,
     @SerializedName("user") val master: Master?,
 ) : Parcelable
-

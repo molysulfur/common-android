@@ -150,7 +150,13 @@
 
         <argument
             android:name="symbol"
-            app:argType="string" />
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="copy"
+            app:argType="string"
+            app:nullable="true" />
 
         <argument
             android:name="timestamp"

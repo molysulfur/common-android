@@ -26,8 +26,11 @@ data class History(
     @SerializedName("transactionType") val transactionType: Int,
     @SerializedName("withdrawId") val withdrawId: String?,
     @SerializedName("position") val position: Position?,
-    @SerializedName("master") var master: Master?,
+    @SerializedName("master") var master: Master?
 ) : Parcelable
+
+
+
 
 @Parcelize
 data class HistoryMeta(

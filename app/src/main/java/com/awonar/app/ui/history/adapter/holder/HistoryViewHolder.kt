@@ -13,7 +13,7 @@ class HistoryViewHolder constructor(private val binding: AwonarItemHistoryBindin
         item: HistoryItem.PositionItem,
         columns: List<String>,
         onClick: ((History) -> Unit)?,
-        onShowInsideInstrument: ((String) -> Unit)?
+        onShowInsideInstrument: ((String, String?) -> Unit)?
     ) {
         binding.position = item
         setupImageWithTransaction(item)
@@ -28,10 +28,11 @@ class HistoryViewHolder constructor(private val binding: AwonarItemHistoryBindin
                 "manual" -> item.history?.let { history ->
                     onClick?.invoke(history)
                 }
-                "market" -> item.detail?.let {
-                    onShowInsideInstrument?.invoke(it)
+                "market "-> item.detail?.let {
+                    onShowInsideInstrument?.invoke(it, item.positionType)
                 }
-                else -> {
+                "user" ->  item.master?.username?.let {
+                    onShowInsideInstrument?.invoke(it, item.positionType)
                 }
             }
 

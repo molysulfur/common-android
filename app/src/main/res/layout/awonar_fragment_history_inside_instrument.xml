@@ -71,7 +71,9 @@
                     android:id="@+id/awoanr_history_inside_text_title_invested"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/awonar_size_margin_padding_normal"
                     android:text="@string/awonar_text_invested"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/awoanr_history_inside_text_invested"
                     app:layout_constraintTop_toBottomOf="@+id/awoanr_history_inside_text_invested" />
 
@@ -91,6 +93,7 @@
                     android:id="@+id/awoanr_history_inside_text_title_pl"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/awonar_size_margin_padding_normal"
                     android:text="Profit Loss"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/awoanr_history_inside_text_pl"
@@ -114,19 +117,36 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="End Value"
-                    app:layout_constraintEnd_toEndOf="parent"
+
+                    app:layout_constraintEnd_toEndOf="@+id/awoanr_history_inside_text_endvalue"
                     app:layout_constraintTop_toBottomOf="@+id/awoanr_history_inside_text_invested" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            setHistoryAdapter="@{viewModel.historiesInsideState}"
-            historyColumns="@{columnsViewModel.activedColumnState}"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
+            <include
+                android:id="@+id/awonar_history_instide_include_column"
+                layout="@layout/awonar_include_column"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                historyColumns="@{columnsViewModel.activedColumnState}"
+                setHistoryAdapter="@{viewModel.historiesInsideState}"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_history_instide_include_column" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>

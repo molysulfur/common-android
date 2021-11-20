@@ -82,13 +82,24 @@ class HistoryFragment : Fragment() {
                                     viewModel.addHistoryDetail(history)
                                     findNavController().navigate(HistoryFragmentDirections.actionHistoryFragmentToHistoryDetailFragment())
                                 }
-                                onShowInsideInstrument = {
-                                    findNavController().navigate(
-                                        HistoryFragmentDirections.actionHistoryFragmentToHistoryInsideFragment(
-                                            it,
-                                            viewModel.timeStamp.value
+                                onShowInsideInstrument = { id, type ->
+                                    when (type) {
+                                        "market" -> findNavController().navigate(
+                                            HistoryFragmentDirections.actionHistoryFragmentToHistoryInsideFragment(
+                                                id,
+                                                null,
+                                                viewModel.timeStamp.value
+                                            )
                                         )
-                                    )
+                                        "user" -> findNavController().navigate(
+                                            HistoryFragmentDirections.actionHistoryFragmentToHistoryInsideFragment(
+                                                null,
+                                                id,
+                                                viewModel.timeStamp.value
+                                            )
+                                        )
+                                    }
+
                                 }
                                 onLoad = {
                                     viewModel.getHistory(page = it)

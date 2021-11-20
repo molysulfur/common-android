@@ -1,6 +1,5 @@
 package com.awonar.android.shared.domain.history
 
-import com.awonar.android.model.history.History
 import com.awonar.android.model.history.HistoryPaging
 import com.awonar.android.model.history.HistoryRequest
 import com.awonar.android.shared.di.IoDispatcher

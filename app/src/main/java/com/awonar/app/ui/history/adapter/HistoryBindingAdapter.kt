@@ -20,7 +20,9 @@ fun setHistoryAdapter(
                 LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
         }
     }
-    (recycler.adapter as HistoryAdapter).itemLists = history
+    if (!recycler.isComputingLayout) {
+        (recycler.adapter as HistoryAdapter).itemLists = history
+    }
 }
 
 @BindingAdapter("setHistory", "column1", "column2", "column3", "column4")

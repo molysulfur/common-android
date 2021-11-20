@@ -8,5 +8,6 @@ data class HistoryRequest(
     val timestamp: Long,
     val page: Int = 1,
     val filter: String? = null,
-    val symbol: String? = null
+    val symbol: String? = null,
+    val username: String? = null
 ) : Parcelable

@@ -34,7 +34,10 @@ class HistoryInsideFragment : Fragment() {
         launchAndRepeatWithViewLifecycle {
             columnsViewModel.activedColumnState.collect {
                 if (it.size >= 4) {
-
+                    binding.awonarHistoryInstideIncludeColumn.column1 = it[0]
+                    binding.awonarHistoryInstideIncludeColumn.column2 = it[1]
+                    binding.awonarHistoryInstideIncludeColumn.column3 = it[2]
+                    binding.awonarHistoryInstideIncludeColumn.column4 = it[3]
                 }
             }
         }
@@ -67,7 +70,13 @@ class HistoryInsideFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getArgreation(args.symbol, args.timestamp)
-        viewModel.getHistoryInside(args.symbol, args.timestamp)
+        args.symbol?.let {
+            viewModel.getArgreation(it, args.timestamp)
+            viewModel.getHistoryInside(it, args.timestamp)
+        }
+        args.copy?.let {
+            viewModel.getCopiesHistory(it, args.timestamp)
+        }
+
     }
 }
