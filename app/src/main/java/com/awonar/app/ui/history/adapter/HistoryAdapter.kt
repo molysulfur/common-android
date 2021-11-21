@@ -7,8 +7,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.*
 import com.awonar.android.model.history.History
+import com.awonar.app.databinding.AwonarItemCashflowCollapsibleBinding
+import com.awonar.app.databinding.AwonarItemDividerBinding
 import com.awonar.app.databinding.AwonarItemHistoryBinding
 import com.awonar.app.databinding.AwonarItemLoadingBinding
+import com.awonar.app.ui.history.adapter.holder.CashFlowViewHolder
+import com.awonar.app.ui.history.adapter.holder.DividerViewHolder
 import com.awonar.app.ui.history.adapter.holder.HistoryViewHolder
 import com.awonar.app.ui.history.adapter.holder.LoadMoreViewHolder
 
@@ -47,6 +51,11 @@ class HistoryAdapter : RecyclerView.Adapter<ViewHolder>() {
             is LoadMoreViewHolder -> {
                 onLoad?.invoke((item as HistoryItem.LoadMoreItem).page)
             }
+            is CashFlowViewHolder -> {
+                holder.bind(
+                    item as HistoryItem.CashFlowItem
+                )
+            }
         }
 
     }
@@ -64,6 +73,20 @@ class HistoryAdapter : RecyclerView.Adapter<ViewHolder>() {
             )
             HistoryType.LOADMORE_HISTORY -> LoadMoreViewHolder(
                 AwonarItemLoadingBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+            HistoryType.CASHFLOW_HISTORY -> CashFlowViewHolder(
+                AwonarItemCashflowCollapsibleBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+            HistoryType.DIVIDER_HISTORY -> DividerViewHolder(
+                AwonarItemDividerBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false

@@ -8,6 +8,7 @@ import com.awonar.android.model.history.MarketHistory
 import com.awonar.android.shared.domain.history.FilterHistoryUseCase
 import com.awonar.android.shared.domain.history.FilterMarketHistoryUseCase
 import com.awonar.android.shared.domain.history.GetCopiesHistoryUseCase
+import com.awonar.android.shared.domain.history.GetCopiesInsideHistoryUseCase
 import com.awonar.app.domain.history.ConvertHistoryToItemUseCase
 import com.awonar.app.ui.history.adapter.HistoryItem
 import com.molysulfur.library.result.successOr
@@ -23,7 +24,7 @@ class HistoryInsideViewModel @Inject constructor(
     private val filterMarketHistoryUseCase: FilterMarketHistoryUseCase,
     private val filterHistoryUseCase: FilterHistoryUseCase,
     private val getCopiesHistoryUseCase: GetCopiesHistoryUseCase,
-    private val convertHistoryToItemUseCase: ConvertHistoryToItemUseCase
+    private val convertHistoryToItemUseCase: ConvertHistoryToItemUseCase,
 ) : ViewModel() {
 
     private val _argreationHistroyState = MutableStateFlow<MarketHistory?>(null)
@@ -117,5 +118,9 @@ class HistoryInsideViewModel @Inject constructor(
             )
         }
         return itemList
+    }
+
+    fun getHistoryCopies(it: String, timestamp: Long) {
+
     }
 }

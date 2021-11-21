@@ -11,6 +11,11 @@ import retrofit2.http.Query
 
 interface HistoryService {
 
+    @GET("/api/v1/history/cash-flow")
+    fun getCashFlow(
+        @Query("startDate") startDate: Long,
+    ): Call<List<HistoryCashFlowResponse>>
+
     @GET("/api/v1/history/copy/{username}")
     fun getCopiesHistory(
         @Path("username") username: String, @Query("page") page: Int = 1,

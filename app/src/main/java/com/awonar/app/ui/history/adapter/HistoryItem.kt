@@ -4,6 +4,8 @@ import android.os.Parcelable
 import com.awonar.android.model.history.History
 import com.awonar.android.model.portfolio.Position
 import com.awonar.android.model.user.Master
+import com.awonar.app.ui.history.adapter.HistoryType.CASHFLOW_HISTORY
+import com.awonar.app.ui.history.adapter.HistoryType.DIVIDER_HISTORY
 import com.awonar.app.ui.history.adapter.HistoryType.LOADMORE_HISTORY
 import com.awonar.app.ui.history.adapter.HistoryType.POSITION_HISTORY
 import kotlinx.parcelize.Parcelize
@@ -13,6 +15,20 @@ sealed class HistoryItem(
     val type: Int,
 ) : Parcelable {
 
+    @Parcelize
+    data class CashFlowItem(
+        val logo: Int,
+        val title: String?,
+        val subTitle: String?,
+        val id: String?,
+        val amount: Float,
+        val status: String?,
+        val description: String?,
+        val fee: Float,
+        val netWithdraw: Float,
+        val rate: Float,
+        val localAmount: Float
+    ) : HistoryItem(CASHFLOW_HISTORY)
 
     @Parcelize
     data class PositionItem(
@@ -34,5 +50,9 @@ sealed class HistoryItem(
     data class LoadMoreItem(
         val page: Int
     ) : HistoryItem(LOADMORE_HISTORY)
+
+    @Parcelize
+    class DividerItem : HistoryItem(DIVIDER_HISTORY)
+
 
 }

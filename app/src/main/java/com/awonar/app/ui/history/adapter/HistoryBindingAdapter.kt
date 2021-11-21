@@ -7,6 +7,7 @@ import com.awonar.app.R
 import com.awonar.app.utils.ColorChangingUtil
 import com.awonar.app.utils.DateUtils
 import com.awonar.app.widget.InstrumentOrderView
+import timber.log.Timber
 
 @BindingAdapter("setHistoryAdapter")
 fun setHistoryAdapter(

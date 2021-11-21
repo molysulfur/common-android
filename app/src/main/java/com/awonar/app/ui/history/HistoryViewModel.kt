@@ -6,8 +6,10 @@ import com.awonar.android.model.history.Aggregate
 import com.awonar.android.model.history.History
 import com.awonar.android.model.history.HistoryRequest
 import com.awonar.android.shared.domain.history.GetAggregateUseCase
+import com.awonar.android.shared.domain.history.GetCashFlowHistoryUseCase
 import com.awonar.android.shared.domain.history.GetHistoryUseCase
 import com.awonar.android.shared.domain.history.GetMarketHistoryUseCase
+import com.awonar.app.domain.history.ConvertCashFlowToItemUseCase
 import com.awonar.app.domain.history.ConvertHistoryToItemUseCase
 import com.awonar.app.ui.history.adapter.HistoryItem
 import com.awonar.app.ui.history.adapter.HistoryType
@@ -15,6 +17,7 @@ import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -23,8 +26,11 @@ class HistoryViewModel @Inject constructor(
     private val getAggregateUseCase: GetAggregateUseCase,
     private val getHistoryUseCase: GetHistoryUseCase,
     private val getMarketHistoryUseCase: GetMarketHistoryUseCase,
-    private val convertHistoryToItemUseCase: ConvertHistoryToItemUseCase
-) : ViewModel() {
+    private val convertHistoryToItemUseCase: ConvertHistoryToItemUseCase,
+    private val convertCashFlowToItemUseCase: ConvertCashFlowToItemUseCase,
+    private val getCashFlowHistoryUseCase: GetCashFlowHistoryUseCase,
+
+    ) : ViewModel() {
 
     private val _aggregateState = MutableStateFlow<Aggregate?>(null)
     val aggregateState: StateFlow<Aggregate?> = _aggregateState
@@ -136,6 +142,19 @@ class HistoryViewModel @Inject constructor(
                     )
                 }
                 _historiesState.emit(items?.toMutableList() ?: mutableListOf())
+            }
+        }
+    }
+
+    fun getCashflow() {
+        viewModelScope.launch {
+            val prev7Day = Calendar.getInstance()
+            prev7Day.add(Calendar.DATE, -7)
+            getCashFlowHistoryUseCase(prev7Day.timeInMillis / 1000).collect {
+                val data = it.successOr(listOf())
+                val itemList =
+                    convertCashFlowToItemUseCase(data ?: listOf()).successOr(mutableListOf())
+                _historiesState.value = itemList
             }
         }
     }

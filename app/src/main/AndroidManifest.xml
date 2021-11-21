@@ -51,6 +51,7 @@
         <activity android:name=".ui.setting.experience.ExperienceActivity" />
         <activity android:name=".ui.marketprofile.MarketProfileActivity" />
         <activity android:name=".ui.columns.ColumnsActivedActivity" />
+        <activity android:name=".ui.history.HistoryCashFlowActivity" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

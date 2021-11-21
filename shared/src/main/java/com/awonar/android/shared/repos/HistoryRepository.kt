@@ -152,4 +152,29 @@ class HistoryRepository @Inject constructor(
 
 
         }.asFlow()
+
+    fun getCashflow(timestamp: Long): Flow<Result<List<HistoryCashFlow>?>> =
+        object : DirectNetworkFlow<Long, List<HistoryCashFlow>, List<HistoryCashFlowResponse>>() {
+            override fun createCall(): Response<List<HistoryCashFlowResponse>> =
+                historyService.getCashFlow(
+                    startDate = timestamp
+                ).execute()
+
+            override fun convertToResultType(response: List<HistoryCashFlowResponse>): List<HistoryCashFlow> =
+                response.map { cashflow ->
+                    HistoryCashFlow(
+                        transactionNo = cashflow.transactionNo,
+                        createdAt = cashflow.createdAt,
+                        cashflow = cashflow.cashflow[0],
+                        transactionDate = cashflow.transactionDate,
+                        transactionType = cashflow.transactionType
+                    )
+                }
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+
+
+        }.asFlow()
 }

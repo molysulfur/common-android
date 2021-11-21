@@ -28,6 +28,7 @@ import com.awonar.app.ui.history.adapter.HistoryAdapter
 import com.awonar.app.ui.history.adapter.HistoryItem
 import com.awonar.app.ui.portfolio.PortFolioFragmentDirections
 import com.awonar.app.utils.ColorChangingUtil
+import com.molysulfur.library.extension.openActivity
 import com.molysulfur.library.extension.openActivityCompatForResult
 import com.molysulfur.library.utils.ColorUtils
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
@@ -150,6 +151,9 @@ class HistoryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         columnsViewModel.setColumnType("history")
         setupDialog()
+        binding.awonarHistoryCashContainer.setOnClickListener {
+            openActivity(HistoryCashFlowActivity::class.java)
+        }
         binding.awonarHistoryButtonFilter.setOnClickListener {
             if (filterDialog.isAdded) {
                 filterDialog.dismiss()
