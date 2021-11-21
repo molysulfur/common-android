@@ -1,6 +1,5 @@
 package com.awonar.app.ui.history.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -26,7 +25,6 @@ class HistoryAdapter : RecyclerView.Adapter<ViewHolder>() {
                 .dispatchUpdatesTo(this)
         }
 
-    @SuppressLint("NotifyDataSetChanged")
     var columns: List<String> = emptyList()
         set(value) {
             field = value

@@ -148,11 +148,33 @@
         android:name="com.awonar.app.ui.history.HistoryInsideFragment"
         android:label="HistoryInsideFragment">
 
+        <action
+            android:id="@+id/action_historyInsideFragment_to_historyInsideLevelTwoFragment"
+            app:destination="@+id/historyInsideLevelTwoFragment"
+            app:enterAnim="@anim/common_anim_right_to_left_in"
+            app:exitAnim="@anim/common_anim_right_to_left_out"
+            app:popEnterAnim="@anim/common_anim_left_to_right_in"
+            app:popExitAnim="@anim/common_anim_left_to_right_out" />
+
         <argument
             android:name="symbol"
             app:argType="string"
             app:nullable="true" />
 
+        <argument
+            android:name="copy"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="timestamp"
+            app:argType="long" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/historyInsideLevelTwoFragment"
+        android:name="com.awonar.app.ui.history.HistoryInsideLevelTwoFragment"
+        android:label="HistoryInsideLevelTwoFragment">
         <argument
             android:name="copy"
             app:argType="string"

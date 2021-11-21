@@ -15,13 +15,14 @@ import com.awonar.app.utils.ColorChangingUtil
 import com.awonar.app.utils.ImageUtil
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class HistoryInsideLevelTwoFragment : Fragment() {
 
     private val viewModel: HistoryInsideViewModel by activityViewModels()
     private val columnsViewModel: ColumnsViewModel by activityViewModels()
 
-    private val args: HistoryInsideFragmentArgs by navArgs()
+    private val args: HistoryInsideLevelTwoFragmentArgs by navArgs()
 
     private val binding: AwonarFragmentHistoryInstideLevelTwoBinding by lazy {
         AwonarFragmentHistoryInstideLevelTwoBinding.inflate(layoutInflater)
@@ -33,11 +34,33 @@ class HistoryInsideLevelTwoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         launchAndRepeatWithViewLifecycle {
-
+            columnsViewModel.activedColumnState.collect {
+                if (it.size >= 4) {
+                    binding.awonarHistoryInsideTwoIncludeColumn.column1 = it[0]
+                    binding.awonarHistoryInsideTwoIncludeColumn.column2 = it[1]
+                    binding.awonarHistoryInsideTwoIncludeColumn.column3 = it[2]
+                    binding.awonarHistoryInsideTwoIncludeColumn.column4 = it[3]
+                }
+            }
         }
         launchAndRepeatWithViewLifecycle {
-
+            launch {
+                viewModel.argreationCopiesHistroyState.collect {
+                    binding.invested = "$%.2f".format(it?.initialInvestment)
+                    binding.moneyIn = "$%.2f".format(it?.depositSummary)
+                    binding.moneyOut = "$%.2f".format(it?.withdrawalSummary)
+                    binding.endValue = "$%.2f".format(it?.endEquity)
+                    binding.profitLoss = "$%.2f".format(it?.totalNetProfit)
+                    binding.totalFees = "$%.2f".format(it?.totalFees)
+                    binding.awonarHistoryTextProfitloss.setTextColor(
+                        ColorChangingUtil.getTextColorChange(
+                            it?.totalNetProfit ?: 0f
+                        )
+                    )
+                }
+            }
         }
+        binding.historyViewModel = viewModel
         binding.columnsViewModel = columnsViewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
@@ -45,12 +68,9 @@ class HistoryInsideLevelTwoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        args.symbol?.let {
-            viewModel.getArgreation(it, args.timestamp)
-            viewModel.getHistoryCopies(it, args.timestamp)
-        }
         args.copy?.let {
-            viewModel.getCopiesHistory(it, args.timestamp)
+            viewModel.getArgreationWithCopy(it)
+            viewModel.getCopiesHistory(it, filter = "copy")
         }
 
     }

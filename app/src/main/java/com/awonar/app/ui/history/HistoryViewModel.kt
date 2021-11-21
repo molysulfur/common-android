@@ -1,7 +1,9 @@
 package com.awonar.app.ui.history
 
+import androidx.annotation.NonNull
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavDirections
 import com.awonar.android.model.history.Aggregate
 import com.awonar.android.model.history.History
 import com.awonar.android.model.history.HistoryRequest
@@ -15,9 +17,9 @@ import com.awonar.app.ui.history.adapter.HistoryItem
 import com.awonar.app.ui.history.adapter.HistoryType
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -31,6 +33,9 @@ class HistoryViewModel @Inject constructor(
     private val getCashFlowHistoryUseCase: GetCashFlowHistoryUseCase,
 
     ) : ViewModel() {
+
+    private val _navigationInsideChannel = Channel<NavDirections>(capacity = Channel.CONFLATED)
+    val navigationInsideChannel get() = _navigationInsideChannel.receiveAsFlow()
 
     private val _aggregateState = MutableStateFlow<Aggregate?>(null)
     val aggregateState: StateFlow<Aggregate?> = _aggregateState
@@ -131,6 +136,7 @@ class HistoryViewModel @Inject constructor(
                 val data = result.successOr(null)
                 val items: List<HistoryItem>? = data?.markets?.map {
                     val picture = it.master?.picture ?: it.picture
+                    val positionType = if (it.master != null) "user" else "market"
                     HistoryItem.PositionItem(
                         picture = picture,
                         invested = it.totalInvested,
@@ -138,7 +144,12 @@ class HistoryViewModel @Inject constructor(
                         plPercent = it.totalNetProfit.times(100).div(it.totalInvested),
                         detail = (it.symbol ?: it.master?.username).toString(),
                         transactionType = 0,
-                        positionType = "market"
+                        positionType = positionType,
+                        master = it.master,
+                        id = it.master?.id,
+                        fee = it.totalFees,
+                        endValue = it.endEquity,
+                        history = null
                     )
                 }
                 _historiesState.emit(items?.toMutableList() ?: mutableListOf())
@@ -155,6 +166,14 @@ class HistoryViewModel @Inject constructor(
                 val itemList =
                     convertCashFlowToItemUseCase(data ?: listOf()).successOr(mutableListOf())
                 _historiesState.value = itemList
+            }
+        }
+    }
+
+    fun navgiationTo(direction: NavDirections?) {
+        viewModelScope.launch {
+            direction?.let {
+                _navigationInsideChannel.send(it)
             }
         }
     }

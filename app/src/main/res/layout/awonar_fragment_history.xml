@@ -247,9 +247,10 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/awonar_history_recycler_items"
-                historyColumns="@{columnsViewModel.activedColumnState}"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                setHistoryAdapter="@{historyViewModel.historiesState}"
+                viewModel="@{historyViewModel}"
                 android:background="@color/awonar_color_surface"
                 app:layout_constraintBottom_toTopOf="@+id/awonar_history_cash_container"
                 app:layout_constraintEnd_toEndOf="parent"

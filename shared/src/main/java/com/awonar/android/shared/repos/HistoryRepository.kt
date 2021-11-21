@@ -19,6 +19,28 @@ class HistoryRepository @Inject constructor(
     private val preference: PortfolioActivedColumnManager
 ) {
 
+    fun filterCopyHistory(request: HistoryRequest) =
+        object : DirectNetworkFlow<Long, HistoryPaging, HistoryResponse>() {
+            override fun createCall(): Response<HistoryResponse> =
+                historyService.filterCopyHistory(
+                    page = request.page,
+                    startDate = request.timestamp,
+                    copyId = request.copyId ?: "",
+                    filter = request.filter ?: ""
+                ).execute()
+
+            override fun convertToResultType(response: HistoryResponse): HistoryPaging {
+                val newPage = if (response.meta.hasMore) response.meta.page + 1 else 0
+                return HistoryPaging(response.histories ?: emptyList(), newPage)
+            }
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+
+
+        }.asFlow()
+
     fun getHistory(request: HistoryRequest): Flow<Result<HistoryPaging?>> =
         object : DirectNetworkFlow<Long, HistoryPaging, HistoryResponse>() {
             override fun createCall(): Response<HistoryResponse> =
@@ -170,6 +192,22 @@ class HistoryRepository @Inject constructor(
                         transactionType = cashflow.transactionType
                     )
                 }
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+
+
+        }.asFlow()
+
+    fun getAggregateWithCopiesId(id: String): Flow<Result<CopiesHistory?>> =
+        object : DirectNetworkFlow<Long, CopiesHistory, CopiesHistory>() {
+            override fun createCall(): Response<CopiesHistory> =
+                historyService.getAggregateWithCopy(
+                    id = id,
+                ).execute()
+
+            override fun convertToResultType(response: CopiesHistory): CopiesHistory = response
 
             override fun onFetchFailed(errorMessage: String) {
                 println(errorMessage)

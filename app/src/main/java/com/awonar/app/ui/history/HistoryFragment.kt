@@ -8,36 +8,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
-import androidx.paging.map
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.awonar.app.databinding.AwonarFragmentHistoryBinding
 import com.awonar.app.dialog.menu.MenuDialog
 import com.awonar.app.dialog.menu.MenuDialogButtonSheet
 import com.awonar.app.ui.columns.ColumnsActivedActivity
 import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.history.adapter.HistoryAdapter
-import com.awonar.app.ui.history.adapter.HistoryItem
-import com.awonar.app.ui.portfolio.PortFolioFragmentDirections
 import com.awonar.app.utils.ColorChangingUtil
 import com.molysulfur.library.extension.openActivity
 import com.molysulfur.library.extension.openActivityCompatForResult
-import com.molysulfur.library.utils.ColorUtils
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.util.*
 
 class HistoryFragment : Fragment() {
@@ -65,57 +51,19 @@ class HistoryFragment : Fragment() {
     ): View {
         launchAndRepeatWithViewLifecycle {
             launch {
+                viewModel.navigationInsideChannel.collect {
+                    findNavController().navigate(it)
+                }
+            }
+            launch {
                 columnsViewModel.activedColumnState.collect {
                     if (it.size >= 4) {
+                        (binding.awonarHistoryRecyclerItems.adapter as? HistoryAdapter)?.columns =
+                            it
                         binding.awonarHistoryIncludeColumn.column1 = it[0]
                         binding.awonarHistoryIncludeColumn.column2 = it[1]
                         binding.awonarHistoryIncludeColumn.column3 = it[2]
                         binding.awonarHistoryIncludeColumn.column4 = it[3]
-                    }
-                }
-            }
-            launch {
-                viewModel.historiesState.collect {
-                    if (binding.awonarHistoryRecyclerItems.adapter == null) {
-                        binding.awonarHistoryRecyclerItems.apply {
-                            adapter = HistoryAdapter().apply {
-                                onClick = { history ->
-                                    viewModel.addHistoryDetail(history)
-                                    findNavController().navigate(HistoryFragmentDirections.actionHistoryFragmentToHistoryDetailFragment())
-                                }
-                                onShowInsideInstrument = { id, type ->
-                                    when (type) {
-                                        "market" -> findNavController().navigate(
-                                            HistoryFragmentDirections.actionHistoryFragmentToHistoryInsideFragment(
-                                                id,
-                                                null,
-                                                viewModel.timeStamp.value
-                                            )
-                                        )
-                                        "user" -> findNavController().navigate(
-                                            HistoryFragmentDirections.actionHistoryFragmentToHistoryInsideFragment(
-                                                null,
-                                                id,
-                                                viewModel.timeStamp.value
-                                            )
-                                        )
-                                    }
-
-                                }
-                                onLoad = {
-                                    viewModel.getHistory(page = it)
-                                }
-                            }
-                            layoutManager = LinearLayoutManager(
-                                requireContext(),
-                                LinearLayoutManager.VERTICAL,
-                                false
-                            )
-                        }
-                    }
-                    (binding.awonarHistoryRecyclerItems.adapter as HistoryAdapter).apply {
-
-                        itemLists = it.toMutableList()
                     }
                 }
             }
@@ -167,12 +115,16 @@ class HistoryFragment : Fragment() {
                 bundle = bundleOf(ColumnsActivedActivity.EXTRA_COLUMNS_ACTIVED to "history")
             )
         }
-
         binding.awonarHistoryButtonType.setOnClickListener {
+            if (binding.awonarHistoryButtonType.tag != "market") {
+                binding.awonarHistoryButtonType.tag = "market"
+            } else {
+                binding.awonarHistoryButtonType.tag = "manual"
+            }
             val prev7Day = Calendar.getInstance()
             prev7Day.add(Calendar.DATE, -7)
             val timestamp = prev7Day.timeInMillis / 1000
-            viewModel.getMarketHistory(timestamp)
+            getHistory(timestamp)
         }
 
     }
@@ -226,12 +178,23 @@ class HistoryFragment : Fragment() {
                             prevTime.timeInMillis
                         }
                     }
-                    viewModel.getHistory(timeStamp / 1000)
-                    viewModel.getAggregate(timeStamp / 1000)
+                    getHistory(timeStamp / 1000)
                 }
             })
             .setMenus(menus)
             .build()
+    }
+
+    private fun getHistory(timeStamp: Long) {
+        when (binding.awonarHistoryButtonType.tag) {
+            "market" -> {
+                viewModel.getMarketHistory(timeStamp)
+            }
+            else -> {
+                viewModel.getHistory(timeStamp / 1000)
+                viewModel.getAggregate(timeStamp / 1000)
+            }
+        }
     }
 
 }

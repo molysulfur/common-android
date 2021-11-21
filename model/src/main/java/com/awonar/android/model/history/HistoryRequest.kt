@@ -9,5 +9,6 @@ data class HistoryRequest(
     val page: Int = 1,
     val filter: String? = null,
     val symbol: String? = null,
+    val copyId: String? = null,
     val username: String? = null
 ) : Parcelable

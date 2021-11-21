@@ -14,6 +14,11 @@
             name="columnsViewModel"
             type="com.awonar.app.ui.columns.ColumnsViewModel" />
 
+
+        <variable
+            name="totalFees"
+            type="String" />
+
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -25,6 +30,7 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/awonar_history_inside_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:navigationIcon="@drawable/awonar_ic_back"
@@ -138,13 +144,39 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 historyColumns="@{columnsViewModel.activedColumnState}"
-                setHistoryAdapter="@{viewModel.historiesInsideState}"
+                setHistoryInsideAdapter="@{viewModel.historiesInsideState}"
+                viewModel="@{viewModel}"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/awonar_history_inside_total_fee_container"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/awonar_history_instide_include_column" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/awonar_history_inside_total_fee_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/awonar_color_background"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="@dimen/awonar_size_margin_padding_normal"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <TextView
+                    style="@style/Awonar.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Total Fees" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="@{totalFees}" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

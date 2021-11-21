@@ -5,6 +5,7 @@ import com.awonar.android.model.history.History
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarItemHistoryBinding
 import com.awonar.app.ui.history.adapter.HistoryItem
+import timber.log.Timber
 
 class HistoryViewHolder constructor(private val binding: AwonarItemHistoryBinding) :
     RecyclerView.ViewHolder(binding.root) {
@@ -24,15 +25,26 @@ class HistoryViewHolder constructor(private val binding: AwonarItemHistoryBindin
             binding.column4 = columns[3]
         }
         binding.awonarInsturmentOrderItem.setOnClickListener {
-            when (item.positionType) {
+            Timber.e("$item")
+            Timber.e("${item.detail} ${item.positionType == "market"}")
+            when (item.positionType?.lowercase()) {
                 "manual" -> item.history?.let { history ->
                     onClick?.invoke(history)
                 }
-                "market "-> item.detail?.let {
-                    onShowInsideInstrument?.invoke(it, item.positionType)
+                "market " -> {
+                    Timber.e("$item")
+                    item.detail?.let { detail ->
+                        onShowInsideInstrument?.invoke(detail, item.positionType)
+                    }
                 }
-                "user" ->  item.master?.username?.let {
-                    onShowInsideInstrument?.invoke(it, item.positionType)
+                "user" -> item.master?.username?.let { username ->
+                    onShowInsideInstrument?.invoke(username, item.positionType)
+                }
+                "user2" -> item.id?.let { id ->
+                    onShowInsideInstrument?.invoke(id, item.positionType)
+                }
+                else -> item.detail?.let { detail ->
+                    onShowInsideInstrument?.invoke(detail, item.positionType)
                 }
             }
 

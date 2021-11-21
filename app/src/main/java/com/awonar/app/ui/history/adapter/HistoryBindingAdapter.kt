@@ -1,24 +1,96 @@
 package com.awonar.app.ui.history.adapter
 
 import androidx.databinding.BindingAdapter
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavDirections
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.app.R
+import com.awonar.app.ui.history.HistoryFragmentDirections
+import com.awonar.app.ui.history.HistoryInsideFragmentDirections
+import com.awonar.app.ui.history.HistoryInsideViewModel
+import com.awonar.app.ui.history.HistoryViewModel
 import com.awonar.app.utils.ColorChangingUtil
 import com.awonar.app.utils.DateUtils
 import com.awonar.app.widget.InstrumentOrderView
 import timber.log.Timber
 
-@BindingAdapter("setHistoryAdapter")
-fun setHistoryAdapter(
+@BindingAdapter("setHistoryInsideAdapter", "viewModel")
+fun setHistoryInsideAdapter(
     recycler: RecyclerView,
-    history: MutableList<HistoryItem>
+    history: MutableList<HistoryItem>,
+    viewModel: HistoryInsideViewModel
 ) {
     if (recycler.adapter == null) {
         recycler.apply {
             adapter = HistoryAdapter()
             layoutManager =
                 LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
+        }
+    }
+    if ((recycler.adapter as HistoryAdapter).onShowInsideInstrument == null) {
+        (recycler.adapter as HistoryAdapter).onShowInsideInstrument = { id, type ->
+            if (type == "user2") {
+                viewModel.navgiationTo(
+                    HistoryInsideFragmentDirections.actionHistoryInsideFragmentToHistoryInsideLevelTwoFragment(
+                        id,
+                        0
+                    )
+                )
+            }
+        }
+    }
+    if (!recycler.isComputingLayout) {
+        (recycler.adapter as HistoryAdapter).apply {
+
+            itemLists = history
+        }
+    }
+}
+
+@BindingAdapter("setHistoryAdapter", "viewModel")
+fun setHistoryAdapter(
+    recycler: RecyclerView,
+    history: MutableList<HistoryItem>,
+    viewModel: HistoryViewModel
+) {
+    Timber.e("$history")
+    if (recycler.adapter == null) {
+        recycler.apply {
+            adapter = HistoryAdapter()
+            layoutManager =
+                LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
+        }
+    }
+    val adapter = recycler.adapter as HistoryAdapter
+    if (adapter.onLoad == null) {
+        adapter.onLoad = {
+            viewModel.getHistory(page = it)
+        }
+    }
+    if (adapter.onClick == null) {
+        adapter.onClick = { history ->
+            viewModel.navgiationTo(HistoryFragmentDirections.actionHistoryFragmentToHistoryDetailFragment())
+            viewModel.addHistoryDetail(history)
+        }
+    }
+    if (adapter.onShowInsideInstrument == null) {
+        adapter.onShowInsideInstrument = { id, type ->
+            Timber.e("$id,$type")
+            val direction: NavDirections? = when (type) {
+                "market" -> HistoryFragmentDirections.actionHistoryFragmentToHistoryInsideFragment(
+                    id,
+                    null,
+                    viewModel.timeStamp.value
+                )
+                "user" -> HistoryFragmentDirections.actionHistoryFragmentToHistoryInsideFragment(
+                    null,
+                    id,
+                    viewModel.timeStamp.value
+                )
+                else -> null
+            }
+            viewModel.navgiationTo(direction)
         }
     }
     if (!recycler.isComputingLayout) {
@@ -110,13 +182,15 @@ fun setHistoryColumns(
     recycler: RecyclerView,
     columns: List<String>?,
 ) {
-    columns?.let {
-        if (recycler.adapter != null) {
-            (recycler.adapter as HistoryAdapter).apply {
-                this.columns = columns
+    if (recycler.adapter == null) {
+        recycler.apply {
+            adapter = HistoryAdapter().apply {
             }
+            layoutManager =
+                LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
         }
     }
+    (recycler.adapter as HistoryAdapter).columns = columns ?: emptyList()
 }
 
 private fun getColumnColor(column: String, history: HistoryItem.PositionItem?): Int =

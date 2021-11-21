@@ -11,6 +11,9 @@ import retrofit2.http.Query
 
 interface HistoryService {
 
+    @GET("/api/v1/history/copy/id/{id}")
+    fun getAggregateWithCopy(@Path("id") id: String): Call<CopiesHistory>
+
     @GET("/api/v1/history/cash-flow")
     fun getCashFlow(
         @Query("startDate") startDate: Long,
@@ -19,7 +22,6 @@ interface HistoryService {
     @GET("/api/v1/history/copy/{username}")
     fun getCopiesHistory(
         @Path("username") username: String, @Query("page") page: Int = 1,
-        @Query("filter") filter: String = "",
         @Query("startDate") startDate: Long,
     ): Call<CopiesAggregateResponse?>
 
@@ -34,6 +36,15 @@ interface HistoryService {
     @GET("/api/v1/history")
     fun filterHistory(
         @Query("symbol") symbol: String,
+        @Query("limit") limit: Int = 10,
+        @Query("page") page: Int = 1,
+        @Query("filter") filter: String = "",
+        @Query("startDate") startDate: Long,
+    ): Call<HistoryResponse>
+
+    @GET("/api/v1/history")
+    fun filterCopyHistory(
+        @Query("copyId") copyId: String,
         @Query("limit") limit: Int = 10,
         @Query("page") page: Int = 1,
         @Query("filter") filter: String = "",
