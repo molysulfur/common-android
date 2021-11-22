@@ -22,7 +22,7 @@ class ConvertHistoryToItemUseCase @Inject constructor(
                     transactionType = it.transactionType,
                     history = it,
                     master = it.master,
-                    positionType = "manual"
+                    positionType = "manual",
                 )
                 11 -> HistoryItem.PositionItem(
                     invested = it.amount,

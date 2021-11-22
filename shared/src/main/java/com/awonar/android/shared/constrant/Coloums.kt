@@ -31,6 +31,9 @@ object Columns {
         "P/L%",
         "Open Time",
         "Close Time",
+        "End Value",
+        "BUY",
+        "SELL"
     )
 
 }

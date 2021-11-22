@@ -211,5 +211,8 @@ private fun setColumnPositionHistory(column: String, history: HistoryItem.Positi
         "p/l%" -> "%.2f%s".format(
             history?.plPercent, "%"
         )
+        "end value" -> "%.2f".format(
+            history?.endValue
+        )
         else -> ""
     }
