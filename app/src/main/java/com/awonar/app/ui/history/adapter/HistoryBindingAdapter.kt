@@ -214,5 +214,7 @@ private fun setColumnPositionHistory(column: String, history: HistoryItem.Positi
         "end value" -> "%.2f".format(
             history?.endValue
         )
+        "buy" -> "${history?.buy}"
+        "sell" -> "${history?.sell}"
         else -> ""
     }

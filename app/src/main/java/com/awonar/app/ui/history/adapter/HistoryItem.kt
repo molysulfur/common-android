@@ -43,7 +43,9 @@ sealed class HistoryItem(
         val picture: String? = null,
         val master: Master? = null,
         val history: History? = null,
-        val positionType: String? = null
+        val positionType: String? = null,
+        var buy: Float = 0f,
+        var sell: Float = 0f
     ) : HistoryItem(POSITION_HISTORY)
 
     @Parcelize

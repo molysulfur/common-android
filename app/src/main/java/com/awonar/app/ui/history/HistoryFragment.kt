@@ -11,26 +11,32 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.coroutineScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.awonar.app.databinding.AwonarFragmentHistoryBinding
 import com.awonar.app.dialog.menu.MenuDialog
 import com.awonar.app.dialog.menu.MenuDialogButtonSheet
 import com.awonar.app.ui.columns.ColumnsActivedActivity
 import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.history.adapter.HistoryAdapter
+import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.utils.ColorChangingUtil
 import com.molysulfur.library.extension.openActivity
 import com.molysulfur.library.extension.openActivityCompatForResult
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.coroutines.coroutineContext
 
 class HistoryFragment : Fragment() {
 
     private lateinit var filterDialog: MenuDialogButtonSheet
 
     private val viewModel: HistoryViewModel by activityViewModels()
+    private val marketViewModel: MarketViewModel by activityViewModels()
     private val columnsViewModel: ColumnsViewModel by activityViewModels()
 
     private val binding: AwonarFragmentHistoryBinding by lazy {
@@ -50,6 +56,21 @@ class HistoryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         launchAndRepeatWithViewLifecycle {
+            launch {
+                viewModel.historiesState.collect {
+                    if (binding.awonarHistoryRecyclerItems.adapter == null) {
+                        binding.awonarHistoryRecyclerItems.apply {
+                            layoutManager = LinearLayoutManager(
+                                requireContext(),
+                                LinearLayoutManager.VERTICAL,
+                                false
+                            )
+                            adapter = HistoryAdapter(marketViewModel)
+                        }
+                    }
+                    (binding.awonarHistoryRecyclerItems.adapter as HistoryAdapter).itemLists = it.toMutableList()
+                }
+            }
             launch {
                 viewModel.navigationInsideChannel.collect {
                     findNavController().navigate(it)

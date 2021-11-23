@@ -18,15 +18,13 @@ object Columns {
 
     val DEFAULT_COLUMN_HISTORY = listOf(
         "Invested",
-        "Open",
-        "Close",
+        "Open Time",
+        "Close Time",
         "P/L"
     )
 
     val COLUMNS_HISTORY = listOf(
         "Invested",
-        "Open",
-        "Close",
         "P/L",
         "P/L%",
         "Open Time",

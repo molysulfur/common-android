@@ -14,8 +14,14 @@ import com.awonar.app.ui.history.adapter.holder.CashFlowViewHolder
 import com.awonar.app.ui.history.adapter.holder.DividerViewHolder
 import com.awonar.app.ui.history.adapter.holder.HistoryViewHolder
 import com.awonar.app.ui.history.adapter.holder.LoadMoreViewHolder
+import com.awonar.app.ui.market.MarketViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
-class HistoryAdapter : RecyclerView.Adapter<ViewHolder>() {
+class HistoryAdapter constructor(private val marketViewModel: MarketViewModel? = null) :
+    RecyclerView.Adapter<ViewHolder>() {
+
+    private val dispatcher = CoroutineScope(Dispatchers.Default)
 
     var itemLists: MutableList<HistoryItem> = mutableListOf()
         set(value) {
@@ -63,6 +69,8 @@ class HistoryAdapter : RecyclerView.Adapter<ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         when (viewType) {
             HistoryType.POSITION_HISTORY -> HistoryViewHolder(
+                dispatcher,
+                marketViewModel,
                 AwonarItemHistoryBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,

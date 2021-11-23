@@ -2,12 +2,22 @@ package com.awonar.app.ui.history.adapter.holder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.history.History
+import com.awonar.android.shared.di.DefaultDispatcher
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarItemHistoryBinding
 import com.awonar.app.ui.history.adapter.HistoryItem
+import com.awonar.app.ui.market.MarketViewModel
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import timber.log.Timber
+import javax.inject.Inject
 
-class HistoryViewHolder constructor(private val binding: AwonarItemHistoryBinding) :
+class HistoryViewHolder constructor(
+    private val dispatcher: CoroutineScope,
+    private val marketViewModel: MarketViewModel?,
+    private val binding: AwonarItemHistoryBinding
+) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(
@@ -16,6 +26,16 @@ class HistoryViewHolder constructor(private val binding: AwonarItemHistoryBindin
         onClick: ((History) -> Unit)?,
         onShowInsideInstrument: ((String, String?) -> Unit)?
     ) {
+        dispatcher.launch {
+            marketViewModel?.quoteSteamingState?.collect {
+                val quote = it.find { it.id == item.history?.position?.instrument?.id }
+                quote?.let {
+                    item.buy = quote.bid
+                    item.sell = quote.ask
+                }
+                binding.position = item
+            }
+        }
         binding.position = item
         setupImageWithTransaction(item)
         if (columns.size >= 4) {
@@ -32,7 +52,6 @@ class HistoryViewHolder constructor(private val binding: AwonarItemHistoryBindin
                     onClick?.invoke(history)
                 }
                 "market " -> {
-                    Timber.e("$item")
                     item.detail?.let { detail ->
                         onShowInsideInstrument?.invoke(detail, item.positionType)
                     }

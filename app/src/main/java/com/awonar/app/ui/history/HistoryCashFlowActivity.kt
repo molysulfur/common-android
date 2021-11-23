@@ -2,9 +2,12 @@ package com.awonar.app.ui.history
 
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.awonar.app.databinding.AwonarActivityHistoryCashflowBinding
 import com.molysulfur.library.activity.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class HistoryCashFlowActivity : BaseActivity() {
@@ -22,5 +25,6 @@ class HistoryCashFlowActivity : BaseActivity() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         viewModel.getCashflow()
+
     }
 }
