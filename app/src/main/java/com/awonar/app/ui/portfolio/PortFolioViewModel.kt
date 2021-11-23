@@ -2,9 +2,7 @@ package com.awonar.app.ui.portfolio
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.awonar.android.model.portfolio.ConvertPositionItemWithCopier
-import com.awonar.android.model.portfolio.Copier
-import com.awonar.android.model.portfolio.Portfolio
+import com.awonar.android.model.portfolio.*
 import com.awonar.android.shared.domain.portfolio.*
 import com.awonar.android.shared.utils.WhileViewSubscribed
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
@@ -16,7 +14,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.awonar.android.model.portfolio.Position
 import com.awonar.app.domain.portfolio.*
 import timber.log.Timber
 
@@ -28,14 +25,6 @@ class PortFolioViewModel @Inject constructor(
     private val getPositionUseCase: GetPositionUseCase,
     private val getCopierUseCase: GetCopierUseCase,
     private val getPendingOrdersUseCase: GetPendingOrdersUseCase,
-    private var getActivedManualColumnUseCase: GetActivedManualColumnUseCase,
-    private var getActivedMarketColumnUseCase: GetActivedMarketColumnUseCase,
-    private var getManualColumnListUseCase: GetManualColumnListUseCase,
-    private var getMarketColumnListUseCase: GetMarketColumnListUseCase,
-    private var updateManualColumnUseCase: UpdateManualColumnUseCase,
-    private var updateMarketColumnUseCase: UpdateMarketColumnUseCase,
-    private var resetManualColumnUseCase: ResetManualColumnUseCase,
-    private var resetMarketColumnUseCase: ResetMarketColumnUseCase,
     private var convertPositionToItemUseCase: ConvertPositionToItemUseCase,
     private var convertCopierToItemUseCase: ConvertCopierToItemUseCase,
     private var convertGroupPositionToItemUseCase: ConvertGroupPositionToItemUseCase,
@@ -55,31 +44,13 @@ class PortFolioViewModel @Inject constructor(
     private val _portfolioType = MutableStateFlow("market")
     val portfolioType: StateFlow<String> get() = _portfolioType
 
-    private val _navigateActivedColumn = Channel<String>(capacity = Channel.CONFLATED)
-    val navigateActivedColumn: Flow<String> = _navigateActivedColumn.receiveAsFlow()
     private val _navigateInsideInstrumentPortfolio =
         Channel<Pair<String, String>>(capacity = Channel.CONFLATED)
     val navigateInsideInstrumentPortfolio: Flow<Pair<String, String>> =
         _navigateInsideInstrumentPortfolio.receiveAsFlow()
 
-    private val _sortColumnState = Channel<Pair<String, Boolean>>(capacity = Channel.CONFLATED)
-    val sortColumnState: Flow<Pair<String, Boolean>> = _sortColumnState.receiveAsFlow()
-
     private val _subscricbeQuote = Channel<List<Int>>(capacity = Channel.CONFLATED)
     val subscricbeQuote: Flow<List<Int>> = _subscricbeQuote.receiveAsFlow()
-
-    private val _activedColumnState: MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
-    val activedColumnState: StateFlow<List<String>> get() = _activedColumnState
-
-    val columnState: StateFlow<List<String>> = flow {
-        val list = when (_portfolioType.value) {
-            "manual" -> getManualColumnListUseCase(_activedColumnState.value).successOr(
-                emptyList()
-            )
-            else -> getMarketColumnListUseCase(_activedColumnState.value).successOr(emptyList())
-        }
-        emit(list)
-    }.stateIn(viewModelScope, WhileViewSubscribed, emptyList())
 
     val portfolioState: StateFlow<Portfolio?> = flow {
         getMyPortFolioUseCase(true).collect {
@@ -116,8 +87,6 @@ class PortFolioViewModel @Inject constructor(
                     convertToItem(data.positions, data.copies)
                 }
             }
-            val list = getActivedMarketColumnUseCase(Unit).successOr(emptyList())
-            _activedColumnState.emit(list)
         }
     }
 
@@ -128,57 +97,6 @@ class PortFolioViewModel @Inject constructor(
         val copierItems = convertCopierToItemUseCase(copies).successOr(emptyList())
         itemList.addAll(copierItems)
         _positionOrderList.emit(itemList)
-    }
-
-    fun activedColumnChange(text: String) {
-        viewModelScope.launch {
-            _navigateActivedColumn.send(text)
-        }
-    }
-
-    fun replaceActivedColumn(oldColumn: String, newColumn: String) {
-        viewModelScope.launch {
-            val activedList = _activedColumnState.value.toMutableList()
-            val index = activedList.indexOf(oldColumn)
-            activedList[index] = newColumn
-            _activedColumnState.emit(activedList)
-        }
-    }
-
-    fun saveActivedColumn() {
-        viewModelScope.launch {
-            val activedList = _activedColumnState.value.toMutableList()
-            when (_portfolioType.value) {
-                "manual" -> updateManualColumnUseCase(activedList)
-                "market" -> updateMarketColumnUseCase(activedList)
-            }
-        }
-    }
-
-    fun resetActivedColumn() {
-        viewModelScope.launch {
-            when (_portfolioType.value) {
-                "manual" -> resetManualColumnUseCase(Unit)
-                "market" -> resetMarketColumnUseCase(Unit)
-            }
-        }
-    }
-
-    fun sortColumn(coloumn: String, isDesc: Boolean) {
-        viewModelScope.launch {
-            _sortColumnState.send(Pair(coloumn, isDesc))
-        }
-    }
-
-    fun getActivedColoumn(type: String = "market") {
-        viewModelScope.launch {
-            val actived = when (type) {
-                "market" -> getActivedMarketColumnUseCase(Unit).successOr(emptyList())
-                "manual" -> getActivedManualColumnUseCase(Unit).successOr(emptyList())
-                else -> emptyList()
-            }
-            _activedColumnState.emit(actived)
-        }
     }
 
     fun togglePortfolio(type: String) {
@@ -272,11 +190,14 @@ class PortFolioViewModel @Inject constructor(
     fun getExposure(type: String? = null) {
         viewModelScope.launch {
             when (type) {
-                "stocks", "currencies", "crypto" -> getPieChartInstrumentExposureUseCase(Unit)
+                "stocks", "currencies", "crypto" -> getPieChartInstrumentExposureUseCase(type)
                 else -> getPieChartExposureUseCase(Unit)
             }.collect {
                 val data = it.successOr(emptyMap())
-                val items = convertExposureToPieChartUseCase(data).successOr(emptyList())
+                val items = convertExposureToPieChartUseCase( PieChartRequest(
+                    data,
+                    type in arrayListOf( "stocks", "currencies", "crypto")
+                )).successOr(emptyList())
                 _positionOrderList.emit(items.toMutableList())
             }
         }
@@ -290,7 +211,12 @@ class PortFolioViewModel @Inject constructor(
                 else -> getPieChartAllocateUseCase(Unit)
             }.collect {
                 val data = it.successOr(emptyMap())
-                val items = convertAllocateToPieChartUseCase(data).successOr(emptyList())
+                val items = convertAllocateToPieChartUseCase(
+                    PieChartRequest(
+                        data,
+                        type in arrayListOf("stocks", "currencies", "crypto")
+                    )
+                ).successOr(emptyList())
                 _positionOrderList.emit(items.toMutableList())
             }
         }

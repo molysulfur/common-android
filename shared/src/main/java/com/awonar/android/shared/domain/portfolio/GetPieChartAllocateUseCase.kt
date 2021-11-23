@@ -71,7 +71,6 @@ class GetPieChartAllocateUseCase @Inject constructor(
                     conversion.rateBid,
                     position.isBuy
                 )
-                Timber.e("getProfitLoss $pl")
                 emit(pl)
             }
         }

@@ -10,6 +10,10 @@
             type="com.awonar.app.ui.portfolio.PortFolioViewModel" />
 
         <variable
+            name="columnViewModel"
+            type="com.awonar.app.ui.columns.ColumnsViewModel" />
+
+        <variable
             name="market"
             type="com.awonar.app.ui.market.MarketViewModel" />
 
@@ -143,10 +147,10 @@
 
             <include
                 android:id="@+id/awonar_portfolio_include_column"
-                column1="@{column1}"
-                column2="@{column2}"
-                column3="@{column3}"
-                column4="@{column4}"
+                column1="@{columnViewModel.activedColumnState[0] ?? ``}"
+                column2="@{columnViewModel.activedColumnState[1] ?? ``}"
+                column3="@{columnViewModel.activedColumnState[2] ?? ``}"
+                column4="@{columnViewModel.activedColumnState[3] ?? ``}"
                 layout="@layout/awonar_include_column"
                 app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -158,10 +162,10 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/awonar_portfolio_navigation_host_portfolio"
             android:name="androidx.navigation.fragment.NavHostFragment"
-            activedColumn="@{viewModel.activedColumnState}"
+            activedColumn="@{columnViewModel.activedColumnState}"
+            quotes="@{market.quoteSteamingState}"
             setPositionAdapter="@{viewModel.positionOrderList}"
             viewModel="@{viewModel}"
-            quotes="@{market.quoteSteamingState}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />

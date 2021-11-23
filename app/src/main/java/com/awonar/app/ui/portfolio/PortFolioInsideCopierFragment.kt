@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.awonar.app.databinding.AwonarFragmentPortfolioInsideCopierBinding
+import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.market.MarketViewModel
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
@@ -17,6 +18,7 @@ import kotlinx.coroutines.launch
 class PortFolioInsideCopierFragment : Fragment() {
 
     private val portFolioViewModel: PortFolioViewModel by activityViewModels()
+    private val columnsViewModel: ColumnsViewModel by activityViewModels()
     private val marketViewModel: MarketViewModel by activityViewModels()
 
     private val args: PortFolioInsideCopierFragmentArgs by navArgs()
@@ -53,12 +55,12 @@ class PortFolioInsideCopierFragment : Fragment() {
             launch {
                 portFolioViewModel.copierState.collect {
                     marketViewModel.getConversionsRateList(it?.positions ?: emptyList())
-                    portFolioViewModel.getActivedColoumn("market")
+                    columnsViewModel.getActivedColumns()
                 }
             }
 
             launch {
-                portFolioViewModel.activedColumnState.collect { newColumn ->
+                columnsViewModel.activedColumnState.collect { newColumn ->
                     if (newColumn.isNotEmpty()) {
                         binding.column1 = newColumn[0]
                         binding.column2 = newColumn[1]
@@ -69,6 +71,7 @@ class PortFolioInsideCopierFragment : Fragment() {
             }
         }
         binding.viewModel = portFolioViewModel
+        binding.columnsViewModel = columnsViewModel
         binding.marketViewModel = marketViewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
@@ -76,6 +79,7 @@ class PortFolioInsideCopierFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        columnsViewModel.setColumnType("market")
         args.positionId.let {
             portFolioViewModel.getCopierPosition(it)
         }

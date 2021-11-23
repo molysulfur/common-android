@@ -10,6 +10,10 @@
             type="com.awonar.app.ui.portfolio.PortFolioViewModel" />
 
         <variable
+            name="columnsViewModel"
+            type="com.awonar.app.ui.columns.ColumnsViewModel" />
+
+        <variable
             name="marketViewModel"
             type="com.awonar.app.ui.market.MarketViewModel" />
 
@@ -85,9 +89,9 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/awonar_portfolio_inside_copier_recycler"
-                activedColumn="@{viewModel.activedColumnState}"
-                setPositionAdapter="@{viewModel.positionOrderList}"
+                activedColumn="@{columnsViewModel.activedColumnState}"
                 quotes="@{marketViewModel.quoteSteamingState}"
+                setPositionAdapter="@{viewModel.positionOrderList}"
                 viewModel="@{viewModel}"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -99,12 +103,11 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/awonar_portfolio_inside_copier_title_total_open"
-                style="@style/Awonar.Title"
-                quotes="@{marketViewModel.quoteSteamingState}"
-                setTotalOpen="@{viewModel.copierState}"
+                style="@style/Awonar.SubTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+                android:layout_margin="@dimen/awonar_size_text_extra_small"
+                android:paddingTop="@dimen/awonar_size_margin_padding_normal"
                 android:text="@string/awonar_text_total_open"
                 app:layout_constraintBottom_toTopOf="@+id/awonar_portfolio_inside_copier_text_total_open_invested" />
 
@@ -142,10 +145,11 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/awonar_portfolio_inside_copier_title_total_close"
-                style="@style/Awonar.Title"
+                style="@style/Awonar.SubTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+                android:layout_margin="@dimen/awonar_size_text_extra_small"
+                android:paddingTop="@dimen/awonar_size_margin_padding_normal"
                 android:text="@string/awonar_text_total_open"
                 app:layout_constraintBottom_toTopOf="@+id/awonar_portfolio_inside_copier_text_total_close_fee"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -160,17 +164,6 @@
                 android:layout_marginBottom="@dimen/awonar_size_margin_padding_normal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/awonar_portfolio_inside_copier_title_total_close"
-                tools:text="@string/awonar_example_name" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/awonar_portfolio_inside_copier_text_total_close_pl"
-                setTotalClose="@{viewModel.copierState}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
-                android:layout_marginBottom="@dimen/awonar_size_margin_padding_normal"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/awonar_portfolio_inside_copier_text_total_close_fee"
                 tools:text="@string/awonar_example_name" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

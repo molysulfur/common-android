@@ -15,14 +15,14 @@ import javax.inject.Inject
 class GetPieChartInstrumentExposureUseCase @Inject constructor(
     private val portfolioRepository: PortfolioRepository,
     @IoDispatcher dispatcher: CoroutineDispatcher
-) : FlowUseCase<Unit, Map<String, Double>>(dispatcher) {
-    override fun execute(parameters: Unit): Flow<Result<Map<String, Double>>> = flow {
+) : FlowUseCase<String, Map<String, Double>>(dispatcher) {
+    override fun execute(parameters: String): Flow<Result<Map<String, Double>>> = flow {
         portfolioRepository.getMyPositions().collect { result ->
-            val position = result.successOr(null)
+            val position = result.successOr(null)?.filter { it.instrument.categories?.indexOf(parameters) ?: -1 >= 0 }
             val totalExposure: Double = position?.sumOf { it.exposure.toDouble() } ?: 0.0
             val exposure = HashMap<String, Double>()
             val positionByType: Map<String?, List<Position>> =
-                position?.groupBy { it.instrument.categories?.get(0) } ?: emptyMap()
+                position?.groupBy { it.instrument.symbol } ?: emptyMap()
             for ((k, v) in positionByType) {
                 exposure[k ?: ""] =
                     v.sumOf { it.exposure.toDouble() }.div(totalExposure).times(100)

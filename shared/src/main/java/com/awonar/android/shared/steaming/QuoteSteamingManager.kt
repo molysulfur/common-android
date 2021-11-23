@@ -2,6 +2,7 @@ package com.awonar.android.shared.steaming
 
 import com.awonar.android.model.market.Quote
 import com.awonar.android.shared.api.NetworkClient
+import com.awonar.android.shared.db.hawk.AccessTokenManager
 import com.google.gson.Gson
 import okhttp3.*
 import okio.ByteString
@@ -9,10 +10,8 @@ import org.json.JSONObject
 import timber.log.Timber
 import java.lang.Exception
 import java.util.*
-import java.util.Date.from
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.collections.ArrayList
 
 interface QuoteSteamingListener {
     fun marketStatusCallback(event: String, data: Any)
@@ -25,7 +24,10 @@ object QuoteSteamingEvent {
 }
 
 @Singleton
-class QuoteSteamingManager @Inject constructor(private val networkClient: NetworkClient) :
+class QuoteSteamingManager @Inject constructor(
+    private val accessTokenManager: AccessTokenManager,
+    private val networkClient: NetworkClient
+) :
     WebSocketListener() {
 
     companion object {
@@ -49,7 +51,8 @@ class QuoteSteamingManager @Inject constructor(private val networkClient: Networ
 
 
     fun send(event: String, data: String) {
-        val request = "{\"event\":\"${event}\",\"data\":\"${data}\"}"
+        val request =
+            "{\"event\":\"${event}\",\"data\":\"${data}\",\"id\":\"${accessTokenManager.getAccessToken()}\"}"
         webSocket?.send(request)
     }
 
@@ -81,7 +84,7 @@ class QuoteSteamingManager @Inject constructor(private val networkClient: Networ
     }
 
     private fun prase(message: String) {
-        Timber.d(message)
+//        Timber.d(message)
         val obj = JSONObject(message)
         val event = obj.get(EVENT_KEY).toString()
         val data = obj.get(DATA_KEY).toString()

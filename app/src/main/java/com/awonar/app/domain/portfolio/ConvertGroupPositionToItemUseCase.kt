@@ -42,7 +42,10 @@ class ConvertGroupPositionToItemUseCase @Inject constructor(
                     }.toDouble()
                 })
             }
-            val leverage = (positions.sumOf { it.leverage }).div(invested)
+            val leverage = (positions.sumOf {
+                val rate = currenciesRepository.getConversionByInstrumentId(key).rateBid
+                it.openRate.times(it.units).times(rate).toDouble()
+            }).div(invested)
             val fees = positions.sumOf { it.totalFees.toDouble() }
             val current = 0f // after get realtime
             val pl = 0f // cal after get realtime
@@ -106,4 +109,18 @@ class ConvertGroupPositionToItemUseCase @Inject constructor(
         }
         return 0f
     }
+
+    private fun calAvgOpen(buyPositions: List<Position>, sellPosition: List<Position>): Double {
+        val sumBuyOpen = buyPositions.sumOf {
+            (it.units * it.openRate).toDouble()
+        }
+        val sumSellOpen = buyPositions.sumOf {
+            (it.units * it.openRate).toDouble()
+        }
+        val sumBuyUnit = buyPositions.sumOf { it.units.toDouble() }
+        val sumSellUnit = sellPosition.sumOf { it.units.toDouble() }
+
+        return (sumBuyOpen.minus(sumSellOpen)).div((sumBuyUnit - sumSellUnit))
+    }
 }
+

@@ -18,7 +18,10 @@ import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentPortfolioBinding
 import com.awonar.app.dialog.menu.MenuDialog
 import com.awonar.app.dialog.menu.MenuDialogButtonSheet
+import com.awonar.app.ui.columns.ColumnsActivedActivity
+import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.market.MarketViewModel
+import com.awonar.app.ui.portfolio.adapter.OrderPortfolioAdapter
 import com.molysulfur.library.extension.openActivityCompatForResult
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
@@ -29,44 +32,15 @@ class PortFolioFragment : Fragment() {
 
     private val portViewModel: PortFolioViewModel by activityViewModels()
     private val marketViewModel: MarketViewModel by activityViewModels()
+    private val columnsViewModel: ColumnsViewModel by activityViewModels()
 
-    private val sectorDialog: MenuDialogButtonSheet by lazy {
-        val menus = arrayListOf(
-            MenuDialog(
-                key = "com.awonar.app.ui.portfolio.sector.history",
-                text = "History"
-            ),
-            MenuDialog(
-                key = "com.awonar.app.ui.portfolio.sector.orders",
-                text = "Orders"
-            )
-        )
-        MenuDialogButtonSheet.Builder()
-            .setListener(object : MenuDialogButtonSheet.MenuDialogButtonSheetListener {
-                override fun onMenuClick(menu: MenuDialog) {
-                    var title = ""
-                    when (menu.key) {
-                        "com.awonar.app.ui.portfolio.sector.orders" -> {
-                            title = "Orders"
-                            portViewModel.getOrdersPosition()
-//                            portViewModel.togglePortfolio(title)
-                        }
-                        else -> {
-                        }
-                    }
-                    binding.awonarPortfolioTextTitleSection.text = title
-                }
-            })
-            .setMenus(menus)
-            .build()
-    }
+    private lateinit var sectorDialog: MenuDialogButtonSheet
 
 
     private val activityResult: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
             if (activityResult.resultCode == Activity.RESULT_OK) {
-                val tag = binding.awonarPortfolioImageChangeStyle.tag
-                portViewModel.getActivedColoumn("$tag")
+                columnsViewModel.getActivedColumns()
             }
         }
 
@@ -80,37 +54,58 @@ class PortFolioFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         launchAndRepeatWithViewLifecycle {
-            portViewModel.portfolioState.collect {
-                binding.awonarPortfolioTextTitleAvailable.text =
-                    "Available : \$%.2f".format(it?.available ?: 0f)
-                binding.awonarPortfolioTextTitleTotalAllocate.text =
-                    "Allocate : \$%.2f".format(it?.totalAllocated ?: 0f)
-            }
-        }
-        launchAndRepeatWithViewLifecycle {
-            portViewModel.navigateInsideInstrumentPortfolio.collect {
-                when (it.second) {
-                    "instrument" -> findNavController()
-                        .navigate(
-                            PortFolioFragmentDirections.actionPortFolioFragmentToPortFolioInsideInstrumentPortfolioFragment()
-                                .apply {
-                                    instrumentId = it.first.toInt()
-                                }
-                        )
-                    "copier" -> findNavController()
-                        .navigate(
-                            PortFolioFragmentDirections.actionPortFolioFragmentToPortFolioInsideCopierPortfolioFragment(
-                                it.first
-                            )
-                        )
+            launch {
+                columnsViewModel.sortColumnState.collect { sort ->
+                    (binding.awonarPortfolioNavigationHostPortfolio.adapter as? OrderPortfolioAdapter)?.let {
+                        it.sortColumn(sort.first, sort.second)
+                    }
                 }
-
             }
-        }
-        launchAndRepeatWithViewLifecycle {
+            launch {
+                columnsViewModel.activedColumnState.collect {
+                    if (it.size >= 4) {
+                        binding.column1 = it[0]
+                        binding.column2 = it[1]
+                        binding.column3 = it[2]
+                        binding.column4 = it[3]
+                    }
+                }
+            }
+            launch {
+                portViewModel.portfolioState.collect {
+                    binding.awonarPortfolioTextTitleAvailable.text =
+                        "Available : \$%.2f".format(it?.available ?: 0f)
+                    binding.awonarPortfolioTextTitleTotalAllocate.text =
+                        "Allocate : \$%.2f".format(it?.totalAllocated ?: 0f)
+                }
+            }
+            launch {
+                portViewModel.navigateInsideInstrumentPortfolio.collect {
+                    when (it.second) {
+                        "instrument" -> findNavController()
+                            .navigate(
+                                PortFolioFragmentDirections.actionPortFolioFragmentToPortFolioInsideInstrumentPortfolioFragment()
+                                    .apply {
+                                        instrumentId = it.first.toInt()
+                                    }
+                            )
+                        "copier" -> findNavController()
+                            .navigate(
+                                PortFolioFragmentDirections.actionPortFolioFragmentToPortFolioInsideCopierPortfolioFragment(
+                                    it.first
+                                )
+                            )
+                    }
+
+                }
+            }
             launch {
                 portViewModel.portfolioType.collect {
-                    portViewModel.getActivedColoumn(it)
+                    binding.awonarPortfolioImageChangeStyle.tag = it
+                    fetchPosition(it)
+                    visibleColumns(it)
+                    setupPositionType(it)
+                    columnsViewModel.setColumnType(it)
                 }
             }
             launch {
@@ -120,36 +115,63 @@ class PortFolioFragment : Fragment() {
                     }
                 }
             }
-            launch {
-                portViewModel.activedColumnState.collect { newColumn ->
-                    if (newColumn.isNotEmpty()) {
-                        binding.column1 = newColumn[0]
-                        binding.column2 = newColumn[1]
-                        binding.column3 = newColumn[2]
-                        binding.column4 = newColumn[3]
-                    }
-                }
-            }
         }
         binding.viewModel = portViewModel
+        binding.columnViewModel = columnsViewModel
         binding.market = marketViewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
+    private fun setupPositionType(type: String) {
+        val iconRes = when (type) {
+            "market" -> R.drawable.awonar_ic_list
+            "manual" -> R.drawable.awonar_ic_card_list
+            "card" -> R.drawable.awonar_ic_chart
+            "piechart" -> R.drawable.awonar_ic_list
+            else -> 0
+        }
+        binding.awonarPortfolioImageChangeStyle.setImageResource(iconRes)
+    }
+
+    private fun visibleColumns(type: String) {
+        when (type) {
+            "market" -> portViewModel.getMarketPosition()
+            "manual" -> portViewModel.getManualPosition()
+            "card" -> portViewModel.getCardPosition()
+            "piechart" -> portViewModel.getExposure()
+        }
+    }
+
+    private fun fetchPosition(type: String) {
+        val visible = when (type) {
+            "market" -> View.VISIBLE
+            "manual" -> View.VISIBLE
+            "card" -> View.GONE
+            "piechart" -> View.GONE
+            else -> View.GONE
+        }
+        binding.awonarPortfolioIncludeColumn.awonarIncludeColumnContainer.visibility = visible
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupDialog()
         binding.awonarPortfolioImageChangeStyle.tag = "market"
+        columnsViewModel.setColumnType("${binding.awonarPortfolioImageChangeStyle.tag}")
         portViewModel.getMarketPosition()
         marketViewModel.subscribe()
         binding.awonarPortfolioTextTitleSection.setOnClickListener {
+            if (sectorDialog.isAdded) {
+                sectorDialog.dismiss()
+            }
             sectorDialog.show(childFragmentManager, MenuDialogButtonSheet.TAG)
         }
         binding.awonarPortfolioImageIconList.setOnClickListener {
             val tag = binding.awonarPortfolioImageChangeStyle.tag
             openActivityCompatForResult(
-                activityResult, PortFolioColumnActivedActivity::class.java, bundleOf(
-                    PortFolioColumnActivedActivity.EXTRA_PORTFOLIO_TYPE to tag
+                activityResult, ColumnsActivedActivity::class.java, bundleOf(
+                    ColumnsActivedActivity.EXTRA_COLUMNS_ACTIVED to tag
                 )
             )
         }
@@ -159,37 +181,47 @@ class PortFolioFragment : Fragment() {
         setColumnListener()
     }
 
+    private fun setupDialog() {
+        val menus = arrayListOf(
+            MenuDialog(
+                key = "com.awonar.app.ui.portfolio.sector.history",
+                text = "History"
+            ),
+            MenuDialog(
+                key = "com.awonar.app.ui.portfolio.sector.orders",
+                text = "Orders"
+            )
+        )
+        sectorDialog = MenuDialogButtonSheet.Builder()
+            .setListener(object : MenuDialogButtonSheet.MenuDialogButtonSheetListener {
+                override fun onMenuClick(menu: MenuDialog) {
+                    var title = binding.awonarPortfolioTextTitleSection.text
+                    when (menu.key) {
+                        "com.awonar.app.ui.portfolio.sector.orders" -> {
+                            title = "Orders"
+                            portViewModel.getOrdersPosition()
+                        }
+                        "com.awonar.app.ui.portfolio.sector.history" -> {
+                            findNavController().navigate(PortFolioFragmentDirections.actionPortFolioFragmentToHistoryFragment())
+                        }
+                        else -> {
+                        }
+                    }
+                    binding.awonarPortfolioTextTitleSection.text = title
+                }
+            })
+            .setMenus(menus)
+            .build()
+    }
+
     private fun toggle() {
         var tag = binding.awonarPortfolioImageChangeStyle.tag
-        when (tag) {
-            "market" -> {
-                tag = "manual"
-                binding.awonarPortfolioIncludeColumn.awonarIncludeColumnContainer.visibility =
-                    View.VISIBLE
-                portViewModel.getManualPosition()
-                binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_chart)
-            }
-            "manual" -> {
-                tag = "card"
-                binding.awonarPortfolioIncludeColumn.awonarIncludeColumnContainer.visibility =
-                    View.GONE
-                portViewModel.getCardPosition()
-                binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_list)
-            }
-            "card" -> {
-                tag = "piechart"
-                portViewModel.getAllocate()
-                binding.awonarPortfolioIncludeColumn.awonarIncludeColumnContainer.visibility =
-                    View.GONE
-            }
-            else -> {
-                tag = "market"
-                portViewModel.getMarketPosition()
-                binding.awonarPortfolioIncludeColumn.awonarIncludeColumnContainer.visibility =
-                    View.VISIBLE
-            }
+        tag = when (tag) {
+            "market" -> "manual"
+            "manual" -> "card"
+            "card" -> "piechart"
+            else -> "market"
         }
-        binding.awonarPortfolioImageChangeStyle.tag = tag
         portViewModel.togglePortfolio(tag)
     }
 
@@ -197,7 +229,7 @@ class PortFolioFragment : Fragment() {
         binding.awonarPortfolioIncludeColumn.apply {
             awonarIncludeTextColumnOne.setOnClickListener {
                 val tag = awonarIncludeTextColumnOne.tag
-                portViewModel.sortColumn(
+                columnsViewModel.sortColumn(
                     awonarIncludeTextColumnOne.text.toString(),
                     tag == "DESC"
                 )
@@ -205,7 +237,7 @@ class PortFolioFragment : Fragment() {
             }
             awonarIncludeTextColumnTwo.setOnClickListener {
                 val tag = awonarIncludeTextColumnTwo.tag
-                portViewModel.sortColumn(
+                columnsViewModel.sortColumn(
                     awonarIncludeTextColumnTwo.text.toString(),
                     tag == "DESC"
                 )
@@ -213,7 +245,7 @@ class PortFolioFragment : Fragment() {
             }
             awonarIncludeTextColumnThree.setOnClickListener {
                 val tag = awonarIncludeTextColumnThree.tag
-                portViewModel.sortColumn(
+                columnsViewModel.sortColumn(
                     awonarIncludeTextColumnThree.text.toString(),
                     tag == "DESC"
                 )
@@ -221,7 +253,7 @@ class PortFolioFragment : Fragment() {
             }
             awonarIncludeTextColumnFour.setOnClickListener {
                 val tag = awonarIncludeTextColumnFour.tag
-                portViewModel.sortColumn(
+                columnsViewModel.sortColumn(
                     awonarIncludeTextColumnFour.text.toString(),
                     tag == "DESC"
                 )

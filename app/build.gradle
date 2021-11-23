@@ -106,5 +106,5 @@ dependencies {
     implementation 'io.supercharge:shimmerlayout:2.1.0'
     implementation 'com.akexorcist:dialog-interactor:1.0.0'
     implementation 'com.github.PhilJay:MPAndroidChart:3.1.0'
-
+    implementation "androidx.paging:paging-runtime-ktx:3.0.1"
 }

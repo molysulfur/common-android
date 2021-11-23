@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/portFolioColumnActivedFragment"
-        android:name="com.awonar.app.ui.portfolio.PortFolioColumnActivedFragment"
+        android:name="com.awonar.app.ui.columns.ColumnsActivedFragment"
         android:label="PortFolioColumnActivedFragment"
         tools:layout="@layout/awonar_fragment_portfolio_column_actived">
         <action
@@ -21,11 +21,15 @@
         <argument
             android:name="portfolio_type"
             app:argType="string" />
+
+        <argument
+            android:name="actived_columns"
+            app:argType="string[]" />
     </fragment>
 
     <fragment
         android:id="@+id/portFolioColumnFragment"
-        android:name="com.awonar.app.ui.portfolio.PortFolioColumnFragment"
+        android:name="com.awonar.app.ui.columns.ColumnsFragment"
         android:label="PortFolioColumnFragment"
         tools:layout="@layout/awonar_fragment_portfolio_column_list">
         <argument

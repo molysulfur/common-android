@@ -1,4 +1,4 @@
-package com.awonar.app.ui.portfolio
+package com.awonar.app.ui.columns
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,21 +7,18 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.awonar.app.databinding.AwonarFragmentPortfolioColumnActivedBinding
-import com.awonar.app.databinding.AwonarFragmentPortfolioColumnListBinding
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class PortFolioColumnFragment : Fragment() {
+class ColumnsActivedFragment : Fragment() {
 
-    private val binding: AwonarFragmentPortfolioColumnListBinding by lazy {
-        AwonarFragmentPortfolioColumnListBinding.inflate(layoutInflater)
+    private val binding: AwonarFragmentPortfolioColumnActivedBinding by lazy {
+        AwonarFragmentPortfolioColumnActivedBinding.inflate(layoutInflater)
     }
 
-    private val args: PortFolioColumnFragmentArgs by navArgs()
-    private val viewModel: PortFolioViewModel by activityViewModels()
+    private val viewModel: ColumnsViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,11 +27,10 @@ class PortFolioColumnFragment : Fragment() {
     ): View {
         launchAndRepeatWithViewLifecycle {
             launch {
-                viewModel.navigateActivedColumn.collect { newColumn ->
-                    args.activedColumnName.let { oldColumn ->
-                        viewModel.replaceActivedColumn(oldColumn = oldColumn, newColumn = newColumn)
-                        findNavController().popBackStack()
-                    }
+                viewModel.navigateActivedColumn.collect {
+                    val action = ColumnsActivedFragmentDirections
+                        .actionPortFolioColumnActivedFragmentToPortFolioColumnFragment(it)
+                    findNavController().navigate(action)
                 }
             }
         }
@@ -45,9 +41,5 @@ class PortFolioColumnFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.awonarPortfolioColumnToolbar.setNavigationOnClickListener {
-            findNavController().popBackStack()
-        }
     }
-
 }

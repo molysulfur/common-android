@@ -35,6 +35,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var onClick: ((String, String) -> Unit)? = null
     var onButtonClick: ((String) -> Unit)? = null
+    var onViewAllClick: (() -> Unit)? = null
     var onPieChartClick: ((String?) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
@@ -109,6 +110,13 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     false
                 )
             )
+            OrderPortfolioType.VIEWALL_BUTTON -> ViewAllViewHolder(
+                AwonarItemButtonViewmoreBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
             OrderPortfolioType.PIECHART_PORTFOLIO -> PieChartViewHolder(
                 AwonarItemPiechartBinding.inflate(
                     LayoutInflater.from(parent.context),
@@ -166,6 +174,10 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 quote,
                 onClick
             )
+            is ViewAllViewHolder -> holder.bind(
+                item as OrderPortfolioItem.ViewAllItem,
+                onViewAllClick
+            )
         }
     }
 
@@ -205,6 +217,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         "Net Invest" -> item.netInvested
         "CSL" -> item.copyStopLoss
         "CSL(%)" -> item.copyStopLossPercent
+        "Avg. Open" -> item.avgOpen
         else -> 0f
     }
 
@@ -229,6 +242,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         "TP($)" -> item.amountTakeProfit
         "SL(%)" -> item.stopLossPercent
         "TP(%)" -> item.takeProfitPercent
+        "Avg. Open" -> item.open
         else -> 0f
     }
 

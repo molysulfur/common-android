@@ -16,12 +16,18 @@ import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.ORDER_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.PIECHART_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.SUBTITLE_CENTER_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.TITLE_CENTER_PORTFOLIO
+import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.VIEWALL_BUTTON
 import com.github.mikephil.charting.data.PieEntry
 import kotlinx.parcelize.Parcelize
 
 sealed class OrderPortfolioItem(
     val type: Int,
 ) : Parcelable {
+
+    @Parcelize
+    class ViewAllItem(
+        val text: String
+    ) : OrderPortfolioItem(VIEWALL_BUTTON)
 
     @Parcelize
     class PieChartItem(

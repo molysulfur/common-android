@@ -62,4 +62,10 @@
     <string name="awonar_text_rate">Rate</string>
     <string name="awonar_text_market">Market</string>
     <string name="awonar_text_total_open">Total Open</string>
+    <string name="awonar_title_history">History</string>
+    <string name="awonar_text_invested">Invested</string>
+    <string name="awonar_title_total_net_withdraw_amount">Total Net Withdraw amount</string>
+    <string name="awonar_title_withdraw_fee">Withdraw Fee</string>
+    <string name="awonar_title_local_amount">Local Amount</string>
+    <string name="awonar_text_action">Action</string>
 </resources>

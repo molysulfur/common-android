@@ -33,6 +33,15 @@
             app:popEnterAnim="@anim/common_anim_left_to_right_in"
             app:popExitAnim="@anim/common_anim_left_to_right_out"
             app:popUpTo="@+id/portFolioFragment" />
+
+        <action
+            android:id="@+id/action_portFolioFragment_to_historyFragment"
+            app:destination="@+id/historyFragment"
+            app:enterAnim="@anim/common_anim_right_to_left_in"
+            app:exitAnim="@anim/common_anim_right_to_left_out"
+            app:popEnterAnim="@anim/common_anim_left_to_right_in"
+            app:popExitAnim="@anim/common_anim_left_to_right_out"
+            app:popUpTo="@+id/portFolioFragment" />
     </fragment>
 
     <fragment
@@ -105,6 +114,75 @@
         <argument
             android:name="positionId"
             app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/historyDetailFragment"
+        android:name="com.awonar.app.ui.history.HistoryDetailFragment"
+        android:label="HistoryDetailFragment"></fragment>
+
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.awonar.app.ui.history.HistoryFragment"
+        android:label="HistoryFragment">
+        <action
+            android:id="@+id/action_historyFragment_to_historyDetailFragment"
+            app:destination="@+id/historyDetailFragment"
+            app:enterAnim="@anim/common_anim_right_to_left_in"
+            app:exitAnim="@anim/common_anim_right_to_left_out"
+            app:popEnterAnim="@anim/common_anim_left_to_right_in"
+            app:popExitAnim="@anim/common_anim_left_to_right_out" />
+
+        <action
+            android:id="@+id/action_historyFragment_to_historyInsideFragment"
+            app:destination="@+id/historyInsideFragment"
+            app:enterAnim="@anim/common_anim_right_to_left_in"
+            app:exitAnim="@anim/common_anim_right_to_left_out"
+            app:popEnterAnim="@anim/common_anim_left_to_right_in"
+            app:popExitAnim="@anim/common_anim_left_to_right_out" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/historyInsideFragment"
+        android:name="com.awonar.app.ui.history.HistoryInsideFragment"
+        android:label="HistoryInsideFragment">
+
+        <action
+            android:id="@+id/action_historyInsideFragment_to_historyInsideLevelTwoFragment"
+            app:destination="@+id/historyInsideLevelTwoFragment"
+            app:enterAnim="@anim/common_anim_right_to_left_in"
+            app:exitAnim="@anim/common_anim_right_to_left_out"
+            app:popEnterAnim="@anim/common_anim_left_to_right_in"
+            app:popExitAnim="@anim/common_anim_left_to_right_out" />
+
+        <argument
+            android:name="symbol"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="copy"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="timestamp"
+            app:argType="long" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/historyInsideLevelTwoFragment"
+        android:name="com.awonar.app.ui.history.HistoryInsideLevelTwoFragment"
+        android:label="HistoryInsideLevelTwoFragment">
+        <argument
+            android:name="copy"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="timestamp"
+            app:argType="long" />
     </fragment>
 
 
