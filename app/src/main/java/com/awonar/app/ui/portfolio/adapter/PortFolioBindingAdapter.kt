@@ -1,7 +1,6 @@
 package com.awonar.app.ui.portfolio
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.graphics.Canvas
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
@@ -14,8 +13,10 @@ import com.awonar.android.model.portfolio.Position
 import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.app.R
+import com.awonar.app.ui.portfolio.adapter.IPortfolioListItemTouchHelperCallback
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioAdapter
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
+import com.awonar.app.ui.portfolio.adapter.PortfolioListItemTouchHelperCallback
 import com.awonar.app.utils.DateUtils
 import com.awonar.app.widget.CopierPositionCardView
 import com.awonar.app.widget.InstrumentOrderView
@@ -53,15 +54,25 @@ fun setOrderAdapter(
                 }
             }
         }
-        val callback = PortfolioListItemTouchHelperCallback(recycler.context)
+        val callback = PortfolioListItemTouchHelperCallback(
+            object : IPortfolioListItemTouchHelperCallback {
+                override fun onClick(position: Int) {
+                    if (position >= 0) {
+                        viewModel.showEditDialog(position)
+                    }
+                }
+            },
+            recycler.context
+        )
         val helper = ItemTouchHelper(callback)
         helper.attachToRecyclerView(recycler)
-        recycler.addItemDecoration(object : RecyclerView.ItemDecoration() {
-            override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-                super.onDraw(c, parent, state)
-                callback.onDraw(c)
-            }
-        })
+        recycler.addItemDecoration(
+            object : RecyclerView.ItemDecoration() {
+                override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+                    super.onDraw(c, parent, state)
+                    callback.onDraw(c)
+                }
+            })
     }
     val adapter = recycler.adapter as OrderPortfolioAdapter
     adapter.columns = activedColumn
@@ -202,7 +213,14 @@ fun setPositionCardAdapter(
                 }
             }
         }
-        val callback = PortfolioListItemTouchHelperCallback(recycler.context)
+        val callback = PortfolioListItemTouchHelperCallback(
+            object : IPortfolioListItemTouchHelperCallback {
+                override fun onClick(position: Int) {
+
+                }
+            },
+            recycler.context
+        )
         val helper = ItemTouchHelper(callback)
         helper.attachToRecyclerView(recycler)
         recycler.addItemDecoration(object : RecyclerView.ItemDecoration() {
@@ -347,7 +365,16 @@ fun setPositionAdapter(
                 }
             }
         }
-        val callback = PortfolioListItemTouchHelperCallback(recycler.context)
+        val callback = PortfolioListItemTouchHelperCallback(
+            object : IPortfolioListItemTouchHelperCallback {
+                override fun onClick(position: Int) {
+                    if (position >= 0) {
+                        viewModel.showEditDialog(position)
+                    }
+                }
+            },
+            recycler.context
+        )
         val helper = ItemTouchHelper(callback)
         helper.attachToRecyclerView(recycler)
         recycler.addItemDecoration(object : RecyclerView.ItemDecoration() {

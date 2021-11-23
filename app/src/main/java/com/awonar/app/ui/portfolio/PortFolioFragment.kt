@@ -21,6 +21,8 @@ import com.awonar.app.dialog.menu.MenuDialogButtonSheet
 import com.awonar.app.ui.columns.ColumnsActivedActivity
 import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.market.MarketViewModel
+import com.awonar.app.ui.order.OrderDialog
+import com.awonar.app.ui.order.edit.OrderEditDialog
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioAdapter
 import com.molysulfur.library.extension.openActivityCompatForResult
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle

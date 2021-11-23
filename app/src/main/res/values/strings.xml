@@ -68,4 +68,6 @@
     <string name="awonar_title_withdraw_fee">Withdraw Fee</string>
     <string name="awonar_title_local_amount">Local Amount</string>
     <string name="awonar_text_action">Action</string>
+    <string name="awonar_title_take_profit">Take Profit</string>
+    <string name="awonar_title_stoploss">Stop Loss</string>
 </resources>

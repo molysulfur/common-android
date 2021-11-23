@@ -22,7 +22,8 @@ import javax.inject.Inject
 @HiltViewModel
 class OrderViewModel @Inject constructor(
     private val validateRateTakeProfitWithBuyUseCase: ValidateRateTakeProfitWithBuyUseCase,
-    private val openOrderUseCase: OpenOrderUseCase
+    private val openOrderUseCase: OpenOrderUseCase,
+    private val calculateAmountTpSlUseCase: CalculateAmountTpSlUseCase
 ) : ViewModel() {
 
     private val _openOrderState = Channel<String>(capacity = Channel.CONFLATED)
@@ -62,6 +63,46 @@ class OrderViewModel @Inject constructor(
 //                    _takeProfitState.emit(tp)
                 }
             }
+        }
+    }
+
+    private val _takeProfitState = MutableStateFlow(Pair(0f, 0f))
+    val takeProfitState: StateFlow<Pair<Float, Float>> get() = _takeProfitState
+
+    fun setTakeProfit(
+        tp: Float,
+        type: String? = null,
+        current: Float,
+        unit: Float,
+        instrumentId: Int,
+        isBuy: Boolean
+    ) {
+        viewModelScope.launch {
+            val state: Pair<Float, Float> = _takeProfitState.value.copy()
+            /**
+             * first = rate
+             * second = amount
+             */
+            var first = state.first
+            var second = state.second
+            val newTpSl = when (type) {
+                "rate" -> {
+                    second = tp
+                    val request = TpSlRequest(
+                        tpsl = Pair(first, second),
+                        current = current,
+                        unit = unit,
+                        instrumentId = instrumentId,
+                        isBuy = isBuy
+                    )
+                    calculateAmountTpSlUseCase(request).successOr(Pair(first, second))
+                }
+                else -> {
+                    first = tp
+                    Pair(first, second)
+                }
+            }
+            _takeProfitState.value = newTpSl
         }
     }
 

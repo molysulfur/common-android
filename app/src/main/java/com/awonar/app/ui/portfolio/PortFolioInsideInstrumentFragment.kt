@@ -10,6 +10,7 @@ import androidx.navigation.fragment.navArgs
 import com.awonar.app.databinding.AwonarFragmentPortfolioInsideInstrumentBinding
 import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.market.MarketViewModel
+import com.awonar.app.ui.order.edit.OrderEditDialog
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -32,6 +33,16 @@ class PortFolioInsideInstrumentFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         launchAndRepeatWithViewLifecycle {
+            launch {
+                portFolioViewModel.editDialog.collect { position ->
+                    position?.let {
+                        OrderEditDialog.Builder()
+                            .setPosition(it)
+                            .build()
+                            .show(childFragmentManager)
+                    }
+                }
+            }
             launch {
                 columnsViewModel.activedColumnState.collect { newColumn ->
                     binding.column1 = newColumn[0]
