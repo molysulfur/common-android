@@ -39,9 +39,26 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
     ): View {
         binding = AwonarDialogOrderEditBinding.inflate(inflater)
         binding.awonarOrderEditTextNumberpickerTp.setPrefix("$")
+        binding.awonarOrderEditTextNumberpickerSl.setPrefix("$")
         launchAndRepeatWithViewLifecycle {
             orderViewModel.takeProfitError.collect {
                 binding.awonarOrderEditTextNumberpickerTp.setHelp(it)
+            }
+        }
+        launchAndRepeatWithViewLifecycle {
+            orderViewModel.stopLossError.collect {
+                binding.awonarOrderEditTextNumberpickerSl.setHelp(it)
+            }
+        }
+        launchAndRepeatWithViewLifecycle {
+            orderViewModel.stopLossState.collect {
+                position?.let {
+                    orderViewModel.validateStopLoss(
+                        position = it,
+                        current = price
+                    )
+                }
+                binding.awonarOrderEditTextNumberpickerSl.setNumber(it)
             }
         }
         launchAndRepeatWithViewLifecycle {
@@ -49,8 +66,7 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
                 position?.let {
                     orderViewModel.validateTakeProfit(
                         position = it,
-                        current = price,
-                        isBuy = position?.isBuy == true
+                        current = price
                     )
                 }
                 binding.awonarOrderEditTextNumberpickerTp.setNumber(it)
@@ -60,7 +76,11 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
             marketViewModel.quoteSteamingState.collect { quotes ->
                 val quote = quotes.find { it.id == position?.instrument?.id }
                 quote?.let {
-                    price = if (position?.isBuy == true) it.bid else it.ask
+                    price = ConverterQuoteUtil.getCurrentPrice(
+                        it,
+                        position?.leverage ?: 0,
+                        position?.isBuy == true
+                    )
                     pl = PortfolioUtil.getProfitOrLoss(
                         current = price,
                         openRate = position?.openRate ?: 0f,
@@ -116,6 +136,30 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
         }
         setupHeader()
         setupListener()
+        setupTakeProfit()
+        setupStopLoss()
+    }
+
+    private fun setupStopLoss() {
+        orderViewModel.setStopLoss(
+            sl = position?.stopLossRate ?: 0f,
+            type = "rate",
+            current = position?.openRate ?: 0f,
+            unit = position?.units ?: 0f,
+            instrumentId = position?.instrument?.id ?: 1,
+            isBuy = position?.isBuy == true
+        )
+    }
+
+    private fun setupTakeProfit() {
+        orderViewModel.setTakeProfit(
+            tp = position?.takeProfitRate ?: 0f,
+            type = "rate",
+            current = position?.openRate ?: 0f,
+            unit = position?.units ?: 0f,
+            instrumentId = position?.instrument?.id ?: 1,
+            isBuy = position?.isBuy == true
+        )
     }
 
     private fun setupListener() {
@@ -125,9 +169,23 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
             } else {
                 "rate"
             }
-            Timber.e("$number $type")
             orderViewModel.setTakeProfit(
                 tp = if (isLeft) number.first else number.second,
+                type = type,
+                current = position?.openRate ?: 0f,
+                unit = position?.units ?: 0f,
+                instrumentId = position?.instrument?.id ?: 1,
+                isBuy = position?.isBuy == true
+            )
+        }
+        binding.awonarOrderEditTextNumberpickerSl.doAfterFocusChange = { number, isLeft ->
+            val type = if (isLeft) {
+                "amount"
+            } else {
+                "rate"
+            }
+            orderViewModel.setStopLoss(
+                sl = if (isLeft) number.first else number.second,
                 type = type,
                 current = position?.openRate ?: 0f,
                 unit = position?.units ?: 0f,
@@ -148,14 +206,6 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
         binding.rate = "%s".format(position?.openRate)
         binding.date = "%s".format(DateUtils.getDate(position?.openDateTime))
         binding.fee = "$%.2f".format(position?.totalFees)
-        orderViewModel.setTakeProfit(
-            tp = position?.takeProfitRate ?: 0f,
-            type = "rate",
-            current = position?.openRate ?: 0f,
-            unit = position?.units ?: 0f,
-            instrumentId = position?.instrument?.id ?: 1,
-            isBuy = position?.isBuy == true
-        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

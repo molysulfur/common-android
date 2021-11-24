@@ -427,14 +427,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
 
     private fun updateCurrentPrice() {
         quote?.let {
-            price = when (orderType) {
-                "buy" -> {
-                    if (currentLeverage > 1) it.ask else it.askSpread
-                }
-                else -> {
-                    it.bidSpread
-                }
-            }
+            price = ConverterQuoteUtil.getCurrentPrice(it, currentLeverage, orderType.equals("buy"))
             binding.awonarDialogOrderTextPrice.text = "$price"
             val change = ConverterQuoteUtil.change(price, it.previous)
             val percentChange = ConverterQuoteUtil.percentChange(price, it.previous)

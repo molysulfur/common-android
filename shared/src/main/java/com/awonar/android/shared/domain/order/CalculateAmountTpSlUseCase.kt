@@ -20,11 +20,11 @@ class CalculateAmountTpSlUseCase @Inject constructor(
 ) : UseCase<TpSlRequest, Pair<Float, Float>>(dispatcher) {
     override suspend fun execute(parameters: TpSlRequest): Pair<Float, Float> {
         val tpsl = parameters.tpsl
-        val conversion = repository.getConversionByInstrumentId(parameters.instrumentId)
+        val conversion = repository.getConversionByInstrumentId(parameters.instrumentId).rateBid
         val amount = if (parameters.isBuy) {
-            tpsl.second.minus(parameters.current).times(parameters.unit).div(conversion.rateBid)
+            tpsl.second.minus(parameters.current).times(parameters.unit).div(conversion)
         } else {
-            parameters.current.minus(tpsl.second).times(parameters.unit).div(conversion.rateBid)
+            parameters.current.minus(tpsl.second).times(parameters.unit).div(conversion)
         }
         return Pair(amount, tpsl.second)
     }

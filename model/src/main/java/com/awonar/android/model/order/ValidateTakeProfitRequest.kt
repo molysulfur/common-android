@@ -15,6 +15,19 @@ data class ValidateRateTakeProfitRequest(
     val instrument: Instrument
 ) : Parcelable
 
+@Parcelize
+data class ValidateRateStopLossRequest(
+    val rateSl: Float,
+    val amountSl :Float,
+    val currentPrice: Float,
+    val openPrice: Float,
+    val units: Float,
+    val leverage: Int,
+    val isBuy: Boolean = false,
+    val instrument: Instrument,
+    val available : Float,
+) : Parcelable
+
 
 @Parcelize
 data class ValidateAmountTakeProfitRequest(
