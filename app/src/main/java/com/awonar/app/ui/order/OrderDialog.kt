@@ -300,11 +300,11 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
 
     private fun initTakeProfit() {
         binding.awonarDialogOrderViewNumberpickerCollapsibleTp.setDescriptionColor(R.color.awonar_color_primary)
-        binding.awonarDialogOrderViewNumberpickerCollapsibleTp.onTypeChange = { type ->
-            instrument?.let { instrument ->
-                orderActivityViewModel.updateTakeProfitType(type)
-            }
-        }
+//        binding.awonarDialogOrderViewNumberpickerCollapsibleTp.onTypeChange = { type ->
+//            instrument?.let { instrument ->
+//                orderActivityViewModel.updateTakeProfitType(type)
+//            }
+//        }
         binding.awonarDialogOrderViewNumberpickerCollapsibleTp.doAfterTextChange = {
             if (instrument != null && quote != null) {
                 when (takeProfit.type) {
@@ -312,11 +312,11 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                         //TODO("")
                     }
                     TPSLType.RATE -> {
-                        orderViewModel.validateTakeProfit(
-                            takeProfit = takeProfit,
-                            openPrice = price,
-                            type = orderType ?: "buy"
-                        )
+//                        orderViewModel.validateTakeProfit(
+//                            takeProfit = takeProfit,
+//                            openPrice = price,
+//                            type = orderType ?: "buy"
+//                        )
                     }
                 }
             }
@@ -331,19 +331,19 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
 
     private fun initStopLoss() {
         binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setDescriptionColor(R.color.awonar_color_orange)
-        binding.awonarDialogOrderViewNumberpickerCollapsibleSl.onTypeChange = { type ->
-            orderActivityViewModel.updateStopLossType(type)
-        }
+//        binding.awonarDialogOrderViewNumberpickerCollapsibleSl.onTypeChange = { type ->
+//            orderActivityViewModel.updateStopLossType(type)
+//        }
         binding.awonarDialogOrderViewNumberpickerCollapsibleSl.doAfterFocusChange =
             { number, hasFocus ->
                 if (!hasFocus)
                     instrument?.let {
-                        orderActivityViewModel.updateStopLoss(
-                            (-number),
-                            orderType ?: "buy",
-                            it.id,
-                            price
-                        )
+//                        orderActivityViewModel.updateStopLoss(
+//                            (-number),
+//                            orderType ?: "buy",
+//                            it.id,
+//                            price
+//                        )
                     }
 
             }

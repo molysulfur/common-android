@@ -54,13 +54,13 @@ fun setNumberPickerCollapsibleView(
             view.setDigit(0)
             view.setPrefix("$")
             view.setDescription("%.2f".format(stopLoss.amount))
-            view.setNumber(stopLoss.amount)
+//            view.setNumber(stopLoss.amount)
         }
         "rate" -> {
             view.setDigit(digit)
             view.setPrefix("")
             view.setDescription("%.${digit}f".format(stopLoss.unit))
-            view.setNumber(stopLoss.unit)
+//            view.setNumber(stopLoss.unit)
         }
     }
 }

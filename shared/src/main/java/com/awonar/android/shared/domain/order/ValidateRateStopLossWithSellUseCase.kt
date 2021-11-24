@@ -1,6 +1,6 @@
 package com.awonar.android.shared.domain.order
 
-import com.awonar.android.exception.ValidateStopLossException
+import com.awonar.android.exception.ValidationException
 import com.awonar.android.model.order.Price
 import com.awonar.android.model.order.ValidateStopLossRequest
 import com.awonar.android.shared.di.IoDispatcher
@@ -21,7 +21,7 @@ class ValidateRateStopLossWithSellUseCase @Inject constructor(
         val slRate = parameters.stopLoss.unit
         val minRate = parameters.openPrice
         if (slRate > minRate) {
-            throw ValidateStopLossException("Stop loss cannot more than $minRate",minRate)
+            throw ValidationException("Stop loss cannot more than $minRate",minRate)
         }
         return parameters.stopLoss
     }

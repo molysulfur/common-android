@@ -8,14 +8,12 @@ import androidx.fragment.app.activityViewModels
 import com.akexorcist.library.dialoginteractor.DialogLauncher
 import com.akexorcist.library.dialoginteractor.InteractorDialog
 import com.akexorcist.library.dialoginteractor.createBundle
-import com.awonar.android.model.market.Instrument
 import com.awonar.android.model.portfolio.Position
 import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.app.databinding.AwonarDialogOrderEditBinding
 import com.awonar.app.dialog.DialogViewModel
 import com.awonar.app.ui.market.MarketViewModel
-import com.awonar.app.ui.order.OrderDialog
 import com.awonar.app.ui.order.OrderViewModel
 import com.awonar.app.utils.ColorChangingUtil
 import com.awonar.app.utils.DateUtils
@@ -29,6 +27,7 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
     private lateinit var binding: AwonarDialogOrderEditBinding
 
     private var position: Position? = null
+    private var pl: Float = 0f
     private var price: Float = 0f
     private val marketViewModel: MarketViewModel by activityViewModels()
     private val orderViewModel: OrderViewModel by activityViewModels()
@@ -39,10 +38,22 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
         savedInstanceState: Bundle?
     ): View {
         binding = AwonarDialogOrderEditBinding.inflate(inflater)
+        binding.awonarOrderEditTextNumberpickerTp.setPrefix("$")
+        launchAndRepeatWithViewLifecycle {
+            orderViewModel.takeProfitError.collect {
+                binding.awonarOrderEditTextNumberpickerTp.setHelp(it)
+            }
+        }
         launchAndRepeatWithViewLifecycle {
             orderViewModel.takeProfitState.collect {
-                binding.awonarOrderEditTextNumberpickerTp.setNumber(it.first)
-                Timber.e("${it.first} ${it.second}")
+                position?.let {
+                    orderViewModel.validateTakeProfit(
+                        position = it,
+                        current = price,
+                        isBuy = position?.isBuy == true
+                    )
+                }
+                binding.awonarOrderEditTextNumberpickerTp.setNumber(it)
             }
         }
         launchAndRepeatWithViewLifecycle {
@@ -50,6 +61,13 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
                 val quote = quotes.find { it.id == position?.instrument?.id }
                 quote?.let {
                     price = if (position?.isBuy == true) it.bid else it.ask
+                    pl = PortfolioUtil.getProfitOrLoss(
+                        current = price,
+                        openRate = position?.openRate ?: 0f,
+                        unit = position?.units ?: 0f,
+                        rate = 1f,
+                        isBuy = position?.isBuy == true
+                    )
                     val priceChange = ConverterQuoteUtil.change(
                         quote.close,
                         quote.previous
@@ -57,13 +75,6 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
                     val pricePercentChange = ConverterQuoteUtil.percentChange(
                         quote.previous,
                         quote.close,
-                    )
-                    val pl = PortfolioUtil.getProfitOrLoss(
-                        current = price,
-                        openRate = position?.openRate ?: 0f,
-                        unit = position?.units ?: 0f,
-                        rate = 1f,
-                        isBuy = position?.isBuy == true
                     )
                     binding.pl = "$%.2f".format(pl)
                     binding.plPercent = "%.2f%s".format(
@@ -104,6 +115,26 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
             position = getParcelable(EXTRA_POSITION)
         }
         setupHeader()
+        setupListener()
+    }
+
+    private fun setupListener() {
+        binding.awonarOrderEditTextNumberpickerTp.doAfterFocusChange = { number, isLeft ->
+            val type = if (isLeft) {
+                "amount"
+            } else {
+                "rate"
+            }
+            Timber.e("$number $type")
+            orderViewModel.setTakeProfit(
+                tp = if (isLeft) number.first else number.second,
+                type = type,
+                current = position?.openRate ?: 0f,
+                unit = position?.units ?: 0f,
+                instrumentId = position?.instrument?.id ?: 1,
+                isBuy = position?.isBuy == true
+            )
+        }
     }
 
     private fun setupHeader() {
@@ -120,7 +151,7 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
         orderViewModel.setTakeProfit(
             tp = position?.takeProfitRate ?: 0f,
             type = "rate",
-            current = price,
+            current = position?.openRate ?: 0f,
             unit = position?.units ?: 0f,
             instrumentId = position?.instrument?.id ?: 1,
             isBuy = position?.isBuy == true

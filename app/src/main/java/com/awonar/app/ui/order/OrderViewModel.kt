@@ -2,13 +2,11 @@ package com.awonar.app.ui.order
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.awonar.android.constrant.MarketOrderType
-import com.awonar.android.constrant.TPSLType
-import com.awonar.android.exception.PositionExposureException
-import com.awonar.android.exception.RateException
-import com.awonar.android.exception.ValidateStopLossException
+import com.awonar.android.exception.ValidationException
 import com.awonar.android.model.order.*
+import com.awonar.android.model.portfolio.Position
 import com.awonar.android.shared.domain.order.*
+import com.awonar.android.shared.utils.PortfolioUtil
 import com.molysulfur.library.result.Result
 import com.molysulfur.library.result.succeeded
 import com.molysulfur.library.result.successOr
@@ -21,13 +19,23 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OrderViewModel @Inject constructor(
-    private val validateRateTakeProfitWithBuyUseCase: ValidateRateTakeProfitWithBuyUseCase,
     private val openOrderUseCase: OpenOrderUseCase,
-    private val calculateAmountTpSlUseCase: CalculateAmountTpSlUseCase
+    private val calculateAmountTpSlUseCase: CalculateAmountTpSlUseCase,
+    private val calculateRateTpSlUseCase: CalculateRateTpSlUseCase,
+    private val validateRateTakeProfitUseCase: ValidateRateTakeProfitUseCase
 ) : ViewModel() {
 
     private val _openOrderState = Channel<String>(capacity = Channel.CONFLATED)
     val openOrderState get() = _openOrderState.receiveAsFlow()
+
+    /**
+     * first = amount
+     * second = rate
+     */
+    private val _takeProfitState = MutableStateFlow(Pair(0f, 0f))
+    val takeProfitState: StateFlow<Pair<Float, Float>> get() = _takeProfitState
+    private val _takeProfitError = MutableStateFlow("")
+    val takeProfitError: StateFlow<String> get() = _takeProfitError
 
     fun openOrder(
         request: OpenOrderRequest
@@ -44,30 +52,40 @@ class OrderViewModel @Inject constructor(
         }
     }
 
-    fun validateTakeProfit(takeProfit: Price, openPrice: Float, type: String) {
+    fun validateTakeProfit(position: Position, current: Float, isBuy: Boolean) {
         viewModelScope.launch {
-            val data = ValidateRateTakeProfitRequest(
-                takeProfit = takeProfit,
-                openPrice = openPrice
+            val pl = PortfolioUtil.getProfitOrLoss(
+                current = current,
+                openRate = position.openRate,
+                unit = position.units,
+                rate = 1f,
+                isBuy = position.isBuy
             )
-            val result = when (type) {
-                "buy" -> validateRateTakeProfitWithBuyUseCase(data)
-                "sell" -> validateRateTakeProfitWithBuyUseCase(data)
-                else -> Result.Error(ValidateStopLossException("type was wrong!", 0f))
-            }
-            when (result) {
-                is Result.Error -> {
-                    val exception = result.exception as ValidateStopLossException
-                    val tp = data.takeProfit
-                    tp.unit = exception.value
-//                    _takeProfitState.emit(tp)
-                }
+            val data = ValidateRateTakeProfitRequest(
+                rateTp = takeProfitState.value.second,
+                currentPrice = current,
+                openPrice = position.openRate,
+                isBuy = isBuy,
+                value = pl.plus(position.amount),
+                units = position.units,
+                instrument = position.instrument
+            )
+            val result = validateRateTakeProfitUseCase(data)
+            if (result is Result.Error) {
+                val message = (result.exception as ValidationException).errorMessage
+                val tpRate = (result.exception as ValidationException).value
+                setTakeProfit(
+                    tp = tpRate,
+                    type = "rate",
+                    current = current,
+                    unit = position.units,
+                    instrumentId = position.instrument.id,
+                    isBuy = position.isBuy
+                )
+                _takeProfitError.emit(message)
             }
         }
     }
-
-    private val _takeProfitState = MutableStateFlow(Pair(0f, 0f))
-    val takeProfitState: StateFlow<Pair<Float, Float>> get() = _takeProfitState
 
     fun setTakeProfit(
         tp: Float,
@@ -99,10 +117,17 @@ class OrderViewModel @Inject constructor(
                 }
                 else -> {
                     first = tp
-                    Pair(first, second)
+                    val request = TpSlRequest(
+                        tpsl = Pair(first, second),
+                        current = current,
+                        unit = unit,
+                        instrumentId = instrumentId,
+                        isBuy = isBuy
+                    )
+                    calculateRateTpSlUseCase(request).successOr(Pair(first, second))
                 }
             }
-            _takeProfitState.value = newTpSl
+            _takeProfitState.emit(newTpSl)
         }
     }
 
