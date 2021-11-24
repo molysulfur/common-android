@@ -37,12 +37,14 @@ class NumberPickerCollapsibleView : BaseViewGroup {
 
     var doAfterFocusChange: ((Pair<Float, Float>, Boolean) -> Unit)? = null
     var doAfterTextChange: ((Float) -> Unit)? = null
+    var doAfterToggle: ((Boolean) -> Unit)? = null
 
     override fun setup() {
         number = Pair(0f, 0f)
         binding.awonarNumberpickerCollapsibleToggleOrderAmountType.addOnButtonCheckedListener { _, checkedId, isChecked ->
             if (isChecked) {
                 isLeft = checkedId == R.id.awonar_numberpicker_collapsible_button_amount_amount
+                doAfterToggle?.invoke(isLeft)
                 updateNumber()
             }
         }

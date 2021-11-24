@@ -49,6 +49,10 @@
             name="description"
             type="String" />
 
+        <variable
+            name="leverage"
+            type="String" />
+
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

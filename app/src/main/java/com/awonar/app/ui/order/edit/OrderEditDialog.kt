@@ -11,6 +11,7 @@ import com.akexorcist.library.dialoginteractor.createBundle
 import com.awonar.android.model.portfolio.Position
 import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.android.shared.utils.PortfolioUtil
+import com.awonar.app.R
 import com.awonar.app.databinding.AwonarDialogOrderEditBinding
 import com.awonar.app.dialog.DialogViewModel
 import com.awonar.app.ui.market.MarketViewModel
@@ -40,6 +41,8 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
         binding = AwonarDialogOrderEditBinding.inflate(inflater)
         binding.awonarOrderEditTextNumberpickerTp.setPrefix("$")
         binding.awonarOrderEditTextNumberpickerSl.setPrefix("$")
+        binding.awonarOrderEditTextNumberpickerTp.setDescriptionColor(R.color.awonar_color_primary)
+        binding.awonarOrderEditTextNumberpickerSl.setDescriptionColor(R.color.awonar_color_orange)
         launchAndRepeatWithViewLifecycle {
             orderViewModel.takeProfitError.collect {
                 binding.awonarOrderEditTextNumberpickerTp.setHelp(it)
@@ -163,6 +166,36 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
     }
 
     private fun setupListener() {
+        binding.awonarOrderEditTextNumberpickerTp.doAfterToggle = { isLeft ->
+            if (isLeft) {
+                binding.awonarOrderEditTextNumberpickerTp.setDescription(
+                    "$%.2f".format(
+                        orderViewModel.takeProfitState.value.first
+                    )
+                )
+            } else {
+                binding.awonarOrderEditTextNumberpickerTp.setDescription(
+                    "%s".format(
+                        orderViewModel.takeProfitState.value.second
+                    )
+                )
+            }
+        }
+        binding.awonarOrderEditTextNumberpickerSl.doAfterToggle = { isLeft ->
+            if (isLeft) {
+                binding.awonarOrderEditTextNumberpickerSl.setDescription(
+                    "$%.2f".format(
+                        orderViewModel.stopLossState.value.first
+                    )
+                )
+            } else {
+                binding.awonarOrderEditTextNumberpickerSl.setDescription(
+                    "%s".format(
+                        orderViewModel.stopLossState.value.second
+                    )
+                )
+            }
+        }
         binding.awonarOrderEditTextNumberpickerTp.doAfterFocusChange = { number, isLeft ->
             val type = if (isLeft) {
                 "amount"
@@ -206,6 +239,7 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
         binding.rate = "%s".format(position?.openRate)
         binding.date = "%s".format(DateUtils.getDate(position?.openDateTime))
         binding.fee = "$%.2f".format(position?.totalFees)
+        binding.leverage = "X%s".format(position?.leverage)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
