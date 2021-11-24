@@ -242,13 +242,55 @@
                     app:layout_constraintTop_toBottomOf="@+id/awonar_order_edit_text_pl"
                     tools:text="@string/awonar_example_name" />
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+                    android:background="@color/awonar_color_gray"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_order_edit_text_pl_percent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_order_edit_text_title_leverage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+                    android:padding="@dimen/awonar_size_margin_padding_normal"
+                    android:text="Leverage"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_order_edit_text_pl_percent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_order_edit_text_leverage"
+                    style="@style/Awonar.Text.Bold.Normal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/awonar_size_margin_padding_normal"
+                    android:text="@{leverage}"
+                    android:textColor="@color/awonar_color_primary"
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_order_edit_text_pl_percent"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_order_edit_text_pl_percent"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_order_edit_text_title_leverage"
+                    tools:text="@string/awonar_example_name" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/awonar_color_gray"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_order_edit_text_title_leverage" />
+
+
                 <com.awonar.app.widget.NumberPickerCollapsibleView
                     android:id="@+id/awonar_order_edit_text_numberpicker_tp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
-                    app:layout_constraintTop_toBottomOf="@+id/awonar_order_edit_text_pl_percent"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_order_edit_text_title_leverage"
                     app:numberPickerCollapsibleView_setTitle="@string/awonar_title_take_profit" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/awonar_color_gray"
+                    app:layout_constraintBottom_toTopOf="@+id/awonar_order_edit_text_numberpicker_sl" />
 
                 <com.awonar.app.widget.NumberPickerCollapsibleView
                     android:id="@+id/awonar_order_edit_text_numberpicker_sl"
