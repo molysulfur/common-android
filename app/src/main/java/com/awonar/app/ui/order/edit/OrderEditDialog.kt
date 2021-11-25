@@ -22,6 +22,7 @@ import com.awonar.app.utils.ImageUtil
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
+import kotlin.math.abs
 
 class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, DialogViewModel>() {
 
@@ -61,7 +62,8 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
                         current = price
                     )
                 }
-                binding.awonarOrderEditTextNumberpickerSl.setNumber(it)
+                val absPair = Pair(abs(it.first), it.second)
+                binding.awonarOrderEditTextNumberpickerSl.setNumber(absPair)
             }
         }
         launchAndRepeatWithViewLifecycle {
@@ -218,7 +220,7 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
                 "rate"
             }
             orderViewModel.setStopLoss(
-                sl = if (isLeft) number.first else number.second,
+                sl = if (isLeft) -number.first else number.second,
                 type = type,
                 current = position?.openRate ?: 0f,
                 unit = position?.units ?: 0f,

@@ -22,9 +22,9 @@ class CalculateAmountTpSlUseCase @Inject constructor(
         val tpsl = parameters.tpsl
         val conversion = repository.getConversionByInstrumentId(parameters.instrumentId).rateBid
         val amount = if (parameters.isBuy) {
-            tpsl.second.minus(parameters.current).times(parameters.unit).div(conversion)
+            tpsl.second.minus(parameters.openRate).times(parameters.unit).div(conversion)
         } else {
-            parameters.current.minus(tpsl.second).times(parameters.unit).div(conversion)
+            parameters.openRate.minus(tpsl.second).times(parameters.unit).div(conversion)
         }
         return Pair(amount, tpsl.second)
     }
@@ -32,7 +32,7 @@ class CalculateAmountTpSlUseCase @Inject constructor(
 
 data class TpSlRequest(
     val tpsl: Pair<Float, Float>,
-    val current: Float,
+    val openRate: Float,
     val unit: Float,
     val instrumentId: Int,
     val isBuy: Boolean

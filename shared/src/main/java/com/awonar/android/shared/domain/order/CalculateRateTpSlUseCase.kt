@@ -15,6 +15,7 @@ import javax.inject.Inject
  * isBuy = fals
  *  Rate = -(Amount Stoploss * conversion rate bid /unit - current price)
  */
+
 class CalculateRateTpSlUseCase @Inject constructor(
     private val repository: CurrenciesRepository,
     @IoDispatcher dispatcher: CoroutineDispatcher
@@ -23,9 +24,9 @@ class CalculateRateTpSlUseCase @Inject constructor(
         val conversionRate = repository.getConversionByInstrumentId(parameters.instrumentId).rateBid
         val amount = parameters.tpsl.first
         val rate = if (parameters.isBuy) {
-            amount.times(conversionRate).div(parameters.unit).plus(parameters.current)
+            amount.times(conversionRate).div(parameters.unit).plus(parameters.openRate)
         } else {
-            -(amount.times(conversionRate).div(parameters.unit).minus(parameters.current))
+            -(amount.times(conversionRate).div(parameters.unit).minus(parameters.openRate))
         }
         return Pair(amount, rate)
     }

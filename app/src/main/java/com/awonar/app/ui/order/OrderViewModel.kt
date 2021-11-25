@@ -86,7 +86,7 @@ class OrderViewModel @Inject constructor(
                             setStopLoss(
                                 sl = (result.exception as ValidationException).value,
                                 type = "rate",
-                                current = current,
+                                current = position.openRate,
                                 unit = position.units,
                                 instrumentId = position.instrument.id,
                                 isBuy = position.isBuy
@@ -125,11 +125,11 @@ class OrderViewModel @Inject constructor(
                 val result = validateRateTakeProfitUseCase(data)
                 if (result is Result.Error) {
                     val message = (result.exception as ValidationException).errorMessage
-                    val tpRate = (result.exception as ValidationException).value
+                    val rate = (result.exception as ValidationException).value
                     setTakeProfit(
-                        tp = tpRate,
+                        tp = rate,
                         type = "rate",
-                        current = current,
+                        current = position.openRate,
                         unit = position.units,
                         instrumentId = position.instrument.id,
                         isBuy = position.isBuy
@@ -150,6 +150,7 @@ class OrderViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             val state: Pair<Float, Float> = _takeProfitState.value.copy()
+
             /**
              * first = rate
              * second = amount
@@ -161,7 +162,7 @@ class OrderViewModel @Inject constructor(
                     second = tp
                     val request = TpSlRequest(
                         tpsl = Pair(first, second),
-                        current = current,
+                        openRate = current,
                         unit = unit,
                         instrumentId = instrumentId,
                         isBuy = isBuy
@@ -172,7 +173,7 @@ class OrderViewModel @Inject constructor(
                     first = tp
                     val request = TpSlRequest(
                         tpsl = Pair(first, second),
-                        current = current,
+                        openRate = current,
                         unit = unit,
                         instrumentId = instrumentId,
                         isBuy = isBuy
@@ -207,7 +208,7 @@ class OrderViewModel @Inject constructor(
                     second = sl
                     val request = TpSlRequest(
                         tpsl = Pair(first, second),
-                        current = current,
+                        openRate = current,
                         unit = unit,
                         instrumentId = instrumentId,
                         isBuy = isBuy
@@ -218,7 +219,7 @@ class OrderViewModel @Inject constructor(
                     first = sl
                     val request = TpSlRequest(
                         tpsl = Pair(first, second),
-                        current = current,
+                        openRate = current,
                         unit = unit,
                         instrumentId = instrumentId,
                         isBuy = isBuy
