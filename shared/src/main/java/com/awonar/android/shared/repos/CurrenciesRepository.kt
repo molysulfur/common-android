@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.flow
 import retrofit2.Response
 import javax.inject.Inject
 
-class CurrenciesRepository @Inject constructor(
+open class CurrenciesRepository @Inject constructor(
     private val conversionRateDao: ConversionRateDao,
     private val currenciesService: CurrenciesService
 ) {

@@ -7,8 +7,11 @@ import com.awonar.android.exception.RefundException
 import com.awonar.android.exception.ValidationException
 import com.awonar.android.model.order.*
 import com.awonar.android.model.portfolio.Position
+import com.awonar.android.shared.domain.market.GetConversionByInstrumentUseCase
 import com.awonar.android.shared.domain.order.*
 import com.awonar.android.shared.domain.portfolio.GetMyPortFolioUseCase
+import com.awonar.android.shared.utils.ConverterOrderUtil
+import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.android.shared.utils.PortfolioUtil
 import com.molysulfur.library.result.Result
 import com.molysulfur.library.result.data
@@ -28,7 +31,9 @@ class OrderViewModel @Inject constructor(
     private val calculateAmountTpSlUseCase: CalculateAmountTpSlUseCase,
     private val calculateRateTpSlUseCase: CalculateRateTpSlUseCase,
     private val validateRateTakeProfitUseCase: ValidateRateTakeProfitUseCase,
-    private val validateRateStopLossUseCase: ValidateRateStopLossUseCase
+    private val validateRateStopLossUseCase: ValidateRateStopLossUseCase,
+    private val getConversionByInstrumentUseCase: GetConversionByInstrumentUseCase,
+    private val getTradingDataByInstrumentIdUseCase: GetTradingDataByInstrumentIdUseCase
 ) : ViewModel() {
 
     private val _openOrderState = Channel<String>(capacity = Channel.CONFLATED)
@@ -70,6 +75,10 @@ class OrderViewModel @Inject constructor(
         if (current > 0) {
             viewModelScope.launch {
                 getMyPortFolioUseCase(true).collect {
+                    val conversionRate =
+                        getConversionByInstrumentUseCase(position.instrument.id).successOr(1f)
+                    val trading = getTradingDataByInstrumentIdUseCase(position.instrument.id)
+                    val nativeAmount = position.exposure.div(position.leverage)
                     val stopLoss = stopLossState.value.copy()
                     val request = ValidateRateStopLossRequest(
                         rateSl = stopLoss.second,
@@ -81,8 +90,15 @@ class OrderViewModel @Inject constructor(
                         exposure = position.exposure,
                         leverage = position.leverage,
                         isBuy = position.isBuy,
-                        instrument = position.instrument,
-                        available = it.data?.available ?: 0f
+                        available = it.data?.available ?: 0f,
+                        conversionRate = conversionRate,
+                        maxStopLoss = ConverterOrderUtil.getMaxAmountSl(
+                            native = nativeAmount,
+                            leverage = position.leverage,
+                            isBuy = position.isBuy,
+                            tradingData = trading.successOr(null)
+                        ),
+                        digit = position.instrument.digit
                     )
                     val result = validateRateStopLossUseCase(request)
                     when ((result as Result.Error).exception) {

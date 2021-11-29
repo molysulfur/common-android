@@ -19,20 +19,15 @@ import javax.inject.Inject
 import kotlin.math.pow
 
 class ValidateRateStopLossUseCase @Inject constructor(
-    private val repository: MarketRepository,
-    private val currenciesRepository: CurrenciesRepository,
     @IoDispatcher dispatcher: CoroutineDispatcher
 ) : UseCase<ValidateRateStopLossRequest, Unit>(dispatcher) {
     override suspend fun execute(parameters: ValidateRateStopLossRequest) {
-        val tradingData = repository.getTradingDataById(parameters.instrument.id)
-        val conversion =
-            currenciesRepository.getConversionByInstrumentId(parameters.instrument.id).rateBid
+        val conversion = parameters.conversionRate
         val exposure = parameters.exposure
         val nativeAmount = exposure.div(parameters.leverage)
         val minRateSl = parameters.currentPrice
-        val maxRateSL = 10f.pow(-parameters.instrument.digit)
-        val maxAmountSl =
-            getMaxAmountSl(nativeAmount, parameters.leverage, parameters.isBuy, tradingData)
+        val maxRateSL = 10f.pow(-parameters.digit)
+        val maxAmountSl = parameters.maxStopLoss
         val slRate = parameters.rateSl
         val amountSl = slRate.minus(parameters.openPrice).times(parameters.units).div(conversion)
         if (parameters.isBuy) {
@@ -40,26 +35,25 @@ class ValidateRateStopLossUseCase @Inject constructor(
                 throw ValidationException("Stop Loss cannot less than $minRateSl", minRateSl)
             } else {
                 val diff = amountSl.minus(maxAmountSl)
-                val oldAmount =
-                    parameters.openPrice.minus(slRate).times(parameters.units).div(conversion)
                 if (diff < 0) {
                     if (abs(-diff.minus(parameters.amountSl.minus(nativeAmount))) < parameters.available) {
                         val addAmount = nativeAmount.minus(parameters.amount).minus(diff)
+                        500 - 517.29 -(-17.29)
                         if (addAmount >= 0) {
                             throw AddAmountException(
-                                "Amount should be add \$%.2f".format(abs(addAmount)),
+                                "Amount should be add \$%.2f".format(kotlin.math.abs(addAmount)),
                                 addAmount
                             )
                         }
                         throw RefundException(
-                            "Order should be refund \$%.2f".format(abs(addAmount)),
+                            "Order should be refund \$%.2f".format(kotlin.math.abs(addAmount)),
                             addAmount
                         )
                     } else {
                         throw AvailableNotEnoughException("Available not enough.")
                     }
                 } else {
-                    val refund = oldAmount.minus(parameters.amountSl)
+                    val refund = nativeAmount.minus(parameters.amount)
                     throw RefundException(
                         "Order should be refund \$%.2f".format(abs(refund)),
                         refund
@@ -67,22 +61,5 @@ class ValidateRateStopLossUseCase @Inject constructor(
                 }
             }
         }
-    }
-
-    private fun getMaxAmountSl(
-        native: Float,
-        leverage: Int,
-        isBuy: Boolean,
-        tradingData: TradingData
-    ): Float = when {
-        leverage == 1 && isBuy -> -(native.times(tradingData.maxStopLossPercentageNonLeveragedBuy)
-            .div(100))
-        leverage == 1 && !isBuy -> -(native.times(tradingData.maxStopLossPercentageNonLeveragedSell)
-            .div(100))
-        leverage > 1 && isBuy -> -(native.times(tradingData.maxStopLossPercentageLeveragedBuy)
-            .div(100))
-        leverage > 1 && !isBuy -> -(native.times(tradingData.maxStopLossPercentageLeveragedSell)
-            .div(100))
-        else -> throw Error("calculate amount sl wrong case!")
     }
 }

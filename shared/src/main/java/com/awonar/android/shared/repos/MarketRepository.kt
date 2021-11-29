@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.flow
 import retrofit2.Response
 import javax.inject.Inject
 
-class MarketRepository @Inject constructor(
+open class MarketRepository @Inject constructor(
     private val instrumentService: InstrumentService,
     private val tradingDataDao: TradingDataDao
 ) {
