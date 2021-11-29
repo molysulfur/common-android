@@ -21,6 +21,8 @@ data class ValidateRateStopLossRequest(
     val amountSl :Float,
     val currentPrice: Float,
     val openPrice: Float,
+    val amount :Float,
+    val exposure :Float,
     val units: Float,
     val leverage: Int,
     val isBuy: Boolean = false,

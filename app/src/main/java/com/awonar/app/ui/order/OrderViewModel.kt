@@ -48,6 +48,8 @@ class OrderViewModel @Inject constructor(
     private val _stopLossError = MutableStateFlow("")
     val stopLossError: StateFlow<String> get() = _stopLossError
 
+    private val _errorState = MutableStateFlow("")
+    val errorState: StateFlow<String> get() = _errorState
 
     fun openOrder(
         request: OpenOrderRequest
@@ -74,7 +76,9 @@ class OrderViewModel @Inject constructor(
                         amountSl = stopLoss.first,
                         currentPrice = current,
                         openPrice = position.openRate,
+                        amount = position.amount,
                         units = position.units,
+                        exposure = position.exposure,
                         leverage = position.leverage,
                         isBuy = position.isBuy,
                         instrument = position.instrument,
@@ -94,8 +98,10 @@ class OrderViewModel @Inject constructor(
                             _stopLossError.emit(result.exception.message ?: "")
                         }
                         is AddAmountException -> {
+                            _errorState.emit(result.exception.message ?: "")
                         }
                         is RefundException -> {
+                            _errorState.emit(result.exception.message ?: "")
                         }
                     }
                 }

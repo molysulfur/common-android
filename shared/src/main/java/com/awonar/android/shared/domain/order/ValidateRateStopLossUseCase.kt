@@ -2,6 +2,7 @@ package com.awonar.android.shared.domain.order
 
 import com.awonar.android.exception.AddAmountException
 import com.awonar.android.exception.AvailableNotEnoughException
+import com.awonar.android.exception.RefundException
 import com.awonar.android.exception.ValidationException
 import com.awonar.android.model.order.ValidateRateStopLossRequest
 import com.awonar.android.model.tradingdata.TradingData
@@ -26,12 +27,8 @@ class ValidateRateStopLossUseCase @Inject constructor(
         val tradingData = repository.getTradingDataById(parameters.instrument.id)
         val conversion =
             currenciesRepository.getConversionByInstrumentId(parameters.instrument.id).rateBid
-        val exposure = ConverterOrderUtil.getExposure(
-            parameters.leverage,
-            tradingData.minLeverage,
-            parameters.amountSl
-        )
-        val nativeAmount = exposure.div(parameters.leverage).div(100)
+        val exposure = parameters.exposure
+        val nativeAmount = exposure.div(parameters.leverage)
         val minRateSl = parameters.currentPrice
         val maxRateSL = 10f.pow(-parameters.instrument.digit)
         val maxAmountSl =
@@ -43,16 +40,30 @@ class ValidateRateStopLossUseCase @Inject constructor(
                 throw ValidationException("Stop Loss cannot less than $minRateSl", minRateSl)
             } else {
                 val diff = amountSl.minus(maxAmountSl)
+                val oldAmount =
+                    parameters.openPrice.minus(slRate).times(parameters.units).div(conversion)
                 if (diff < 0) {
                     if (abs(-diff.minus(parameters.amountSl.minus(nativeAmount))) < parameters.available) {
-                        val addAmount = nativeAmount.minus(parameters.amountSl).minus(diff)
-                        throw AddAmountException("Amount should be add \$$addAmount", addAmount)
+                        val addAmount = nativeAmount.minus(parameters.amount).minus(diff)
+                        if (addAmount >= 0) {
+                            throw AddAmountException(
+                                "Amount should be add \$%.2f".format(abs(addAmount)),
+                                addAmount
+                            )
+                        }
+                        throw RefundException(
+                            "Order should be refund \$%.2f".format(abs(addAmount)),
+                            addAmount
+                        )
                     } else {
                         throw AvailableNotEnoughException("Available not enough.")
                     }
                 } else {
-                    val refund = nativeAmount.minus(parameters.amountSl)
-                    throw AddAmountException("Order should be refund \$$refund", refund)
+                    val refund = oldAmount.minus(parameters.amountSl)
+                    throw RefundException(
+                        "Order should be refund \$%.2f".format(abs(refund)),
+                        refund
+                    )
                 }
             }
         }

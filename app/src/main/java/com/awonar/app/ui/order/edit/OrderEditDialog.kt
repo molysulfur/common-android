@@ -45,6 +45,11 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
         binding.awonarOrderEditTextNumberpickerTp.setDescriptionColor(R.color.awonar_color_primary)
         binding.awonarOrderEditTextNumberpickerSl.setDescriptionColor(R.color.awonar_color_orange)
         launchAndRepeatWithViewLifecycle {
+            orderViewModel.errorState.collect {
+                binding.error = it
+            }
+        }
+        launchAndRepeatWithViewLifecycle {
             orderViewModel.takeProfitError.collect {
                 binding.awonarOrderEditTextNumberpickerTp.setHelp(it)
             }
