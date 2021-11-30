@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import coil.load
 import com.akexorcist.library.dialoginteractor.DialogLauncher
 import com.akexorcist.library.dialoginteractor.InteractorDialog
 import com.akexorcist.library.dialoginteractor.createBundle
@@ -15,11 +14,11 @@ import com.awonar.android.model.market.Instrument
 import com.awonar.android.model.market.Quote
 import com.awonar.android.model.order.Price
 import com.awonar.android.model.portfolio.Portfolio
-import com.awonar.android.shared.constrant.BuildConfig
 import com.awonar.android.model.tradingdata.TradingData
 import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarDialogOrderBinding
+import com.awonar.app.dialog.DialogViewModel
 import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.awonar.app.utils.ColorChangingUtil
@@ -28,7 +27,6 @@ import com.molysulfur.library.extension.toast
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogViewModel>() {
 
@@ -302,11 +300,11 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
 
     private fun initTakeProfit() {
         binding.awonarDialogOrderViewNumberpickerCollapsibleTp.setDescriptionColor(R.color.awonar_color_primary)
-        binding.awonarDialogOrderViewNumberpickerCollapsibleTp.onTypeChange = { type ->
-            instrument?.let { instrument ->
-                orderActivityViewModel.updateTakeProfitType(type)
-            }
-        }
+//        binding.awonarDialogOrderViewNumberpickerCollapsibleTp.onTypeChange = { type ->
+//            instrument?.let { instrument ->
+//                orderActivityViewModel.updateTakeProfitType(type)
+//            }
+//        }
         binding.awonarDialogOrderViewNumberpickerCollapsibleTp.doAfterTextChange = {
             if (instrument != null && quote != null) {
                 when (takeProfit.type) {
@@ -314,11 +312,11 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                         //TODO("")
                     }
                     TPSLType.RATE -> {
-                        orderViewModel.validateTakeProfit(
-                            takeProfit = takeProfit,
-                            openPrice = price,
-                            type = orderType ?: "buy"
-                        )
+//                        orderViewModel.validateTakeProfit(
+//                            takeProfit = takeProfit,
+//                            openPrice = price,
+//                            type = orderType ?: "buy"
+//                        )
                     }
                 }
             }
@@ -333,19 +331,19 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
 
     private fun initStopLoss() {
         binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setDescriptionColor(R.color.awonar_color_orange)
-        binding.awonarDialogOrderViewNumberpickerCollapsibleSl.onTypeChange = { type ->
-            orderActivityViewModel.updateStopLossType(type)
-        }
+//        binding.awonarDialogOrderViewNumberpickerCollapsibleSl.onTypeChange = { type ->
+//            orderActivityViewModel.updateStopLossType(type)
+//        }
         binding.awonarDialogOrderViewNumberpickerCollapsibleSl.doAfterFocusChange =
             { number, hasFocus ->
                 if (!hasFocus)
                     instrument?.let {
-                        orderActivityViewModel.updateStopLoss(
-                            (-number),
-                            orderType ?: "buy",
-                            it.id,
-                            price
-                        )
+//                        orderActivityViewModel.updateStopLoss(
+//                            (-number),
+//                            orderType ?: "buy",
+//                            it.id,
+//                            price
+//                        )
                     }
 
             }
@@ -429,14 +427,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
 
     private fun updateCurrentPrice() {
         quote?.let {
-            price = when (orderType) {
-                "buy" -> {
-                    if (currentLeverage > 1) it.ask else it.askSpread
-                }
-                else -> {
-                    it.bidSpread
-                }
-            }
+            price = ConverterQuoteUtil.getCurrentPrice(it, currentLeverage, orderType.equals("buy"))
             binding.awonarDialogOrderTextPrice.text = "$price"
             val change = ConverterQuoteUtil.change(price, it.previous)
             val percentChange = ConverterQuoteUtil.percentChange(price, it.previous)

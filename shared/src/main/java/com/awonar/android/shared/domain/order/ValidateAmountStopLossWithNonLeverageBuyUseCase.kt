@@ -1,6 +1,6 @@
 package com.awonar.android.shared.domain.order
 
-import com.awonar.android.exception.ValidateStopLossException
+import com.awonar.android.exception.ValidationException
 import com.awonar.android.model.order.Price
 import com.awonar.android.model.order.ValidateStopLossRequest
 import com.awonar.android.shared.di.IoDispatcher
@@ -20,7 +20,7 @@ class ValidateAmountStopLossWithNonLeverageBuyUseCase @Inject constructor(
             -(parameters.stopLoss.amount.times(tradingData.maxStopLossPercentageNonLeveragedBuy)
                 .div(100))
         if (slRate < maxAmountSL) {
-            throw ValidateStopLossException("Stop loss cannot less than $maxAmountSL", maxAmountSL)
+            throw ValidationException("Stop loss cannot less than $maxAmountSL", maxAmountSL)
         }
         return parameters.stopLoss
     }

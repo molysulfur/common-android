@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.awonar.android.constrant.MarketOrderType
 import com.awonar.android.exception.PositionExposureException
 import com.awonar.android.exception.RateException
-import com.awonar.android.exception.ValidateStopLossException
+import com.awonar.android.exception.ValidationException
 import com.awonar.android.model.market.Instrument
 import com.awonar.android.model.order.*
 import com.awonar.android.shared.domain.order.*
@@ -15,7 +15,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -121,8 +120,8 @@ class OrderViewModelActivity @Inject constructor(
                     "rate" -> validateRateStopLoss(data, orderType)
                     else -> null
                 }
-                if (result is Result.Error && result.exception is ValidateStopLossException) {
-                    val exception = result.exception as ValidateStopLossException
+                if (result is Result.Error && result.exception is ValidationException) {
+                    val exception = result.exception as ValidationException
                     updateStopLoss(exception.value, orderType, instrument.id, openPrice)
                 }
             }
@@ -149,7 +148,7 @@ class OrderViewModelActivity @Inject constructor(
                 validateAmountStopLossWithSellUseCase(data)
             }
             else -> {
-                Result.Error(ValidateStopLossException("leverage or type was wrong!", 0f))
+                Result.Error(ValidationException("leverage or type was wrong!", 0f))
             }
         }
     }
@@ -164,7 +163,7 @@ class OrderViewModelActivity @Inject constructor(
         "sell" -> validateRateStopLossWithSellUseCase(
             data
         )
-        else -> Result.Error(ValidateStopLossException("type was wrong!", 0f))
+        else -> Result.Error(ValidationException("type was wrong!", 0f))
     }
 
     fun updateStopLossType(type: String) {

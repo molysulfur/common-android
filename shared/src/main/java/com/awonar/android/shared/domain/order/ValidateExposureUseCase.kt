@@ -4,6 +4,7 @@ import com.awonar.android.exception.PositionExposureException
 import com.awonar.android.model.order.ExposureRequest
 import com.awonar.android.shared.di.IoDispatcher
 import com.awonar.android.shared.repos.MarketRepository
+import com.awonar.android.shared.utils.ConverterOrderUtil
 import com.molysulfur.library.usecase.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
@@ -14,8 +15,11 @@ class ValidateExposureUseCase @Inject constructor(
 ) : UseCase<ExposureRequest, Boolean>(dispatcher) {
     override suspend fun execute(parameters: ExposureRequest): Boolean {
         val trading = marketRepository.getTradingDataById(parameters.instrumentId)
-        val exposure =
-            if (parameters.leverage < trading.minLeverage) parameters.amount.times(parameters.leverage) else parameters.amount
+        val exposure = ConverterOrderUtil.getExposure(
+            parameters.leverage,
+            trading.minLeverage,
+            parameters.amount
+        )
         val leverage = if (parameters.leverage < trading.minLeverage) parameters.leverage else 1
         var minPositionExposure = 1
         var maxPositionExposure = 1

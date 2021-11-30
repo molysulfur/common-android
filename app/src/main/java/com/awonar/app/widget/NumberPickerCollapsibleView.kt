@@ -7,17 +7,12 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Transition
 import androidx.transition.TransitionInflater
 import androidx.transition.TransitionManager
 import com.awonar.app.R
-import com.awonar.app.databinding.AwonarWidgetCollapsibleLeverageBinding
 import com.awonar.app.databinding.AwonarWidgetCollapsibleNumberpickerBinding
 import com.molysulfur.library.widget.BaseViewGroup
 
@@ -29,29 +24,28 @@ class NumberPickerCollapsibleView : BaseViewGroup {
     private var description: String? = null
     private var descriptionRes: Int = 0
     private var descriptionColor: Int = 0
-    private var number: Float = 0f
     private var digit: Int = 0
     private var prefix: String = ""
     private var expanded = false
     private var isNoSet = true
     private var visibleNoSet = false
+    private var isLeft = true
     private val toggle: Transition = TransitionInflater.from(context)
         .inflateTransition(R.transition.awonar_transition_list_toggle)
 
-    var doAfterFocusChange: ((Float, Boolean) -> Unit)? = null
+    private lateinit var number: Pair<Float, Float>
+
+    var doAfterFocusChange: ((Pair<Float, Float>, Boolean) -> Unit)? = null
     var doAfterTextChange: ((Float) -> Unit)? = null
-    var onTypeChange: ((String) -> Unit)? = null
+    var doAfterToggle: ((Boolean) -> Unit)? = null
+
     override fun setup() {
+        number = Pair(0f, 0f)
         binding.awonarNumberpickerCollapsibleToggleOrderAmountType.addOnButtonCheckedListener { _, checkedId, isChecked ->
             if (isChecked) {
-                when (checkedId) {
-                    R.id.awonar_numberpicker_collapsible_button_amount_amount -> onTypeChange?.invoke(
-                        "amount"
-                    )
-                    R.id.awonar_numberpicker_collapsible_button_amount_rate -> onTypeChange?.invoke(
-                        "rate"
-                    )
-                }
+                isLeft = checkedId == R.id.awonar_numberpicker_collapsible_button_amount_amount
+                doAfterToggle?.invoke(isLeft)
+                updateNumber()
             }
         }
         binding.awonarNumberpickerCollapsibleLayoutCollapse.setOnClickListener {
@@ -63,11 +57,20 @@ class NumberPickerCollapsibleView : BaseViewGroup {
             updateNoSet()
         }
         binding.awonarNumberpickerCollapsibleInputNumber.doAfterFocusChange = { number, hasFocus ->
-            doAfterFocusChange?.invoke(number, hasFocus)
+            if (!hasFocus) {
+                doAfterFocusChange?.invoke(this.number, isLeft)
+            }
         }
         binding.awonarNumberpickerCollapsibleInputNumber.doAfterTextChange = {
-            this.number = it
-            doAfterTextChange?.invoke(this.number)
+            number = when (isLeft) {
+                true -> {
+                    Pair(it, this.number.second)
+                }
+                else -> {
+                    Pair(this.number.first, it)
+                }
+            }
+            doAfterTextChange?.invoke(number.second)
         }
         binding.awonarNumberpickerCollapsibleInputNumber.setPlaceholder("No set")
         updateNoSet()
@@ -88,18 +91,15 @@ class NumberPickerCollapsibleView : BaseViewGroup {
 
     fun setPrefix(prefix: String) {
         this.prefix = prefix
-        updatePrefix()
+        updateNumber()
     }
 
-    private fun updatePrefix() {
-        binding.awonarNumberpickerCollapsibleInputNumber.setPrefix(prefix)
-    }
 
     fun setHelp(help: String) {
         binding.awonarNumberpickerCollapsibleInputNumber.setHelp(help)
     }
 
-    fun setNumber(number: Float) {
+    fun setNumber(number: Pair<Float, Float>) {
         this.number = number
         updateNumber()
     }
@@ -115,7 +115,16 @@ class NumberPickerCollapsibleView : BaseViewGroup {
     }
 
     private fun updateNumber() {
-        binding.awonarNumberpickerCollapsibleInputNumber.setNumber(number)
+        when (isLeft) {
+            true -> {
+                binding.awonarNumberpickerCollapsibleInputNumber.setNumber(number.first)
+                binding.awonarNumberpickerCollapsibleInputNumber.setPrefix(prefix)
+            }
+            else -> {
+                binding.awonarNumberpickerCollapsibleInputNumber.setNumber(number.second)
+                binding.awonarNumberpickerCollapsibleInputNumber.setPrefix("")
+            }
+        }
     }
 
     private fun updateNoSet() {
@@ -198,11 +207,11 @@ class NumberPickerCollapsibleView : BaseViewGroup {
             typedArray.getString(R.styleable.NumberPickerCollapsibleView_numberPickerCollapsibleView_setTitle)
         description =
             typedArray.getString(R.styleable.NumberPickerCollapsibleView_numberPickerCollapsibleView_setDescription)
-        number =
-            typedArray.getFloat(
-                R.styleable.NumberPickerCollapsibleView_numberPickerCollapsibleView_setNumber,
-                0f
-            )
+//        number =
+//            typedArray.getFloat(
+//                R.styleable.NumberPickerCollapsibleView_numberPickerCollapsibleView_setNumber,
+//                0f
+//            )
         digit =
             typedArray.getInt(
                 R.styleable.NumberPickerCollapsibleView_numberPickerCollapsibleView_setDigit,

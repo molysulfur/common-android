@@ -1,4 +1,4 @@
-package com.awonar.app.ui.portfolio
+package com.awonar.app.ui.portfolio.adapter
 
 import android.annotation.SuppressLint
 import android.view.MotionEvent
@@ -14,13 +14,17 @@ import android.graphics.*
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.awonar.app.R
+import timber.log.Timber
 
 
-class PortfolioListItemTouchHelperCallback constructor(val context: Context) :
-    ItemTouchHelper.Callback() {
+class PortfolioListItemTouchHelperCallback constructor(
+    private val action: IPortfolioListItemTouchHelperCallback,
+    val context: Context
+) : ItemTouchHelper.Callback() {
 
     companion object {
         private const val buttonWidth = 300
+        private const val textSize = 24f
     }
 
     enum class ItemState {
@@ -33,6 +37,7 @@ class PortfolioListItemTouchHelperCallback constructor(val context: Context) :
     private var swipeBack = false
     private var buttonInstance: RectF? = null
     private var currentItemViewHolder: RecyclerView.ViewHolder? = null
+    private var buttonList: ArrayList<SwipeButton> = arrayListOf()
 
     override fun getMovementFlags(
         recyclerView: RecyclerView,
@@ -141,7 +146,8 @@ class PortfolioListItemTouchHelperCallback constructor(val context: Context) :
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
         dX: Float, dY: Float,
-        actionState: Int, isCurrentlyActive: Boolean
+        actionState: Int,
+        isCurrentlyActive: Boolean
     ) {
         recyclerView.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
@@ -180,6 +186,16 @@ class PortfolioListItemTouchHelperCallback constructor(val context: Context) :
                 )
                 recyclerView.setOnTouchListener { v, event -> false }
                 setItemsClickable(recyclerView, true)
+                for (button in buttonList) {
+                    if (button.onClick(
+                            event?.x ?: -1f,
+                            event?.y ?: -1f,
+                            currentItemViewHolder?.absoluteAdapterPosition ?: -1
+                        )
+                    ) {
+                        break
+                    }
+                }
                 swipeBack = false
                 buttonShowedState = ItemState.GONE
                 currentItemViewHolder = null
@@ -199,23 +215,24 @@ class PortfolioListItemTouchHelperCallback constructor(val context: Context) :
 
     private fun drawButtons(c: Canvas, viewHolder: RecyclerView.ViewHolder) {
         val buttonWidthWithoutPadding = (buttonWidth - 20).toFloat()
-        val corners = 0f
         val itemView: View = viewHolder.itemView
-        val p = Paint()
-
         val leftButton = RectF(
             itemView.left.toFloat(),
             itemView.top.toFloat(),
             itemView.left * 2 + buttonWidthWithoutPadding,
             itemView.bottom.toFloat()
         )
-        p.color = ContextCompat.getColor(context, R.color.awonar_color_primary)
-        c.drawRoundRect(leftButton, corners, corners, p)
-        val iconTp: Bitmap? =
-            ContextCompat.getDrawable(context, R.drawable.awonar_ic_tp)?.toBitmap()
-        iconTp?.let {
-            drawText("TP", c, leftButton, p, it)
+        val swipeButton = SwipeButton(
+            text = "TP",
+            imageRes = R.drawable.awonar_ic_tp, textSize,
+            color = R.color.awonar_color_primary,
+            rectF = leftButton,
+            context = context
+        ) { button, position ->
+            action.onClick(position)
         }
+        swipeButton.drawButton(c)
+        buttonList.add(swipeButton)
         val left2Button = RectF(
             itemView.left * 2f,
             itemView.top.toFloat(),
@@ -223,27 +240,34 @@ class PortfolioListItemTouchHelperCallback constructor(val context: Context) :
             itemView.bottom.toFloat()
         )
         left2Button.left = 600f
-        p.color = ContextCompat.getColor(context, R.color.awonar_color_secondary)
-        c.drawRoundRect(left2Button, corners, corners, p)
-        val iconSl: Bitmap? =
-            ContextCompat.getDrawable(context, R.drawable.awonar_ic_sl)?.toBitmap()
-        iconSl?.let {
-            drawText("SL", c, left2Button, p, it)
+        val swipeButton2 = SwipeButton(
+            text = "SL",
+            imageRes = R.drawable.awonar_ic_sl, textSize,
+            color = R.color.awonar_color_orange,
+            rectF = left2Button,
+            context = context
+        ) { button, position ->
+            action.onClick(position)
         }
-
+        swipeButton2.drawButton(c)
+        buttonList.add(swipeButton2)
         val rightButton = RectF(
             itemView.right - buttonWidthWithoutPadding,
             itemView.top.toFloat(),
             itemView.right.toFloat(),
             itemView.bottom.toFloat()
         )
-        p.color = Color.RED
-        c.drawRoundRect(rightButton, corners, corners, p)
-        val iconClose: Bitmap? =
-            ContextCompat.getDrawable(context, R.drawable.awonar_ic_close)?.toBitmap()
-        iconClose?.let {
-            drawText("Close Trade", c, rightButton, p, it)
+        val swipeButton3 = SwipeButton(
+            text = "Close",
+            imageRes = R.drawable.awonar_ic_close, textSize,
+            color = R.color.awonar_color_gray,
+            rectF = rightButton,
+            context = context
+        ) { button, position ->
+            action.onClick(position)
         }
+        swipeButton3.drawButton(c)
+        buttonList.add(swipeButton3)
         buttonInstance = null
         if (buttonShowedState === ItemState.LEFT_VISIBLE) {
             buttonInstance = leftButton
@@ -252,33 +276,63 @@ class PortfolioListItemTouchHelperCallback constructor(val context: Context) :
         }
     }
 
-    private fun drawText(text: String, c: Canvas, button: RectF, p: Paint, icon: Bitmap) {
-        val textSize = 24f
-        p.color = Color.WHITE
-        p.isAntiAlias = true
-        p.textSize = textSize
-        val textWidth: Float = p.measureText(text)
-        val bounds = Rect()
-        p.getTextBounds(text, 0, text.length, bounds);
-        val combinedHeight: Float = icon.height + 10f + bounds.height()
-        c.drawBitmap(
-            icon,
-            button.centerX() - (icon.width / 2),
-            button.centerY() - (combinedHeight / 2),
-            null
-        )
-        c.drawText(
-            text,
-            button.centerX() - textWidth / 2,
-            button.centerY() + combinedHeight / 2,
-            p
-        )
-    }
-
     fun onDraw(c: Canvas) {
         if (currentItemViewHolder != null) {
             drawButtons(c, currentItemViewHolder!!)
         }
     }
 
+
+    private class SwipeButton constructor(
+        var text: String = "",
+        private var imageRes: Int = 0,
+        private var textSize: Float = 0f,
+        private var color: Int = 0,
+        private var rectF: RectF,
+        private var context: Context,
+        var onClick: ((SwipeButton, Int) -> Unit)? = null,
+    ) {
+
+        fun onClick(x: Float, y: Float, position: Int): Boolean {
+            if (rectF.contains(x, y)) {
+                onClick?.invoke(this, position)
+                return true
+            }
+            return false
+        }
+
+
+        fun drawButton(c: Canvas) {
+            val p = Paint()
+            p.color = ContextCompat.getColor(context, color)
+            c.drawRoundRect(rectF, 0f, 0f, p)
+            val iconTp: Bitmap? =
+                ContextCompat.getDrawable(context, imageRes)?.toBitmap()
+            iconTp?.let {
+                drawText(text, c, rectF, p, it)
+            }
+        }
+
+        private fun drawText(text: String, c: Canvas, button: RectF, p: Paint, icon: Bitmap) {
+            p.color = Color.WHITE
+            p.isAntiAlias = true
+            p.textSize = textSize
+            val textWidth: Float = p.measureText(text)
+            val bounds = Rect()
+            p.getTextBounds(text, 0, text.length, bounds);
+            val combinedHeight: Float = icon.height + 10f + bounds.height()
+            c.drawBitmap(
+                icon,
+                button.centerX() - (icon.width / 2),
+                button.centerY() - (combinedHeight / 2),
+                null
+            )
+            c.drawText(
+                text,
+                button.centerX() - textWidth / 2,
+                button.centerY() + combinedHeight / 2,
+                p
+            )
+        }
+    }
 }

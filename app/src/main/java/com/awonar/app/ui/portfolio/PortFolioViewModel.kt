@@ -49,6 +49,9 @@ class PortFolioViewModel @Inject constructor(
     val navigateInsideInstrumentPortfolio: Flow<Pair<String, String>> =
         _navigateInsideInstrumentPortfolio.receiveAsFlow()
 
+    private val _editDialog = Channel<Position?>(capacity = Channel.CONFLATED)
+    val editDialog: Flow<Position?> get() = _editDialog.receiveAsFlow()
+
     private val _subscricbeQuote = Channel<List<Int>>(capacity = Channel.CONFLATED)
     val subscricbeQuote: Flow<List<Int>> = _subscricbeQuote.receiveAsFlow()
 
@@ -67,6 +70,16 @@ class PortFolioViewModel @Inject constructor(
 
     private val _copierState = MutableStateFlow<Copier?>(null)
     val copierState: StateFlow<Copier?> get() = _copierState
+
+
+    fun showEditDialog(position: Int) {
+        viewModelScope.launch {
+            val data = _positionState.value[position]
+            data.let {
+                _editDialog.send(it)
+            }
+        }
+    }
 
     fun getManualPosition() {
         viewModelScope.launch {
@@ -194,10 +207,12 @@ class PortFolioViewModel @Inject constructor(
                 else -> getPieChartExposureUseCase(Unit)
             }.collect {
                 val data = it.successOr(emptyMap())
-                val items = convertExposureToPieChartUseCase( PieChartRequest(
-                    data,
-                    type in arrayListOf( "stocks", "currencies", "crypto")
-                )).successOr(emptyList())
+                val items = convertExposureToPieChartUseCase(
+                    PieChartRequest(
+                        data,
+                        type in arrayListOf("stocks", "currencies", "crypto")
+                    )
+                ).successOr(emptyList())
                 _positionOrderList.emit(items.toMutableList())
             }
         }

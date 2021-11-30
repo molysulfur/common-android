@@ -5,6 +5,12 @@ class PositionExposureException constructor(val errorMessage: String, val value:
 }
 
 
-class ValidateStopLossException constructor(val errorMessage: String, val value: Float) :
+class ValidationException constructor(val errorMessage: String, val value: Float) :
     Exception(errorMessage) {
 }
+
+class AvailableNotEnoughException(val errorMessage: String) : Exception(errorMessage)
+
+class AddAmountException(val errorMessage: String,val value: Float) : Exception(errorMessage)
+
+class RefundException(val errorMessage: String,val value: Float) : Exception(errorMessage)

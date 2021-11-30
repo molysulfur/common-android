@@ -19,36 +19,36 @@ import org.mockito.MockitoAnnotations
 @RunWith(JUnit4::class)
 class AuthUnitTest {
 
-    @get:Rule
-    var instantTaskExecutorRule = InstantTaskExecutorRule()
-
-    @get:Rule
-    var coroutineRule = MainCoroutineRule()
-
-    private val testDispatcher = coroutineRule.testDispatcher
-
-    @Before
-    fun setUp() {
-        MockitoAnnotations.openMocks(this)
-    }
-
-    @Test
-    fun testUpcomingState() = testDispatcher.runBlockingTest {
-        val useCase = SignInWithPasswordUseCase(FakeRepository(), testDispatcher)
-        val data = SignInRequest("", "")
-        val expect = Auth("", 0, "")
-        val auth = useCase.invoke(data)
-        println(auth)
-        assertEquals(
-            Result.Success(expect),
-            auth
-        )
-    }
-
-    internal class FakeRepository : AuthRepository {
-
-        override fun signInWithPassword(request: SignInRequest): Auth = Auth("", 0, "")
-
-    }
+//    @get:Rule
+//    var instantTaskExecutorRule = InstantTaskExecutorRule()
+//
+//    @get:Rule
+//    var coroutineRule = MainCoroutineRule()
+//
+//    private val testDispatcher = coroutineRule.testDispatcher
+//
+//    @Before
+//    fun setUp() {
+//        MockitoAnnotations.openMocks(this)
+//    }
+//
+//    @Test
+//    fun testUpcomingState() = testDispatcher.runBlockingTest {
+//        val useCase = SignInWithPasswordUseCase(FakeRepository(), testDispatcher)
+//        val data = SignInRequest("", "")
+//        val expect = Auth("", 0, "")
+//        val auth = useCase.invoke(data)
+//        println(auth)
+//        assertEquals(
+//            Result.Success(expect),
+//            auth
+//        )
+//    }
+//
+//    internal class FakeRepository : AuthRepository {
+//
+//        override fun signInWithPassword(request: SignInRequest): Auth = Auth("", 0, "")
+//
+//    }
 
 }
