@@ -19,6 +19,7 @@ import com.awonar.app.ui.order.OrderViewModel
 import com.awonar.app.utils.ColorChangingUtil
 import com.awonar.app.utils.DateUtils
 import com.awonar.app.utils.ImageUtil
+import com.molysulfur.library.extension.toast
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
@@ -44,6 +45,12 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
         binding.awonarOrderEditTextNumberpickerSl.setPrefix("$")
         binding.awonarOrderEditTextNumberpickerTp.setDescriptionColor(R.color.awonar_color_primary)
         binding.awonarOrderEditTextNumberpickerSl.setDescriptionColor(R.color.awonar_color_orange)
+        launchAndRepeatWithViewLifecycle {
+            orderViewModel.openOrderState.collect {
+                dismiss()
+                toast(it)
+            }
+        }
         launchAndRepeatWithViewLifecycle {
             orderViewModel.errorState.collect {
                 binding.error = it
@@ -135,6 +142,7 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
                 }
             }
         }
+        binding.viewModel = orderViewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
@@ -247,6 +255,7 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
         binding.date = "%s".format(DateUtils.getDate(position?.openDateTime))
         binding.fee = "$%.2f".format(position?.totalFees)
         binding.leverage = "X%s".format(position?.leverage)
+        binding.id = position?.id
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

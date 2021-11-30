@@ -33,7 +33,8 @@ class OrderViewModel @Inject constructor(
     private val validateRateTakeProfitUseCase: ValidateRateTakeProfitUseCase,
     private val validateRateStopLossUseCase: ValidateRateStopLossUseCase,
     private val getConversionByInstrumentUseCase: GetConversionByInstrumentUseCase,
-    private val getTradingDataByInstrumentIdUseCase: GetTradingDataByInstrumentIdUseCase
+    private val getTradingDataByInstrumentIdUseCase: GetTradingDataByInstrumentIdUseCase,
+    private val updateOrderUseCase: UpdateOrderUseCase
 ) : ViewModel() {
 
     private val _openOrderState = Channel<String>(capacity = Channel.CONFLATED)
@@ -253,5 +254,28 @@ class OrderViewModel @Inject constructor(
         }
     }
 
+
+    fun edit(id: String?) {
+        viewModelScope.launch {
+            Timber.e("$id")
+            id?.let {
+                val tp = takeProfitState.value.second
+                val sl = stopLossState.value.second
+                updateOrderUseCase(
+                    UpdateOrderRequest(
+                        id = id,
+                        takeProfitRate = tp,
+                        stopLossRate = sl
+                    )
+                ).collect {
+                    val message = it.successOr("")
+                    if (!message.isNullOrBlank()) {
+                        _openOrderState.send(message)
+                    }
+                }
+            }
+
+        }
+    }
 
 }

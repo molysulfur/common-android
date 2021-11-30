@@ -2,9 +2,8 @@ package com.awonar.android.shared.repos
 
 import com.awonar.android.model.order.OpenOrderRequest
 import com.awonar.android.model.order.OpenOrderResponse
-import com.awonar.android.shared.api.InstrumentService
+import com.awonar.android.model.order.UpdateOrderRequest
 import com.awonar.android.shared.api.OrderService
-import com.awonar.android.shared.db.room.trading.TradingDataDao
 import com.molysulfur.library.network.DirectNetworkFlow
 import retrofit2.Response
 import javax.inject.Inject
@@ -20,6 +19,20 @@ class OrderRepository @Inject constructor(
                 orderService.openOrder(request).execute()
 
             override fun convertToResultType(response: OpenOrderResponse): OpenOrderResponse =
+                response
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+
+        }.asFlow()
+
+    fun editOrder(request: UpdateOrderRequest) =
+        object : DirectNetworkFlow<UpdateOrderRequest, Any, Any>() {
+            override fun createCall(): Response<Any> =
+                orderService.edit(request.id, request = request).execute()
+
+            override fun convertToResultType(response: Any): Any =
                 response
 
             override fun onFetchFailed(errorMessage: String) {
