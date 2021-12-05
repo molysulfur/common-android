@@ -61,6 +61,10 @@ fun setOrderAdapter(
                         viewModel.showEditDialog(position)
                     }
                 }
+
+                override fun onClose(position: Int) {
+                    viewModel.showCloseDialog(position)
+                }
             },
             recycler.context
         )
@@ -218,6 +222,9 @@ fun setPositionCardAdapter(
                 override fun onClick(position: Int) {
 
                 }
+
+                override fun onClose(position: Int) {
+                }
             },
             recycler.context
         )
@@ -371,6 +378,10 @@ fun setPositionAdapter(
                     if (position >= 0) {
                         viewModel.showEditDialog(position)
                     }
+                }
+
+                override fun onClose(position: Int) {
+                    viewModel.showCloseDialog(position)
                 }
             },
             recycler.context

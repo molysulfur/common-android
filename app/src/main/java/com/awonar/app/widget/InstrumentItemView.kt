@@ -40,7 +40,7 @@ class InstrumentItemView : BaseViewGroup {
 
     private lateinit var binding: AwonarWidgetInstrumentItemViewBinding
 
-    var onOpenOrder: ((String) -> Unit)? = null
+    var onOpenOrder: ((Boolean) -> Unit)? = null
 
     private val anim: Animation = AlphaAnimation(0.5f, 1.0f)
 
@@ -51,10 +51,10 @@ class InstrumentItemView : BaseViewGroup {
 
     override fun setup() {
         binding.awonarInstrumentItemTextBid.setOnClickListener {
-            onOpenOrder?.invoke("sell")
+            onOpenOrder?.invoke(false)
         }
         binding.awonarInstrumentItemTextAsk.setOnClickListener {
-            onOpenOrder?.invoke("buy")
+            onOpenOrder?.invoke(true)
         }
         updateImage()
         updateAsk()

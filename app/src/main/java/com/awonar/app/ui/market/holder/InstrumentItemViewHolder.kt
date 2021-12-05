@@ -56,7 +56,7 @@ class InstrumentItemViewHolder constructor(
     fun bind(
         item: InstrumentItem.InstrumentListItem,
         onInstrumentClick: ((Int) -> Unit)?,
-        onOpenOrder: ((Instrument, String) -> Unit)?
+        onOpenOrder: ((Instrument, Boolean) -> Unit)?
     ) {
         this.item = item
         viewModel?.subscribe(item.instrument.id)

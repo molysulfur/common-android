@@ -30,52 +30,27 @@ import kotlinx.coroutines.launch
 
 class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogViewModel>() {
 
+    private val binding: AwonarDialogOrderBinding by lazy {
+        AwonarDialogOrderBinding.inflate(layoutInflater)
+    }
+
     private val marketViewModel: MarketViewModel by activityViewModels()
     private val orderViewModel: OrderViewModel by activityViewModels()
     private val orderActivityViewModel: OrderViewModelActivity by activityViewModels()
     private val portfolioViewModel: PortFolioViewModel by activityViewModels()
 
-    private val binding: AwonarDialogOrderBinding by lazy {
-        AwonarDialogOrderBinding.inflate(layoutInflater)
-    }
-
-    private lateinit var leverageAdapter: LeverageAdapter
     private var instrument: Instrument? = null
     private var tradingData: TradingData? = null
     private var portfolio: Portfolio? = null
-    private var orderType: String? = "buy"
+
+    private var marketType: MarketOrderType = MarketOrderType.ENTRY_ORDER
+    private var isBuy: Boolean? = true
     private var quote: Quote? = null
     private var price: Float = 0f
-
     private var currentLeverage: Int = 1
-    private var amount: Price = Price(0f, 1f, "amount")
     private var takeProfit: Price = Price(amount = 0f, unit = 1f, TPSLType.AMOUNT)
 
-    companion object {
-        private const val EXTRA_INSTRUMENT = "com.awonar.app.ui.dialog.order.extra.instrument"
-        private const val EXTRA_ORDER_TYPE = "com.awonar.app.ui.dialog.order.extra.order_type"
-
-        private fun newInstance(
-            instrument: Instrument?,
-            orderType: String,
-            key: String?,
-            data: Bundle?
-        ) =
-            OrderDialog().apply {
-                arguments = createBundle(key, data).apply {
-                    putParcelable(EXTRA_INSTRUMENT, instrument)
-                    putString(EXTRA_ORDER_TYPE, orderType)
-                }
-            }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setStyle(
-            STYLE_NORMAL,
-            android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen
-        )
-    }
+    private lateinit var leverageAdapter: LeverageAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -100,11 +75,12 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                 }
             }
             launch {
-                orderActivityViewModel.amountState.collect {
+                orderViewModel.amountState.collect {
+//                    binding.awonarDialogOrderNumberPickerInputAmount.setNumber(it)
                     validateExposure()
-                    getDefaultTpAndSl()
-                    updateDetail()
-                    getOvernight()
+//                    getDefaultTpAndSl()
+//                    updateDetail()
+//                    getOvernight()
                 }
             }
             launch {
@@ -131,18 +107,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                 }
             }
             launch {
-                orderActivityViewModel.exposureState.collect {
-                    instrument?.let { instrument ->
-                        orderActivityViewModel.updateAmount(instrument.id, price, it)
-                    }
-                }
-            }
-            launch {
-                orderActivityViewModel.exposureMessageState.collect {
-                    binding.awonarDialogOrderNumberPickerInputAmount.setHelp(it)
-                }
-            }
-            launch {
                 portfolioViewModel.portfolioState.collect {
                     if (it != null) {
                         portfolio = it
@@ -153,11 +117,10 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             launch {
                 marketViewModel.quoteSteamingState.collect { quotes ->
                     quote = quotes.find { it.id == instrument?.id }
+                    orderViewModel.updateRate(price, marketType)
                     updateCurrentPrice()
-                    orderActivityViewModel.updateRateWithStream(price)
                 }
             }
-
             launch {
                 marketViewModel.tradingDataState.collect {
                     if (it != null) {
@@ -169,6 +132,18 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                     }
                 }
             }
+            launch {
+                orderViewModel.exposureState.collect {
+                    instrument?.let { instrument ->
+                        orderActivityViewModel.updateAmount(instrument.id, price, it)
+                    }
+                }
+            }
+            launch {
+                orderViewModel.exposureError.collect {
+                    binding.awonarDialogOrderNumberPickerInputAmount.setHelp(it)
+                }
+            }
         }
         binding.viewModel = orderViewModel
         binding.activityViewModel = orderActivityViewModel
@@ -176,59 +151,10 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         return binding.root
     }
 
-    private fun getDefaultTpAndSl() {
-        instrument?.let { instrument ->
-            orderActivityViewModel.getDefaultStopLoss(
-                instrumentId = instrument.id,
-                price = price,
-                orderType = orderType ?: "buy"
-            )
-            orderActivityViewModel.getDefaultTakeProfit(
-                instrumentId = instrument.id,
-                price = price,
-                orderType = orderType ?: "buy"
-            )
-        }
-    }
-
-    private fun validateStoploss() {
-        instrument?.let { instrument ->
-            orderActivityViewModel.validateStopLoss(
-                instrument,
-                price,
-                orderType ?: "buy"
-            )
-        }
-    }
-
-    private fun updateLeverage(leverage: Int) {
-        instrument?.let {
-            orderActivityViewModel.updateLeverage(
-                it.id,
-                price,
-                leverage
-            )
-        }
-    }
-
-    private fun getOvernight() {
-        instrument?.let { instrument ->
-            orderActivityViewModel.getOvernightFeeDaliy(
-                instrumentId = instrument.id,
-                orderType = orderType ?: "buy"
-            )
-            orderActivityViewModel.getOvernightFeeWeek(
-                instrumentId = instrument.id,
-                orderType = orderType ?: "buy"
-            )
-        }
-
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         instrument = arguments?.getParcelable(EXTRA_INSTRUMENT)
-        orderType = arguments?.getString(EXTRA_ORDER_TYPE)
+        isBuy = arguments?.getBoolean(EXTRA_TYPE, true)
         binding.digit = instrument?.digit ?: 0
         binding.awonarDialogOrderToggleOrderAmountType.addOnButtonCheckedListener { _, checkedId, isChecked ->
             if (isChecked) {
@@ -246,39 +172,39 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         }
         binding.awonarDialogOrderButtonOpenTrade.setOnClickListener {
             instrument?.let { instrument ->
-                orderActivityViewModel.getOrderRequest(
-                    instrumentId = instrument.id,
-                    orderType = orderType ?: "buy"
-                )
+//                orderActivityViewModel.getOrderRequest(
+//                    instrumentId = instrument.id,
+//                    orderType = isBuy
+//                )
             }
         }
-        initHeaderDialog()
-        initRateListener()
+        setupHeader()
+        setupRate()
         initLeverageAdapter()
         initListenerInputAmount()
         initStopLoss()
         initTakeProfit()
     }
 
-    private fun initRateListener() {
+    private fun setupRate() {
         instrument?.run {
             binding.awonarDialogOrderNumberPickerInputRate.setDigit(digit)
             binding.awonarDialogOrderNumberPickerInputRate.setPrefix("")
             binding.awonarDialogOrderNumberPickerInputRate.doAfterTextChange = {
-                orderActivityViewModel.updateRate(it)
+                orderViewModel.updateRate(it, marketType)
             }
         }
 
         binding.awonarDialogOrderToggleOrderRateType.addOnButtonCheckedListener { _, checkedId, _ ->
             when (checkedId) {
                 R.id.awonar_dialog_order_button_rate_market -> {
-                    if (quote?.status == "open")
-                        orderActivityViewModel.updateMarketOrderType(MarketOrderType.OPEN_ORDER)
+                    marketType = if (quote?.status == "open")
+                        MarketOrderType.OPEN_ORDER
                     else
-                        orderActivityViewModel.updateMarketOrderType(MarketOrderType.ENTRY_ORDER)
+                        MarketOrderType.ENTRY_ORDER
                 }
                 R.id.awonar_dialog_order_button_rate_manual -> {
-                    orderActivityViewModel.updateMarketOrderType(MarketOrderType.PENDING_ORDER)
+                    marketType = MarketOrderType.PENDING_ORDER
                 }
                 else -> {
                 }
@@ -286,7 +212,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         }
     }
 
-    private fun initHeaderDialog() {
+    private fun setupHeader() {
         instrument?.let {
             binding.awonarDialogOrderImageAvatar.loadImage(it.logo)
             binding.awonarDialogOrderTextTitle.text = it.symbol
@@ -296,6 +222,55 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         binding.awonarDialogOrderImageIconClose.setOnClickListener {
             dismiss()
         }
+    }
+
+    private fun getDefaultTpAndSl() {
+        instrument?.let { instrument ->
+//            orderActivityViewModel.getDefaultStopLoss(
+//                instrumentId = instrument.id,
+//                price = price,
+//                orderType = isBuy
+//            )
+//            orderActivityViewModel.getDefaultTakeProfit(
+//                instrumentId = instrument.id,
+//                price = price,
+//                orderType = isBuy
+//            )
+        }
+    }
+
+    private fun validateStoploss() {
+        instrument?.let { instrument ->
+//            orderActivityViewModel.validateStopLoss(
+//                instrument,
+//                price,
+//                orderType ?: "buy"
+//            )
+        }
+    }
+
+    private fun updateLeverage(leverage: Int) {
+        instrument?.let {
+            orderActivityViewModel.updateLeverage(
+                it.id,
+                price,
+                leverage
+            )
+        }
+    }
+
+    private fun getOvernight() {
+        instrument?.let { instrument ->
+//            orderActivityViewModel.getOvernightFeeDaliy(
+//                instrumentId = instrument.id,
+//                orderType = isBuy
+//            )
+//            orderActivityViewModel.getOvernightFeeWeek(
+//                instrumentId = instrument.id,
+//                orderType = isBuy
+//            )
+        }
+
     }
 
     private fun initTakeProfit() {
@@ -356,10 +331,10 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     private fun initAmount() {
         portfolio?.let { portfolio ->
             instrument?.let { instrument ->
-                orderActivityViewModel.getDefaultAmount(
-                    instrument.id,
-                    price,
-                    portfolio.available
+                orderViewModel.setDefaultAmount(
+                    instrumentId = instrument.id,
+                    available = portfolio.available,
+                    price = price,
                 )
             }
 
@@ -369,16 +344,16 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     private fun initValueWithTradingData() {
         if (tradingData?.allowSell == false) {
             binding.awonarDialogOrderButtonTypeSell.isEnabled = tradingData?.allowSell == false
-            orderType = if (orderType == "sell") "buy" else orderType
+            isBuy = if (isBuy == false) true else isBuy
         }
 
         if (tradingData?.allowBuy == false) {
             binding.awonarDialogOrderButtonTypeBuy.isEnabled = tradingData?.allowBuy == false
-            orderType = if (orderType == "buy") null else orderType
+            isBuy = if (isBuy == true) null else isBuy
         }
-        when (orderType) {
-            "buy" -> binding.awonarDialogOrderToggleOrderType.check(R.id.awonar_dialog_order_button_type_buy)
-            "sell" -> binding.awonarDialogOrderToggleOrderType.check(R.id.awonar_dialog_order_button_type_sell)
+        when (isBuy) {
+            true -> binding.awonarDialogOrderToggleOrderType.check(R.id.awonar_dialog_order_button_type_buy)
+            false -> binding.awonarDialogOrderToggleOrderType.check(R.id.awonar_dialog_order_button_type_sell)
             else -> {
             }
         }
@@ -397,8 +372,8 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         }
         binding.awonarDialogOrderToggleOrderType.addOnButtonCheckedListener { _, checkedId, _ ->
             when (checkedId) {
-                R.id.awonar_dialog_order_button_type_buy -> orderType = "buy"
-                R.id.awonar_dialog_order_button_type_sell -> orderType = "sell"
+                R.id.awonar_dialog_order_button_type_buy -> isBuy = true
+                R.id.awonar_dialog_order_button_type_sell -> isBuy = false
             }
             updateCurrentPrice()
             getOvernight()
@@ -411,7 +386,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         binding.awonarDialogOrderNumberPickerInputAmount.doAfterFocusChange = { number, hasFocus ->
             if (!hasFocus) {
                 instrument?.run {
-                    orderActivityViewModel.updateAmount(id, price, number)
+//                    orderViewModel.updateAmount(id, price, number)
                 }
             }
         }
@@ -427,7 +402,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
 
     private fun updateCurrentPrice() {
         quote?.let {
-            price = ConverterQuoteUtil.getCurrentPrice(it, currentLeverage, orderType.equals("buy"))
+            price = ConverterQuoteUtil.getCurrentPrice(it, currentLeverage, isBuy == true)
             binding.awonarDialogOrderTextPrice.text = "$price"
             val change = ConverterQuoteUtil.change(price, it.previous)
             val percentChange = ConverterQuoteUtil.percentChange(price, it.previous)
@@ -443,9 +418,17 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(
+            STYLE_NORMAL,
+            android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen
+        )
+    }
+
     class Builder {
         private var instrument: Instrument? = null
-        private var orderType: String = "buy"
+        private var isBuy: Boolean = true
         private var key: String? = null
         private var data: Bundle? = null
 
@@ -453,8 +436,8 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             this.instrument = instrument
         }
 
-        fun setType(orderType: String): Builder = this.apply {
-            this.orderType = orderType
+        fun setType(isBuy: Boolean): Builder = this.apply {
+            this.isBuy = isBuy
         }
 
         fun setKey(key: String?): Builder = this.apply {
@@ -465,12 +448,30 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             this.data = data
         }
 
-        fun build(): OrderDialog = newInstance(instrument, orderType, key, data)
+        fun build(): OrderDialog = newInstance(instrument, isBuy, key, data)
     }
 
     override fun bindLauncher(viewModel: DialogViewModel): DialogLauncher<OrderMapper, OrderDialogListener> =
         viewModel.order
 
     override fun bindViewModel(): Class<DialogViewModel> = DialogViewModel::class.java
+
+    companion object {
+        private const val EXTRA_INSTRUMENT = "com.awonar.app.ui.dialog.order.extra.instrument"
+        private const val EXTRA_TYPE = "com.awonar.app.ui.dialog.order.extra.order_type"
+
+        private fun newInstance(
+            instrument: Instrument?,
+            isBuy: Boolean,
+            key: String?,
+            data: Bundle?
+        ) =
+            OrderDialog().apply {
+                arguments = createBundle(key, data).apply {
+                    putParcelable(EXTRA_INSTRUMENT, instrument)
+                    putBoolean(EXTRA_TYPE, isBuy)
+                }
+            }
+    }
 
 }

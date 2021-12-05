@@ -11,6 +11,7 @@ import com.awonar.app.databinding.AwonarFragmentPortfolioInsideInstrumentBinding
 import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.order.edit.OrderEditDialog
+import com.awonar.app.ui.order.partialclose.PartialCloseDialog
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -37,6 +38,16 @@ class PortFolioInsideInstrumentFragment : Fragment() {
                 portFolioViewModel.editDialog.collect { position ->
                     position?.let {
                         OrderEditDialog.Builder()
+                            .setPosition(it)
+                            .build()
+                            .show(childFragmentManager)
+                    }
+                }
+            }
+            launch {
+                portFolioViewModel.closeDialog.collect { position ->
+                    position?.let {
+                        PartialCloseDialog.Builder()
                             .setPosition(it)
                             .build()
                             .show(childFragmentManager)

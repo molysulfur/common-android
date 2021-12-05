@@ -2,16 +2,18 @@ package com.awonar.app.ui.order
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.awonar.android.constrant.MarketOrderType
 import com.awonar.android.exception.AddAmountException
+import com.awonar.android.exception.PositionExposureException
 import com.awonar.android.exception.RefundException
 import com.awonar.android.exception.ValidationException
 import com.awonar.android.model.order.*
 import com.awonar.android.model.portfolio.Position
 import com.awonar.android.shared.domain.market.GetConversionByInstrumentUseCase
 import com.awonar.android.shared.domain.order.*
+import com.awonar.android.shared.domain.partialclose.ValidatePartialCloseAmountUseCase
 import com.awonar.android.shared.domain.portfolio.GetMyPortFolioUseCase
 import com.awonar.android.shared.utils.ConverterOrderUtil
-import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.android.shared.utils.PortfolioUtil
 import com.molysulfur.library.result.Result
 import com.molysulfur.library.result.data
@@ -34,16 +36,41 @@ class OrderViewModel @Inject constructor(
     private val validateRateStopLossUseCase: ValidateRateStopLossUseCase,
     private val getConversionByInstrumentUseCase: GetConversionByInstrumentUseCase,
     private val getTradingDataByInstrumentIdUseCase: GetTradingDataByInstrumentIdUseCase,
-    private val updateOrderUseCase: UpdateOrderUseCase
+    private val validateExposureUseCase: ValidateExposureUseCase,
+    private val validatePartialCloseAmountUseCase: ValidatePartialCloseAmountUseCase,
+    private val updateOrderUseCase: UpdateOrderUseCase,
+    private val getUnitUseCase: GetUnitUseCase,
+    private val getAmountUseCase: GetAmountUseCase,
+    private val validateVisiblePartialUseCase: ValidateVisiblePartialUseCase
 ) : ViewModel() {
 
     private val _openOrderState = Channel<String>(capacity = Channel.CONFLATED)
     val openOrderState get() = _openOrderState.receiveAsFlow()
 
+    private val _exposureState = MutableStateFlow<Float>(0f)
+    val exposureState: StateFlow<Float> get() = _exposureState
+    private val _exposureError = MutableStateFlow("")
+    val exposureError: StateFlow<String> get() = _exposureError
+
+    private val _openRate = MutableStateFlow<Float?>(null)
+    val openRate: StateFlow<Float?> get() = _openRate
+
+    private val _amountState = MutableStateFlow(Pair(0f, 0f))
+    val amountState: StateFlow<Pair<Float, Float>> get() = _amountState
+    private val _amountError = MutableStateFlow("")
+    val amountError: StateFlow<String> get() = _amountError
+    private val _leverageState = MutableStateFlow(1)
+    val leverageState: StateFlow<Int> get() = _leverageState
+
+    private val _hasPartialState = MutableStateFlow(false)
+    val hasPartialState: StateFlow<Boolean> get() = _hasPartialState
+
     /**
      * first = amount
      * second = rate
      */
+    private val _typeChangeState = MutableSharedFlow<Pair<Float, Float>>()
+    val typeChangeState: SharedFlow<Pair<Float, Float>> get() = _typeChangeState
     private val _takeProfitState = MutableStateFlow(Pair(0f, 0f))
     val takeProfitState: StateFlow<Pair<Float, Float>> get() = _takeProfitState
     private val _takeProfitError = MutableStateFlow("")
@@ -56,6 +83,39 @@ class OrderViewModel @Inject constructor(
 
     private val _errorState = MutableStateFlow("")
     val errorState: StateFlow<String> get() = _errorState
+
+    fun validatePositionExposure(instrumentId: Int) {
+        viewModelScope.launch {
+            val amount = _amountState.value
+            val leverage = leverageState.value
+            if (leverage > 0) {
+                val result =
+                    validateExposureUseCase(ExposureRequest(instrumentId, amount.first, leverage))
+                if (result is Result.Error) {
+                    val exception: PositionExposureException =
+                        (result.exception as PositionExposureException)
+                    _exposureState.emit(exception.value)
+                    _exposureError.emit(exception.message ?: "")
+                }
+            }
+        }
+    }
+
+    fun setDefaultAmount(instrumentId: Int, available: Float, price: Float) {
+        viewModelScope.launch {
+            val amount: Float = available.times(0.05f)
+            val leverage: Int = leverageState.value
+            val unitAmount: Float = getUnitUseCase(
+                CalAmountUnitRequest(
+                    instrumentId = instrumentId,
+                    leverage = leverage,
+                    price = price,
+                    amount = amount
+                )
+            ).successOr(0f)
+            _amountState.value = Pair(amount, unitAmount)
+        }
+    }
 
     fun openOrder(
         request: OpenOrderRequest
@@ -276,6 +336,116 @@ class OrderViewModel @Inject constructor(
             }
 
         }
+    }
+
+    fun updateRate(price: Float, marketType: MarketOrderType) {
+        viewModelScope.launch {
+            if (marketType == MarketOrderType.ENTRY_ORDER || marketType == MarketOrderType.OPEN_ORDER) {
+                _openRate.emit(price)
+            }
+        }
+    }
+
+    fun updateAmount(instrumentId: Int, amount: Float, leverage: Int, price: Float) {
+        viewModelScope.launch {
+            val units = getUnitUseCase(
+                CalAmountUnitRequest(
+                    instrumentId = instrumentId,
+                    leverage = leverage,
+                    price = price,
+                    amount = amount
+                )
+            ).successOr(0f)
+            _amountState.value = Pair(amount, units)
+        }
+    }
+
+    fun toggleAmountType(checkedId: Int) {
+        viewModelScope.launch {
+            val amount = _amountState.value.copy()
+            _typeChangeState.emit(amount)
+        }
+    }
+
+    fun validatePartialCloseAmount(position: Position, price: Float) {
+        viewModelScope.launch {
+            val inputAmount = _amountState.value
+            val rate = getConversionByInstrumentUseCase(position.instrument.id).successOr(0f)
+            val pl = PortfolioUtil.getProfitOrLoss(
+                current = price,
+                openRate = position.openRate,
+                unit = position.units,
+                rate = rate,
+                isBuy = position.isBuy
+            )
+            val result = validatePartialCloseAmountUseCase(
+                ValidatePartialAmountRequest(
+                    amount = position.amount,
+                    inputAmount = inputAmount.first,
+                    pl = pl,
+                    units = position.units,
+                    leverage = position.leverage,
+                    id = position.instrument.id
+                )
+            )
+
+            if (result is Result.Error) {
+                val exception = result.exception as ValidationException
+                _amountError.value = exception.message ?: ""
+                updateAmount(position.instrument.id, exception.value, position.leverage, price)
+            }
+        }
+    }
+
+    fun updateUnits(id: Int, units: Float, leverage: Int, current: Float) {
+        viewModelScope.launch {
+            val amount = getAmountUseCase(
+                CalAmountUnitRequest(
+                    instrumentId = id,
+                    leverage = leverage,
+                    price = current,
+                    amount = units
+                )
+            ).successOr(0f)
+            _amountState.value = Pair(amount, units)
+        }
+    }
+
+    fun setDefaultPartialAmount(position: Position, price: Float) {
+        viewModelScope.launch {
+            val rate = getConversionByInstrumentUseCase(position.instrument.id).successOr(0f)
+            val pl = PortfolioUtil.getProfitOrLoss(
+                price,
+                position.openRate,
+                position.units,
+                rate,
+                position.isBuy
+            )
+            val value = PortfolioUtil.getValue(pl, position.amount)
+            val defaultAmount = value.minus(position.amount).div(2)
+            val hasPartial = validateVisiblePartialUseCase(
+                HasPartialRequest(
+                    amount = position.amount,
+                    leverage = position.leverage,
+                    id = position.instrument.id
+                )
+            ).successOr(false)
+            _hasPartialState.value = hasPartial
+            if (hasPartial) {
+                updateAmount(position.instrument.id, defaultAmount, position.leverage, price)
+            }
+        }
+    }
+
+    suspend fun getProfit(price: Float, position: Position): Float {
+        val rate = getConversionByInstrumentUseCase(position.instrument.id).successOr(0f)
+        return PortfolioUtil.getProfitOrLoss(
+            price,
+            position.openRate,
+            position.units,
+            rate,
+            position.isBuy
+        )
     }
 
 }

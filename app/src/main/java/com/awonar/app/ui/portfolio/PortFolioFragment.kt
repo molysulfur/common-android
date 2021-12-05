@@ -38,7 +38,6 @@ class PortFolioFragment : Fragment() {
 
     private lateinit var sectorDialog: MenuDialogButtonSheet
 
-
     private val activityResult: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
             if (activityResult.resultCode == Activity.RESULT_OK) {
