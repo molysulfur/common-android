@@ -160,7 +160,7 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/awonar_portfolio_navigation_host_portfolio"
+            android:id="@+id/awonar_portfolio_recycler_position"
             android:name="androidx.navigation.fragment.NavHostFragment"
             activedColumn="@{columnViewModel.activedColumnState}"
             quotes="@{market.quoteSteamingState}"

@@ -8,6 +8,7 @@ import androidx.fragment.app.activityViewModels
 import com.akexorcist.library.dialoginteractor.DialogLauncher
 import com.akexorcist.library.dialoginteractor.InteractorDialog
 import com.akexorcist.library.dialoginteractor.createBundle
+import com.awonar.android.constrant.MarketOrderType
 import com.awonar.android.model.market.Quote
 import com.awonar.android.model.portfolio.Position
 import com.awonar.android.shared.utils.ConverterQuoteUtil
@@ -29,6 +30,7 @@ class PartialCloseDialog :
     private var position: Position? = null
     private var quote: Quote? = null
     private var isPartial = false
+    private var marketOrderType = MarketOrderType.PENDING_ORDER
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,6 +64,7 @@ class PartialCloseDialog :
             marketViewModel.quoteSteamingState.collect { quotes ->
                 if (quote == null) {
                     quote = quotes.find { it.id == position?.instrument?.id }
+                    marketOrderType = if(quote?.status == "open") MarketOrderType.OPEN_ORDER else MarketOrderType.PENDING_ORDER
                     position?.let {
                         viewModel.setDefaultPartialAmount(
                             position = it,
@@ -133,11 +136,16 @@ class PartialCloseDialog :
             dismiss()
         }
         binding.awonarPartialCloseButtonClosePosition.setOnClickListener {
-//            Snackbar.make(requireContext(),binding.root,"Success",Snackbar.LENGTH_SHORT)
-//                .setBackgroundTint(ContextCompat.getColor(requireContext(),R.color.awonar_color_green))
-//                .show()
-            //         dismiss()
-//            viewModel.closePosition()
+            dismiss()
+            if (isPartial) {
+                position?.let {
+                    viewModel.closePartial(it,marketOrderType)
+                }
+            } else {
+                position?.let {
+                    viewModel.closePosition(it.id,marketOrderType)
+                }
+            }
         }
         binding.awonarPartialCloseCheckboxPart.setOnCheckedChangeListener { buttonView, isChecked ->
             isPartial = isChecked

@@ -6,6 +6,7 @@ import com.awonar.android.shared.di.IoDispatcher
 import com.awonar.android.shared.repos.MarketRepository
 import com.molysulfur.library.usecase.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
+import timber.log.Timber
 import javax.inject.Inject
 
 class ValidatePartialCloseAmountUseCase @Inject constructor(
@@ -22,7 +23,7 @@ class ValidatePartialCloseAmountUseCase @Inject constructor(
         val unitReduct = amountReduct.div(value).times(unit)
         val minAmount =
             if (leverage < tradingData.minLeverage) tradingData.minPositionExposure.div(parameters.leverage) else tradingData.minPositionAmount
-        val realAmountReduct = unitReduct.div(unit).times(parameters.amount)
+        Timber.e("$amountReduct $minAmount")
         if (amountReduct < minAmount) {
             throw ValidationException(
                 "Close Amount can't be lower than \$%.2f".format(minAmount.toFloat()),

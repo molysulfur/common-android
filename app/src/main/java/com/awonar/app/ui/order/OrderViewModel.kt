@@ -11,6 +11,9 @@ import com.awonar.android.model.order.*
 import com.awonar.android.model.portfolio.Position
 import com.awonar.android.shared.domain.market.GetConversionByInstrumentUseCase
 import com.awonar.android.shared.domain.order.*
+import com.awonar.android.shared.domain.partialclose.ClosePartialPositionUseCase
+import com.awonar.android.shared.domain.partialclose.ClosePositionUseCase
+import com.awonar.android.shared.domain.partialclose.RemovePositionUseCase
 import com.awonar.android.shared.domain.partialclose.ValidatePartialCloseAmountUseCase
 import com.awonar.android.shared.domain.portfolio.GetMyPortFolioUseCase
 import com.awonar.android.shared.utils.ConverterOrderUtil
@@ -41,11 +44,16 @@ class OrderViewModel @Inject constructor(
     private val updateOrderUseCase: UpdateOrderUseCase,
     private val getUnitUseCase: GetUnitUseCase,
     private val getAmountUseCase: GetAmountUseCase,
-    private val validateVisiblePartialUseCase: ValidateVisiblePartialUseCase
+    private val validateVisiblePartialUseCase: ValidateVisiblePartialUseCase,
+    private val closePositionUseCase: ClosePositionUseCase,
+    private val closePartialPositionUseCase: ClosePartialPositionUseCase,
+    private val removePositionUseCase: RemovePositionUseCase
 ) : ViewModel() {
 
     private val _openOrderState = Channel<String>(capacity = Channel.CONFLATED)
     val openOrderState get() = _openOrderState.receiveAsFlow()
+    private val _orderSuccessState = Channel<String>(capacity = Channel.CONFLATED)
+    val orderSuccessState get() = _orderSuccessState.receiveAsFlow()
 
     private val _exposureState = MutableStateFlow<Float>(0f)
     val exposureState: StateFlow<Float> get() = _exposureState
@@ -328,9 +336,8 @@ class OrderViewModel @Inject constructor(
                         stopLossRate = sl
                     )
                 ).collect {
-                    val message = it.successOr("")
-                    if (!message.isNullOrBlank()) {
-                        _openOrderState.send(message)
+                    if (it.succeeded) {
+                        _openOrderState.send("Update is successfully.")
                     }
                 }
             }
@@ -413,6 +420,8 @@ class OrderViewModel @Inject constructor(
 
     fun setDefaultPartialAmount(position: Position, price: Float) {
         viewModelScope.launch {
+            val tradingData =
+                getTradingDataByInstrumentIdUseCase(position.instrument.id).successOr(null)
             val rate = getConversionByInstrumentUseCase(position.instrument.id).successOr(0f)
             val pl = PortfolioUtil.getProfitOrLoss(
                 price,
@@ -422,7 +431,13 @@ class OrderViewModel @Inject constructor(
                 position.isBuy
             )
             val value = PortfolioUtil.getValue(pl, position.amount)
-            val defaultAmount = value.minus(position.amount).div(2)
+
+            val minAmount =
+                if (leverage < tradingData?.minLeverage ?: 0) tradingData?.minPositionExposure?.div(
+                    position.leverage
+                ) else tradingData?.minPositionAmount
+            val defaultAmount =
+                value.minus(minAmount ?: 0).times(0.5f)
             val hasPartial = validateVisiblePartialUseCase(
                 HasPartialRequest(
                     amount = position.amount,
@@ -446,6 +461,53 @@ class OrderViewModel @Inject constructor(
             rate,
             position.isBuy
         )
+    }
+
+    fun closePosition(id: String, marketOrderType: MarketOrderType) {
+        viewModelScope.launch {
+            if (marketOrderType == MarketOrderType.PENDING_ORDER) {
+                closePositionUseCase(id).collect {
+                    if (it.succeeded) {
+                        _orderSuccessState.send("Position was closed.")
+                    }
+                }
+            } else {
+                removePositionUseCase(id).collect {
+                    _orderSuccessState.send("Position was closed.")
+                }
+            }
+        }
+    }
+
+    fun closePartial(position: Position, marketOrderType: MarketOrderType) {
+        viewModelScope.launch {
+            val unit = _amountState.value.second
+            val unitReduct = _amountState.value.first.times(position.amount)
+            val realAmountReduct = unitReduct.div(unit).times(position.amount)
+            if (marketOrderType == MarketOrderType.PENDING_ORDER) {
+                closePartialPositionUseCase(
+                    ExitOrderPartialRequest(
+                        positionId = position.id,
+                        unitsToDeduce = position.units,
+                    )
+                ).collect {
+                    if (it.succeeded) {
+                        _orderSuccessState.send("$realAmountReduct unit of your buy position were closed.")
+                    }
+                }
+            } else {
+                updateOrderUseCase(
+                    UpdateOrderRequest(
+                        id = position.id,
+                        unitsToReduce = unit
+                    )
+                ).collect {
+                    if (it.succeeded) {
+                        _orderSuccessState.send("$realAmountReduct unit of your buy position were closed.")
+                    }
+                }
+            }
+        }
     }
 
 }

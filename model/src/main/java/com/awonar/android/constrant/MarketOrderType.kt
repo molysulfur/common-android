@@ -1,7 +1,7 @@
 package com.awonar.android.constrant
 
 enum class MarketOrderType {
-    ENTRY_ORDER,
-    PENDING_ORDER,
-    OPEN_ORDER
+    ENTRY_ORDER, // market close open at market
+    PENDING_ORDER, // close at price
+    OPEN_ORDER // market open
 }
