@@ -64,7 +64,8 @@ class PartialCloseDialog :
             marketViewModel.quoteSteamingState.collect { quotes ->
                 if (quote == null) {
                     quote = quotes.find { it.id == position?.instrument?.id }
-                    marketOrderType = if(quote?.status == "open") MarketOrderType.OPEN_ORDER else MarketOrderType.PENDING_ORDER
+                    marketOrderType =
+                        if (quote?.status == "open") MarketOrderType.OPEN_ORDER else MarketOrderType.PENDING_ORDER
                     position?.let {
                         viewModel.setDefaultPartialAmount(
                             position = it,
@@ -118,7 +119,6 @@ class PartialCloseDialog :
         }
         setupInfo()
         setupListener()
-
     }
 
     private fun setupInfo() {
@@ -139,11 +139,11 @@ class PartialCloseDialog :
             dismiss()
             if (isPartial) {
                 position?.let {
-                    viewModel.closePartial(it,marketOrderType)
+                    viewModel.closePartial(it, getCurrentPrice(), marketOrderType)
                 }
             } else {
                 position?.let {
-                    viewModel.closePosition(it.id,marketOrderType)
+                    viewModel.closePosition(it.id, marketOrderType)
                 }
             }
         }

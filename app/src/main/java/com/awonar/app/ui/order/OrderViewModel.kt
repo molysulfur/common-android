@@ -431,7 +431,7 @@ class OrderViewModel @Inject constructor(
                 position.isBuy
             )
             val value = PortfolioUtil.getValue(pl, position.amount)
-
+            val leverage = position.leverage
             val minAmount =
                 if (leverage < tradingData?.minLeverage ?: 0) tradingData?.minPositionExposure?.div(
                     position.leverage
@@ -479,31 +479,40 @@ class OrderViewModel @Inject constructor(
         }
     }
 
-    fun closePartial(position: Position, marketOrderType: MarketOrderType) {
+    fun closePartial(position: Position, current: Float, marketOrderType: MarketOrderType) {
         viewModelScope.launch {
-            val unit = _amountState.value.second
-            val unitReduct = _amountState.value.first.times(position.amount)
-            val realAmountReduct = unitReduct.div(unit).times(position.amount)
+            val unitReduct = _amountState.value.first.times(position.units).div(position.amount)
+            val realAmountReduct = unitReduct.div(position.units).times(position.amount)
             if (marketOrderType == MarketOrderType.PENDING_ORDER) {
                 closePartialPositionUseCase(
                     ExitOrderPartialRequest(
                         positionId = position.id,
-                        unitsToDeduce = position.units,
+                        unitsToDeduce = unitReduct,
                     )
                 ).collect {
                     if (it.succeeded) {
-                        _orderSuccessState.send("$realAmountReduct unit of your buy position were closed.")
+                        _orderSuccessState.send(
+                            "$realAmountReduct units of your %s position were closed at %s.".format(
+                                position.instrument.symbol,
+                                current
+                            )
+                        )
                     }
                 }
             } else {
                 updateOrderUseCase(
                     UpdateOrderRequest(
                         id = position.id,
-                        unitsToReduce = unit
+                        unitsToReduce = unitReduct
                     )
                 ).collect {
                     if (it.succeeded) {
-                        _orderSuccessState.send("$realAmountReduct unit of your buy position were closed.")
+                        _orderSuccessState.send(
+                            "$realAmountReduct units of your %s position were closed at %s.".format(
+                                position.instrument.symbol,
+                                current
+                            )
+                        )
                     }
                 }
             }

@@ -5,11 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentPortfolioInsideInstrumentBinding
 import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.market.MarketViewModel
@@ -46,7 +48,13 @@ class PortFolioInsideInstrumentFragment : Fragment() {
         launchAndRepeatWithViewLifecycle {
             launch {
                 orderViewModel.orderSuccessState.collect {
-                    Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT)
+                        .setBackgroundTint(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.awonar_color_green
+                            )
+                        ).show()
                     fectchPosition()
                 }
             }
