@@ -353,6 +353,12 @@ class OrderViewModel @Inject constructor(
         }
     }
 
+    fun updateRate(price: Float) {
+        viewModelScope.launch {
+            _openRate.emit(price)
+        }
+    }
+
     fun updateAmount(instrumentId: Int, amount: Float, leverage: Int, price: Float) {
         viewModelScope.launch {
             val units = getUnitUseCase(

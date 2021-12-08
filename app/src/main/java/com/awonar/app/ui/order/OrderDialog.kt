@@ -191,19 +191,22 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             binding.awonarDialogOrderNumberPickerInputRate.setDigit(digit)
             binding.awonarDialogOrderNumberPickerInputRate.setPrefix("")
             binding.awonarDialogOrderNumberPickerInputRate.doAfterTextChange = {
-                orderViewModel.updateRate(it, marketType)
+                orderViewModel.updateRate(it)
             }
         }
 
         binding.awonarDialogOrderToggleOrderRateType.addOnButtonCheckedListener { _, checkedId, _ ->
             when (checkedId) {
                 R.id.awonar_dialog_order_button_rate_market -> {
+                    binding.awonarDialogOrderNumberPickerInputRate.setPlaceHolderEnable(true)
                     marketType = if (quote?.status == "open")
                         MarketOrderType.OPEN_ORDER
                     else
                         MarketOrderType.ENTRY_ORDER
                 }
                 R.id.awonar_dialog_order_button_rate_manual -> {
+                    binding.awonarDialogOrderNumberPickerInputRate.setNumber(price)
+                    binding.awonarDialogOrderNumberPickerInputRate.setPlaceHolderEnable(false)
                     marketType = MarketOrderType.PENDING_ORDER
                 }
                 else -> {
