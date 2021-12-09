@@ -185,5 +185,10 @@
             app:argType="long" />
     </fragment>
 
+    <fragment
+        android:id="@+id/depositFragment"
+        android:name="com.awonar.app.ui.deposit.DepositFragment"
+        android:label="DepositFragment" />
+
 
 </navigation>

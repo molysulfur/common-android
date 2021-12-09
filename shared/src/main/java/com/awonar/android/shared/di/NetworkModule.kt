@@ -70,4 +70,10 @@ class NetworkModule {
     fun provideHistoryService(client: NetworkClient): HistoryService {
         return HistoryService.create(client)
     }
+
+    @Singleton
+    @Provides
+    fun providePaymentService(client: NetworkClient): PaymentService {
+        return PaymentService.create(client)
+    }
 }

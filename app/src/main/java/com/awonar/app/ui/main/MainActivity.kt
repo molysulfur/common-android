@@ -9,6 +9,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.*
@@ -128,6 +129,9 @@ class MainActivity : BaseActivity() {
         headerBinding.awonarDrawerHeaderMainTextName.text = user?.username ?: ""
         headerBinding.awonarDrawerHeaderMainConstraintProfile.setOnClickListener {
             openActivity(ProfileActivity::class.java)
+        }
+        headerBinding.awonarDrawerHeaderMainButtonDeposit.setOnClickListener {
+            findNavController(R.id.awonar_main_drawer_navigation_host_main).navigate(R.id.depositFragment)
         }
         visibleAccountVerifyType()
     }
