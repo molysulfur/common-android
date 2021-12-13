@@ -10,7 +10,7 @@ class PaymentListViewHolder constructor(private val binding: AwonarItemListBindi
 
     fun bind(item: DepositItem.MethodItem, onItemClick: ((String) -> Unit)?) {
         binding.awonarItemListText.setOnClickListener {
-            onItemClick?.invoke(item.name.lowercase())
+            onItemClick?.invoke(item.id)
         }
         binding.text = item.name
     }

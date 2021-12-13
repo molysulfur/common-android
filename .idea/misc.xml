@@ -56,6 +56,7 @@
         <entry key="app/src/main/res/layout/awonar_drawer_header_main.xml" value="0.2236024844720497" />
         <entry key="app/src/main/res/layout/awonar_fragment_column_actived.xml" value="0.1" />
         <entry key="app/src/main/res/layout/awonar_fragment_deposit.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/awonar_fragment_deposit_confirm.xml" value="0.16614583333333333" />
         <entry key="app/src/main/res/layout/awonar_fragment_deposit_method.xml" value="0.23020833333333332" />
         <entry key="app/src/main/res/layout/awonar_fragment_deposit_qr_payment.xml" value="0.2274562584118439" />
         <entry key="app/src/main/res/layout/awonar_fragment_experience.xml" value="0.11875" />
@@ -73,6 +74,7 @@
         <entry key="app/src/main/res/layout/awonar_fragment_market_recommended.xml" value="0.28541666666666665" />
         <entry key="app/src/main/res/layout/awonar_fragment_market_stocks.xml" value="0.1421875" />
         <entry key="app/src/main/res/layout/awonar_fragment_market_viewmore.xml" value="0.14322916666666666" />
+        <entry key="app/src/main/res/layout/awonar_fragment_payment_qrcode.xml" value="0.33229166666666665" />
         <entry key="app/src/main/res/layout/awonar_fragment_personal_step_one.xml" value="0.20260416666666667" />
         <entry key="app/src/main/res/layout/awonar_fragment_personal_step_three.xml" value="0.20260416666666667" />
         <entry key="app/src/main/res/layout/awonar_fragment_personal_step_two.xml" value="0.20260416666666667" />

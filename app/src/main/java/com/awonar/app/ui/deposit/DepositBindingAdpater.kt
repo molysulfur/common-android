@@ -27,9 +27,7 @@ fun setMethodAdapter(
         }
     }
     val itemList: List<DepositItem> = payments.map {
-        Timber.e("$it")
-        DepositItem.MethodItem("", it.paymentChannel ?: "")
+        DepositItem.MethodItem(it.id ?: "", "", it.paymentChannel ?: "")
     }
     (recycler.adapter as DepositAdapter).itemList = itemList.toMutableList()
-
 }

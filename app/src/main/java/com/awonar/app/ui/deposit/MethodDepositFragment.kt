@@ -26,7 +26,7 @@ class MethodDepositFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         launchAndRepeatWithViewLifecycle {
-            viewModel.navigationState.collect {
+            viewModel.navigationActions.collect {
                 findNavController().navigate(it)
             }
         }
