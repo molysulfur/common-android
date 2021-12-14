@@ -3,7 +3,7 @@ package com.awonar.app.ui.deposit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDirections
-import com.awonar.android.model.payment.DepositQrcodeRequest
+import com.awonar.android.model.payment.DepositRequest
 import com.awonar.android.model.payment.MethodPayment
 import com.awonar.android.model.payment.PaymentSetting
 import com.awonar.android.model.payment.QRCode
@@ -31,7 +31,12 @@ class DepositViewModel @Inject constructor(
     private val getCurrenciesUseCase: GetCurrenciesUseCase
 ) : ViewModel() {
 
+    private val _methodId = MutableStateFlow("")
+    val methodId: StateFlow<String> get() = _methodId
+    private val _symbolName = MutableStateFlow("THB")
+    val symbolName: StateFlow<String> get() = _symbolName
     private val _amount = MutableStateFlow(0f)
+    val amount: StateFlow<Float> get() = _amount
 
     private val _qrcodeInfo = MutableStateFlow<QRCode?>(null)
     val qrcodeInfo: StateFlow<QRCode?> get() = _qrcodeInfo
@@ -82,7 +87,6 @@ class DepositViewModel @Inject constructor(
     }
 
     fun getDepositQrcode(
-        cardId: String,
         currencyId: String,
         methodId: String,
         redirectUrl: String
@@ -98,18 +102,18 @@ class DepositViewModel @Inject constructor(
                 referenceNo = "R15000071000466",
                 currencyId = "THB"
             )
-//            getDepositQrcodeUseCase(
-//                DepositQrcodeRequest(
-//                    cardId = cardId,
-//                    amount = _amount.value,
-//                    amountUsd = _amount.value.times(_currencyRate.value),
-//                    cureencyId = currencyId,
-//                    methodId = methodId,
-//                    redirect = redirectUrl
-//                )
-//            ).collect {
-//                _qrcodeInfo.value = it.successOr(null)
-//            }
+            getDepositQrcodeUseCase(
+                DepositRequest(
+                    cardId = "",
+                    amount = _amount.value,
+                    amountUsd = _amount.value.times(_currencyRate.value),
+                    cureencyId = currencyId,
+                    methodId = methodId,
+                    redirect = redirectUrl
+                )
+            ).collect {
+                _qrcodeInfo.value = it.successOr(null)
+            }
         }
     }
 
@@ -125,11 +129,10 @@ class DepositViewModel @Inject constructor(
                 )
             } else {
                 viewModelScope.launch {
+                    _symbolName.value = symbol
+                    _methodId.value = methodId
                     _navigationActions.send(
-                        QRPaymentFragmentDirections.actionQRPaymentFragmentToQRCodePaymentFragment(
-                            symbol,
-                            methodId
-                        )
+                        QRPaymentFragmentDirections.actionQRPaymentFragmentToDepositConfirmFragment()
                     )
                 }
                 return ""

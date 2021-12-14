@@ -16,7 +16,6 @@ import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentDepositQrPaymentBinding
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
-import timber.log.Timber
 import java.lang.NumberFormatException
 
 class QRPaymentFragment : Fragment() {
@@ -93,8 +92,12 @@ class QRPaymentFragment : Fragment() {
     }
 
     private fun onSubmit() {
-        binding.awonarDepositQrPaymentInputAmount.error =
-            viewModel.validateMinMaxDeposit(defaultName, args.methodId)
+        if ((binding.awonarDepositQrPaymentInputCurrency.editText as? AutoCompleteTextView)?.text.isNullOrBlank()) {
+            binding.awonarDepositQrPaymentInputCurrency.error =
+                getString(R.string.awonar_text_required)
+            return
+        }
+        binding.awonarDepositQrPaymentInputAmount.error = viewModel.validateMinMaxDeposit(defaultName, args.methodId)
     }
 
     private fun setAdapter(it: PaymentSetting?) {
@@ -103,8 +106,10 @@ class QRPaymentFragment : Fragment() {
             R.layout.awonar_item_list,
             it?.allowDepositCurrencies ?: emptyList()
         )
-        (binding.awonarDepositQrPaymentInputCurrency.editText as? AutoCompleteTextView)?.setAdapter(
-            adapter
-        )
+        (binding.awonarDepositQrPaymentInputCurrency.editText as? AutoCompleteTextView)?.apply {
+            setAdapter(
+                adapter
+            )
+        }
     }
 }

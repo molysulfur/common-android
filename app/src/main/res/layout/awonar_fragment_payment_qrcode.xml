@@ -111,8 +111,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/awonar_size_margin_padding_normal"
             android:text="Finished"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardView" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

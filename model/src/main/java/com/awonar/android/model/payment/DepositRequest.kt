@@ -5,8 +5,8 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class DepositQrcodeRequest(
-    @SerializedName("cardId") val cardId: String,
+data class DepositRequest(
+    @SerializedName("cardId") val cardId: String? = "",
     @SerializedName("dollarAmount") val amountUsd: Float,
     @SerializedName("localAmount") val amount: Float,
     @SerializedName("localCurrencyId") val cureencyId: String,

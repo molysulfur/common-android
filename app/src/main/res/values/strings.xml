@@ -71,4 +71,5 @@
     <string name="awonar_title_take_profit">Take Profit</string>
     <string name="awonar_title_stoploss">Stop Loss</string>
     <string name="awonar_text_close">Close</string>
+    <string name="awonar_text_confirm">Confirm</string>
 </resources>

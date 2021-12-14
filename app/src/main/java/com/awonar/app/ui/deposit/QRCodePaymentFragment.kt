@@ -45,7 +45,6 @@ class QRCodePaymentFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.getDepositQrcode(
-            "mos ang ja",
             currencyId = args.currencyId,
             methodId = args.methodId,
             redirectUrl = ""

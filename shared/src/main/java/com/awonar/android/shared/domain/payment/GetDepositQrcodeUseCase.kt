@@ -1,6 +1,6 @@
 package com.awonar.android.shared.domain.payment
 
-import com.awonar.android.model.payment.DepositQrcodeRequest
+import com.awonar.android.model.payment.DepositRequest
 import com.awonar.android.model.payment.QRCode
 import com.awonar.android.shared.di.IoDispatcher
 import com.awonar.android.shared.repos.PaymentRepository
@@ -13,7 +13,7 @@ import javax.inject.Inject
 class GetDepositQrcodeUseCase @Inject constructor(
     private val repository: PaymentRepository,
     @IoDispatcher dispatcher: CoroutineDispatcher
-) : FlowUseCase<DepositQrcodeRequest, QRCode?>(dispatcher) {
-    override fun execute(parameters: DepositQrcodeRequest): Flow<Result<QRCode?>> = repository.getDepositQrcode(parameters)
+) : FlowUseCase<DepositRequest, QRCode?>(dispatcher) {
+    override fun execute(parameters: DepositRequest): Flow<Result<QRCode?>> = repository.getDepositQrcode(parameters)
 }
 

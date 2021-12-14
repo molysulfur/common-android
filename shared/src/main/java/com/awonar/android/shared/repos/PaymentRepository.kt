@@ -1,6 +1,6 @@
 package com.awonar.android.shared.repos
 
-import com.awonar.android.model.payment.DepositQrcodeRequest
+import com.awonar.android.model.payment.DepositRequest
 import com.awonar.android.model.payment.MethodPayment
 import com.awonar.android.model.payment.PaymentSetting
 import com.awonar.android.model.payment.QRCode
@@ -42,8 +42,8 @@ class PaymentRepository @Inject constructor(
             }
         }.asFlow()
 
-    fun getDepositQrcode(request: DepositQrcodeRequest): Flow<Result<QRCode?>> =
-        object : DirectNetworkFlow<DepositQrcodeRequest, QRCode, QRCode>() {
+    fun getDepositQrcode(request: DepositRequest): Flow<Result<QRCode?>> =
+        object : DirectNetworkFlow<DepositRequest, QRCode, QRCode>() {
             override fun createCall(): Response<QRCode> =
                 service.getQrcode(request).execute()
 
