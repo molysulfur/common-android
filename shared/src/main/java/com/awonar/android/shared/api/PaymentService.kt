@@ -1,9 +1,6 @@
 package com.awonar.android.shared.api
 
-import com.awonar.android.model.payment.DepositRequest
-import com.awonar.android.model.payment.MethodPayment
-import com.awonar.android.model.payment.PaymentSetting
-import com.awonar.android.model.payment.QRCode
+import com.awonar.android.model.payment.*
 import com.awonar.android.shared.constrant.BuildConfig
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -12,6 +9,12 @@ import retrofit2.http.*
 
 
 interface PaymentService {
+
+    @POST("api/v1/withdrawal/local-online-banking")
+    fun withdrawalBanking(@Body body: WithdrawRequest): Call<Withdraw>
+
+    @POST("api/v1/otp/withdrawal")
+    fun getOTPWithdrawal(@Body body: WithdrawOTPRequest): Call<OTP>
 
     @POST("api/v1/deposit/qrcode")
     fun getQrcode(@Body body: DepositRequest): Call<QRCode>

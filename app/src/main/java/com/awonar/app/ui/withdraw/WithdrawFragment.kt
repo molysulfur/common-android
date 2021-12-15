@@ -1,4 +1,4 @@
-package com.awonar.app.ui.deposit
+package com.awonar.app.ui.withdraw
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,15 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
-import com.awonar.app.databinding.AwonarFragmentDepositBinding
-import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
-import kotlinx.coroutines.flow.collect
+import com.awonar.app.databinding.AwonarFragmentWithdrawBinding
+import timber.log.Timber
 
-class DepositFragment : Fragment() {
+class WithdrawFragment : Fragment() {
 
-    private val binding: AwonarFragmentDepositBinding by lazy {
-        AwonarFragmentDepositBinding.inflate(layoutInflater)
+    private val binding: AwonarFragmentWithdrawBinding by lazy {
+        AwonarFragmentWithdrawBinding.inflate(layoutInflater)
     }
 
     override fun onCreateView(

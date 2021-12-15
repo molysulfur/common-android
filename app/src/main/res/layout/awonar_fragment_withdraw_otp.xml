@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="amount"
+            type="String" />
+
+        <variable
+            name="withdrawViewModel"
+            type="com.awonar.app.ui.withdraw.WithdrawViewModel" />
+
+        <variable
+            name="userViewModel"
+            type="com.awonar.app.ui.user.UserViewModel" />
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_withdraw_otp_text_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/awonar_size_margin_padding_normal"
+                android:text="Your request should be processed within two business days. To check its status, visit your cash flow page"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.awonar.app.widget.VerticalTitleView
+                android:id="@+id/awonar_withdraw_otp_vertical_text_amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+                android:background="@drawable/awonar_bg_15_light_gray"
+                android:padding="@dimen/awonar_size_margin_padding_normal"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_withdraw_otp_text_description"
+                app:verticalTitleView_setSubTitle="REQUESTED NET AMOUNT" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_withdraw_otp_text_description_amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/awonar_size_margin_padding_normal"
+                android:text="Your request should be processed within two business days. To check its status, visit your cash flow page"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_withdraw_otp_vertical_text_amount" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/awonar_withdraw_otp_input_name"
+                style="@style/Awonar.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_withdraw_otp_text_description_amount">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Beneficiary Name"
+                    android:text="@{userViewModel.bankState.accountName}" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/awonar_withdraw_otp_input_number"
+                style="@style/Awonar.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_withdraw_otp_input_name">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Bank Account Number"
+                    android:text="@{userViewModel.bankState.accountNumber}" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/awonar_withdraw_otp_input_bank"
+                style="@style/Awonar.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_withdraw_otp_input_number">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Bank Name"
+                    android:text="@{userViewModel.bankState.bankName}" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/awonar_withdraw_otp_layout_otp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+                android:background="@drawable/awonar_bg_15_light_blue"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_withdraw_otp_input_bank">
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/awonar_withdraw_otp_input_otp"
+                    style="@style/Awonar.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:endIconContentDescription="Send"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_withdraw_otp_input_bank">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Please input OTP password" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    style="@style/Awonar.Button.Link.Green"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{withdrawViewModel::requestOTP}"
+                    android:text="Request OTP" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/awonar_withdraw_otp_button_submit"
+                style="@style/Awonar.Button.Default.Primary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+                android:text="Continus"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_withdraw_otp_layout_otp" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
+</layout>

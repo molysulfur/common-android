@@ -189,6 +189,10 @@
         android:id="@+id/depositFragment"
         android:name="com.awonar.app.ui.deposit.DepositFragment"
         android:label="DepositFragment" />
+    <fragment
+        android:id="@+id/withdrawFragment"
+        android:name="com.awonar.app.ui.withdraw.WithdrawFragment"
+        android:label="WithdrawFragment" />
 
 
 </navigation>

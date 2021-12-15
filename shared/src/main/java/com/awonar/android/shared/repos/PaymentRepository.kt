@@ -1,9 +1,6 @@
 package com.awonar.android.shared.repos
 
-import com.awonar.android.model.payment.DepositRequest
-import com.awonar.android.model.payment.MethodPayment
-import com.awonar.android.model.payment.PaymentSetting
-import com.awonar.android.model.payment.QRCode
+import com.awonar.android.model.payment.*
 import com.awonar.android.shared.api.PaymentService
 import com.molysulfur.library.network.DirectNetworkFlow
 import com.molysulfur.library.result.Result
@@ -48,6 +45,32 @@ class PaymentRepository @Inject constructor(
                 service.getQrcode(request).execute()
 
             override fun convertToResultType(response: QRCode): QRCode =
+                response
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+        }.asFlow()
+
+    fun withdrawOTP(request: WithdrawOTPRequest): Flow<Result<OTP?>> =
+        object : DirectNetworkFlow<Unit, OTP, OTP>() {
+            override fun createCall(): Response<OTP> =
+                service.getOTPWithdrawal(request).execute()
+
+            override fun convertToResultType(response: OTP): OTP =
+                response
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+        }.asFlow()
+
+    fun requestWithdraw(request: WithdrawRequest): Flow<Result<Withdraw?>> =
+        object : DirectNetworkFlow<WithdrawRequest, Withdraw, Withdraw>() {
+            override fun createCall(): Response<Withdraw> =
+                service.withdrawalBanking(request).execute()
+
+            override fun convertToResultType(response: Withdraw): Withdraw =
                 response
 
             override fun onFetchFailed(errorMessage: String) {

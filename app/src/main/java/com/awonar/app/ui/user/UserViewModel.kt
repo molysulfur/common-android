@@ -2,11 +2,16 @@ package com.awonar.app.ui.user
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.awonar.android.model.bookbank.BookBank
+import com.awonar.android.model.payment.MethodPayment
+import com.awonar.android.model.settting.Bank
 import com.awonar.android.model.user.User
 import com.awonar.android.model.user.UserRequest
+import com.awonar.android.shared.domain.bookbank.GetBookBankUseCase
 import com.awonar.android.shared.domain.profile.GetUserProfileUseCase
 import com.awonar.android.shared.domain.user.GetUserUseCase
 import com.awonar.android.shared.domain.user.UpdateAboutMeUseCase
+import com.awonar.android.shared.utils.WhileViewSubscribed
 import com.molysulfur.library.result.data
 import com.molysulfur.library.result.succeeded
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,8 +23,14 @@ import javax.inject.Inject
 class UserViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
     private val getUserProfileUseCase: GetUserProfileUseCase,
+    private val getBookBankUseCase: GetBookBankUseCase,
     private val updateAboutMeUseCase: UpdateAboutMeUseCase
 ) : ViewModel() {
+
+    val bankState: StateFlow<BookBank?> =
+        getBookBankUseCase(Unit).map { result ->
+            result.data
+        }.stateIn(viewModelScope, WhileViewSubscribed, null)
 
     private val _userState = MutableStateFlow<User?>(null)
     val userState: StateFlow<User?> get() = _userState
