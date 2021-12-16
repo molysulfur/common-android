@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="title"
+            type="String" />
+
+        <variable
+            name="subTitle"
+            type="String" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/appCompatImageView"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+            android:src="@drawable/awonar_ic_payment_success"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_payment_success_text_title"
+            style="@style/Awonar.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+            android:gravity="center"
+            android:text="@{title}"
+            app:layout_constraintEnd_toEndOf="@+id/appCompatImageView"
+            app:layout_constraintStart_toStartOf="@+id/appCompatImageView"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatImageView"
+            tools:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_payment_success_text_subtitle"
+            style="@style/Awonar.SubTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+            android:gravity="center"
+            android:text="@{subTitle}"
+            app:layout_constraintEnd_toEndOf="@+id/appCompatImageView"
+            app:layout_constraintStart_toStartOf="@+id/appCompatImageView"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_payment_success_text_title"
+            tools:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+            android:background="@drawable/awonar_bg_15_light_gray"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="@dimen/awonar_size_margin_padding_normal"
+            android:weightSum="2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_payment_success_text_subtitle">
+
+            <com.awonar.app.widget.VerticalTitleView
+                android:id="@+id/awonar_payment_success_vertical_text_id"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
+                android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+                android:background="@color/black" />
+
+            <com.awonar.app.widget.VerticalTitleView
+                android:id="@+id/awonar_payment_success_vertical_text_amount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/awonar_payment_success_text_finished"
+            style="@style/Awonar.Button.Default.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+            android:text="Finished"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

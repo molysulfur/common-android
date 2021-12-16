@@ -130,14 +130,29 @@ class WithdrawViewModel @Inject constructor(
 
     fun onSubmit(inputOTP: Int, bankId: String) {
         viewModelScope.launch {
-            val request = WithdrawRequest(
-                amount = _amount.value,
-                note = "",
-                verify = WithdrawVerify(otp = inputOTP, ref = _otp.value?.referenceNo1),
-                verifyBankAccountId = bankId
+            _navigationActions.send(
+                WithdrawOTPFragmentDirections.actionWithdrawOTPFragmentToWithdrawSuccessFragment(
+                    "12345",
+                    _amount.value
+                )
             )
-            createWithdrawUseCase(request).collect {
-            }
+//            val request = WithdrawRequest(
+//                amount = _amount.value,
+//                note = "",
+//                verify = WithdrawVerify(otp = inputOTP, ref = _otp.value?.referenceNo1),
+//                verifyBankAccountId = bankId
+//            )
+//            createWithdrawUseCase(request).collect { result ->
+//                val data = result.successOr(null)
+//                data?.let {
+//                    _navigationActions.send(
+//                        WithdrawOTPFragmentDirections.actionWithdrawOTPFragmentToWithdrawSuccessFragment(
+//                            it.id ?: "",
+//                            it.dollarAmount
+//                        )
+//                    )
+//                }
+//            }
         }
     }
 

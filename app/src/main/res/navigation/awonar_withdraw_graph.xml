@@ -39,5 +39,30 @@
     <fragment
         android:id="@+id/withdrawOTPFragment"
         android:name="com.awonar.app.ui.withdraw.WithdrawOTPFragment"
-        android:label="WithdrawOTPFragment" />
+        android:label="WithdrawOTPFragment">
+
+        <action
+            android:id="@+id/action_withdrawOTPFragment_to_withdrawSuccessFragment"
+            app:destination="@+id/withdrawSuccessFragment"
+            app:enterAnim="@anim/common_anim_right_to_left_in"
+            app:exitAnim="@anim/common_anim_right_to_left_out"
+            app:popEnterAnim="@anim/common_anim_left_to_right_in"
+            app:popExitAnim="@anim/common_anim_left_to_right_out"
+            app:popUpTo="@+id/withdrawMethodFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/withdrawSuccessFragment"
+        android:name="com.awonar.app.ui.withdraw.WithdrawSuccessFragment"
+        android:label="WithdrawSuccessFragment">
+
+        <argument
+            android:name="withdrawId"
+            app:argType="string" />
+
+        <argument
+            android:name="amount"
+            app:argType="float" />
+    </fragment>
 </navigation>
