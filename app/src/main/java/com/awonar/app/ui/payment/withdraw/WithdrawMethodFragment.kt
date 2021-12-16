@@ -1,4 +1,4 @@
-package com.awonar.app.ui.deposit
+package com.awonar.app.ui.payment.withdraw
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,17 +7,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.awonar.app.databinding.AwonarFragmentDepositMethodBinding
+import com.awonar.app.databinding.AwonarFragmentWithdrawMethodBinding
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
-import timber.log.Timber
 
-class MethodDepositFragment : Fragment() {
+class WithdrawMethodFragment : Fragment() {
 
-    private val viewModel : DepositViewModel by activityViewModels()
+    private val viewModel: WithdrawViewModel by activityViewModels()
 
-    private val binding: AwonarFragmentDepositMethodBinding by lazy {
-        AwonarFragmentDepositMethodBinding.inflate(layoutInflater)
+    private val binding: AwonarFragmentWithdrawMethodBinding by lazy {
+        AwonarFragmentWithdrawMethodBinding.inflate(layoutInflater)
     }
 
     override fun onCreateView(
@@ -33,9 +32,5 @@ class MethodDepositFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
     }
 }

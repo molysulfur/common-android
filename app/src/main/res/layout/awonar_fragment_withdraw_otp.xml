@@ -10,7 +10,7 @@
 
         <variable
             name="withdrawViewModel"
-            type="com.awonar.app.ui.withdraw.WithdrawViewModel" />
+            type="com.awonar.app.ui.payment.withdraw.WithdrawViewModel" />
 
         <variable
             name="userViewModel"

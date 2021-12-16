@@ -1,14 +1,11 @@
-package com.awonar.app.ui.deposit
+package com.awonar.app.ui.payment.deposit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDirections
-import com.awonar.android.model.payment.DepositRequest
-import com.awonar.android.model.payment.MethodPayment
-import com.awonar.android.model.payment.PaymentSetting
-import com.awonar.android.model.payment.QRCode
+import com.awonar.android.model.payment.*
 import com.awonar.android.shared.domain.currency.GetCurrenciesRateUseCase
-import com.awonar.android.shared.domain.currency.GetCurrenciesUseCase
+import com.awonar.android.shared.domain.payment.GetDepositHistoryUseCase
 import com.awonar.android.shared.domain.payment.GetDepositQrcodeUseCase
 import com.awonar.android.shared.domain.payment.GetMethodsPaymentUseCase
 import com.awonar.android.shared.domain.payment.GetPaymentSettingUseCase
@@ -28,11 +25,13 @@ class DepositViewModel @Inject constructor(
     private val getMethodsPaymentUseCase: GetMethodsPaymentUseCase,
     private val getPaymentSettingUseCase: GetPaymentSettingUseCase,
     private val getDepositQrcodeUseCase: GetDepositQrcodeUseCase,
-    private val getCurrenciesUseCase: GetCurrenciesUseCase
+    private val getDepositHistoryUseCase: GetDepositHistoryUseCase,
 ) : ViewModel() {
 
+    private val _historyState = MutableStateFlow<List<Deposit>>(emptyList())
+    val historyState: StateFlow<List<Deposit>> get() = _historyState
+
     private val _methodId = MutableStateFlow("")
-    val methodId: StateFlow<String> get() = _methodId
     private val _symbolName = MutableStateFlow("THB")
     val symbolName: StateFlow<String> get() = _symbolName
     private val _amount = MutableStateFlow(0f)
@@ -47,6 +46,9 @@ class DepositViewModel @Inject constructor(
     private val _currencyRate = MutableStateFlow(0f)
     val currencyRate: StateFlow<Float> get() = _currencyRate
 
+    private val _page = MutableStateFlow(0)
+    val page: StateFlow<Int> get() = _page
+
     private val _paymentSetting: MutableStateFlow<PaymentSetting?> = MutableStateFlow(null)
     val paymentSetting: StateFlow<PaymentSetting?> get() = _paymentSetting
 
@@ -55,6 +57,8 @@ class DepositViewModel @Inject constructor(
             val list: List<MethodPayment> = result.data ?: emptyList()
             list
         }.stateIn(viewModelScope, WhileViewSubscribed, emptyList())
+
+
 
     fun getCurrencyForPayment(methodId: String) {
         viewModelScope.launch {
@@ -72,9 +76,15 @@ class DepositViewModel @Inject constructor(
 
     fun navigateDepositFragment(id: String) {
         viewModelScope.launch {
-            _navigationActions.send(
-                MethodDepositFragmentDirections.actionMethodDepositFragmentToQRPaymentFragment(id)
-            )
+            when (id) {
+                "history" -> _navigationActions.send(MethodDepositFragmentDirections.actionMethodDepositFragmentToDepositHistoryFragment())
+                else -> _navigationActions.send(
+                    MethodDepositFragmentDirections.actionMethodDepositFragmentToQRPaymentFragment(
+                        id
+                    )
+                )
+            }
+
         }
     }
 
@@ -93,15 +103,6 @@ class DepositViewModel @Inject constructor(
     ) {
 
         viewModelScope.launch {
-            //TODO("Mock qrcode for test")
-            _qrcodeInfo.value = QRCode(
-                qrCode = "00020101021130830016A000000677010112011501055600681275502180000002112130001590318000R1500007100046653037645406501.005802TH5910GBPrimePay630479B1",
-                amountUsd = 15.02f,
-                localAmount = 501f,
-                rate = 0.029984999999999998f,
-                referenceNo = "R15000071000466",
-                currencyId = "THB"
-            )
             getDepositQrcodeUseCase(
                 DepositRequest(
                     cardId = "",
@@ -122,8 +123,8 @@ class DepositViewModel @Inject constructor(
             val amountUsd = _amount.value.times(_currencyRate.value)
             val minDeposit = paymentInfo?.minDepositDollar ?: 0f
             val maxDeposit = paymentInfo?.maxDepositDollar ?: 0f
-            if ((amountUsd < minDeposit) or (amountUsd > maxDeposit)) {
-                return "minimum deposit is $%.2f and maximun deposit is $%.2f".format(
+            return if ((amountUsd < minDeposit) or (amountUsd > maxDeposit)) {
+                "minimum deposit is $%.2f and maximun deposit is $%.2f".format(
                     minDeposit,
                     maxDeposit
                 )
@@ -135,7 +136,23 @@ class DepositViewModel @Inject constructor(
                         QRPaymentFragmentDirections.actionQRPaymentFragmentToDepositConfirmFragment()
                     )
                 }
-                return ""
+                ""
+            }
+        }
+    }
+
+    fun getHistory() {
+        viewModelScope.launch {
+            getDepositHistoryUseCase(_page.value).collect { result ->
+                val data = result.successOr(null)
+                _page.value = if (data?.meta?.hasMore == true) {
+                    data.meta.page + 1
+                } else {
+                    0
+                }
+                val list = _historyState.value.toMutableList()
+                list.addAll(data?.histories ?: emptyList())
+                _historyState.value = list
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.awonar.app.ui.withdraw
+package com.awonar.app.ui.payment.withdraw
 
 import android.os.CountDownTimer
 import android.view.View
@@ -8,10 +8,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDirections
 import com.awonar.android.model.payment.*
 import com.awonar.android.model.portfolio.Portfolio
-import com.awonar.android.shared.domain.payment.CreateWithdrawUseCase
-import com.awonar.android.shared.domain.payment.GetMethodsPaymentUseCase
-import com.awonar.android.shared.domain.payment.GetPaymentSettingUseCase
-import com.awonar.android.shared.domain.payment.GetWithdrawOTPUseCase
+import com.awonar.android.shared.domain.payment.*
 import com.awonar.android.shared.domain.portfolio.GetMyPortFolioUseCase
 import com.awonar.android.shared.utils.WhileViewSubscribed
 import com.molysulfur.library.result.data
@@ -30,8 +27,12 @@ class WithdrawViewModel @Inject constructor(
     private val getMyPortFolioUseCase: GetMyPortFolioUseCase,
     private val getPaymentSettingUseCase: GetPaymentSettingUseCase,
     private val getWithdrawOTPUseCase: GetWithdrawOTPUseCase,
-    private val createWithdrawUseCase: CreateWithdrawUseCase
+    private val createWithdrawUseCase: CreateWithdrawUseCase,
+    private val getWithdrawHistoryUseCase: GetWithdrawHistoryUseCase
 ) : ViewModel() {
+
+    private val _historyState = MutableStateFlow<List<Withdraw>>(emptyList())
+    val historyState: StateFlow<List<Withdraw>> get() = _historyState
 
     private val _otp = MutableStateFlow<OTP?>(null)
 
@@ -39,6 +40,9 @@ class WithdrawViewModel @Inject constructor(
 
     private val _amount = MutableStateFlow(0f)
     val amount: StateFlow<Float> get() = _amount
+
+    private val _page = MutableStateFlow(0)
+    val page: StateFlow<Int> get() = _page
 
     private val _navigationActions = Channel<NavDirections>(Channel.CONFLATED)
     val navigationActions get() = _navigationActions.receiveAsFlow()
@@ -92,11 +96,15 @@ class WithdrawViewModel @Inject constructor(
     fun navigate(methodId: String) {
         viewModelScope.launch {
             _methodId.value = methodId
-            _navigationActions.send(
-                WithdrawMethodFragmentDirections.actionWithdrawMethodFragmentToWithdrawBankingFragment(
-                    _methodId.value
+            when (methodId) {
+                "history" -> _navigationActions.send(WithdrawMethodFragmentDirections.actionWithdrawMethodFragmentToWithdrawHistoryFragment())
+                else -> _navigationActions.send(
+                    WithdrawMethodFragmentDirections.actionWithdrawMethodFragmentToWithdrawBankingFragment(
+                        _methodId.value
+                    )
                 )
-            )
+            }
+
         }
     }
 
@@ -130,30 +138,41 @@ class WithdrawViewModel @Inject constructor(
 
     fun onSubmit(inputOTP: Int, bankId: String) {
         viewModelScope.launch {
-            _navigationActions.send(
-                WithdrawOTPFragmentDirections.actionWithdrawOTPFragmentToWithdrawSuccessFragment(
-                    "12345",
-                    _amount.value
-                )
+            val request = WithdrawRequest(
+                amount = _amount.value,
+                note = "",
+                verify = WithdrawVerify(otp = inputOTP, ref = _otp.value?.referenceNo1),
+                verifyBankAccountId = bankId
             )
-//            val request = WithdrawRequest(
-//                amount = _amount.value,
-//                note = "",
-//                verify = WithdrawVerify(otp = inputOTP, ref = _otp.value?.referenceNo1),
-//                verifyBankAccountId = bankId
-//            )
-//            createWithdrawUseCase(request).collect { result ->
-//                val data = result.successOr(null)
-//                data?.let {
-//                    _navigationActions.send(
-//                        WithdrawOTPFragmentDirections.actionWithdrawOTPFragmentToWithdrawSuccessFragment(
-//                            it.id ?: "",
-//                            it.dollarAmount
-//                        )
-//                    )
-//                }
-//            }
+            createWithdrawUseCase(request).collect { result ->
+                val data = result.successOr(null)
+                data?.let {
+                    _navigationActions.send(
+                        WithdrawOTPFragmentDirections.actionWithdrawOTPFragmentToWithdrawSuccessFragment(
+                            it.id ?: "",
+                            it.dollarAmount
+                        )
+                    )
+                }
+            }
         }
     }
+
+    fun getHistory() {
+        viewModelScope.launch {
+            getWithdrawHistoryUseCase(_page.value).collect { result ->
+                val data = result.successOr(null)
+                _page.value = if (data?.meta?.hasMore == true) {
+                    data.meta.page + 1
+                } else {
+                    0
+                }
+                val list = _historyState.value.toMutableList()
+                list.addAll(data?.histories ?: emptyList())
+                _historyState.value = list
+            }
+        }
+    }
+
 
 }

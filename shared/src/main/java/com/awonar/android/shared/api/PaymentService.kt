@@ -10,6 +10,18 @@ import retrofit2.http.*
 
 interface PaymentService {
 
+    @GET("api/v1/withdrawal")
+    fun getWithdrawalHistory(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int = 10
+    ): Call<WithdrawHistoryResponse>
+
+    @GET("api/v1/deposit")
+    fun getDepositHistory(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int = 10
+    ): Call<DepositHistoryResponse>
+
     @POST("api/v1/withdrawal/local-online-banking")
     fun withdrawalBanking(@Body body: WithdrawRequest): Call<Withdraw>
 

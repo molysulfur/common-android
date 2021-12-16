@@ -1,4 +1,4 @@
-package com.awonar.app.ui.deposit
+package com.awonar.app.ui.payment.deposit
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -97,7 +97,8 @@ class QRPaymentFragment : Fragment() {
                 getString(R.string.awonar_text_required)
             return
         }
-        binding.awonarDepositQrPaymentInputAmount.error = viewModel.validateMinMaxDeposit(defaultName, args.methodId)
+        binding.awonarDepositQrPaymentInputAmount.error =
+            viewModel.validateMinMaxDeposit(defaultName, args.methodId)
     }
 
     private fun setAdapter(it: PaymentSetting?) {

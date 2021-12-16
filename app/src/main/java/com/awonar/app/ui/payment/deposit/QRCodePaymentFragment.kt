@@ -1,4 +1,4 @@
-package com.awonar.app.ui.deposit
+package com.awonar.app.ui.payment.deposit
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -77,4 +77,30 @@ class PaymentRepository @Inject constructor(
                 println(errorMessage)
             }
         }.asFlow()
+
+    fun getDepositHistory(parameters: Int): Flow<Result<DepositHistoryResponse?>> =
+        object : DirectNetworkFlow<Int, DepositHistoryResponse, DepositHistoryResponse>() {
+            override fun createCall(): Response<DepositHistoryResponse> =
+                service.getDepositHistory(parameters).execute()
+
+            override fun convertToResultType(response: DepositHistoryResponse): DepositHistoryResponse =
+                response
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+        }.asFlow()
+
+    fun getWithdrawHistory(parameters: Int): Flow<Result<WithdrawHistoryResponse?>> =
+        object : DirectNetworkFlow<Int, WithdrawHistoryResponse, WithdrawHistoryResponse>() {
+            override fun createCall(): Response<WithdrawHistoryResponse> =
+                service.getWithdrawalHistory(parameters).execute()
+
+            override fun convertToResultType(response: WithdrawHistoryResponse): WithdrawHistoryResponse =
+                response
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+        }.asFlow()
 }

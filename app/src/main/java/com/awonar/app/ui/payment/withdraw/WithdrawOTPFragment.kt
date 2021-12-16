@@ -1,4 +1,4 @@
-package com.awonar.app.ui.withdraw
+package com.awonar.app.ui.payment.withdraw
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,7 +10,6 @@ import androidx.navigation.fragment.findNavController
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentWithdrawOtpBinding
 import com.awonar.app.ui.user.UserViewModel
-import com.molysulfur.library.extension.toast
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import java.lang.NumberFormatException
