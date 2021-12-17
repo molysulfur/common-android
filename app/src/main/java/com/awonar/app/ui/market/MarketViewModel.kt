@@ -22,7 +22,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -80,9 +79,7 @@ class MarketViewModel @Inject constructor(
 
     fun getTradingData(intrumentId: Int) {
         viewModelScope.launch {
-            getTradingDataByInstrumentIdUseCase(intrumentId).collect {
-                tradingDataState.emit(it.successOr(null))
-            }
+            tradingDataState.emit(getTradingDataByInstrumentIdUseCase(intrumentId).successOr(null))
         }
     }
 

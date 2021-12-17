@@ -61,11 +61,15 @@ fun setOrderAdapter(
                         viewModel.showEditDialog(position)
                     }
                 }
+
+                override fun onClose(position: Int) {
+                    viewModel.showCloseDialog(position)
+                }
             },
             recycler.context
         )
-        val helper = ItemTouchHelper(callback)
-        helper.attachToRecyclerView(recycler)
+//        val helper = ItemTouchHelper(callback)
+//        helper.attachToRecyclerView(recycler)
         recycler.addItemDecoration(
             object : RecyclerView.ItemDecoration() {
                 override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
@@ -218,6 +222,9 @@ fun setPositionCardAdapter(
                 override fun onClick(position: Int) {
 
                 }
+
+                override fun onClose(position: Int) {
+                }
             },
             recycler.context
         )
@@ -341,7 +348,6 @@ fun setPositionAdapter(
                     viewModel.navigateInsidePortfolio(it, type)
                 }
                 onViewAllClick = {
-                    Timber.e("market view all")
                     viewModel.togglePortfolio("market")
                 }
                 onButtonClick = { text ->
@@ -365,24 +371,6 @@ fun setPositionAdapter(
                 }
             }
         }
-        val callback = PortfolioListItemTouchHelperCallback(
-            object : IPortfolioListItemTouchHelperCallback {
-                override fun onClick(position: Int) {
-                    if (position >= 0) {
-                        viewModel.showEditDialog(position)
-                    }
-                }
-            },
-            recycler.context
-        )
-        val helper = ItemTouchHelper(callback)
-        helper.attachToRecyclerView(recycler)
-        recycler.addItemDecoration(object : RecyclerView.ItemDecoration() {
-            override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-                super.onDraw(c, parent, state)
-                callback.onDraw(c)
-            }
-        })
     }
     val adapter = recycler.adapter as OrderPortfolioAdapter
     adapter.apply {

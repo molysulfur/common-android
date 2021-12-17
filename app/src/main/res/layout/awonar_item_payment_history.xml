@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="paymentNo"
+            type="String" />
+
+        <variable
+            name="date"
+            type="String" />
+
+
+        <variable
+            name="description"
+            type="String" />
+
+        <variable
+            name="status"
+            type="String" />
+
+        <variable
+            name="amount"
+            type="String" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
+        android:layout_marginTop="@dimen/awonar_size_margin_padding_small"
+        android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+        android:layout_marginBottom="@dimen/awonar_size_margin_padding_small">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/awonar_size_margin_padding_normal">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_item_payment_history_text_no"
+                style="@style/Awonar.Description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{paymentNo}"
+                app:layout_constraintBottom_toTopOf="@+id/awonar_item_payment_history_text_date"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="@string/awonar_example_name" />
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_item_payment_history_text_date"
+                style="@style/Awonar.Description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/awonar_size_margin_padding_extra_small"
+                android:text="@{date}"
+                app:layout_constraintBottom_toTopOf="@+id/awonar_item_payment_history_text_description"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_item_payment_history_text_no"
+                tools:text="@string/awonar_example_name" />
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_item_payment_history_text_description"
+                style="@style/Awonar.Text.Bold.Normal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/awonar_size_margin_padding_extra_small"
+                android:text="@{description}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_item_payment_history_text_date"
+                tools:text="@string/awonar_example_name" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_item_payment_history_text_status"
+                style="@style/Awonar.Description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{status}"
+                app:layout_constraintBottom_toTopOf="@+id/awonar_item_payment_history_text_amount"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="@string/awonar_example_name" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_item_payment_history_text_amount"
+                style="@style/Awonar.Text.Bold.Normal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+                android:text="@{amount}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_item_payment_history_text_status"
+                tools:text="@string/awonar_example_name" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</layout>

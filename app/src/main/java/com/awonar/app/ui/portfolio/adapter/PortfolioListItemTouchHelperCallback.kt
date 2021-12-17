@@ -264,7 +264,7 @@ class PortfolioListItemTouchHelperCallback constructor(
             rectF = rightButton,
             context = context
         ) { button, position ->
-            action.onClick(position)
+            action.onClose(position)
         }
         swipeButton3.drawButton(c)
         buttonList.add(swipeButton3)

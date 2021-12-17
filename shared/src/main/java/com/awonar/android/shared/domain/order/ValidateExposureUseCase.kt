@@ -26,7 +26,6 @@ class ValidateExposureUseCase @Inject constructor(
         if (parameters.leverage < trading.minLeverage) {
             minPositionExposure = trading.minPositionExposure
             maxPositionExposure = trading.maxPositionExposure
-
         } else {
             minPositionExposure = trading.minPositionAmount
             maxPositionExposure = trading.maxPositionAmount

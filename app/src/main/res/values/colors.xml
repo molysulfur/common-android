@@ -8,20 +8,25 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="awonar_color_light_gray">#E2E5EA</color>
+    <color name="awonar_color_light_gray">#F5F5F5</color>
     <color name="awonar_color_gray">#9E9E9E</color>
 
     <color name="awonar_color_orange">#E94134</color>
 
-    <color name="awonar_color_primary">#1A4C8E</color>
+    <color name="awonar_color_primary">@color/awonar_color_blue</color>
     <color name="awonar_color_secondary">#255EAA</color>
     <color name="awonar_color_accent">#255EAA</color>
+
+    <color name="awonar_color_light_blue">#F0F7FF</color>
+    <color name="awonar_color_blue">#1A4C8E</color>
 
     <color name="awonar_color_background">#F5F5F5</color>
     <color name="awonar_color_surface">@color/white</color>
     <color name="awonar_color_text_primary">@color/black</color>
 
+    <color name="awonar_color_light_green">#802BA040</color>
     <color name="awonar_color_green">#2BAC40</color>
+    <color name="awonar_color_dark_green">#218a32</color>
     <color name="awonar_color_variant">@color/black</color>
 
 </resources>

@@ -20,8 +20,7 @@ class InstrumentListAdapter constructor(private val viewModel: MarketViewModel?)
 
 
     var onInstrumentClick: ((Int) -> Unit)? = null
-    var onOpenOrder
-    : ((Instrument, String) -> Unit)? = null
+    var onOpenOrder: ((Instrument, Boolean) -> Unit)? = null
     var onViewMoreClick: ((MarketViewMoreArg) -> Unit)? = null
 
     override fun getItemViewType(position: Int): Int = itemList[position].type

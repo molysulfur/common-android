@@ -41,7 +41,7 @@
                     android:icon="@drawable/awonar_ic_announcements"
                     android:title="Announcements &amp; Events" />
                 <item
-                    android:id="@+id/awonar_menu_drawer_main_withdraw"
+                    android:id="@+id/withdrawFragment"
                     android:icon="@drawable/awonar_ic_withdraw"
                     android:title="Withdraw funds" />
                 <item

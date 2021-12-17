@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/awonar_withdraw_graph"
+    app:startDestination="@id/withdrawMethodFragment">
+
+    <fragment
+        android:id="@+id/withdrawMethodFragment"
+        android:name="com.awonar.app.ui.payment.withdraw.WithdrawMethodFragment"
+        android:label="WithdrawMethodFragment">
+
+        <action
+            android:id="@+id/action_withdrawMethodFragment_to_withdrawBankingFragment"
+            app:destination="@+id/withdrawBankingFragment"
+            app:enterAnim="@anim/common_anim_right_to_left_in"
+            app:exitAnim="@anim/common_anim_right_to_left_out"
+            app:popEnterAnim="@anim/common_anim_left_to_right_in"
+            app:popExitAnim="@anim/common_anim_left_to_right_out" />
+
+        <action
+            android:id="@+id/action_withdrawMethodFragment_to_withdrawHistoryFragment"
+            app:destination="@+id/withdrawHistoryFragment"
+            app:enterAnim="@anim/common_anim_right_to_left_in"
+            app:exitAnim="@anim/common_anim_right_to_left_out"
+            app:popEnterAnim="@anim/common_anim_left_to_right_in"
+            app:popExitAnim="@anim/common_anim_left_to_right_out" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/withdrawBankingFragment"
+        android:name="com.awonar.app.ui.payment.withdraw.WithdrawBankingFragment"
+        android:label="WithdrawBankingFragment">
+
+        <action
+            android:id="@+id/action_withdrawBankingFragment_to_withdrawOTPFragment"
+            app:destination="@+id/withdrawOTPFragment"
+            app:enterAnim="@anim/common_anim_right_to_left_in"
+            app:exitAnim="@anim/common_anim_right_to_left_out"
+            app:popEnterAnim="@anim/common_anim_left_to_right_in"
+            app:popExitAnim="@anim/common_anim_left_to_right_out" />
+
+        <argument
+            android:name="methodId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/withdrawOTPFragment"
+        android:name="com.awonar.app.ui.payment.withdraw.WithdrawOTPFragment"
+        android:label="WithdrawOTPFragment">
+
+        <action
+            android:id="@+id/action_withdrawOTPFragment_to_withdrawSuccessFragment"
+            app:destination="@+id/withdrawSuccessFragment"
+            app:enterAnim="@anim/common_anim_right_to_left_in"
+            app:exitAnim="@anim/common_anim_right_to_left_out"
+            app:popEnterAnim="@anim/common_anim_left_to_right_in"
+            app:popExitAnim="@anim/common_anim_left_to_right_out"
+            app:popUpTo="@+id/withdrawMethodFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/withdrawSuccessFragment"
+        android:name="com.awonar.app.ui.payment.withdraw.WithdrawSuccessFragment"
+        android:label="WithdrawSuccessFragment">
+
+        <argument
+            android:name="withdrawId"
+            app:argType="string" />
+
+        <argument
+            android:name="amount"
+            app:argType="float" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/withdrawHistoryFragment"
+        android:name="com.awonar.app.ui.payment.withdraw.WithdrawHistoryFragment"
+        android:label="WithdrawHistoryFragment" />
+
+
+</navigation>

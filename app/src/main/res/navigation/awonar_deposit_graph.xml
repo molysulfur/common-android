@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/awonar_deposit_graph"
+    app:startDestination="@+id/methodDepositFragment">
+
+    <fragment
+        android:id="@+id/methodDepositFragment"
+        android:name="com.awonar.app.ui.payment.deposit.MethodDepositFragment"
+        android:label="MethodDepositFragment">
+
+        <action
+            android:id="@+id/action_methodDepositFragment_to_QRPaymentFragment"
+            app:destination="@+id/QRPaymentFragment"
+            app:enterAnim="@anim/common_anim_right_to_left_in"
+            app:exitAnim="@anim/common_anim_right_to_left_out"
+            app:popEnterAnim="@anim/common_anim_left_to_right_in"
+            app:popExitAnim="@anim/common_anim_left_to_right_out" />
+
+        <action
+            android:id="@+id/action_methodDepositFragment_to_depositHistoryFragment"
+            app:destination="@+id/depositHistoryFragment"
+            app:enterAnim="@anim/common_anim_right_to_left_in"
+            app:exitAnim="@anim/common_anim_right_to_left_out"
+            app:popEnterAnim="@anim/common_anim_left_to_right_in"
+            app:popExitAnim="@anim/common_anim_left_to_right_out"
+            app:popUpTo="@+id/methodDepositFragment" />
+
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/QRPaymentFragment"
+        android:name="com.awonar.app.ui.payment.deposit.QRPaymentFragment"
+        android:label="QRPaymentFragment">
+
+        <action
+            android:id="@+id/action_QRPaymentFragment_to_depositConfirmFragment"
+            app:destination="@+id/depositConfirmFragment"
+            app:enterAnim="@anim/common_anim_right_to_left_in"
+            app:exitAnim="@anim/common_anim_right_to_left_out"
+            app:popEnterAnim="@anim/common_anim_left_to_right_in"
+            app:popExitAnim="@anim/common_anim_left_to_right_out" />
+
+        <argument
+            android:name="methodId"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/QRCodePaymentFragment"
+        android:name="com.awonar.app.ui.payment.deposit.QRCodePaymentFragment"
+        android:label="QRCodePaymentFragment">
+
+        <argument
+            android:name="currencyId"
+            app:argType="string" />
+
+        <argument
+            android:name="methodId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/depositConfirmFragment"
+        android:name="com.awonar.app.ui.payment.deposit.DepositConfirmFragment"
+        android:label="DepositConfirmFragment">
+        <action
+            android:id="@+id/action_depositConfirmFragment_to_QRCodePaymentFragment"
+            app:destination="@+id/QRCodePaymentFragment"
+            app:enterAnim="@anim/common_anim_right_to_left_in"
+            app:exitAnim="@anim/common_anim_right_to_left_out"
+            app:popEnterAnim="@anim/common_anim_left_to_right_in"
+            app:popExitAnim="@anim/common_anim_left_to_right_out"
+            app:popUpTo="@+id/methodDepositFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/depositHistoryFragment"
+        android:name="com.awonar.app.ui.payment.deposit.DepositHistoryFragment"
+        android:label="DepositHistoryFragment" />
+
+</navigation>

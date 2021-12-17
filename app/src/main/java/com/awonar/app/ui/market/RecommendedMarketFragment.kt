@@ -88,9 +88,9 @@ class RecommendedMarketFragment : Fragment() {
             instrumentAdapter.onViewMoreClick = { arg ->
                 viewModel.onViewMore(arg)
             }
-            instrumentAdapter.onOpenOrder = { instrument, type ->
+            instrumentAdapter.onOpenOrder = { instrument, isBuy ->
                 OrderDialog.Builder()
-                    .setType(type)
+                    .setType(isBuy)
                     .setSymbol(instrument)
                     .build()
                     .show(childFragmentManager)

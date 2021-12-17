@@ -51,6 +51,8 @@ class PortFolioViewModel @Inject constructor(
 
     private val _editDialog = Channel<Position?>(capacity = Channel.CONFLATED)
     val editDialog: Flow<Position?> get() = _editDialog.receiveAsFlow()
+    private val _closeDialog = Channel<Position?>(capacity = Channel.CONFLATED)
+    val closeDialog: Flow<Position?> get() = _closeDialog.receiveAsFlow()
 
     private val _subscricbeQuote = Channel<List<Int>>(capacity = Channel.CONFLATED)
     val subscricbeQuote: Flow<List<Int>> = _subscricbeQuote.receiveAsFlow()
@@ -233,6 +235,17 @@ class PortFolioViewModel @Inject constructor(
                     )
                 ).successOr(emptyList())
                 _positionOrderList.emit(items.toMutableList())
+            }
+        }
+    }
+
+    fun showCloseDialog(index: Int) {
+        viewModelScope.launch {
+            Timber.e("$index ${_positionOrderList.value.size}")
+            if (index < _positionState.value.size) {
+                val position = (_positionOrderList.value[index] as OrderPortfolioItem.InstrumentPortfolioItem).position
+                Timber.e("$position")
+                _closeDialog.send(position)
             }
         }
     }

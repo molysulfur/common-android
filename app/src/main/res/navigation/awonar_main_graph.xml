@@ -185,5 +185,14 @@
             app:argType="long" />
     </fragment>
 
+    <fragment
+        android:id="@+id/depositFragment"
+        android:name="com.awonar.app.ui.payment.deposit.DepositFragment"
+        android:label="DepositFragment" />
+    <fragment
+        android:id="@+id/withdrawFragment"
+        android:name="com.awonar.app.ui.payment.withdraw.WithdrawFragment"
+        android:label="WithdrawFragment" />
+
 
 </navigation>

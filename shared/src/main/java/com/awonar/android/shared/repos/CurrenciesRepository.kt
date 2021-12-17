@@ -1,9 +1,12 @@
 package com.awonar.android.shared.repos
 
 import com.awonar.android.model.Conversion
+import com.awonar.android.model.currency.Currency
 import com.awonar.android.shared.api.CurrenciesService
 import com.awonar.android.shared.db.room.conversionrate.ConversionRateDao
+import com.molysulfur.library.network.DirectNetworkFlow
 import com.molysulfur.library.network.NetworkFlow
+import com.molysulfur.library.result.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.Response
@@ -38,6 +41,19 @@ open class CurrenciesRepository @Inject constructor(
 
             override fun saveToDb(data: List<Conversion>) {
                 conversionRateDao.insertAll(data)
+            }
+
+        }.asFlow()
+
+    fun getCurrencyRate(request: String): Flow<Result<Float?>> =
+        object : DirectNetworkFlow<String, Float, Currency>() {
+            override fun createCall(): Response<Currency> =
+                currenciesService.getCurrencyRate(request).execute()
+
+            override fun convertToResultType(response: Currency): Float = response.conversionUsdRate
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
             }
 
         }.asFlow()

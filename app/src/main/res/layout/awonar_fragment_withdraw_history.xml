@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout>
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.awonar.app.ui.payment.withdraw.WithdrawViewModel" />
+    </data>
+
+    <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+        page="@{viewModel.page}"
+        viewModel="@{viewModel}"
+        withDrawHistory="@{viewModel.historyState}"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/awonar_color_background" />
+
+</layout>

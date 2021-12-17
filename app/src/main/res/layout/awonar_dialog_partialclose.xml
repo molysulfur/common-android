@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="title"
+            type="String" />
+
+        <variable
+            name="positionId"
+            type="String" />
+
+        <variable
+            name="pl"
+            type="String" />
+
+        <variable
+            name="change"
+            type="String" />
+
+        <variable
+            name="price"
+            type="String" />
+
+        <variable
+            name="amount"
+            type="String" />
+
+        <variable
+            name="units"
+            type="String" />
+
+        <variable
+            name="total"
+            type="String" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:elevation="0dp">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/awonar_partial_close_toolbar_close_position"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:navigationIcon="@drawable/awonar_ic_close"
+                app:title="Close Position" />
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/awonar_size_margin_padding_normal">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/awonar_partial_close_image_logo"
+                    android:layout_width="@dimen/awonar_size_avatar"
+                    android:layout_height="@dimen/awonar_size_avatar"
+                    android:src="@drawable/awonar_placeholder_avatar"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/awonar_partial_close_text_title"
+                    style="@style/Awonar.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{title}"
+                    app:layout_constraintStart_toEndOf="@+id/awonar_partial_close_image_logo"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_partial_close_image_logo"
+                    tools:text="@string/awonar_example_name" />
+
+                <TextView
+                    android:id="@+id/awonar_partial_close_text_price"
+                    style="@style/Awonar.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/awonar_size_margin_padding_small"
+                    android:text="@{price}"
+                    app:layout_constraintStart_toEndOf="@+id/awonar_partial_close_image_logo"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_partial_close_text_title"
+                    tools:text="@string/awonar_example_name" />
+
+                <TextView
+                    android:id="@+id/awonar_partial_close_text_change"
+                    style="@style/Awonar.Text.Default.Normal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/awonar_size_margin_padding_small"
+                    android:text="@{change}"
+                    app:layout_constraintBottom_toBottomOf="@+id/awonar_partial_close_text_price"
+                    app:layout_constraintStart_toEndOf="@+id/awonar_partial_close_text_price"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_partial_close_text_title"
+                    tools:text="@string/awonar_example_name" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_partial_close_text_id"
+                    style="@style/Awonar.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{positionId}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_partial_close_text_title"
+                    tools:text="@string/awonar_example_name" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_partial_close_text_title_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="POSITION ID"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_partial_close_text_id" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/awonar_partial_close_container_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+                    android:background="@drawable/awonar_ripple_border_gray"
+                    android:padding="@dimen/awonar_size_margin_padding_normal"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_partial_close_text_price">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/awonar_partial_close_text_title_amount"
+                        style="@style/Awonar.SubTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/awonar_text_amount"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/awonar_partial_close_text_amount"
+                        style="@style/Awonar.SubTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{amount}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="@string/awonar_example_name" />
+
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/awonar_partial_close_text_unit"
+                        style="@style/Awonar.SubTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{units}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/awonar_partial_close_text_amount"
+                        tools:text="@string/awonar_example_name" />
+
+                    <com.awonar.app.widget.TextDividerView
+                        android:id="@+id/awonar_partial_close_divider_plus"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@+id/awonar_partial_close_text_unit"
+                        app:textDividerView_setText="+"
+                        tools:layout_editor_absoluteX="16dp" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/awonar_partial_close_text_title_pl"
+                        style="@style/Awonar.SubTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="P/L"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/awonar_partial_close_divider_plus" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/awonar_partial_close_text_pl"
+                        style="@style/Awonar.SubTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{pl}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/awonar_partial_close_divider_plus" />
+
+                    <com.awonar.app.widget.TextDividerView
+                        android:id="@+id/awonar_partial_close_divider_equal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@+id/awonar_partial_close_text_title_pl"
+                        app:textDividerView_setText="=" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/awonar_partial_close_text_title_total"
+                        style="@style/Awonar.SubTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/awonar_partial_close_divider_equal" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/awonar_partial_close_text_total"
+                        style="@style/Awonar.SubTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{total}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/awonar_partial_close_divider_equal" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/awonar_partial_close_checkbox_part"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Close only part of the trade"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_partial_close_container_info"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_partial_close_container_info" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_partial_close_text_title_type"
+                    style="@style/Awonar.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Amount"
+                    app:layout_constraintBottom_toBottomOf="@+id/awonar_partial_close_button_group_type"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_partial_close_checkbox_part"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_partial_close_button_group_type" />
+
+                <com.google.android.material.button.MaterialButtonToggleGroup
+                    android:id="@+id/awonar_partial_close_button_group_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:checkedButton="@+id/awonar_partial_close_button_amount"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_partial_close_checkbox_part"
+                    app:selectionRequired="true"
+                    app:singleSelection="true">
+
+                    <Button
+                        android:id="@+id/awonar_partial_close_button_amount"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/awonar_selector_toggle_button_primary"
+                        android:text="@string/awonar_text_amount" />
+
+                    <Button
+                        android:id="@+id/awonar_partial_close_button_units"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/awonar_selector_toggle_button_primary"
+                        android:text="@string/awonar_text_units" />
+
+                </com.google.android.material.button.MaterialButtonToggleGroup>
+
+                <com.awonar.app.widget.NumberPickerEditText
+                    android:id="@+id/awonar_partial_close_numberpicker_amount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_partial_close_button_group_type" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/awonar_partial_close_button_close_position"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+                    android:background="@drawable/awonar_ripple_orange"
+                    android:text="@string/awonar_text_close"
+                    android:textColor="@color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_partial_close_numberpicker_amount" />
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/awonar_partial_close_group_input"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:constraint_referenced_ids="awonar_partial_close_text_title_type,awonar_partial_close_button_group_type,awonar_partial_close_numberpicker_amount" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+</layout>

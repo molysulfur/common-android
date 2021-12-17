@@ -220,7 +220,6 @@ class OrderViewModelActivity @Inject constructor(
                     }
                 }
             }
-
         }
     }
 
