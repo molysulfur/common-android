@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.awonar.app.ui.portfolio.PortFolioViewModel" />
+            type="com.awonar.app.ui.portfolio.inside.PositionInsideViewModel" />
 
         <variable
             name="columnsViewModel"
@@ -64,9 +64,9 @@
                 <com.awonar.app.widget.CopierPositionCardView
                     android:id="@+id/awonar_portfolio_inside_copier_position_header"
                     conversionRateList="@{marketViewModel.conversionRateListState}"
-                    copier="@{viewModel.copierState}"
+                    copier="@{viewModel.copiesState}"
                     quote="@{marketViewModel.quoteSteamingState}"
-                    setOrder="@{viewModel.copierState}"
+                    setOrder="@{viewModel.copiesState}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -89,13 +89,18 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/awonar_portfolio_inside_copier_recycler"
+                activedColumn="@{columnsViewModel.activedColumnState}"
+                setInsideAdapter="@{viewModel.positionItems}"
+                viewModel="@{viewModel}"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:background="@color/awonar_color_surface"
                 app:layout_constraintBottom_toTopOf="@+id/awonar_portfolio_inside_copier_title_total_open"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="SpeakableTextPresentCheck"
+                tools:listitem="@layout/awonar_item_instrument_position" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/awonar_portfolio_inside_copier_title_total_open"
@@ -109,7 +114,6 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/awonar_portfolio_inside_copier_text_total_open_invested"
-                setTotalInvested="@{viewModel.copierState}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/awonar_text_total_open"
@@ -118,8 +122,6 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/awonar_portfolio_inside_copier_text_total_open_pl"
-                quotes="@{marketViewModel.quoteSteamingState}"
-                setTotalProfitLoss="@{viewModel.copierState}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
@@ -130,8 +132,6 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/awonar_portfolio_inside_copier_text_total_open_pl_percent"
-                quotes="@{marketViewModel.quoteSteamingState}"
-                setTotalProfitLossPercent="@{viewModel.copierState}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
@@ -154,7 +154,6 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/awonar_portfolio_inside_copier_text_total_close_fee"
-                setTotalClose="@{viewModel.copierState}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/awonar_size_margin_padding_normal"

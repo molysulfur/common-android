@@ -2,6 +2,7 @@ package com.awonar.app.ui.portfolio.inside
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.portfolio.Position
 import com.awonar.android.model.portfolio.UserPortfolioResponse
 import com.awonar.app.domain.portfolio.ConvertPositionToItemUseCase
@@ -21,6 +22,9 @@ class PositionInsideViewModel @Inject constructor(
     private val _positionState: MutableStateFlow<Position?> = MutableStateFlow(null)
     val positionState: StateFlow<Position?> get() = _positionState
 
+    private val _copiesState: MutableStateFlow<Copier?> = MutableStateFlow(null)
+    val copiesState: StateFlow<Copier?> get() = _copiesState
+
     private val _positionItems: MutableStateFlow<MutableList<OrderPortfolioItem>> =
         MutableStateFlow(mutableListOf(OrderPortfolioItem.EmptyItem()))
     val positionItems: StateFlow<MutableList<OrderPortfolioItem>> get() = _positionItems
@@ -34,6 +38,19 @@ class PositionInsideViewModel @Inject constructor(
             if (positionList.isNotEmpty()) {
                 val items = convertPositionToItemUseCase(positionList).successOr(emptyList())
                 _positionState.value = positionList[0]
+                _positionItems.value = items.toMutableList()
+            }
+        }
+    }
+
+    fun convertCopies(userPosition: UserPortfolioResponse?, currentIndex: Int) {
+        viewModelScope.launch {
+            val copies: Copier? = userPosition?.copies?.get(currentIndex)
+            val positionList: List<Position> = copies?.positions ?: emptyList()
+            ?: emptyList()
+            if (copies != null) {
+                val items = convertPositionToItemUseCase(positionList).successOr(emptyList())
+                _copiesState.value = copies
                 _positionItems.value = items.toMutableList()
             }
         }

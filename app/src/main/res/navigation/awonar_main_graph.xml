@@ -92,7 +92,7 @@
 
     <fragment
         android:id="@+id/portFolioInsideCopierFragment"
-        android:name="com.awonar.app.ui.portfolio.PortFolioInsideCopierFragment"
+        android:name="com.awonar.app.ui.portfolio.inside.PortFolioInsideCopierFragment"
         android:label="PortFolioInsideCopierFragment">
 
         <action
