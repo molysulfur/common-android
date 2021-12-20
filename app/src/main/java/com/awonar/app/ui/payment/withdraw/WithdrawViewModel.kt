@@ -149,7 +149,7 @@ class WithdrawViewModel @Inject constructor(
                 data?.let {
                     _navigationActions.send(
                         WithdrawOTPFragmentDirections.actionWithdrawOTPFragmentToWithdrawSuccessFragment(
-                            it.id ?: "",
+                            it.withdrawNo ?: "",
                             it.dollarAmount
                         )
                     )
