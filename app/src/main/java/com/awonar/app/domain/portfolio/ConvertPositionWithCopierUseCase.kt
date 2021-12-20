@@ -8,6 +8,7 @@ import com.awonar.android.shared.domain.order.CalculateAmountStopLossAndTakeProf
 import com.awonar.android.shared.domain.order.CalculateAmountStopLossAndTakeProfitWithSellUseCase
 import com.awonar.android.shared.repos.CurrenciesRepository
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
+import com.awonar.app.utils.DateUtils
 import com.molysulfur.library.result.data
 import com.molysulfur.library.result.succeeded
 import com.molysulfur.library.usecase.UseCase
@@ -18,7 +19,7 @@ class ConvertPositionWithCopierUseCase @Inject constructor(
     private val currenciesRepository: CurrenciesRepository,
     private val calculateAmountStopLossAndTakeProfitWithBuyUseCase: CalculateAmountStopLossAndTakeProfitWithBuyUseCase,
     private val calculateAmountStopLossAndTakeProfitWithSellUseCase: CalculateAmountStopLossAndTakeProfitWithSellUseCase,
-    @IoDispatcher dispatcher: CoroutineDispatcher
+    @IoDispatcher dispatcher: CoroutineDispatcher,
 ) : UseCase<ConvertPositionItemWithCopier, List<OrderPortfolioItem>>(dispatcher) {
     override suspend fun execute(parameters: ConvertPositionItemWithCopier): List<OrderPortfolioItem> {
         val instrumentId = parameters.instrumentFilterId
@@ -63,6 +64,7 @@ class ConvertPositionWithCopierUseCase @Inject constructor(
                         amountTakeProfit = amountTp,
                         stopLossPercent = slPercent,
                         takeProfitPercent = tpPercent,
+                        date = DateUtils.getDate(position.openDateTime),
                         index = index
                     )
                 )
@@ -75,7 +77,7 @@ class ConvertPositionWithCopierUseCase @Inject constructor(
         rate: Float,
         open: Float,
         unit: Float,
-        isBuy: Boolean
+        isBuy: Boolean,
     ): Float {
         val request = StopLossRequest(
             instrumentId = instrumentId,

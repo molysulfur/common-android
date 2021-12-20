@@ -6,6 +6,7 @@ import androidx.navigation.NavDirections
 import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.portfolio.Position
 import com.awonar.app.domain.portfolio.ConvertCopierToItemUseCase
+import com.awonar.app.domain.portfolio.ConvertGroupPositionToItemUseCase
 import com.awonar.app.domain.portfolio.ConvertPositionToItemUseCase
 import com.awonar.app.ui.portfolio.PortFolioFragmentDirections
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
@@ -19,6 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PositionViewModel @Inject constructor(
     private val convertPositionToItemUseCase: ConvertPositionToItemUseCase,
+    private val convertPositionGroupPositionToItemUseCase: ConvertGroupPositionToItemUseCase,
     private var convertCopierToItemUseCase: ConvertCopierToItemUseCase,
 ) : ViewModel() {
 
@@ -40,7 +42,7 @@ class PositionViewModel @Inject constructor(
     fun convertMarket(positions: List<Position>, copies: List<Copier>) {
         viewModelScope.launch {
             combine(
-                flowOf(convertPositionToItemUseCase(positions).successOr(listOf())),
+                flowOf(convertPositionGroupPositionToItemUseCase(positions).successOr(listOf())),
                 flowOf(convertCopierToItemUseCase(copies).successOr(listOf()))
             ) { position, copies ->
                 val list = mutableListOf<OrderPortfolioItem>()

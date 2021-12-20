@@ -27,7 +27,7 @@ import kotlin.collections.HashMap
 @BindingAdapter("quotes")
 fun updateQuoteList(
     recycler: RecyclerView,
-    quote: Array<Quote>
+    quote: Array<Quote>,
 ) {
     if (recycler.adapter != null) {
         val adapter = recycler.adapter as OrderPortfolioAdapter
@@ -49,7 +49,7 @@ fun setTotalInvested(
 fun setTotalProfitLossPercent(
     textView: TextView,
     copier: Copier?,
-    quotes: Array<Quote>
+    quotes: Array<Quote>,
 ) {
     copier?.let { copier ->
         var sumFloatingPL = PortfolioUtil.getFloatingPL(copier.positions ?: emptyList(), quotes)
@@ -65,7 +65,7 @@ fun setTotalProfitLossPercent(
 fun setTotalProfitLoss(
     textView: TextView,
     copier: Copier?,
-    quotes: Array<Quote>
+    quotes: Array<Quote>,
 ) {
     copier?.let { copier ->
         var sumFloatingPL = PortfolioUtil.getFloatingPL(copier.positions ?: emptyList(), quotes)
@@ -78,7 +78,7 @@ fun setTotalProfitLoss(
 fun setTotalOpen(
     textView: TextView,
     copier: Copier?,
-    quotes: Array<Quote>
+    quotes: Array<Quote>,
 ) {
     copier?.let {
         textView.text = "fee : $%.2f pl : $%.2f".format(it.totalFees, it.closedPositionsNetProfit)
@@ -89,7 +89,7 @@ fun setTotalOpen(
 @BindingAdapter("setTotalClose")
 fun setTotalClose(
     textView: TextView,
-    copier: Copier?
+    copier: Copier?,
 ) {
     copier?.let {
         textView.text = "fee : $%.2f pl : $%.2f".format(it.totalFees, it.closedPositionsNetProfit)
@@ -99,7 +99,7 @@ fun setTotalClose(
 @BindingAdapter("initCopierCard")
 fun initCopierCard(
     view: CopierPositionCardView,
-    item: OrderPortfolioItem.CopierPositionCardItem?
+    item: OrderPortfolioItem.CopierPositionCardItem?,
 ) {
     item?.let {
         view.setImage(item.copier.user.picture ?: "")
@@ -116,7 +116,7 @@ fun initCopierCard(
 @BindingAdapter("initInstrumentPositionCard")
 fun setInstrumentPositionCardView(
     view: InstrumentPositionCardView,
-    item: OrderPortfolioItem.InstrumentPositionCardItem?
+    item: OrderPortfolioItem.InstrumentPositionCardItem?,
 ) {
     item?.let {
         view.setImage(item.position.instrument.logo ?: "")
@@ -158,7 +158,7 @@ fun setInsturmentPositionCardWithQuote(
 @BindingAdapter("setItemListCard")
 fun setPositionCardAdapter(
     recycler: RecyclerView,
-    items: MutableList<OrderPortfolioItem>
+    items: MutableList<OrderPortfolioItem>,
 ) {
     if (recycler.adapter == null) {
         recycler.apply {
@@ -197,7 +197,7 @@ fun updateCopierProfitLoss(
     view: CopierPositionCardView,
     copier: Copier?,
     conversions: HashMap<Int, Float>,
-    quotes: Array<Quote>?
+    quotes: Array<Quote>?,
 ) {
     copier?.positions?.forEach { position ->
         val quote = quotes?.find { it.id == position.instrumentId }
@@ -220,7 +220,7 @@ fun updateCopierProfitLoss(
 @BindingAdapter("setOrder")
 fun setCopierPositionCard(
     view: CopierPositionCardView,
-    copier: Copier?
+    copier: Copier?,
 ) {
     copier?.let {
         val money = it.depositSummary.minus(it.withdrawalSummary)
@@ -239,7 +239,7 @@ fun setCopierPositionCard(
 @BindingAdapter("setInstrumentPositionCard")
 fun setInstrumentPositionCard(
     view: InstrumentPositionCardView,
-    position: Position?
+    position: Position?,
 ) {
     position?.let {
         view.apply {
@@ -260,7 +260,7 @@ fun updateQuoteInstrumentPosition(
     position: Position?,
     isBuy: Boolean?,
     conversionRate: Float,
-    quotes: Array<Quote>
+    quotes: Array<Quote>,
 ) {
     val quote = quotes.find { it.id == position?.instrumentId }
     quote?.let {
@@ -289,7 +289,7 @@ fun setInsidePositionAdapter(
     recycler: RecyclerView,
     items: MutableList<OrderPortfolioItem>,
     activedColumn: List<String> = emptyList(),
-    viewModel: PositionInsideViewModel
+    viewModel: PositionInsideViewModel,
 ) {
     if (recycler.adapter == null) {
         recycler.apply {
@@ -311,7 +311,7 @@ fun setPositionAdapter(
     recycler: RecyclerView,
     items: MutableList<OrderPortfolioItem>,
     activedColumn: List<String> = emptyList(),
-    viewModel: PositionViewModel
+    viewModel: PositionViewModel,
 ) {
     if (recycler.adapter == null) {
         recycler.apply {
@@ -419,12 +419,7 @@ fun setItemPositionOrderPortfolio(
         is OrderPortfolioItem.InstrumentPortfolioItem -> item.position.let { position ->
             view.setImage(position.instrument.logo ?: "")
             view.setTitle("${if (position.isBuy) "BUY" else "SELL"} ${position.instrument.symbol}")
-            val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
-            val formatter = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault())
-            val date = parser.parse(position.openDateTime)
-            date?.let {
-                view.setDescription(formatter.format(date))
-            }
+            view.setDescription(item.date ?: "")
             view.setTextColumnOne(
                 getPositionValueByColumn(
                     item,
@@ -533,7 +528,7 @@ fun setItemPositionOrderPortfolio(
 
 private fun getCopierColorByColumn(
     item: OrderPortfolioItem.CopierPortfolioItem,
-    column: String
+    column: String,
 ): Int = when {
     column == "P/L($)" && item.profitLoss < 0 -> R.color.awonar_color_orange
     column == "P/L($)" && item.profitLoss >= 0 -> R.color.awonar_color_green
@@ -544,7 +539,7 @@ private fun getCopierColorByColumn(
 
 private fun getCopierValueByColumn(
     item: OrderPortfolioItem.CopierPortfolioItem,
-    column: String
+    column: String,
 ): String = when (column) {
     "Invested" -> "$%.2f".format(item.invested)
     "P/L($)" -> "$%.2f".format(item.profitLoss)
@@ -559,7 +554,7 @@ private fun getCopierValueByColumn(
 
 private fun getPositionColorColoumn(
     item: OrderPortfolioItem.InstrumentPortfolioItem,
-    column: String
+    column: String,
 ): Int = when {
     column == "P/L($)" && item.profitLoss < 0 -> R.color.awonar_color_orange
     column == "P/L($)" && item.profitLoss >= 0 -> R.color.awonar_color_green
@@ -572,7 +567,7 @@ private fun getPositionColorColoumn(
 
 private fun getPositionColorColoumn(
     item: OrderPortfolioItem.InstrumentOrderItem,
-    column: String
+    column: String,
 ): Int = when {
     column == "P/L($)" && item.profitLoss < 0 -> R.color.awonar_color_orange
     column == "P/L($)" && item.profitLoss >= 0 -> R.color.awonar_color_green
@@ -585,7 +580,7 @@ private fun getPositionColorColoumn(
 
 private fun getPositionValueByColumn(
     item: OrderPortfolioItem.InstrumentPortfolioItem,
-    column: String
+    column: String,
 ): String = when (column) {
     "Invested" -> "$%.2f".format(item.invested)
     "Units" -> "%.2f".format(item.units)
@@ -609,7 +604,7 @@ private fun getPositionValueByColumn(
 
 private fun getPositionValueByColumn(
     item: OrderPortfolioItem.InstrumentOrderItem,
-    column: String
+    column: String,
 ): String = when (column) {
     "Invested" -> "$%.2f".format(item.invested)
     "Units" -> "%.2f".format(item.units)

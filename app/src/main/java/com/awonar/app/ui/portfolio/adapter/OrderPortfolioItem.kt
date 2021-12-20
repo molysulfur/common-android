@@ -26,27 +26,27 @@ sealed class OrderPortfolioItem(
 
     @Parcelize
     class ViewAllItem(
-        val text: String
+        val text: String,
     ) : OrderPortfolioItem(VIEWALL_BUTTON)
 
     @Parcelize
     class PieChartItem(
-        val entries: List<PieEntry>
+        val entries: List<PieEntry>,
     ) : OrderPortfolioItem(PIECHART_PORTFOLIO)
 
     @Parcelize
     class ButtonItem(
-        val buttonText: String
+        val buttonText: String,
     ) : OrderPortfolioItem(BUTTON_PORTFOLIO)
 
     @Parcelize
     class TitleItem(
-        val title: String
+        val title: String,
     ) : OrderPortfolioItem(TITLE_CENTER_PORTFOLIO)
 
     @Parcelize
     class SubTitleItem(
-        val subTitle: String
+        val subTitle: String,
     ) : OrderPortfolioItem(SUBTITLE_CENTER_PORTFOLIO)
 
     @Parcelize
@@ -72,7 +72,8 @@ sealed class OrderPortfolioItem(
         var amountTakeProfit: Float,
         var stopLossPercent: Float,
         var takeProfitPercent: Float,
-        val index: Int
+        var date: String?,
+        val index: Int,
     ) : OrderPortfolioItem(INSTRUMENT_PORTFOLIO)
 
     @Parcelize
@@ -91,7 +92,7 @@ sealed class OrderPortfolioItem(
         var netInvested: Float,
         var copyStopLoss: Float,
         var copyStopLossPercent: Float,
-        var index: Int
+        var index: Int,
     ) : OrderPortfolioItem(COPYTRADE_PORTFOLIO)
 
     @Parcelize
@@ -113,13 +114,13 @@ sealed class OrderPortfolioItem(
         var invested: Float,
         var money: Float,
         var value: Float,
-        var profitLoss: Float
+        var profitLoss: Float,
     ) : OrderPortfolioItem(COPY_POSITION_CARD)
 
     @Parcelize
     class ListItem(
         val name: String,
-        val value: Float
+        val value: Float,
     ) : OrderPortfolioItem(LIST_ITEM_PORTFOLIO)
 
     @Parcelize
