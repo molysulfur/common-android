@@ -30,6 +30,7 @@ import com.awonar.app.ui.order.edit.OrderEditDialog
 import com.awonar.app.ui.portfolio.adapter.IPortfolioListItemTouchHelperCallback
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioAdapter
 import com.awonar.app.ui.portfolio.adapter.PortfolioListItemTouchHelperCallback
+import com.awonar.app.ui.portfolio.position.PositionViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.molysulfur.library.extension.openActivityCompatForResult
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
@@ -44,6 +45,7 @@ class PortFolioFragment : Fragment() {
     }
 
     private val portViewModel: PortFolioViewModel by activityViewModels()
+    private val positionViewModel: PositionViewModel by activityViewModels()
     private val marketViewModel: MarketViewModel by activityViewModels()
     private val columnsViewModel: ColumnsViewModel by activityViewModels()
     private val orderViewModel: OrderViewModel by activityViewModels()
@@ -64,6 +66,11 @@ class PortFolioFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         launchAndRepeatWithViewLifecycle {
+            positionViewModel.navigateActions.collect {
+                findNavController().navigate(it)
+            }
+        }
+        launchAndRepeatWithViewLifecycle {
             launch {
                 orderViewModel.orderSuccessState.collect {
                     Snackbar.make(binding.root, "Successfully.", Snackbar.LENGTH_SHORT).show()
@@ -71,9 +78,9 @@ class PortFolioFragment : Fragment() {
             }
             launch {
                 columnsViewModel.sortColumnState.collect { sort ->
-                    (binding.awonarPortfolioRecyclerPosition.adapter as? OrderPortfolioAdapter)?.let {
-                        it.sortColumn(sort.first, sort.second)
-                    }
+//                    (binding.awonarPortfolioRecyclerPosition.adapter as? OrderPortfolioAdapter)?.let {
+//                        it.sortColumn(sort.first, sort.second)
+//                    }
                 }
             }
             launch {
@@ -95,32 +102,12 @@ class PortFolioFragment : Fragment() {
                 }
             }
             launch {
-                portViewModel.navigateInsideInstrumentPortfolio.collect {
-                    when (it.second) {
-                        "instrument" -> findNavController()
-                            .navigate(
-                                PortFolioFragmentDirections.actionPortFolioFragmentToPortFolioInsideInstrumentPortfolioFragment()
-                                    .apply {
-                                        instrumentId = it.first.toInt()
-                                    }
-                            )
-                        "copier" -> findNavController()
-                            .navigate(
-                                PortFolioFragmentDirections.actionPortFolioFragmentToPortFolioInsideCopierPortfolioFragment(
-                                    it.first
-                                )
-                            )
-                    }
-
-                }
-            }
-            launch {
                 portViewModel.portfolioType.collect {
-                    binding.awonarPortfolioImageChangeStyle.tag = it
-                    fetchPosition(it)
-                    visibleColumns(it)
-                    setupPositionType(it)
-                    columnsViewModel.setColumnType(it)
+//                    binding.awonarPortfolioImageChangeStyle.tag = it
+//                    fetchPosition(it)
+//                    visibleColumns(it)
+//                    setupPositionType(it)
+//                    columnsViewModel.setColumnType(it)
                 }
             }
             launch {
@@ -138,67 +125,67 @@ class PortFolioFragment : Fragment() {
         return binding.root
     }
 
-    private fun setupPositionType(type: String) {
-        val iconRes = when (type) {
-            "market" -> R.drawable.awonar_ic_list
-            "manual" -> R.drawable.awonar_ic_card_list
-            "card" -> R.drawable.awonar_ic_chart
-            "piechart" -> R.drawable.awonar_ic_list
-            else -> 0
-        }
-        binding.awonarPortfolioImageChangeStyle.setImageResource(iconRes)
-    }
+//    private fun setupPositionType(type: String) {
+//        val iconRes = when (type) {
+//            "market" -> R.drawable.awonar_ic_list
+//            "manual" -> R.drawable.awonar_ic_card_list
+//            "card" -> R.drawable.awonar_ic_chart
+//            "piechart" -> R.drawable.awonar_ic_list
+//            else -> 0
+//        }
+//        binding.awonarPortfolioImageChangeStyle.setImageResource(iconRes)
+//    }
+//
+//    private fun visibleColumns(type: String) {
+//        helper.attachToRecyclerView(null)
+//        when (type) {
+//            "market" -> portViewModel.getMarketPosition()
+//            "manual" -> {
+//                portViewModel.getManualPosition()
+//                helper.attachToRecyclerView(binding.awonarPortfolioRecyclerPosition)
+//            }
+//            "card" -> portViewModel.getCardPosition()
+//            "piechart" -> portViewModel.getExposure()
+//        }
+//    }
 
-    private fun visibleColumns(type: String) {
-        helper.attachToRecyclerView(null)
-        when (type) {
-            "market" -> portViewModel.getMarketPosition()
-            "manual" -> {
-                portViewModel.getManualPosition()
-                helper.attachToRecyclerView(binding.awonarPortfolioRecyclerPosition)
-            }
-            "card" -> portViewModel.getCardPosition()
-            "piechart" -> portViewModel.getExposure()
-        }
-    }
-
-    private fun fetchPosition(type: String) {
-        val visible = when (type) {
-            "market" -> View.VISIBLE
-            "manual" -> View.VISIBLE
-            "card" -> View.GONE
-            "piechart" -> View.GONE
-            else -> View.GONE
-        }
-        binding.awonarPortfolioIncludeColumn.awonarIncludeColumnContainer.visibility = visible
-    }
+//    private fun fetchPosition(type: String) {
+//        val visible = when (type) {
+//            "market" -> View.VISIBLE
+//            "manual" -> View.VISIBLE
+//            "card" -> View.GONE
+//            "piechart" -> View.GONE
+//            else -> View.GONE
+//        }
+//        binding.awonarPortfolioIncludeColumn.awonarIncludeColumnContainer.visibility = visible
+//    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupDialog()
-        setTouchHelper()
-        binding.awonarPortfolioImageChangeStyle.tag = "market"
-        columnsViewModel.setColumnType("${binding.awonarPortfolioImageChangeStyle.tag}")
-        portViewModel.getMarketPosition()
-        marketViewModel.subscribe()
-        binding.awonarPortfolioTextTitleSection.setOnClickListener {
-            if (sectorDialog.isAdded) {
-                sectorDialog.dismiss()
-            }
-            sectorDialog.show(childFragmentManager, MenuDialogButtonSheet.TAG)
-        }
-        binding.awonarPortfolioImageIconList.setOnClickListener {
-            val tag = binding.awonarPortfolioImageChangeStyle.tag
-            openActivityCompatForResult(
-                activityResult, ColumnsActivedActivity::class.java, bundleOf(
-                    ColumnsActivedActivity.EXTRA_COLUMNS_ACTIVED to tag
-                )
-            )
-        }
-        binding.awonarPortfolioImageChangeStyle.setOnClickListener {
-            toggle()
-        }
-        setColumnListener()
+//        setTouchHelper()
+//        binding.awonarPortfolioImageChangeStyle.tag = "market"
+//        columnsViewModel.setColumnType("${binding.awonarPortfolioImageChangeStyle.tag}")
+//        portViewModel.getMarketPosition()
+//        marketViewModel.subscribe()
+//        binding.awonarPortfolioTextTitleSection.setOnClickListener {
+//            if (sectorDialog.isAdded) {
+//                sectorDialog.dismiss()
+//            }
+//            sectorDialog.show(childFragmentManager, MenuDialogButtonSheet.TAG)
+//        }
+//        binding.awonarPortfolioImageIconList.setOnClickListener {
+//            val tag = binding.awonarPortfolioImageChangeStyle.tag
+//            openActivityCompatForResult(
+//                activityResult, ColumnsActivedActivity::class.java, bundleOf(
+//                    ColumnsActivedActivity.EXTRA_COLUMNS_ACTIVED to tag
+//                )
+//            )
+//        }
+//        binding.awonarPortfolioImageChangeStyle.setOnClickListener {
+//            toggle()
+//        }
+//        setColumnListener()
     }
 
     private fun setupDialog() {
@@ -212,99 +199,76 @@ class PortFolioFragment : Fragment() {
                 text = "Orders"
             )
         )
-        sectorDialog = MenuDialogButtonSheet.Builder()
-            .setListener(object : MenuDialogButtonSheet.MenuDialogButtonSheetListener {
-                override fun onMenuClick(menu: MenuDialog) {
-                    var title = binding.awonarPortfolioTextTitleSection.text
-                    when (menu.key) {
-                        "com.awonar.app.ui.portfolio.sector.orders" -> {
-                            title = "Orders"
-                            portViewModel.getOrdersPosition()
-                        }
-                        "com.awonar.app.ui.portfolio.sector.history" -> {
-                            findNavController().navigate(PortFolioFragmentDirections.actionPortFolioFragmentToHistoryFragment())
-                        }
-                        else -> {
-                        }
-                    }
-                    binding.awonarPortfolioTextTitleSection.text = title
-                }
-            })
-            .setMenus(menus)
-            .build()
+//        sectorDialog = MenuDialogButtonSheet.Builder()
+//            .setListener(object : MenuDialogButtonSheet.MenuDialogButtonSheetListener {
+//                override fun onMenuClick(menu: MenuDialog) {
+//                    var title = binding.awonarPortfolioTextTitleSection.text
+//                    when (menu.key) {
+//                        "com.awonar.app.ui.portfolio.sector.orders" -> {
+//                            title = "Orders"
+//                            portViewModel.getOrdersPosition()
+//                        }
+//                        "com.awonar.app.ui.portfolio.sector.history" -> {
+//                            findNavController().navigate(PortFolioFragmentDirections.actionPortFolioFragmentToHistoryFragment())
+//                        }
+//                        else -> {
+//                        }
+//                    }
+//                    binding.awonarPortfolioTextTitleSection.text = title
+//                }
+//            })
+//            .setMenus(menus)
+//            .build()
     }
 
-    private fun toggle() {
-        var tag = binding.awonarPortfolioImageChangeStyle.tag
-        tag = when (tag) {
-            "market" -> "manual"
-            "manual" -> "card"
-            "card" -> "piechart"
-            else -> "market"
-        }
-        portViewModel.togglePortfolio(tag)
-    }
+//    private fun toggle() {
+//        var tag = binding.awonarPortfolioImageChangeStyle.tag
+//        tag = when (tag) {
+//            "market" -> "manual"
+//            "manual" -> "card"
+//            "card" -> "piechart"
+//            else -> "market"
+//        }
+//        portViewModel.togglePortfolio(tag)
+//    }
+//
+//    private fun setColumnListener() {
+//        binding.awonarPortfolioIncludeColumn.apply {
+//            awonarIncludeTextColumnOne.setOnClickListener {
+//                val tag = awonarIncludeTextColumnOne.tag
+//                columnsViewModel.sortColumn(
+//                    awonarIncludeTextColumnOne.text.toString(),
+//                    tag == "DESC"
+//                )
+//                awonarIncludeTextColumnOne.tag = if (tag == "DESC") "ASC" else "DESC"
+//            }
+//            awonarIncludeTextColumnTwo.setOnClickListener {
+//                val tag = awonarIncludeTextColumnTwo.tag
+//                columnsViewModel.sortColumn(
+//                    awonarIncludeTextColumnTwo.text.toString(),
+//                    tag == "DESC"
+//                )
+//                awonarIncludeTextColumnTwo.tag = if (tag == "DESC") "ASC" else "DESC"
+//            }
+//            awonarIncludeTextColumnThree.setOnClickListener {
+//                val tag = awonarIncludeTextColumnThree.tag
+//                columnsViewModel.sortColumn(
+//                    awonarIncludeTextColumnThree.text.toString(),
+//                    tag == "DESC"
+//                )
+//                awonarIncludeTextColumnThree.tag = if (tag == "DESC") "ASC" else "DESC"
+//            }
+//            awonarIncludeTextColumnFour.setOnClickListener {
+//                val tag = awonarIncludeTextColumnFour.tag
+//                columnsViewModel.sortColumn(
+//                    awonarIncludeTextColumnFour.text.toString(),
+//                    tag == "DESC"
+//                )
+//                awonarIncludeTextColumnFour.tag = if (tag == "DESC") "ASC" else "DESC"
+//            }
+//        }
+//    }
+//
 
-    private fun setColumnListener() {
-        binding.awonarPortfolioIncludeColumn.apply {
-            awonarIncludeTextColumnOne.setOnClickListener {
-                val tag = awonarIncludeTextColumnOne.tag
-                columnsViewModel.sortColumn(
-                    awonarIncludeTextColumnOne.text.toString(),
-                    tag == "DESC"
-                )
-                awonarIncludeTextColumnOne.tag = if (tag == "DESC") "ASC" else "DESC"
-            }
-            awonarIncludeTextColumnTwo.setOnClickListener {
-                val tag = awonarIncludeTextColumnTwo.tag
-                columnsViewModel.sortColumn(
-                    awonarIncludeTextColumnTwo.text.toString(),
-                    tag == "DESC"
-                )
-                awonarIncludeTextColumnTwo.tag = if (tag == "DESC") "ASC" else "DESC"
-            }
-            awonarIncludeTextColumnThree.setOnClickListener {
-                val tag = awonarIncludeTextColumnThree.tag
-                columnsViewModel.sortColumn(
-                    awonarIncludeTextColumnThree.text.toString(),
-                    tag == "DESC"
-                )
-                awonarIncludeTextColumnThree.tag = if (tag == "DESC") "ASC" else "DESC"
-            }
-            awonarIncludeTextColumnFour.setOnClickListener {
-                val tag = awonarIncludeTextColumnFour.tag
-                columnsViewModel.sortColumn(
-                    awonarIncludeTextColumnFour.text.toString(),
-                    tag == "DESC"
-                )
-                awonarIncludeTextColumnFour.tag = if (tag == "DESC") "ASC" else "DESC"
-            }
-        }
-    }
-
-    private fun setTouchHelper() {
-        val touchHelperCallback = PortfolioListItemTouchHelperCallback(
-            object : IPortfolioListItemTouchHelperCallback {
-                override fun onClick(position: Int) {
-                    if (position >= 0) {
-                        portViewModel.showEditDialog(position)
-                    }
-                }
-
-                override fun onClose(position: Int) {
-                    portViewModel.showCloseDialog(position)
-                }
-            },
-            binding.awonarPortfolioRecyclerPosition.context
-        )
-        helper = ItemTouchHelper(touchHelperCallback)
-        binding.awonarPortfolioRecyclerPosition.addItemDecoration(object :
-            RecyclerView.ItemDecoration() {
-            override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-                super.onDraw(c, parent, state)
-                touchHelperCallback.onDraw(c)
-            }
-        })
-    }
 
 }

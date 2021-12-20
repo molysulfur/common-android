@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.awonar.app.ui.portfolio.PortFolioViewModel" />
+            type="com.awonar.app.ui.portfolio.inside.PositionInsideViewModel" />
 
         <variable
             name="columnsViewModel"
@@ -62,12 +62,8 @@
                     app:title="Back" />
 
                 <com.awonar.app.widget.InstrumentPositionCardView
+                    setInstrumentPositionCard="@{viewModel.positionState}"
                     android:id="@+id/awonar_portfolio_inside_instrument_instrument_position_header"
-                    setInstrumentPositionCard="@{viewModel.positionState[0]}"
-                    conversionRate="@{marketViewModel.conversionRateState}"
-                    isBuy="@{viewModel.positionState[0].buy == true}"
-                    position="@{viewModel.positionState[0]}"
-                    quotes="@{marketViewModel.quoteSteamingState}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -92,8 +88,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/awonar_portfolio_recycler_container"
                 activedColumn="@{columnsViewModel.activedColumnState}"
-                setPositionAdapter="@{viewModel.positionOrderList}"
                 quotes="@{marketViewModel.quoteSteamingState}"
+                setInsideAdapter="@{viewModel.positionItems}"
                 viewModel="@{viewModel}"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"

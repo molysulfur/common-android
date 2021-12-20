@@ -42,7 +42,8 @@
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:elevation="0dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -90,85 +91,18 @@
                     app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_text_title_available"
                     tools:text="@string/awonar_example_name" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/awonar_portfolio_text_title_section"
-                    style="@style/Awonar.Text.Bold.Large"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
-                    android:layout_marginBottom="@dimen/awonar_size_margin_padding_normal"
-                    android:drawableEnd="@drawable/awonar_ic_dropdown_white"
-                    android:drawableTint="@color/black"
-                    android:text="Portfolio"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/awonar_portfolio_text_title_total_allocate"
-                    app:layout_constraintTop_toBottomOf="@+id/awonar_portfolio_text_title_total_allocate"
-                    tools:text="@string/awonar_example_name" />
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/awonar_portfolio_image_icon_filter"
-                    style="@style/Awonar.Button.Icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/awonar_ic_filter"
-                    android:tint="@color/awonar_color_primary"
-                    app:layout_constraintBottom_toBottomOf="@+id/awonar_portfolio_text_title_section"
-                    app:layout_constraintEnd_toStartOf="@+id/awonar_portfolio_image_icon_list"
-                    app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_text_title_section" />
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/awonar_portfolio_image_icon_list"
-                    style="@style/Awonar.Button.Icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/awonar_ic_setting"
-                    android:tint="@color/awonar_color_primary"
-                    app:layout_constraintBottom_toBottomOf="@+id/awonar_portfolio_text_title_section"
-                    app:layout_constraintEnd_toStartOf="@+id/awonar_portfolio_image_change_style"
-                    app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_text_title_section" />
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/awonar_portfolio_image_change_style"
-                    style="@style/Awonar.Button.Icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/awonar_ic_list"
-                    android:tag="market"
-                    android:tint="@color/awonar_color_primary"
-                    app:layout_constraintBottom_toBottomOf="@+id/awonar_portfolio_text_title_section"
-                    app:layout_constraintEnd_toEndOf="@+id/awonar_portfolio_text_title_equity"
-                    app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_text_title_section" />
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <include
-                android:id="@+id/awonar_portfolio_include_column"
-                column1="@{columnViewModel.activedColumnState[0] ?? ``}"
-                column2="@{columnViewModel.activedColumnState[1] ?? ``}"
-                column3="@{columnViewModel.activedColumnState[2] ?? ``}"
-                column4="@{columnViewModel.activedColumnState[3] ?? ``}"
-                layout="@layout/awonar_include_column"
-                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/awonar_portfolio_recycler_position"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/awonar_main_drawer_navigation_host_portfolio"
             android:name="androidx.navigation.fragment.NavHostFragment"
-            activedColumn="@{columnViewModel.activedColumnState}"
-            quotes="@{market.quoteSteamingState}"
-            setPositionAdapter="@{viewModel.positionOrderList}"
-            viewModel="@{viewModel}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+            app:defaultNavHost="true"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+            app:navGraph="@navigation/awonar_portfolio_graph" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

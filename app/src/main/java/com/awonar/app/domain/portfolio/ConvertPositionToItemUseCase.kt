@@ -24,7 +24,7 @@ class ConvertPositionToItemUseCase @Inject constructor(
 ) : UseCase<List<Position>, List<OrderPortfolioItem>>(dispatcher) {
     override suspend fun execute(parameters: List<Position>): MutableList<OrderPortfolioItem> {
         val itemList = mutableListOf<OrderPortfolioItem>()
-        parameters.forEach { position ->
+        parameters.forEachIndexed { index, position ->
             val conversionRate =
                 currenciesRepository.getConversionByInstrumentId(position.instrumentId).rateBid
             val invested = position.amount
@@ -62,7 +62,8 @@ class ConvertPositionToItemUseCase @Inject constructor(
                     amountStopLoss = amountSl,
                     amountTakeProfit = amountTp,
                     stopLossPercent = slPercent,
-                    takeProfitPercent = tpPercent
+                    takeProfitPercent = tpPercent,
+                    index = index
                 )
             )
         }

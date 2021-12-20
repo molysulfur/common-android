@@ -1,4 +1,4 @@
-package com.awonar.app.ui.portfolio
+package com.awonar.app.ui.portfolio.inside
 
 import android.graphics.Canvas
 import android.os.Bundle
@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -18,16 +19,19 @@ import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.order.OrderViewModel
 import com.awonar.app.ui.order.edit.OrderEditDialog
 import com.awonar.app.ui.order.partialclose.PartialCloseDialog
+import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.awonar.app.ui.portfolio.adapter.IPortfolioListItemTouchHelperCallback
 import com.awonar.app.ui.portfolio.adapter.PortfolioListItemTouchHelperCallback
 import com.google.android.material.snackbar.Snackbar
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class PortFolioInsideInstrumentFragment : Fragment() {
 
     private val portFolioViewModel: PortFolioViewModel by activityViewModels()
+    private val activityViewModel: PositionInsideViewModel by activityViewModels()
     private val marketViewModel: MarketViewModel by activityViewModels()
     private val columnsViewModel: ColumnsViewModel by activityViewModels()
     private val orderViewModel: OrderViewModel by activityViewModels()
@@ -38,12 +42,14 @@ class PortFolioInsideInstrumentFragment : Fragment() {
         AwonarFragmentPortfolioInsideInstrumentBinding.inflate(layoutInflater)
     }
 
+    private var currentIndex: Int = 0
+
     private lateinit var helper: ItemTouchHelper
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         launchAndRepeatWithViewLifecycle {
             launch {
@@ -55,7 +61,6 @@ class PortFolioInsideInstrumentFragment : Fragment() {
                                 R.color.awonar_color_green
                             )
                         ).show()
-                    fectchPosition()
                 }
             }
             launch {
@@ -86,16 +91,8 @@ class PortFolioInsideInstrumentFragment : Fragment() {
                     binding.column4 = newColumn[3]
                 }
             }
-            launch {
-                portFolioViewModel.positionState.collect {
-                    if (it.isNotEmpty()) {
-                        columnsViewModel.getActivedColumns()
-                        marketViewModel.getConversionsRate(it[0].instrumentId)
-                    }
-                }
-            }
         }
-        binding.viewModel = portFolioViewModel
+        binding.viewModel = activityViewModel
         binding.columnsViewModel = columnsViewModel
         binding.marketViewModel = marketViewModel
         binding.lifecycleOwner = viewLifecycleOwner
@@ -104,26 +101,45 @@ class PortFolioInsideInstrumentFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        currentIndex = args.index
         columnsViewModel.setColumnType("manual")
         launchAndRepeatWithViewLifecycle {
             marketViewModel.quoteSteamingState.collect { quotes ->
-                val quote = quotes.find { it.id == args.instrumentId }
-                binding.awonarPortfolioButtonBuy.text = "${quote?.bid ?: 0f}"
-                binding.awonarPortfolioButtonSell.text = "${quote?.ask ?: 0f}"
+//                val quote = quotes.find { it.id == args.instrumentId }
+//                binding.awonarPortfolioButtonBuy.text = "${quote?.bid ?: 0f}"
+//                binding.awonarPortfolioButtonSell.text = "${quote?.ask ?: 0f}"
             }
         }
+        activityViewModel.convertPosition(portFolioViewModel.positionState.value, currentIndex)
+        setupToolbar()
         setTouchHelper()
-        fectchPosition()
     }
 
-    private fun fectchPosition() {
-        args.copier?.let { copier ->
-            args.instrumentId.let { instrumentId ->
-                portFolioViewModel.getPosition(copier, instrumentId)
-            }
+    private fun setupToolbar() {
+        binding.awonarPortfolioInsideInstrumentToolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
         }
-        args.instrumentId.let {
-            portFolioViewModel.getPosition(it)
+        binding.awonarPortfolioInsideInstrumentToolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.awonar_menu_instide_position_back -> {
+                    if (currentIndex > 0) {
+                        currentIndex--
+                        activityViewModel.convertPosition(portFolioViewModel.positionState.value,
+                            currentIndex)
+                    }
+                    true
+                }
+                R.id.awonar_menu_instide_position_next -> {
+                    val positionSize = portFolioViewModel.positionState.value?.positions?.size ?: 0
+                    if (currentIndex < positionSize.minus(1)) {
+                        currentIndex++
+                        activityViewModel.convertPosition(portFolioViewModel.positionState.value,
+                            currentIndex)
+                    }
+                    true
+                }
+                else -> false
+            }
         }
     }
 

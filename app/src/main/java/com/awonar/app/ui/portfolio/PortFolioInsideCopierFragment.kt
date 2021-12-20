@@ -33,25 +33,6 @@ class PortFolioInsideCopierFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         launchAndRepeatWithViewLifecycle {
-            portFolioViewModel.navigateInsideInstrumentPortfolio.collect { pair ->
-                val copier = portFolioViewModel.copierState.value
-                copier?.let {
-                    val position = copier.positions?.find { it.id == pair.first }
-                    when (pair.second) {
-                        "instrument" -> findNavController()
-                            .navigate(
-                                PortFolioInsideCopierFragmentDirections.actionPortFolioInsideCopierFragmentToPortFolioInsideInstrumentProfileFragment()
-                                    .apply {
-                                        this.copier = copier.id
-                                        this.instrumentId = position?.instrumentId ?: 0
-                                    }
-                            )
-                    }
-                }
-
-            }
-        }
-        launchAndRepeatWithViewLifecycle {
             launch {
                 portFolioViewModel.copierState.collect {
                     marketViewModel.getConversionsRateList(it?.positions ?: emptyList())
@@ -80,8 +61,6 @@ class PortFolioInsideCopierFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         columnsViewModel.setColumnType("market")
-        args.positionId.let {
-            portFolioViewModel.getCopierPosition(it)
-        }
+
     }
 }

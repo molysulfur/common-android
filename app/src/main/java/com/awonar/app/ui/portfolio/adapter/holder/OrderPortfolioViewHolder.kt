@@ -16,9 +16,8 @@ class OrderPortfolioViewHolder constructor(
         item: OrderPortfolioItem.InstrumentOrderItem,
         columns: List<String>,
         quotes: Array<Quote>,
-        onClick: ((String, String) -> Unit)?
+        onClick: ((Int, String) -> Unit)?
     ) {
-        Timber.e("$item")
         val quote = quotes.find { it.id == item.position.instrumentId }
         quote?.let {
             item.current = if (item.position.isBuy) it.bid else it.ask
@@ -32,9 +31,7 @@ class OrderPortfolioViewHolder constructor(
             item.profitLossPercent = plPercent
         }
         binding.awonarInsturmentOrderItem.setOnClickListener {
-            item.position.let {
-                onClick?.invoke("${it.instrumentId}", "instrument")
-            }
+
         }
         if (columns.isNotEmpty()) {
             binding.column1 = columns[0]

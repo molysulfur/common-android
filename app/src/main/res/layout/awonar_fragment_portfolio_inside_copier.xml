@@ -89,10 +89,6 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/awonar_portfolio_inside_copier_recycler"
-                activedColumn="@{columnsViewModel.activedColumnState}"
-                quotes="@{marketViewModel.quoteSteamingState}"
-                setPositionAdapter="@{viewModel.positionOrderList}"
-                viewModel="@{viewModel}"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:background="@color/awonar_color_surface"

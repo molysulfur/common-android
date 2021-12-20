@@ -20,13 +20,11 @@ import timber.log.Timber
 @HiltViewModel
 class PortFolioViewModel @Inject constructor(
     private val getMyPortFolioUseCase: GetMyPortFolioUseCase,
-    private val getPositionManualUseCase: GetPositionManualUseCase,
     private var getPositionMarketUseCase: GetPositionMarketUseCase,
     private val getPositionUseCase: GetPositionUseCase,
     private val getCopierUseCase: GetCopierUseCase,
     private val getPendingOrdersUseCase: GetPendingOrdersUseCase,
     private var convertPositionToItemUseCase: ConvertPositionToItemUseCase,
-    private var convertCopierToItemUseCase: ConvertCopierToItemUseCase,
     private var convertGroupPositionToItemUseCase: ConvertGroupPositionToItemUseCase,
     private var convertPositionWithCopierUseCase: ConvertPositionWithCopierUseCase,
     private var convertPositionToCardItemUseCase: ConvertPositionToCardItemUseCase,
@@ -38,7 +36,7 @@ class PortFolioViewModel @Inject constructor(
     private var convertAllocateToPieChartUseCase: ConvertAllocateToPieChartUseCase,
     private val getPieChartMarketAllocateUseCase: GetPieChartMarketAllocateUseCase,
     private val getPieChartInstrumentAllocateUseCase: GetPieChartInstrumentAllocateUseCase,
-    private val getPieChartInstrumentExposureUseCase: GetPieChartInstrumentExposureUseCase
+    private val getPieChartInstrumentExposureUseCase: GetPieChartInstrumentExposureUseCase,
 ) : ViewModel() {
 
     private val _portfolioType = MutableStateFlow("market")
@@ -67,8 +65,8 @@ class PortFolioViewModel @Inject constructor(
         MutableStateFlow(mutableListOf(OrderPortfolioItem.EmptyItem()))
     val positionOrderList: StateFlow<MutableList<OrderPortfolioItem>> get() = _positionOrderList
 
-    private val _positionState = MutableStateFlow<List<Position>>(emptyList())
-    val positionState: StateFlow<List<Position>> get() = _positionState
+    private val _positionState = MutableStateFlow<UserPortfolioResponse?>(null)
+    val positionState: StateFlow<UserPortfolioResponse?> get() = _positionState
 
     private val _copierState = MutableStateFlow<Copier?>(null)
     val copierState: StateFlow<Copier?> get() = _copierState
@@ -76,43 +74,22 @@ class PortFolioViewModel @Inject constructor(
 
     fun showEditDialog(position: Int) {
         viewModelScope.launch {
-            val data = _positionState.value[position]
-            data.let {
-                _editDialog.send(it)
-            }
+//            val data = _positionState.value[position]
+//            data.let {
+//                _editDialog.send(it)
+//            }
         }
     }
 
-    fun getManualPosition() {
-        viewModelScope.launch {
-            getPositionManualUseCase(Unit).collect { result ->
-                val positionItemResult =
-                    convertPositionToItemUseCase(result.successOr(emptyList())).successOr(emptyList())
-                _subscricbeQuote.send(result.successOr(emptyList()).map { it.instrumentId })
-                _positionOrderList.emit(positionItemResult.toMutableList())
-            }
-        }
-    }
-
-    fun getMarketPosition() {
+    fun getPosition() {
         viewModelScope.launch {
             getPositionMarketUseCase(Unit).collect {
                 val data = it.successOr(null)
-                if (data != null) {
-                    convertToItem(data.positions, data.copies)
-                }
+                _positionState.value = data
             }
         }
     }
 
-    private suspend fun convertToItem(positions: List<Position>, copies: List<Copier>) {
-        val itemList = mutableListOf<OrderPortfolioItem>()
-        val positionItems = convertGroupPositionToItemUseCase(positions).successOr(emptyList())
-        itemList.addAll(positionItems)
-        val copierItems = convertCopierToItemUseCase(copies).successOr(emptyList())
-        itemList.addAll(copierItems)
-        _positionOrderList.emit(itemList)
-    }
 
     fun togglePortfolio(type: String) {
         viewModelScope.launch {
@@ -133,7 +110,7 @@ class PortFolioViewModel @Inject constructor(
                 _positionOrderList.emit(
                     convertPositionToItemUseCase(position).successOr(emptyList()).toMutableList()
                 )
-                _positionState.emit(position)
+//                _positionState.emit(position)
             }
         }
     }
@@ -150,7 +127,7 @@ class PortFolioViewModel @Inject constructor(
                             )
                         ).successOr(listOf(OrderPortfolioItem.EmptyItem())).toMutableList()
                     )
-                _positionState.emit(result.data?.positions ?: emptyList())
+//                _positionState.emit(result.data?.positions ?: emptyList())
             }
         }
     }
@@ -241,14 +218,12 @@ class PortFolioViewModel @Inject constructor(
 
     fun showCloseDialog(index: Int) {
         viewModelScope.launch {
-            Timber.e("$index ${_positionOrderList.value.size}")
-            if (index < _positionState.value.size) {
-                val position = (_positionOrderList.value[index] as OrderPortfolioItem.InstrumentPortfolioItem).position
-                Timber.e("$position")
-                _closeDialog.send(position)
-            }
+//            if (index < _positionState.value.size) {
+//                val position =
+//                    (_positionOrderList.value[index] as OrderPortfolioItem.InstrumentPortfolioItem).position
+//                Timber.e("$position")
+//                _closeDialog.send(position)
+//            }
         }
     }
-
-
 }

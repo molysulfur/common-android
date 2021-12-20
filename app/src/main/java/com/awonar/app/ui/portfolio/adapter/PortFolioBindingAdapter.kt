@@ -1,4 +1,4 @@
-package com.awonar.app.ui.portfolio
+package com.awonar.app.ui.portfolio.adapter
 
 import android.annotation.SuppressLint
 import android.graphics.Canvas
@@ -13,15 +13,13 @@ import com.awonar.android.model.portfolio.Position
 import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.app.R
-import com.awonar.app.ui.portfolio.adapter.IPortfolioListItemTouchHelperCallback
-import com.awonar.app.ui.portfolio.adapter.OrderPortfolioAdapter
-import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
-import com.awonar.app.ui.portfolio.adapter.PortfolioListItemTouchHelperCallback
+import com.awonar.app.ui.portfolio.PortFolioViewModel
+import com.awonar.app.ui.portfolio.inside.PositionInsideViewModel
+import com.awonar.app.ui.portfolio.position.PositionViewModel
 import com.awonar.app.utils.DateUtils
 import com.awonar.app.widget.CopierPositionCardView
 import com.awonar.app.widget.InstrumentOrderView
 import com.awonar.app.widget.InstrumentPositionCardView
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
@@ -35,52 +33,6 @@ fun updateQuoteList(
         val adapter = recycler.adapter as OrderPortfolioAdapter
         adapter.quote = quote
     }
-}
-
-
-@BindingAdapter("setOrderAdapter", "activedColumn", "viewModel")
-fun setOrderAdapter(
-    recycler: RecyclerView,
-    items: MutableList<OrderPortfolioItem>,
-    activedColumn: List<String> = emptyList(),
-    viewModel: PortFolioViewModel
-) {
-    if (recycler.adapter == null) {
-        recycler.apply {
-            layoutManager =
-                LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
-            adapter = OrderPortfolioAdapter().apply {
-                onClick = { it, type ->
-                }
-            }
-        }
-        val callback = PortfolioListItemTouchHelperCallback(
-            object : IPortfolioListItemTouchHelperCallback {
-                override fun onClick(position: Int) {
-                    if (position >= 0) {
-                        viewModel.showEditDialog(position)
-                    }
-                }
-
-                override fun onClose(position: Int) {
-                    viewModel.showCloseDialog(position)
-                }
-            },
-            recycler.context
-        )
-//        val helper = ItemTouchHelper(callback)
-//        helper.attachToRecyclerView(recycler)
-        recycler.addItemDecoration(
-            object : RecyclerView.ItemDecoration() {
-                override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-                    super.onDraw(c, parent, state)
-                    callback.onDraw(c)
-                }
-            })
-    }
-    val adapter = recycler.adapter as OrderPortfolioAdapter
-    adapter.columns = activedColumn
-    adapter.itemLists = items
 }
 
 @BindingAdapter("setTotalInvested")
@@ -332,12 +284,34 @@ fun updateQuoteInstrumentPosition(
     }
 }
 
+@BindingAdapter("setInsideAdapter", "activedColumn", "viewModel")
+fun setInsidePositionAdapter(
+    recycler: RecyclerView,
+    items: MutableList<OrderPortfolioItem>,
+    activedColumn: List<String> = emptyList(),
+    viewModel: PositionInsideViewModel
+) {
+    if (recycler.adapter == null) {
+        recycler.apply {
+            layoutManager =
+                LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
+            adapter = OrderPortfolioAdapter()
+        }
+    }
+
+    val adapter = recycler.adapter as OrderPortfolioAdapter
+    adapter.apply {
+        columns = activedColumn
+        itemLists = items
+    }
+}
+
 @BindingAdapter("setPositionAdapter", "activedColumn", "viewModel")
 fun setPositionAdapter(
     recycler: RecyclerView,
     items: MutableList<OrderPortfolioItem>,
     activedColumn: List<String> = emptyList(),
-    viewModel: PortFolioViewModel
+    viewModel: PositionViewModel
 ) {
     if (recycler.adapter == null) {
         recycler.apply {
@@ -345,27 +319,27 @@ fun setPositionAdapter(
                 LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
             adapter = OrderPortfolioAdapter().apply {
                 onClick = { it, type ->
-                    viewModel.navigateInsidePortfolio(it, type)
+                    viewModel.navigateInstrumentInside(it, type)
                 }
                 onViewAllClick = {
-                    viewModel.togglePortfolio("market")
+//                    viewModel.togglePortfolio("market")
                 }
                 onButtonClick = { text ->
                     when (text.lowercase()) {
                         "allocate" -> {
                             this.pieChartType = "allocate"
-                            viewModel.getAllocate()
+//                            viewModel.getAllocate()
                         }
                         "exposure" -> {
                             this.pieChartType = "exposure"
-                            viewModel.getExposure()
+//                            viewModel.getExposure()
                         }
                     }
                 }
                 onPieChartClick = {
                     when (this.pieChartType) {
-                        "allocate" -> viewModel.getAllocate(it)
-                        "exposure" -> viewModel.getExposure(it)
+//                        "allocate" -> viewModel.getAllocate(it)
+//                        "exposure" -> viewModel.getExposure(it)
                     }
 
                 }
@@ -574,7 +548,7 @@ private fun getCopierValueByColumn(
 ): String = when (column) {
     "Invested" -> "$%.2f".format(item.invested)
     "P/L($)" -> "$%.2f".format(item.profitLoss)
-    "P/L(%)" -> "%s%s".format(item.profitLossPercent, "%")
+    "P/L(%)" -> "%.2f%s".format(item.profitLossPercent, "%")
     "Value" -> "$%s".format(item.value)
     "Fee" -> "$%s".format(item.fees)
     "Net Invest" -> "$%.2f".format(item.netInvested)

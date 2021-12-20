@@ -46,18 +46,11 @@
 
     <fragment
         android:id="@+id/portFolioInsideInstrumentPortfolioFragment"
-        android:name="com.awonar.app.ui.portfolio.PortFolioInsideInstrumentFragment"
+        android:name="com.awonar.app.ui.portfolio.inside.PortFolioInsideInstrumentFragment"
         android:label="PortFolioInsideInstrumentPortfolioFragment">
 
         <argument
-            android:name="copier"
-            android:defaultValue="null"
-            app:argType="string"
-            app:nullable="true" />
-
-        <argument
-            android:name="instrumentId"
-            android:defaultValue="0"
+            android:name="index"
             app:argType="integer" />
     </fragment>
 
@@ -112,8 +105,8 @@
             app:popUpTo="@+id/portFolioFragment" />
 
         <argument
-            android:name="positionId"
-            app:argType="string" />
+            android:name="index"
+            app:argType="integer" />
     </fragment>
 
     <fragment

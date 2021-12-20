@@ -72,6 +72,7 @@ sealed class OrderPortfolioItem(
         var amountTakeProfit: Float,
         var stopLossPercent: Float,
         var takeProfitPercent: Float,
+        val index: Int
     ) : OrderPortfolioItem(INSTRUMENT_PORTFOLIO)
 
     @Parcelize
@@ -90,6 +91,7 @@ sealed class OrderPortfolioItem(
         var netInvested: Float,
         var copyStopLoss: Float,
         var copyStopLossPercent: Float,
+        var index: Int
     ) : OrderPortfolioItem(COPYTRADE_PORTFOLIO)
 
     @Parcelize

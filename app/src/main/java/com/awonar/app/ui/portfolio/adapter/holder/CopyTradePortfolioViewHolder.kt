@@ -15,7 +15,7 @@ class CopyTradePortfolioViewHolder constructor(
         item: OrderPortfolioItem.CopierPortfolioItem,
         columns: List<String>,
         quotes: Array<Quote>,
-        onClick: ((String, String) -> Unit)?
+        onClick: ((Int, String) -> Unit)?
     ) {
         val sumFloatingPL = 0f
         item.copier.positions?.forEach { position ->
@@ -34,9 +34,7 @@ class CopyTradePortfolioViewHolder constructor(
         }
 
         binding.awonarInsturmentOrderItem.setOnClickListener {
-            item.copier.let {
-                onClick?.invoke(it.id, "copier")
-            }
+            onClick?.invoke(item.index, "copies")
         }
         val pl = sumFloatingPL.plus(item.copier.closedPositionsNetProfit)
         val plPercent = pl.div(item.invested)

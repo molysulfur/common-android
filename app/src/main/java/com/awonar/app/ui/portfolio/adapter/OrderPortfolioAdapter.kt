@@ -33,7 +33,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             OrderPortfolioDiffCallback(oldList, value)
         }
 
-    var onClick: ((String, String) -> Unit)? = null
+    var onClick: ((Int, String) -> Unit)? = null
     var onButtonClick: ((String) -> Unit)? = null
     var onViewAllClick: (() -> Unit)? = null
     var onPieChartClick: ((String?) -> Unit)? = null

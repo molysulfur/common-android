@@ -77,7 +77,8 @@ class ConvertGroupPositionToItemUseCase @Inject constructor(
                     amountStopLoss = amountSl,
                     amountTakeProfit = amountTp,
                     stopLossPercent = slPercent,
-                    takeProfitPercent = tpPercent
+                    takeProfitPercent = tpPercent,
+                    index = 0
                 )
             )
         }
