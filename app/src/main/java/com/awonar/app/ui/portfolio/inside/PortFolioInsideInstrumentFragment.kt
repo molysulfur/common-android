@@ -12,6 +12,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.awonar.android.model.portfolio.Position
+import com.awonar.android.shared.steaming.QuoteSteamingManager
+import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentPortfolioInsideInstrumentBinding
 import com.awonar.app.ui.columns.ColumnsViewModel
@@ -24,7 +27,7 @@ import com.awonar.app.ui.portfolio.adapter.IPortfolioListItemTouchHelperCallback
 import com.awonar.app.ui.portfolio.adapter.PortfolioListItemTouchHelperCallback
 import com.google.android.material.snackbar.Snackbar
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -52,6 +55,17 @@ class PortFolioInsideInstrumentFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         launchAndRepeatWithViewLifecycle {
+            activityViewModel.closeDialog.collect { position ->
+                position?.let {
+                    PartialCloseDialog.Builder()
+                        .setPosition(it)
+                        .setKey("inside_instrument")
+                        .build()
+                        .show(childFragmentManager)
+                }
+            }
+        }
+        launchAndRepeatWithViewLifecycle {
             launch {
                 orderViewModel.orderSuccessState.collect {
                     Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT)
@@ -64,19 +78,9 @@ class PortFolioInsideInstrumentFragment : Fragment() {
                 }
             }
             launch {
-                portFolioViewModel.editDialog.collect { position ->
+                activityViewModel.editDialog.collect { position ->
                     position?.let {
                         OrderEditDialog.Builder()
-                            .setPosition(it)
-                            .build()
-                            .show(childFragmentManager)
-                    }
-                }
-            }
-            launch {
-                portFolioViewModel.closeDialog.collect { position ->
-                    position?.let {
-                        PartialCloseDialog.Builder()
                             .setPosition(it)
                             .build()
                             .show(childFragmentManager)
@@ -104,10 +108,25 @@ class PortFolioInsideInstrumentFragment : Fragment() {
         currentIndex = args.index
         columnsViewModel.setColumnType("manual")
         launchAndRepeatWithViewLifecycle {
-            marketViewModel.quoteSteamingState.collect { quotes ->
-//                val quote = quotes.find { it.id == args.instrumentId }
-//                binding.awonarPortfolioButtonBuy.text = "${quote?.bid ?: 0f}"
-//                binding.awonarPortfolioButtonSell.text = "${quote?.ask ?: 0f}"
+            QuoteSteamingManager.quotesState.collect { quotes ->
+                val position: Position? = activityViewModel.positionState.value
+                val quote = quotes[position?.instrument?.id]
+                quote?.let {
+                    val price = ConverterQuoteUtil.getCurrentPrice(
+                        quote = quote,
+                        leverage = position?.leverage ?: 1,
+                        isBuy = position?.isBuy == true
+                    )
+                    val change = ConverterQuoteUtil.change(it.close, it.previous)
+                    val percent = ConverterQuoteUtil.percentChange(it.previous, it.close)
+                    binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setPrice(price)
+                    binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setChange(change)
+                    binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setChangePercent(percent)
+                    binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setStatusText(quote.status?:"")
+                    binding.awonarPortfolioButtonBuy.text = "${quote.bid}"
+                    binding.awonarPortfolioButtonSell.text = "${quote.ask}"
+                }
+
             }
         }
         activityViewModel.convertPosition(portFolioViewModel.positionState.value, currentIndex)
@@ -153,7 +172,7 @@ class PortFolioInsideInstrumentFragment : Fragment() {
                 }
 
                 override fun onClose(position: Int) {
-                    portFolioViewModel.showCloseDialog(position)
+                    activityViewModel.showCloseDialog(position)
                 }
             },
             requireContext()

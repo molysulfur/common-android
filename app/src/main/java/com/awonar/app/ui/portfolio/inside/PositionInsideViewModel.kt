@@ -9,15 +9,24 @@ import com.awonar.app.domain.portfolio.ConvertPositionToItemUseCase
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class PositionInsideViewModel @Inject constructor(
     private val convertPositionToItemUseCase: ConvertPositionToItemUseCase,
 ) : ViewModel() {
+
+    private val _editDialog = Channel<Position?>(capacity = Channel.CONFLATED)
+    val editDialog: Flow<Position?> get() = _editDialog.receiveAsFlow()
+    private val _closeDialog = Channel<Position?>(capacity = Channel.CONFLATED)
+    val closeDialog: Flow<Position?> get() = _closeDialog.receiveAsFlow()
 
     private val _positionState: MutableStateFlow<Position?> = MutableStateFlow(null)
     val positionState: StateFlow<Position?> get() = _positionState
@@ -52,6 +61,18 @@ class PositionInsideViewModel @Inject constructor(
                 val items = convertPositionToItemUseCase(positionList).successOr(emptyList())
                 _copiesState.value = copies
                 _positionItems.value = items.toMutableList()
+            }
+        }
+    }
+
+    fun showCloseDialog(position: Int) {
+        viewModelScope.launch {
+            val item = _positionItems.value[position]
+            when (item) {
+                is OrderPortfolioItem.InstrumentPortfolioItem -> {
+                    _closeDialog.send(item.position)
+                }
+                else -> {}
             }
         }
     }

@@ -47,10 +47,7 @@ class PortFolioViewModel @Inject constructor(
     val navigateInsideInstrumentPortfolio: Flow<Pair<String, String>> =
         _navigateInsideInstrumentPortfolio.receiveAsFlow()
 
-    private val _editDialog = Channel<Position?>(capacity = Channel.CONFLATED)
-    val editDialog: Flow<Position?> get() = _editDialog.receiveAsFlow()
-    private val _closeDialog = Channel<Position?>(capacity = Channel.CONFLATED)
-    val closeDialog: Flow<Position?> get() = _closeDialog.receiveAsFlow()
+
 
     private val _subscricbeQuote = Channel<List<Int>>(capacity = Channel.CONFLATED)
     val subscricbeQuote: Flow<List<Int>> = _subscricbeQuote.receiveAsFlow()

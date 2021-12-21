@@ -14,6 +14,7 @@ import com.awonar.app.databinding.AwonarFragmentPositionMarketBinding
 import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.awonar.app.ui.portfolio.adapter.IPortfolioListItemTouchHelperCallback
+import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType
 import com.awonar.app.ui.portfolio.adapter.PortfolioListItemTouchHelperCallback
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
@@ -31,14 +32,13 @@ class PositionMarketFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
 
         launchAndRepeatWithViewLifecycle {
             viewModel.positionState.collect { position ->
                 position?.let {
                     activityViewModel.convertMarket(position.positions, position.copies)
-
                 }
             }
         }
@@ -64,6 +64,12 @@ class PositionMarketFragment : Fragment() {
                 }
 
                 override fun onClose(position: Int) {
+                    when (activityViewModel.positionItems.value[position].type) {
+                        OrderPortfolioType.INSTRUMENT_PORTFOLIO -> activityViewModel.navigateInstrumentInside(
+                            position,
+                            "instrument")
+                    }
+
                 }
             },
             requireContext()

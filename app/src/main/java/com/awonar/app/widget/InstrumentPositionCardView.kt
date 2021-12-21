@@ -104,7 +104,7 @@ class InstrumentPositionCardView : BaseViewGroup {
             )
         )
         binding.awonarInstrumentPositionCardTextChange.text =
-            "%.2f (%.2f)".format(change, changePercent)
+            "%.2f (%.2f%s)".format(change, changePercent, "%")
     }
 
     private fun updatePrice() {
@@ -271,7 +271,7 @@ class InstrumentPositionCardView : BaseViewGroup {
         context: Context,
         attrs: AttributeSet?,
         defStyleAttr: Int,
-        defStyleRes: Int
+        defStyleRes: Int,
     ) : super(context, attrs, defStyleAttr, defStyleRes)
 
     private class SavedState : ChildSavedState {

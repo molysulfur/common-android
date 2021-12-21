@@ -35,7 +35,7 @@ class PartialCloseDialog :
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = AwonarDialogPartialcloseBinding.inflate(inflater)
         launchAndRepeatWithViewLifecycle {
@@ -69,20 +69,12 @@ class PartialCloseDialog :
                     position?.let {
                         viewModel.setDefaultPartialAmount(
                             position = it,
-                            price = ConverterQuoteUtil.getCurrentPrice(
-                                quote = quote!!,
-                                leverage = position?.leverage ?: 1,
-                                isBuy = position?.isBuy == true
-                            )
+                            price = getCurrentPrice()
                         )
                     }
                 }
                 quote = quotes.find { it.id == position?.instrument?.id }
-                val current = ConverterQuoteUtil.getCurrentPrice(
-                    quote = quote!!,
-                    leverage = position?.leverage ?: 1,
-                    isBuy = position?.isBuy == true
-                )
+                val current = getCurrentPrice()
                 binding.price = "%s".format(current)
                 position?.let {
                     val pl = viewModel.getProfit(current, it)
@@ -95,11 +87,16 @@ class PartialCloseDialog :
         return binding.root
     }
 
-    private fun getCurrentPrice() = ConverterQuoteUtil.getCurrentPrice(
-        quote!!,
-        position!!.leverage,
-        position!!.isBuy
-    )
+    private fun getCurrentPrice(): Float {
+        quote?.let {
+            return ConverterQuoteUtil.getCurrentPrice(
+                it,
+                position?.leverage ?: 1,
+                position?.isBuy == true
+            )
+        }
+        return 0f
+    }
 
     private fun updateNumberPicker(it: Pair<Float, Float>) {
         when (binding.awonarPartialCloseButtonGroupType.checkedButtonId) {
@@ -220,7 +217,7 @@ class PartialCloseDialog :
         private fun newInstance(
             position: Position?,
             key: String?,
-            data: Bundle?
+            data: Bundle?,
         ) =
             PartialCloseDialog().apply {
                 arguments = createBundle(key, data).apply {
