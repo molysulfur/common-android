@@ -11,11 +11,11 @@ import com.akexorcist.library.dialoginteractor.createBundle
 import com.awonar.android.constrant.MarketOrderType
 import com.awonar.android.model.market.Quote
 import com.awonar.android.model.portfolio.Position
+import com.awonar.android.shared.steaming.QuoteSteamingManager
 import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarDialogPartialcloseBinding
 import com.awonar.app.dialog.DialogViewModel
-import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.order.OrderViewModel
 import com.awonar.app.utils.ImageUtil
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
@@ -26,7 +26,6 @@ class PartialCloseDialog :
 
     private lateinit var binding: AwonarDialogPartialcloseBinding
     private val viewModel: OrderViewModel by activityViewModels()
-    private val marketViewModel: MarketViewModel by activityViewModels()
     private var position: Position? = null
     private var quote: Quote? = null
     private var isPartial = false
@@ -61,9 +60,9 @@ class PartialCloseDialog :
             }
         }
         launchAndRepeatWithViewLifecycle {
-            marketViewModel.quoteSteamingState.collect { quotes ->
+            QuoteSteamingManager.quotesState.collect { quotes ->
                 if (quote == null) {
-                    quote = quotes.find { it.id == position?.instrument?.id }
+                    quote = quotes[position?.instrument?.id]
                     marketOrderType =
                         if (quote?.status == "open") MarketOrderType.OPEN_ORDER else MarketOrderType.PENDING_ORDER
                     position?.let {
@@ -73,7 +72,7 @@ class PartialCloseDialog :
                         )
                     }
                 }
-                quote = quotes.find { it.id == position?.instrument?.id }
+                quote = quotes[position?.instrument?.id]
                 val current = getCurrentPrice()
                 binding.price = "%s".format(current)
                 position?.let {

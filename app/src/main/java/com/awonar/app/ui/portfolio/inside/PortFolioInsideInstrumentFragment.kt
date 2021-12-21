@@ -15,10 +15,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.portfolio.Position
 import com.awonar.android.shared.steaming.QuoteSteamingManager
 import com.awonar.android.shared.utils.ConverterQuoteUtil
+import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentPortfolioInsideInstrumentBinding
 import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.market.MarketViewModel
+import com.awonar.app.ui.order.OrderDialog
 import com.awonar.app.ui.order.OrderViewModel
 import com.awonar.app.ui.order.edit.OrderEditDialog
 import com.awonar.app.ui.order.partialclose.PartialCloseDialog
@@ -121,10 +123,20 @@ class PortFolioInsideInstrumentFragment : Fragment() {
                     val percent = ConverterQuoteUtil.percentChange(it.previous, it.close)
                     binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setPrice(price)
                     binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setChange(change)
-                    binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setChangePercent(percent)
-                    binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setStatusText(quote.status?:"")
+                    binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setChangePercent(
+                        percent)
+                    binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setStatusText(
+                        quote.status ?: "")
                     binding.awonarPortfolioButtonBuy.text = "${quote.bid}"
                     binding.awonarPortfolioButtonSell.text = "${quote.ask}"
+                    position?.let {
+                        val profit = orderViewModel.getProfit(price, position)
+                        val valueInvest = PortfolioUtil.getValue(profit, position.amount)
+                        binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setValueInvested(
+                            valueInvest)
+                        binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setProfitLoss(
+                            profit)
+                    }
                 }
 
             }
@@ -132,6 +144,20 @@ class PortFolioInsideInstrumentFragment : Fragment() {
         activityViewModel.convertPosition(portFolioViewModel.positionState.value, currentIndex)
         setupToolbar()
         setTouchHelper()
+        setupListener()
+    }
+
+    private fun setupListener() {
+        binding.awonarPortfolioButtonBuy.setOnClickListener {
+            val position: Position? = activityViewModel.positionState.value
+            OrderDialog.Builder().setSymbol(position?.instrument).setType(true).build()
+                .show(childFragmentManager)
+        }
+        binding.awonarPortfolioButtonSell.setOnClickListener {
+            val position: Position? = activityViewModel.positionState.value
+            OrderDialog.Builder().setSymbol(position?.instrument).setType(false).build()
+                .show(childFragmentManager)
+        }
     }
 
     private fun setupToolbar() {
