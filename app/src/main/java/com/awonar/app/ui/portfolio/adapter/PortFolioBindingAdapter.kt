@@ -288,20 +288,24 @@ fun updateQuoteInstrumentPosition(
 fun setInsidePositionAdapter(
     recycler: RecyclerView,
     items: MutableList<OrderPortfolioItem>,
-    activedColumn: List<String> = emptyList(),
-    viewModel: PositionInsideViewModel,
+    activedColumn: List<String>?,
+    viewModel: PositionViewModel?,
 ) {
     if (recycler.adapter == null) {
         recycler.apply {
             layoutManager =
                 LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
-            adapter = OrderPortfolioAdapter()
+            adapter = OrderPortfolioAdapter().apply {
+                onClick = { index, type ->
+                    viewModel?.navigateInstrumentInside(index, "copies_instrument")
+                }
+            }
         }
     }
 
     val adapter = recycler.adapter as OrderPortfolioAdapter
     adapter.apply {
-        columns = activedColumn
+        columns = activedColumn ?: emptyList()
         itemLists = items
     }
 }

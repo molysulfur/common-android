@@ -13,6 +13,7 @@ import com.awonar.app.databinding.AwonarFragmentPortfolioInsideCopierBinding
 import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.portfolio.PortFolioViewModel
+import com.awonar.app.ui.portfolio.position.PositionViewModel
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -20,6 +21,7 @@ import kotlinx.coroutines.launch
 class PortFolioInsideCopierFragment : Fragment() {
 
     private val portFolioViewModel: PortFolioViewModel by activityViewModels()
+    private val positionViewModel: PositionViewModel by activityViewModels()
     private val insideViewModel: PositionInsideViewModel by activityViewModels()
     private val columnsViewModel: ColumnsViewModel by activityViewModels()
     private val marketViewModel: MarketViewModel by activityViewModels()
@@ -57,6 +59,7 @@ class PortFolioInsideCopierFragment : Fragment() {
             }
         }
         binding.viewModel = insideViewModel
+        binding.positionViewModel = positionViewModel
         binding.columnsViewModel = columnsViewModel
         binding.marketViewModel = marketViewModel
         binding.lifecycleOwner = viewLifecycleOwner
@@ -66,6 +69,7 @@ class PortFolioInsideCopierFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         currentIndex = args.index
+        columnsViewModel.getActivedColumns()
         insideViewModel.convertCopies(portFolioViewModel.positionState.value, currentIndex)
         setupToolbar()
     }

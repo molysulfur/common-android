@@ -8,8 +8,8 @@ import com.awonar.android.model.portfolio.Position
 import com.awonar.app.domain.portfolio.ConvertCopierToItemUseCase
 import com.awonar.app.domain.portfolio.ConvertGroupPositionToItemUseCase
 import com.awonar.app.domain.portfolio.ConvertPositionToItemUseCase
-import com.awonar.app.ui.portfolio.PortFolioFragmentDirections
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
+import com.awonar.app.ui.portfolio.inside.PortFolioInsideCopierFragmentDirections
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -34,7 +34,6 @@ class PositionViewModel @Inject constructor(
     fun convertManual(it: List<Position>) {
         viewModelScope.launch {
             val positionItemResult = convertPositionToItemUseCase(it).successOr(emptyList())
-//            _subscricbeQuote.send(result.successOr(emptyList()).map { it.instrumentId })
             _positionItems.emit(positionItemResult.toMutableList())
         }
     }
@@ -52,17 +51,21 @@ class PositionViewModel @Inject constructor(
             }.collect {
                 _positionItems.emit(it)
             }
-//            _subscricbeQuote.send(result.successOr(emptyList()).map { it.instrumentId })
-
         }
     }
 
     fun navigateInstrumentInside(index: Int, type: String) {
         viewModelScope.launch {
             when (type) {
-                "instrument" -> _navigateActions.send(PortFolioFragmentDirections.actionPortFolioFragmentToPortFolioInsideInstrumentPortfolioFragment(index))
+                "instrument" -> _navigateActions.send(PositionFragmentDirections.actionPositionFragmentToPortFolioInsideInstrumentPortfolioFragment(
+                    index))
                 "copies" -> _navigateActions.send(
-                    PortFolioFragmentDirections.actionPortFolioFragmentToPortFolioInsideCopierPortfolioFragment(index)
+                    PositionFragmentDirections.actionPositionFragmentToPortFolioInsideCopierPortfolioFragment(
+                        index)
+                )
+                "copies_instrument" -> _navigateActions.send(
+                    PortFolioInsideCopierFragmentDirections.actionPortFolioInsideCopierFragmentToPortFolioInsideInstrumentCopierFragment(
+                        index)
                 )
             }
 

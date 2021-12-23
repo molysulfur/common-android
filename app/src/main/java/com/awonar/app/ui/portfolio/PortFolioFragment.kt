@@ -15,6 +15,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavDirections
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.app.R
@@ -50,9 +51,6 @@ class PortFolioFragment : Fragment() {
     private val columnsViewModel: ColumnsViewModel by activityViewModels()
     private val orderViewModel: OrderViewModel by activityViewModels()
 
-    private lateinit var sectorDialog: MenuDialogButtonSheet
-    private lateinit var helper: ItemTouchHelper
-
     private val activityResult: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
             if (activityResult.resultCode == Activity.RESULT_OK) {
@@ -63,11 +61,12 @@ class PortFolioFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         launchAndRepeatWithViewLifecycle {
             positionViewModel.navigateActions.collect {
-                findNavController().navigate(it)
+                Navigation.findNavController(binding.awonarMainDrawerNavigationHostPortfolio)
+                    .navigate(it)
             }
         }
         launchAndRepeatWithViewLifecycle {

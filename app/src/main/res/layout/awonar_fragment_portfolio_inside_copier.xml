@@ -10,6 +10,11 @@
             type="com.awonar.app.ui.portfolio.inside.PositionInsideViewModel" />
 
         <variable
+            name="positionViewModel"
+            type="com.awonar.app.ui.portfolio.position.PositionViewModel" />
+
+
+        <variable
             name="columnsViewModel"
             type="com.awonar.app.ui.columns.ColumnsViewModel" />
 
@@ -49,10 +54,6 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <include
-                    android:id="@+id/awonar_portfolio_inside_include_allocation"
-                    layout="@layout/awonar_include_allocation" />
-
                 <com.google.android.material.appbar.MaterialToolbar
                     android:id="@+id/awonar_portfolio_inside_instrument_toolbar"
                     android:layout_width="match_parent"
@@ -91,7 +92,7 @@
                 android:id="@+id/awonar_portfolio_inside_copier_recycler"
                 activedColumn="@{columnsViewModel.activedColumnState}"
                 setInsideAdapter="@{viewModel.positionItems}"
-                viewModel="@{viewModel}"
+                viewModel="@{positionViewModel}"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:background="@color/awonar_color_surface"

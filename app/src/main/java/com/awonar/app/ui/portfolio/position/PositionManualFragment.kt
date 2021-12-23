@@ -32,19 +32,7 @@ class PositionManualFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-//        launchAndRepeatWithViewLifecycle {
-//            viewModel.editDialog.collect { position ->
-//                position?.let {
-//                    OrderEditDialog.Builder()
-//                        .setPosition(position = it)
-//                        .build()
-//                        .show(parentFragmentManager)
-//                }
-//            }
-//        }
         binding.columns = columns
-//        binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }

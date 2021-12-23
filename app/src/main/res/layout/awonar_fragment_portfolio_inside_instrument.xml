@@ -10,6 +10,10 @@
             type="com.awonar.app.ui.portfolio.inside.PositionInsideViewModel" />
 
         <variable
+            name="positionViewModel"
+            type="com.awonar.app.ui.portfolio.position.PositionViewModel" />
+
+        <variable
             name="columnsViewModel"
             type="com.awonar.app.ui.columns.ColumnsViewModel" />
 
@@ -49,10 +53,6 @@
                 android:orientation="vertical"
                 app:layout_scrollFlags="scroll|snap">
 
-                <include
-                    android:id="@+id/awonar_portfolio_inside_include_allocation"
-                    layout="@layout/awonar_include_allocation" />
-
                 <com.google.android.material.appbar.MaterialToolbar
                     android:id="@+id/awonar_portfolio_inside_instrument_toolbar"
                     android:layout_width="match_parent"
@@ -62,8 +62,8 @@
                     app:title="Back" />
 
                 <com.awonar.app.widget.InstrumentPositionCardView
-                    setInstrumentPositionCard="@{viewModel.positionState}"
                     android:id="@+id/awonar_portfolio_inside_instrument_instrument_position_header"
+                    setInstrumentPositionCard="@{viewModel.positionState}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -90,7 +90,7 @@
                 activedColumn="@{columnsViewModel.activedColumnState}"
                 quotes="@{marketViewModel.quoteSteamingState}"
                 setInsideAdapter="@{viewModel.positionItems}"
-                viewModel="@{viewModel}"
+                viewModel="@{positionViewModel}"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:background="@color/awonar_color_surface"

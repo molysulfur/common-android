@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.portfolio.Position
 import com.awonar.android.model.portfolio.UserPortfolioResponse
+import com.awonar.app.domain.portfolio.ConvertGroupPositionToItemUseCase
 import com.awonar.app.domain.portfolio.ConvertPositionToItemUseCase
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
 import com.molysulfur.library.result.successOr
@@ -21,6 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PositionInsideViewModel @Inject constructor(
     private val convertPositionToItemUseCase: ConvertPositionToItemUseCase,
+    private val convertPositionGroupPositionToItemUseCase: ConvertGroupPositionToItemUseCase
 ) : ViewModel() {
 
     private val _editDialog = Channel<Position?>(capacity = Channel.CONFLATED)
@@ -58,7 +60,7 @@ class PositionInsideViewModel @Inject constructor(
             val positionList: List<Position> = copies?.positions ?: emptyList()
             ?: emptyList()
             if (copies != null) {
-                val items = convertPositionToItemUseCase(positionList).successOr(emptyList())
+                val items = convertPositionGroupPositionToItemUseCase(positionList).successOr(emptyList())
                 _copiesState.value = copies
                 _positionItems.value = items.toMutableList()
             }
@@ -88,4 +90,21 @@ class PositionInsideViewModel @Inject constructor(
             }
         }
     }
+
+    fun convertPositionWithCopies(copies: Copier?, currentIndex: Int) {
+        viewModelScope.launch {
+            copies?.let { copies ->
+                val position = copies.positions?.get(currentIndex)
+                position?.let { position ->
+                    val items =
+                        convertPositionToItemUseCase(copies.positions?.filter { it.instrument.id == position.instrument.id }
+                            ?: emptyList()).successOr(
+                            emptyList())
+                    _positionState.value = position
+                    _positionItems.value = items.toMutableList()
+                }
+            }
+        }
+    }
+
 }
