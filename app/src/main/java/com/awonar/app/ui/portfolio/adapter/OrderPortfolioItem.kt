@@ -14,6 +14,7 @@ import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.INSTRUMENT_POSITIO
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.LIST_ITEM_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.ORDER_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.PIECHART_PORTFOLIO
+import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.SECTION_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.SUBTITLE_CENTER_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.TITLE_CENTER_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType.VIEWALL_BUTTON
@@ -48,6 +49,11 @@ sealed class OrderPortfolioItem(
     class SubTitleItem(
         val subTitle: String,
     ) : OrderPortfolioItem(SUBTITLE_CENTER_PORTFOLIO)
+
+    @Parcelize
+    class SectionItem(
+        val text: String,
+    ) : OrderPortfolioItem(SECTION_PORTFOLIO)
 
     @Parcelize
     class EmptyItem : OrderPortfolioItem(EMPTY_PORTFOLIO)

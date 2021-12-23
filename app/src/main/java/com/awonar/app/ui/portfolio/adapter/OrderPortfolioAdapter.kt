@@ -40,6 +40,13 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
+            OrderPortfolioType.SECTION_PORTFOLIO -> SectionViewHolder(
+                AwonarItemSectionBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
             OrderPortfolioType.EMPTY_PORTFOLIO -> EmptyViewHolder(
                 AwonarItemEmptyBinding.inflate(
                     LayoutInflater.from(parent.context),
@@ -178,6 +185,9 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 item as OrderPortfolioItem.ViewAllItem,
                 onViewAllClick
             )
+            is SectionViewHolder -> holder.bind(
+                item as OrderPortfolioItem.SectionItem
+            )
         }
     }
 
@@ -207,7 +217,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private fun sortCopier(
         item: OrderPortfolioItem.CopierPortfolioItem,
-        column: String?
+        column: String?,
     ): Float = when (column) {
         "Invested" -> item.invested
         "P/L($)" -> item.profitLoss
@@ -223,7 +233,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private fun sortPosition(
         item: OrderPortfolioItem.InstrumentPortfolioItem,
-        column: String?
+        column: String?,
     ): Float = when (column) {
         "Invested" -> item.invested
         "Units" -> item.units
@@ -248,7 +258,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     class OrderPortfolioDiffCallback(
         private val oldItems: Array<Quote>?,
-        private val newItems: Array<Quote>?
+        private val newItems: Array<Quote>?,
     ) : DiffUtil.Callback() {
 
         override fun getOldListSize(): Int = oldItems?.size ?: 0

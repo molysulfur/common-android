@@ -144,6 +144,7 @@
         <entry key="app/src/main/res/layout/awonar_item_question_radio.xml" value="0.37222222222222223" />
         <entry key="app/src/main/res/layout/awonar_item_question_radio_group.xml" value="0.20625" />
         <entry key="app/src/main/res/layout/awonar_item_recycler.xml" value="0.17429193899782136" />
+        <entry key="app/src/main/res/layout/awonar_item_section.xml" value="0.2682291666666667" />
         <entry key="app/src/main/res/layout/awonar_item_selector_with_other_choice.xml" value="0.11354166666666667" />
         <entry key="app/src/main/res/layout/awonar_item_title.xml" value="0.20625" />
         <entry key="app/src/main/res/layout/awonar_skeleton_item.xml" value="0.2682291666666667" />

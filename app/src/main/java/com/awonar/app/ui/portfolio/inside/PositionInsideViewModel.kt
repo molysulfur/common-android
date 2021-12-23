@@ -8,6 +8,7 @@ import com.awonar.android.model.portfolio.UserPortfolioResponse
 import com.awonar.app.domain.portfolio.ConvertGroupPositionToItemUseCase
 import com.awonar.app.domain.portfolio.ConvertPositionToItemUseCase
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
+import com.awonar.app.utils.DateUtils
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -22,7 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PositionInsideViewModel @Inject constructor(
     private val convertPositionToItemUseCase: ConvertPositionToItemUseCase,
-    private val convertPositionGroupPositionToItemUseCase: ConvertGroupPositionToItemUseCase
+    private val convertPositionGroupPositionToItemUseCase: ConvertGroupPositionToItemUseCase,
 ) : ViewModel() {
 
     private val _editDialog = Channel<Position?>(capacity = Channel.CONFLATED)
@@ -60,9 +61,12 @@ class PositionInsideViewModel @Inject constructor(
             val positionList: List<Position> = copies?.positions ?: emptyList()
             ?: emptyList()
             if (copies != null) {
-                val items = convertPositionGroupPositionToItemUseCase(positionList).successOr(emptyList())
+                val items =
+                    convertPositionGroupPositionToItemUseCase(positionList).successOr(emptyList())
+                        .toMutableList()
+                items.add(0, OrderPortfolioItem.SectionItem("Start Copy ${DateUtils.getDate(copies.startedCopyDate)}"))
                 _copiesState.value = copies
-                _positionItems.value = items.toMutableList()
+                _positionItems.value = items
             }
         }
     }
