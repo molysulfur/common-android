@@ -34,7 +34,6 @@ class PositionMarketFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-
         launchAndRepeatWithViewLifecycle {
             viewModel.positionState.collect { position ->
                 position?.let {

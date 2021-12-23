@@ -7,6 +7,7 @@ import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.portfolio.Position
 import com.awonar.app.domain.portfolio.ConvertCopierToItemUseCase
 import com.awonar.app.domain.portfolio.ConvertGroupPositionToItemUseCase
+import com.awonar.app.domain.portfolio.ConvertPositionToCardItemUseCase
 import com.awonar.app.domain.portfolio.ConvertPositionToItemUseCase
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
 import com.awonar.app.ui.portfolio.inside.PortFolioInsideCopierFragmentDirections
@@ -20,6 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PositionViewModel @Inject constructor(
     private val convertPositionToItemUseCase: ConvertPositionToItemUseCase,
+    private val convertPositionToCardItemUseCase: ConvertPositionToCardItemUseCase,
     private val convertPositionGroupPositionToItemUseCase: ConvertGroupPositionToItemUseCase,
     private var convertCopierToItemUseCase: ConvertCopierToItemUseCase,
 ) : ViewModel() {
@@ -69,6 +71,14 @@ class PositionViewModel @Inject constructor(
                 )
             }
 
+        }
+    }
+
+    fun convertCard(positions: List<Position>) {
+        viewModelScope.launch {
+            val positionItemResult =
+                convertPositionToCardItemUseCase(positions).successOr(emptyList())
+            _positionItems.emit(positionItemResult.toMutableList())
         }
     }
 }

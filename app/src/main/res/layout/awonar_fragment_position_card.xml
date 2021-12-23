@@ -9,11 +9,14 @@
 
         <variable
             name="viewModel"
-            type="com.awonar.app.ui.portfolio.PortFolioViewModel" />
+            type="com.awonar.app.ui.portfolio.position.PositionViewModel" />
     </data>
 
     <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/awonar_position_market_recycler"
+        activedColumn="@{columns.activedColumnState}"
+        setPositionAdapter="@{viewModel.positionItems}"
+        viewModel="@{viewModel}"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </layout>

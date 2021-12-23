@@ -24,15 +24,22 @@ class PositionManualFragment : Fragment() {
         AwonarFragmentPositionManualBinding.inflate(layoutInflater)
     }
 
-    private val viewModel: PortFolioViewModel by activityViewModels()
+    private val portfolioViewModel: PortFolioViewModel by activityViewModels()
+    private val viewModel: PositionViewModel by activityViewModels()
     private val columns: ColumnsViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
+        launchAndRepeatWithViewLifecycle {
+            portfolioViewModel.positionState.collect {
+                viewModel.convertManual(it?.positions ?: emptyList())
+            }
+        }
         binding.columns = columns
+        binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
@@ -40,7 +47,7 @@ class PositionManualFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getPosition()
+        portfolioViewModel.getPosition()
         setTouchHelper()
     }
 
