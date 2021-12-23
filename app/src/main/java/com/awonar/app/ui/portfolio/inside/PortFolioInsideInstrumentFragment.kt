@@ -57,6 +57,17 @@ class PortFolioInsideInstrumentFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         launchAndRepeatWithViewLifecycle {
+            activityViewModel.editDialog.collect { position ->
+                position?.let {
+                    OrderEditDialog.Builder()
+                        .setPosition(it)
+                        .setKey("inside_instrument")
+                        .build()
+                        .show(childFragmentManager)
+                }
+            }
+        }
+        launchAndRepeatWithViewLifecycle {
             activityViewModel.closeDialog.collect { position ->
                 position?.let {
                     PartialCloseDialog.Builder()
@@ -192,9 +203,7 @@ class PortFolioInsideInstrumentFragment : Fragment() {
         val touchHelperCallback = PortfolioListItemTouchHelperCallback(
             object : IPortfolioListItemTouchHelperCallback {
                 override fun onClick(position: Int) {
-                    if (position >= 0) {
-                        portFolioViewModel.showEditDialog(position)
-                    }
+                    activityViewModel.showEditDialog(position)
                 }
 
                 override fun onClose(position: Int) {

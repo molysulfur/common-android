@@ -47,8 +47,6 @@ class PortFolioViewModel @Inject constructor(
     val navigateInsideInstrumentPortfolio: Flow<Pair<String, String>> =
         _navigateInsideInstrumentPortfolio.receiveAsFlow()
 
-
-
     private val _subscricbeQuote = Channel<List<Int>>(capacity = Channel.CONFLATED)
     val subscricbeQuote: Flow<List<Int>> = _subscricbeQuote.receiveAsFlow()
 
@@ -67,16 +65,6 @@ class PortFolioViewModel @Inject constructor(
 
     private val _copierState = MutableStateFlow<Copier?>(null)
     val copierState: StateFlow<Copier?> get() = _copierState
-
-
-    fun showEditDialog(position: Int) {
-        viewModelScope.launch {
-//            val data = _positionState.value[position]
-//            data.let {
-//                _editDialog.send(it)
-//            }
-        }
-    }
 
     fun getPosition() {
         viewModelScope.launch {
@@ -210,17 +198,6 @@ class PortFolioViewModel @Inject constructor(
                 ).successOr(emptyList())
                 _positionOrderList.emit(items.toMutableList())
             }
-        }
-    }
-
-    fun showCloseDialog(index: Int) {
-        viewModelScope.launch {
-//            if (index < _positionState.value.size) {
-//                val position =
-//                    (_positionOrderList.value[index] as OrderPortfolioItem.InstrumentPortfolioItem).position
-//                Timber.e("$position")
-//                _closeDialog.send(position)
-//            }
         }
     }
 }

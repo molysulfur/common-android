@@ -61,7 +61,6 @@ class PositionManualFragment : Fragment() {
             object : IPortfolioListItemTouchHelperCallback {
                 override fun onClick(position: Int) {
                     if (position >= 0) {
-                        viewModel.showEditDialog(position)
                     }
                 }
 

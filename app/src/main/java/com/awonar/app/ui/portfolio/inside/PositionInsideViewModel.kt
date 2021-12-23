@@ -76,4 +76,16 @@ class PositionInsideViewModel @Inject constructor(
             }
         }
     }
+
+    fun showEditDialog(position: Int) {
+        viewModelScope.launch {
+            val item = _positionItems.value[position]
+            when (item) {
+                is OrderPortfolioItem.InstrumentPortfolioItem -> {
+                    _editDialog.send(item.position)
+                }
+                else -> {}
+            }
+        }
+    }
 }
