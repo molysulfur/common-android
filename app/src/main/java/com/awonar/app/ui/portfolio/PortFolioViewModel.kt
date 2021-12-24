@@ -2,8 +2,11 @@ package com.awonar.app.ui.portfolio
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.awonar.android.model.market.Quote
 import com.awonar.android.model.portfolio.*
+import com.awonar.android.shared.domain.market.GetConversionByInstrumentUseCase
 import com.awonar.android.shared.domain.portfolio.*
+import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.android.shared.utils.WhileViewSubscribed
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
 import com.molysulfur.library.result.Result
@@ -15,7 +18,6 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.awonar.app.domain.portfolio.*
-import timber.log.Timber
 
 @HiltViewModel
 class PortFolioViewModel @Inject constructor(
@@ -23,9 +25,9 @@ class PortFolioViewModel @Inject constructor(
     private var getPositionMarketUseCase: GetPositionMarketUseCase,
     private val getPositionUseCase: GetPositionUseCase,
     private val getCopierUseCase: GetCopierUseCase,
+    private val getConversionByInstrumentUseCase: GetConversionByInstrumentUseCase,
     private val getPendingOrdersUseCase: GetPendingOrdersUseCase,
     private var convertPositionToItemUseCase: ConvertPositionToItemUseCase,
-    private var convertGroupPositionToItemUseCase: ConvertGroupPositionToItemUseCase,
     private var convertPositionWithCopierUseCase: ConvertPositionWithCopierUseCase,
     private var convertPositionToCardItemUseCase: ConvertPositionToCardItemUseCase,
     private var convertCopierToCardItemUseCase: ConvertCopierToCardItemUseCase,
@@ -38,6 +40,11 @@ class PortFolioViewModel @Inject constructor(
     private val getPieChartInstrumentAllocateUseCase: GetPieChartInstrumentAllocateUseCase,
     private val getPieChartInstrumentExposureUseCase: GetPieChartInstrumentExposureUseCase,
 ) : ViewModel() {
+
+    private val _profitState = MutableStateFlow(0f)
+    val profitState: StateFlow<Float> get() = _profitState
+    private val _equityState = MutableStateFlow(0f)
+    val equityState: StateFlow<Float> get() = _equityState
 
     private val _portfolioType = MutableStateFlow("market")
     val portfolioType: StateFlow<String> get() = _portfolioType
@@ -52,7 +59,8 @@ class PortFolioViewModel @Inject constructor(
 
     val portfolioState: StateFlow<Portfolio?> = flow {
         getMyPortFolioUseCase(true).collect {
-            this.emit(it.successOr(null))
+            val data = it.successOr(null)
+            this.emit(data)
         }
     }.stateIn(viewModelScope, WhileViewSubscribed, null)
 
@@ -62,9 +70,6 @@ class PortFolioViewModel @Inject constructor(
 
     private val _positionState = MutableStateFlow<UserPortfolioResponse?>(null)
     val positionState: StateFlow<UserPortfolioResponse?> get() = _positionState
-
-    private val _copierState = MutableStateFlow<Copier?>(null)
-    val copierState: StateFlow<Copier?> get() = _copierState
 
     fun getPosition() {
         viewModelScope.launch {
@@ -112,22 +117,6 @@ class PortFolioViewModel @Inject constructor(
                             )
                         ).successOr(listOf(OrderPortfolioItem.EmptyItem())).toMutableList()
                     )
-//                _positionState.emit(result.data?.positions ?: emptyList())
-            }
-        }
-    }
-
-    fun getCopierPosition(id: String) {
-        viewModelScope.launch {
-            getCopierUseCase(id).collect { result ->
-                if (result is Result.Success)
-                    _positionOrderList.emit(
-                        convertGroupPositionToItemUseCase(
-                            result.data.positions ?: emptyList()
-                        ).successOr(emptyList())
-                            .toMutableList()
-                    )
-                _copierState.emit(result.data)
             }
         }
     }
@@ -198,6 +187,30 @@ class PortFolioViewModel @Inject constructor(
                 ).successOr(emptyList())
                 _positionOrderList.emit(items.toMutableList())
             }
+        }
+    }
+
+    fun sumTotalProfit(portfolio: Portfolio, quotes: MutableMap<Int, Quote>) {
+        viewModelScope.launch {
+            var pl = 0f
+            _positionState.value?.positions?.forEach { position ->
+                quotes[position.instrument.id]?.let { quote ->
+                    val current = PortfolioUtil.getCurrent(position.isBuy, quote)
+                    pl += PortfolioUtil.getProfitOrLoss(current,
+                        position.openRate,
+                        position.units,
+                        getConversionByInstrumentUseCase(position.instrument.id).successOr(0f),
+                        position.isBuy)
+                }
+            }
+            _profitState.value = pl
+        }
+    }
+
+    fun sumTotalEquity(portfolio: Portfolio) {
+        viewModelScope.launch {
+            _equityState.value =
+                portfolio.available.plus(portfolio.totalAllocated).plus(_profitState.value)
         }
     }
 }

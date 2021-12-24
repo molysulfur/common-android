@@ -58,7 +58,6 @@ class PortFolioInsideInstrumentCopierFragment : Fragment() {
         binding.viewModel = activityViewModel
         binding.positionViewModel = positionViewModel
         binding.columnsViewModel = columnsViewModel
-        binding.marketViewModel = marketViewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }

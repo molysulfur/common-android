@@ -8,12 +8,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.awonar.android.model.portfolio.Copier
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentPortfolioInsideCopierBinding
 import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.awonar.app.ui.portfolio.position.PositionViewModel
+import com.awonar.app.utils.ColorChangingUtil
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -41,12 +43,12 @@ class PortFolioInsideCopierFragment : Fragment() {
     ): View {
         launchAndRepeatWithViewLifecycle {
             launch {
-                portFolioViewModel.copierState.collect {
+                insideViewModel.copiesState.collect {
                     marketViewModel.getConversionsRateList(it?.positions ?: emptyList())
                     columnsViewModel.getActivedColumns()
+                    setupFooter(it)
                 }
             }
-
             launch {
                 columnsViewModel.activedColumnState.collect { newColumn ->
                     if (newColumn.isNotEmpty()) {
@@ -72,6 +74,19 @@ class PortFolioInsideCopierFragment : Fragment() {
         columnsViewModel.getActivedColumns()
         insideViewModel.convertCopies(portFolioViewModel.positionState.value, currentIndex)
         setupToolbar()
+    }
+
+    private fun setupFooter(copier: Copier?) {
+        copier?.let {
+            binding.awonarPortfolioInsideCopierTextTotalOpenInvested.text =
+                "Invested: $%.2f".format(it.investAmount)
+            binding.awonarPortfolioInsideCopierTextTotalCloseFee.text =
+                "Fees: $%.2f".format(it.totalFees)
+            binding.awonarPortfolioInsideCopierTextTotalCloseNetprofit.text =
+                "P/L($): $%.2f".format(it.closedPositionsNetProfit)
+            binding.awonarPortfolioInsideCopierTextTotalCloseNetprofit.setTextColor(
+                ColorChangingUtil.getTextColorChange(requireContext(), it.closedPositionsNetProfit))
+        }
     }
 
     private fun setupToolbar() {

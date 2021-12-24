@@ -1,43 +1,25 @@
 package com.awonar.app.ui.portfolio
 
-import android.app.Activity
-import android.content.Intent
-import android.graphics.Canvas
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.NavDirections
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.NavigationUI
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.RecyclerView
-import com.awonar.app.R
+import com.awonar.android.model.portfolio.Portfolio
+import com.awonar.android.shared.steaming.QuoteSteamingManager
 import com.awonar.app.databinding.AwonarFragmentPortfolioBinding
 import com.awonar.app.dialog.menu.MenuDialog
-import com.awonar.app.dialog.menu.MenuDialogButtonSheet
-import com.awonar.app.ui.columns.ColumnsActivedActivity
 import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.market.MarketViewModel
-import com.awonar.app.ui.order.OrderDialog
 import com.awonar.app.ui.order.OrderViewModel
-import com.awonar.app.ui.order.edit.OrderEditDialog
-import com.awonar.app.ui.portfolio.adapter.IPortfolioListItemTouchHelperCallback
-import com.awonar.app.ui.portfolio.adapter.OrderPortfolioAdapter
-import com.awonar.app.ui.portfolio.adapter.PortfolioListItemTouchHelperCallback
 import com.awonar.app.ui.portfolio.position.PositionViewModel
+import com.awonar.app.utils.ColorChangingUtil
 import com.google.android.material.snackbar.Snackbar
-import com.molysulfur.library.extension.openActivityCompatForResult
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class PortFolioFragment : Fragment() {
 
@@ -45,18 +27,14 @@ class PortFolioFragment : Fragment() {
         AwonarFragmentPortfolioBinding.inflate(layoutInflater)
     }
 
+    private var portfolio: Portfolio? = null
+
     private val portViewModel: PortFolioViewModel by activityViewModels()
     private val positionViewModel: PositionViewModel by activityViewModels()
     private val marketViewModel: MarketViewModel by activityViewModels()
     private val columnsViewModel: ColumnsViewModel by activityViewModels()
     private val orderViewModel: OrderViewModel by activityViewModels()
 
-    private val activityResult: ActivityResultLauncher<Intent> =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
-            if (activityResult.resultCode == Activity.RESULT_OK) {
-                columnsViewModel.getActivedColumns()
-            }
-        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -70,6 +48,14 @@ class PortFolioFragment : Fragment() {
             }
         }
         launchAndRepeatWithViewLifecycle {
+            launch {
+                QuoteSteamingManager.quotesState.collect { quotes ->
+                    portfolio?.let {
+                        portViewModel.sumTotalProfit(it, quotes)
+                        portViewModel.sumTotalEquity(it)
+                    }
+                }
+            }
             launch {
                 orderViewModel.orderSuccessState.collect {
                     Snackbar.make(binding.root, "Successfully.", Snackbar.LENGTH_SHORT).show()
@@ -93,11 +79,30 @@ class PortFolioFragment : Fragment() {
                 }
             }
             launch {
+                portViewModel.profitState.collect {
+                    binding.awonarPortfolioTextTitleProfit.setTextColor(ColorChangingUtil.getTextColorChange(
+                        requireContext(),
+                        it))
+                    binding.awonarPortfolioTextTitleProfit.text =
+                        "Profit : \$%.2f".format(it)
+                }
+            }
+            launch {
+                portViewModel.equityState.collect {
+                    binding.awonarPortfolioTextTitleEquity.setTextColor(ColorChangingUtil.getTextColorChange(
+                        requireContext(),
+                        it))
+                    binding.awonarPortfolioTextTitleEquity.text =
+                        "Equity : \$%.2f".format(it)
+                }
+            }
+            launch {
                 portViewModel.portfolioState.collect {
+                    portfolio = it
                     binding.awonarPortfolioTextTitleAvailable.text =
-                        "Available : \$%.2f".format(it?.available ?: 0f)
+                        "Available : \$%.2f".format(portfolio?.available ?: 0f)
                     binding.awonarPortfolioTextTitleTotalAllocate.text =
-                        "Allocate : \$%.2f".format(it?.totalAllocated ?: 0f)
+                        "Allocate : \$%.2f".format(portfolio?.totalAllocated ?: 0f)
                 }
             }
             launch {

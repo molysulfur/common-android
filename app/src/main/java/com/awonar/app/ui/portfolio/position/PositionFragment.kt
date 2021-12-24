@@ -1,9 +1,14 @@
 package com.awonar.app.ui.portfolio.position
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavDirections
@@ -11,9 +16,11 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentPositionBinding
+import com.awonar.app.ui.columns.ColumnsActivedActivity
 import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.portfolio.PortFolioViewModel
+import com.molysulfur.library.extension.openActivityCompatForResult
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 
@@ -29,10 +36,17 @@ class PositionFragment : Fragment() {
     private val marketViewModel: MarketViewModel by activityViewModels()
     private val columnViewModel: ColumnsViewModel by activityViewModels()
 
+    private val activityResult: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
+            if (activityResult.resultCode == Activity.RESULT_OK) {
+                columnViewModel.getActivedColumns()
+            }
+        }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding.columnViewModel = columnViewModel
         binding.market = marketViewModel
@@ -44,6 +58,11 @@ class PositionFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         columnViewModel.setColumnType(positionType)
+        binding.awonarPortfolioImageIconSetting.setOnClickListener {
+            openActivityCompatForResult(activityResult,
+                ColumnsActivedActivity::class.java,
+                bundleOf(ColumnsActivedActivity.EXTRA_COLUMNS_ACTIVED to positionType))
+        }
         binding.awonarPortfolioImageChangeStyle.setOnClickListener {
             navigate()
             positionType = when (positionType) {

@@ -24,16 +24,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
 
-@BindingAdapter("quotes")
-fun updateQuoteList(
-    recycler: RecyclerView,
-    quote: Array<Quote>,
-) {
-    if (recycler.adapter != null) {
-        val adapter = recycler.adapter as OrderPortfolioAdapter
-        adapter.quote = quote
-    }
-}
 
 @BindingAdapter("setTotalInvested")
 fun setTotalInvested(
@@ -45,56 +35,6 @@ fun setTotalInvested(
     }
 }
 
-@BindingAdapter("setTotalProfitLossPercent", "quotes")
-fun setTotalProfitLossPercent(
-    textView: TextView,
-    copier: Copier?,
-    quotes: Array<Quote>,
-) {
-    copier?.let { copier ->
-        var sumFloatingPL = PortfolioUtil.getFloatingPL(copier.positions ?: emptyList(), quotes)
-        textView.text = "P/L(%s): $%.2f".format(
-            "%",
-            copier.closedPositionsNetProfit.plus(sumFloatingPL).div(copier.initialInvestment)
-                .times(100)
-        )
-    }
-}
-
-@BindingAdapter("setTotalProfitLoss", "quotes")
-fun setTotalProfitLoss(
-    textView: TextView,
-    copier: Copier?,
-    quotes: Array<Quote>,
-) {
-    copier?.let { copier ->
-        var sumFloatingPL = PortfolioUtil.getFloatingPL(copier.positions ?: emptyList(), quotes)
-        textView.text = "P/L($): $%.2f".format(copier.closedPositionsNetProfit.plus(sumFloatingPL))
-    }
-}
-
-@SuppressLint("SetTextI18n")
-@BindingAdapter("setTotalOpen", "quotes")
-fun setTotalOpen(
-    textView: TextView,
-    copier: Copier?,
-    quotes: Array<Quote>,
-) {
-    copier?.let {
-        textView.text = "fee : $%.2f pl : $%.2f".format(it.totalFees, it.closedPositionsNetProfit)
-    }
-}
-
-@SuppressLint("SetTextI18n")
-@BindingAdapter("setTotalClose")
-fun setTotalClose(
-    textView: TextView,
-    copier: Copier?,
-) {
-    copier?.let {
-        textView.text = "fee : $%.2f pl : $%.2f".format(it.totalFees, it.closedPositionsNetProfit)
-    }
-}
 
 @BindingAdapter("initCopierCard")
 fun initCopierCard(

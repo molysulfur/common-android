@@ -47,11 +47,11 @@
             android:src="@drawable/awonar_ic_filter"
             android:tint="@color/awonar_color_primary"
             app:layout_constraintBottom_toBottomOf="@+id/awonar_portfolio_text_title_section"
-            app:layout_constraintEnd_toStartOf="@+id/awonar_portfolio_image_icon_list"
+            app:layout_constraintEnd_toStartOf="@+id/awonar_portfolio_image_icon_setting"
             app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_text_title_section" />
 
         <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/awonar_portfolio_image_icon_list"
+            android:id="@+id/awonar_portfolio_image_icon_setting"
             style="@style/Awonar.Button.Icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

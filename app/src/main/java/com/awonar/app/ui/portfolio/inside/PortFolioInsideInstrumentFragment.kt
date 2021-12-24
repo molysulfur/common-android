@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.awonar.android.model.market.Quote
 import com.awonar.android.model.portfolio.Position
 import com.awonar.android.shared.steaming.QuoteSteamingManager
 import com.awonar.android.shared.utils.ConverterQuoteUtil
@@ -26,12 +27,12 @@ import com.awonar.app.ui.order.edit.OrderEditDialog
 import com.awonar.app.ui.order.partialclose.PartialCloseDialog
 import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.awonar.app.ui.portfolio.adapter.IPortfolioListItemTouchHelperCallback
+import com.awonar.app.ui.portfolio.adapter.OrderPortfolioAdapter
 import com.awonar.app.ui.portfolio.adapter.PortfolioListItemTouchHelperCallback
 import com.google.android.material.snackbar.Snackbar
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class PortFolioInsideInstrumentFragment : Fragment() {
 
@@ -111,7 +112,6 @@ class PortFolioInsideInstrumentFragment : Fragment() {
         }
         binding.viewModel = activityViewModel
         binding.columnsViewModel = columnsViewModel
-        binding.marketViewModel = marketViewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
@@ -125,37 +125,54 @@ class PortFolioInsideInstrumentFragment : Fragment() {
                 val position: Position? = activityViewModel.positionState.value
                 val quote = quotes[position?.instrument?.id]
                 quote?.let {
-                    val price = ConverterQuoteUtil.getCurrentPrice(
-                        quote = quote,
-                        leverage = position?.leverage ?: 1,
-                        isBuy = position?.isBuy == true
-                    )
-                    val change = ConverterQuoteUtil.change(it.close, it.previous)
-                    val percent = ConverterQuoteUtil.percentChange(it.previous, it.close)
-                    binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setPrice(price)
-                    binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setChange(change)
-                    binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setChangePercent(
-                        percent)
-                    binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setStatusText(
-                        quote.status ?: "")
-                    binding.awonarPortfolioButtonBuy.text = "${quote.bid}"
-                    binding.awonarPortfolioButtonSell.text = "${quote.ask}"
-                    position?.let {
-                        val profit = orderViewModel.getProfit(price, position)
-                        val valueInvest = PortfolioUtil.getValue(profit, position.amount)
-                        binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setValueInvested(
-                            valueInvest)
-                        binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setProfitLoss(
-                            profit)
-                    }
+                    setupHeader(quote, position, it)
                 }
-
+                updatePositionItem(quotes)
             }
         }
         activityViewModel.convertPosition(portFolioViewModel.positionState.value, currentIndex)
         setupToolbar()
         setTouchHelper()
         setupListener()
+    }
+
+    private fun updatePositionItem(quotes: MutableMap<Int, Quote>) {
+        val adapter = binding.awonarPortfolioRecyclerContainer.adapter
+        if (adapter != null) {
+            (adapter as OrderPortfolioAdapter).let {
+                it.quote = quotes
+            }
+        }
+    }
+
+    private suspend fun setupHeader(
+        quote: Quote,
+        position: Position?,
+        it: Quote,
+    ) {
+        val price = ConverterQuoteUtil.getCurrentPrice(
+            quote = quote,
+            leverage = position?.leverage ?: 1,
+            isBuy = position?.isBuy == true
+        )
+        val change = ConverterQuoteUtil.change(it.close, it.previous)
+        val percent = ConverterQuoteUtil.percentChange(it.previous, it.close)
+        binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setPrice(price)
+        binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setChange(change)
+        binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setChangePercent(
+            percent)
+        binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setStatusText(
+            quote.status ?: "")
+        binding.awonarPortfolioButtonBuy.text = "${quote.bid}"
+        binding.awonarPortfolioButtonSell.text = "${quote.ask}"
+        position?.let {
+            val profit = orderViewModel.getProfit(price, position)
+            val valueInvest = PortfolioUtil.getValue(profit, position.amount)
+            binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setValueInvested(
+                valueInvest)
+            binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setProfitLoss(
+                profit)
+        }
     }
 
     private fun setupListener() {

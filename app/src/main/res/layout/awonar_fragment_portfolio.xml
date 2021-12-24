@@ -76,12 +76,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Equity"
-                    app:layout_constraintEnd_toEndOf="@+id/awonar_portfolio_text_title_profilt"
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_portfolio_text_title_profit"
                     app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_text_title_total_allocate"
                     tools:text="@string/awonar_example_name" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/awonar_portfolio_text_title_profilt"
+                    android:id="@+id/awonar_portfolio_text_title_profit"
                     style="@style/Awonar.Text.Default.Normal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -5,7 +5,6 @@ import com.awonar.android.model.market.Quote
 import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.app.databinding.AwonarItemInstrumentOrderBinding
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
-import timber.log.Timber
 
 class CopyTradePortfolioViewHolder constructor(
     private val binding: AwonarItemInstrumentOrderBinding,
@@ -14,12 +13,12 @@ class CopyTradePortfolioViewHolder constructor(
     fun bind(
         item: OrderPortfolioItem.CopierPortfolioItem,
         columns: List<String>,
-        quotes: Array<Quote>,
+        quotes: MutableMap<Int, Quote>,
         onClick: ((Int, String) -> Unit)?
     ) {
         val sumFloatingPL = 0f
         item.copier.positions?.forEach { position ->
-            val quote = quotes.find { it.id == position.instrumentId }
+            val quote = quotes[position.instrumentId]
             quote?.let {
                 val current = if (position.isBuy) it.bid else it.ask
                 val pl = PortfolioUtil.getProfitOrLoss(

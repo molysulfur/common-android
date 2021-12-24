@@ -26,7 +26,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             notifyDataSetChanged()
         }
 
-    var quote: Array<Quote> = emptyArray()
+    var quote: MutableMap<Int, Quote> = mutableMapOf()
         set(value) {
             val oldList = field
             field = value
@@ -141,7 +141,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is InstrumentPortfolioViewHolder -> holder.bind(
                 item as OrderPortfolioItem.InstrumentPortfolioItem,
                 columns,
-                quote,
+                quote[item.position.instrument.id],
                 onClick
             )
             is CopyTradePortfolioViewHolder -> holder.bind(
@@ -152,11 +152,10 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             )
             is InstrumentPositionCardViewHolder -> holder.bind(
                 item as OrderPortfolioItem.InstrumentPositionCardItem,
-                quote
+                quote[item.position.instrument.id],
             )
             is CopierPositionViewHolder -> holder.bind(
                 item as OrderPortfolioItem.CopierPositionCardItem,
-                quote
             )
             is ListItemViewHolder -> holder.bind(
                 item as OrderPortfolioItem.ListItem
@@ -178,7 +177,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is OrderPortfolioViewHolder -> holder.bind(
                 item as OrderPortfolioItem.InstrumentOrderItem,
                 columns,
-                quote,
+                quote[item.position.instrument.id],
                 onClick
             )
             is ViewAllViewHolder -> holder.bind(
@@ -257,8 +256,8 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     class OrderPortfolioDiffCallback(
-        private val oldItems: Array<Quote>?,
-        private val newItems: Array<Quote>?,
+        private val oldItems: MutableMap<Int, Quote>?,
+        private val newItems: MutableMap<Int, Quote>?,
     ) : DiffUtil.Callback() {
 
         override fun getOldListSize(): Int = oldItems?.size ?: 0
@@ -266,11 +265,11 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         override fun getNewListSize(): Int = newItems?.size ?: 0
 
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldItems?.getOrNull(oldItemPosition) === newItems?.getOrNull(newItemPosition)
+            return oldItems?.get(oldItemPosition) === newItems?.get(newItemPosition)
         }
 
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldItems?.getOrNull(oldItemPosition) == newItems?.getOrNull(newItemPosition)
+            return oldItems?.get(oldItemPosition) == newItems?.get(newItemPosition)
         }
     }
 
