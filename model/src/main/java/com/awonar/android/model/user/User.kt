@@ -27,6 +27,8 @@ data class User(
     var websiteLink: String?,
     var isDisplayFullName: Boolean,
     var isPrivate: Boolean,
+    var address: String?,
+    var createdAt : String?
 ) : Parcelable {
 
     companion object {

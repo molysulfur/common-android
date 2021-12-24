@@ -10,11 +10,13 @@
 
     <androidx.appcompat.widget.AppCompatTextView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
+        style="@style/Awonar.Text.Bold.Normal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/awonar_color_light_gray"
-        android:padding="@dimen/awonar_size_margin_padding_small"
+        android:paddingTop="@dimen/awonar_size_margin_padding_small"
+        android:paddingBottom="@dimen/awonar_size_margin_padding_small"
         android:text="@{text}"
+        android:textColor="@color/awonar_color_gray"
         tools:text="@string/awonar_example_name" />
 
 </layout>

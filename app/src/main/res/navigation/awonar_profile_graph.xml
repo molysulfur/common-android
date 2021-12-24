@@ -2,11 +2,15 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/awonar_profile_graph"
-    app:startDestination="@id/profilePrivateFragment">
+    app:startDestination="@id/userInfoFragment">
 
 
     <fragment
         android:id="@+id/profilePrivateFragment"
         android:name="com.awonar.app.ui.profile.ProfilePrivateFragment"
         android:label="ProfilePrivateFragment" />
+    <fragment
+        android:id="@+id/userInfoFragment"
+        android:name="com.awonar.app.ui.user.UserInfoFragment"
+        android:label="UserInfoFragment" />
 </navigation>
