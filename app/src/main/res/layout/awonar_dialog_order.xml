@@ -13,9 +13,6 @@
             name="viewModel"
             type="com.awonar.app.ui.order.OrderViewModel" />
 
-        <variable
-            name="activityViewModel"
-            type="com.awonar.app.ui.order.OrderViewModelActivity" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -183,8 +180,6 @@
 
             <com.awonar.app.widget.NumberPickerEditText
                 android:id="@+id/awonar_dialog_order_number_picker_input_rate"
-                setRate="@{activityViewModel.rateState}"
-                visibleHint="@{activityViewModel.marketOrderTypeState}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/awonar_size_margin_padding_normal"
@@ -237,7 +232,6 @@
 
             <com.awonar.app.widget.NumberPickerEditText
                 android:id="@+id/awonar_dialog_order_number_picker_input_amount"
-                setAmount="@{activityViewModel.amountState}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/awonar_size_margin_padding_normal"
@@ -275,9 +269,6 @@
 
             <com.awonar.app.widget.NumberPickerCollapsibleView
                 android:id="@+id/awonar_dialog_order_view_numberpicker_collapsible_sl"
-                setDigit="@{digit}"
-                setHideNoSet="@{activityViewModel.leverageState}"
-                setNumberPickerCollapsibleView="@{activityViewModel.stopLossState}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -297,9 +288,6 @@
 
             <com.awonar.app.widget.NumberPickerCollapsibleView
                 android:id="@+id/awonar_dialog_order_view_numberpicker_collapsible_tp"
-                setDigit="@{digit}"
-                setHideNoSet="@{activityViewModel.leverageState}"
-                setNumberPickerCollapsibleView="@{activityViewModel.takeProfit}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -322,7 +310,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="@{activityViewModel.detailState}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_order_button_open_trade"
@@ -331,8 +318,6 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/awonar_dialog_order_text_order_overnight"
                 style="@style/Awonar.Text.Bold.Normal"
-                setOvernightDaily="@{activityViewModel.overNightFeeState}"
-                setOvernightWeek="@{activityViewModel.overNightFeeWeekState}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/awonar_size_margin_padding_large"

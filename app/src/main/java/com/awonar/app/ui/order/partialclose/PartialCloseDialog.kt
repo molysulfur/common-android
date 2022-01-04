@@ -162,10 +162,10 @@ class PartialCloseDialog :
                     val current = getCurrentPrice()
                     when (binding.awonarPartialCloseButtonGroupType.checkedButtonId) {
                         R.id.awonar_partial_close_button_amount -> {
-                            viewModel.updateAmount(it.instrument.id, number, it.leverage, current)
+                            viewModel.updateAmount(it.instrument.id, number, current)
                         }
                         R.id.awonar_partial_close_button_units -> {
-                            viewModel.updateUnits(it.instrument.id, number, it.leverage, current)
+                            viewModel.updateUnits(it.instrument.id, number, current)
                         }
                     }
 

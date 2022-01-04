@@ -29,20 +29,6 @@ fun setVisibleRateHint(view: NumberPickerEditText, type: MarketOrderType) {
     }
 }
 
-@BindingAdapter("setAmount")
-fun setAmount(view: NumberPickerEditText, amount: Price) {
-    when (amount.type) {
-        "amount" -> {
-            view.setPrefix("$")
-            view.setNumber(amount.amount)
-        }
-        "unit" -> {
-            view.setPrefix("")
-            view.setNumber(amount.unit)
-        }
-    }
-}
-
 @BindingAdapter("setNumberPickerCollapsibleView", "setDigit")
 fun setNumberPickerCollapsibleView(
     view: NumberPickerCollapsibleView,

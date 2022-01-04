@@ -67,7 +67,9 @@ fun setAdapter(
     items.add(UserInfoItem.SubTitleItem("Country"))
     items.add(UserInfoItem.TextItem(userInfo?.address ?: ""))
     items.add(UserInfoItem.SubTitleItem("Join on"))
-    items.add(UserInfoItem.TextItem(DateUtils.getDate(userInfo?.createdAt ?: "")))
+    userInfo?.createdAt?.let{
+        items.add(UserInfoItem.TextItem(DateUtils.getDate(it)))
+    }
     items.add(UserInfoItem.SubTitleItem("Investment Skill"))
     items.add(UserInfoItem.TextItem(userInfo?.skill ?: ""))
     (recyclerView.adapter as UserInfoAdapter).apply {
