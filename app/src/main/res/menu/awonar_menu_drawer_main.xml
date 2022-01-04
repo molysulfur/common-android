@@ -23,7 +23,7 @@
             android:title="Market" />
 
         <item
-            android:id="@+id/awonar_menu_drawer_main_social"
+            android:id="@+id/socialTradeFragment"
             android:icon="@drawable/awonar_ic_social"
             android:title="Social Trade" />
 

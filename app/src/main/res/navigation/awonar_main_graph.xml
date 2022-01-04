@@ -6,6 +6,12 @@
     app:startDestination="@+id/watchListFragment">
 
     <fragment
+        android:id="@+id/socialTradeFragment"
+        android:name="com.awonar.app.ui.socialtrade.SocialTradeFragment"
+        android:label="SocialTradeFragment"
+        tools:layout="@layout/awonar_fragment_social_trade" />
+
+    <fragment
         android:id="@+id/watchListFragment"
         android:name="com.awonar.app.ui.watchlist.WatchListFragment"
         android:label="WatchListFragment"

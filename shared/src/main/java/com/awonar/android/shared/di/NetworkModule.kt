@@ -76,4 +76,10 @@ class NetworkModule {
     fun providePaymentService(client: NetworkClient): PaymentService {
         return PaymentService.create(client)
     }
+
+    @Singleton
+    @Provides
+    fun provideSocialTradeService(client: NetworkClient): SocialTradeService {
+        return SocialTradeService.create(client)
+    }
 }

@@ -172,10 +172,8 @@ class CopierPositionCardView : BaseViewGroup {
         ss?.imageRes = imageRes
         ss?.title = title
         ss?.titleRes = titleRes
-
         ss?.description = description
         ss?.descriptionRes = descriptionRes
-
         ss?.invested = invested
         ss?.valueInvest = valueInvest
         ss?.units = units
