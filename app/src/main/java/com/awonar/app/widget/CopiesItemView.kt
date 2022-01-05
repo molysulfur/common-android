@@ -8,13 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import com.awonar.app.databinding.AwonarWidgetCopiesCardViewBinding
+import com.awonar.app.databinding.AwonarWidgetCopiesItemBinding
 import com.awonar.app.utils.ImageUtil
 import com.molysulfur.library.widget.BaseViewGroup
 
-class CopiesCardView : BaseViewGroup {
+class CopiesItemView : BaseViewGroup {
 
-    private lateinit var binding: AwonarWidgetCopiesCardViewBinding
+    private lateinit var binding: AwonarWidgetCopiesItemBinding
 
     var gainColor: Int = 0
         set(value) {
@@ -25,7 +25,7 @@ class CopiesCardView : BaseViewGroup {
         }
 
     private fun updateGainColor() {
-        binding.awonarCopiesCardTextChange.setTextColor(ContextCompat.getColor(context, gainColor))
+        binding.awonarCopiesItemTextGain.setTextColor(ContextCompat.getColor(context, gainColor))
     }
 
     var image: String? = null
@@ -48,8 +48,8 @@ class CopiesCardView : BaseViewGroup {
 
     private fun updateImage() {
         when {
-            image != null -> ImageUtil.loadImage(binding.awonarCopiesCardImageAvatar, image)
-            imageRes > 0 -> binding.awonarCopiesCardImageAvatar.setImageDrawable(
+            image != null -> ImageUtil.loadImage(binding.awonarCopiesItemImageAvatar, image)
+            imageRes > 0 -> binding.awonarCopiesItemImageAvatar.setImageDrawable(
                 ContextCompat.getDrawable(
                     context,
                     imageRes
@@ -108,39 +108,14 @@ class CopiesCardView : BaseViewGroup {
         }
     }
 
-    var description: String? = null
-        set(value) {
-            if (value != null) {
-                field = value
-                descriptionRes = 0
-                updateDescription()
-            }
-        }
-
-    var descriptionRes: Int = 0
-        set(value) {
-            if (value > 0) {
-                field = value
-                description = null
-                updateDescription()
-            }
-        }
-
-    private fun updateDescription() {
-        when {
-            description != null -> binding.description = description
-            descriptionRes > 0 -> binding.description = context.getString(descriptionRes)
-        }
-    }
-
-    var change: Float = 0f
+    var gain: Float = 0f
         set(value) {
             field = value
             updateChange()
         }
 
     private fun updateChange() {
-        binding.change = "%.2f%s".format(change, "%")
+        binding.gain = "%.2f%s".format(gain, "%")
     }
 
     var risk: Int = 0
@@ -158,7 +133,7 @@ class CopiesCardView : BaseViewGroup {
     }
 
     override fun getLayoutResource(): View {
-        binding = AwonarWidgetCopiesCardViewBinding.inflate(LayoutInflater.from(context))
+        binding = AwonarWidgetCopiesItemBinding.inflate(LayoutInflater.from(context))
         return binding.root
     }
 

@@ -1,6 +1,7 @@
 package com.awonar.android.shared.domain.socialtrade
 
 import com.awonar.android.model.socialtrade.Trader
+import com.awonar.android.model.socialtrade.TradersRequest
 import com.awonar.android.shared.di.IoDispatcher
 import com.awonar.android.shared.repos.SocialTradeRepository
 import com.molysulfur.library.result.Result
@@ -9,11 +10,10 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetRecommendedUseCase @Inject constructor(
+class GetTradersUseCase @Inject constructor(
     private val repository: SocialTradeRepository,
     @IoDispatcher dispatcher: CoroutineDispatcher
-) : FlowUseCase<Unit, List<Trader>?>(dispatcher) {
-    override fun execute(parameters: Unit): Flow<Result<List<Trader>?>> =
-        repository.getRecommended()
-
+) : FlowUseCase<TradersRequest, List<Trader>?>(dispatcher) {
+    override fun execute(parameters: TradersRequest): Flow<Result<List<Trader>?>> =
+        repository.getTraders(parameters)
 }

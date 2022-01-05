@@ -38,7 +38,7 @@ class SocialTradeFragment : Fragment() {
     private val concatAdapter: ConcatAdapter by lazy {
         val config = ConcatAdapter.Config.Builder().apply {
         }.build()
-        ConcatAdapter(config, socialTradeAdapter, horizontalWrapperAdapter)
+        ConcatAdapter(config, horizontalWrapperAdapter, socialTradeAdapter)
     }
 
     override fun onCreateView(
@@ -46,6 +46,11 @@ class SocialTradeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        launchAndRepeatWithViewLifecycle {
+            viewModel.copiesList.collect {
+                socialTradeAdapter.itemList = it
+            }
+        }
         launchAndRepeatWithViewLifecycle {
             viewModel.recommendedState.collect {
                 recommendedAdapter.itemList = it?.toMutableList() ?: mutableListOf()

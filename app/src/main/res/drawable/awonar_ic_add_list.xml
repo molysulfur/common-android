@@ -2,8 +2,10 @@
     android:width="24dp"
     android:height="24dp"
     android:viewportWidth="24"
-    android:viewportHeight="24">
+    android:viewportHeight="24"
+    android:tint="?attr/colorControlNormal"
+    android:autoMirrored="true">
   <path
-      android:fillColor="#FF000000"
-      android:pathData="M13,9L3,9a1,1 0,0 0,0 2L13,11a1,1 0,0 0,0 -2ZM13,5L3,5A1,1 0,0 0,3 7L13,7a1,1 0,0 0,0 -2ZM18,13L18,10a1,1 0,0 0,-2 0v3L13,13a1,1 0,0 0,0 2h3v3a1,1 0,0 0,2 0L18,15h3a1,1 0,0 0,0 -2ZM3,15L9,15a1,1 0,0 0,0 -2L3,13a1,1 0,0 0,0 2Z"/>
+      android:fillColor="@android:color/white"
+      android:pathData="M14,10H3v2h11V10zM14,6H3v2h11V6zM18,14v-4h-2v4h-4v2h4v4h2v-4h4v-2H18zM3,16h7v-2H3V16z"/>
 </vector>

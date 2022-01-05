@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="title"
+            type="String" />
+
+        <variable
+            name="subTitle"
+            type="String" />
+
+        <variable
+            name="risk"
+            type="String" />
+
+        <variable
+            name="gain"
+            type="String" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/awonar_ripple_tranparent"
+        android:padding="@dimen/awonar_size_margin_padding_normal">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/awonar_copies_item_image_avatar"
+            android:layout_width="@dimen/awonar_size_avatar"
+            android:layout_height="@dimen/awonar_size_avatar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/awonar_placeholder_avatar" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_copies_item_text_name"
+            style="@style/Awonar.SubTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
+            android:text="@{title}"
+            app:layout_constraintStart_toEndOf="@+id/awonar_copies_item_image_avatar"
+            app:layout_constraintTop_toTopOf="@+id/awonar_copies_item_image_avatar"
+            tools:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_copies_item_text_subTitle"
+            style="@style/Awonar.Description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/awonar_size_margin_padding_small"
+            android:text="@{subTitle}"
+            app:layout_constraintStart_toStartOf="@+id/awonar_copies_item_text_name"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_copies_item_text_name"
+            tools:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_copies_item_text_gain"
+            style="@style/Awonar.SubTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+            android:text="@{gain}"
+            app:layout_constraintBottom_toBottomOf="@+id/awonar_copies_item_image_add"
+            app:layout_constraintEnd_toStartOf="@+id/awonar_copies_item_image_add"
+            app:layout_constraintTop_toTopOf="@+id/awonar_copies_item_image_add"
+            tools:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/awonar_copies_item_image_add"
+            style="@style/Awonar.Button.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/awonar_ic_add_list"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_copies_item_image_risk"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:paddingEnd="@dimen/awonar_size_margin_padding_large"
+            android:text="@{risk}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/awonar_copies_item_text_gain"
+            app:layout_constraintStart_toEndOf="@+id/awonar_copies_item_text_name"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/awonar_example_name" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

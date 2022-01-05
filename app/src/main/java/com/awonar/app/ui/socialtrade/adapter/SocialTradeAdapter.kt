@@ -3,23 +3,47 @@ package com.awonar.app.ui.socialtrade.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.awonar.app.databinding.AwonarItemCopiesItemBinding
 import com.awonar.app.databinding.AwonarItemTitleBinding
+import com.awonar.app.ui.socialtrade.adapter.holder.CopiesItemViewHolder
 import com.awonar.app.ui.socialtrade.adapter.holder.TitleViewHolder
 
 class SocialTradeAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return TitleViewHolder(
-            AwonarItemTitleBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
+
+    var itemList: MutableList<SocialTradeItem> = mutableListOf()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
+        when (viewType) {
+            SocialTradeType.SOCIALTRADE_TITLE -> TitleViewHolder(
+                AwonarItemTitleBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
             )
-        )
-    }
+            SocialTradeType.SOCIALTRADE_COPIES_ITEM -> CopiesItemViewHolder(
+                AwonarItemCopiesItemBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+            else -> throw Error("View Type is not found!")
+        }
+
+    override fun getItemViewType(position: Int): Int = itemList[position].type
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as TitleViewHolder).bind("Text :$position")
+        val item = itemList[position]
+        when (holder) {
+            is TitleViewHolder -> holder.bind(item as SocialTradeItem.TitleItem)
+            is CopiesItemViewHolder -> holder.bind(item as SocialTradeItem.CopiesItem)
+        }
     }
 
-    override fun getItemCount(): Int = 5
+    override fun getItemCount(): Int = itemList.size
 }

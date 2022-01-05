@@ -32,6 +32,7 @@ import timber.log.Timber
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.NavigationUI.onNavDestinationSelected
 import com.awonar.app.ui.market.MarketViewModel
+import com.awonar.app.utils.ImageUtil
 
 
 @AndroidEntryPoint
@@ -133,6 +134,7 @@ class MainActivity : BaseActivity() {
         headerBinding.awonarDrawerHeaderMainButtonDeposit.setOnClickListener {
             findNavController(R.id.awonar_main_drawer_navigation_host_main).navigate(R.id.depositFragment)
         }
+        ImageUtil.loadImage(headerBinding.awonarDrawerHeaderMainImageAvatar, user?.avatar)
         visibleAccountVerifyType()
     }
 
