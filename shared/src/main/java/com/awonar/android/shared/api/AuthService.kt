@@ -15,22 +15,22 @@ import retrofit2.http.POST
 
 interface AuthService {
 
-    @POST("api/v1/users/login/facebook")
+    @POST("v1/users/login/facebook")
     fun signInWithFacebook(@Body signInRequest: SignInGoogleRequest): Call<Auth?>
 
-    @POST("api/v1/users/login/google")
+    @POST("v1/users/login/google")
     fun signInWithGoogle(@Body signInRequest: SignInGoogleRequest): Call<Auth?>
 
-    @POST("api/v1/users/login/facebook")
+    @POST("v1/users/login/facebook")
     fun signInWithGoogle(@Body signInRequest: SignInFacebookRequest): Call<Auth?>
 
-    @POST("api/v1/users/login/password")
+    @POST("v1/users/login/password")
     fun signInWithPassword(@Body signInRequest: SignInRequest): Call<Auth?>
 
-    @POST("api/v1/users/token")
+    @POST("v1/users/token")
     fun getRefreshToken(@Body auth: Auth): Call<Auth?>
 
-    @POST("api/v1/users/logout")
+    @POST("v1/users/logout")
     fun signOut(): Call<SignOutResponse?>
 
     companion object {

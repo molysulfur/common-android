@@ -14,19 +14,22 @@ class CopiesCardView : BaseViewGroup {
 
     private lateinit var binding: AwonarWidgetCopiesCardViewBinding
 
-
     var title: String? = null
         set(value) {
-            titleRes = 0
-            field = value
-            updateTitle()
+            if(value != null) {
+                field = value
+                titleRes = 0
+                updateTitle()
+            }
         }
 
     var titleRes: Int = 0
         set(value) {
-            title = null
-            field = value
-            updateTitle()
+            if(value > 0) {
+                field = value
+                title = null
+                updateTitle()
+            }
         }
 
     private fun updateTitle() {
@@ -38,16 +41,20 @@ class CopiesCardView : BaseViewGroup {
 
     var subTitle: String? = null
         set(value) {
-            subTitleRes = 0
-            field = value
-            updateSubTitle()
+            if(value != null) {
+                subTitleRes = 0
+                field = value
+                updateSubTitle()
+            }
         }
 
     var subTitleRes: Int = 0
         set(value) {
-            subTitle = null
-            field = value
-            updateSubTitle()
+            if(value > 0) {
+                field = value
+                subTitle = null
+                updateSubTitle()
+            }
         }
 
     private fun updateSubTitle() {
@@ -59,16 +66,20 @@ class CopiesCardView : BaseViewGroup {
 
     var description: String? = null
         set(value) {
-            descriptionRes = 0
-            field = value
-            updateDescription()
+            if(value != null) {
+                field = value
+                descriptionRes = 0
+                updateDescription()
+            }
         }
 
     var descriptionRes: Int = 0
         set(value) {
-            description = null
-            field = value
-            updateDescription()
+            if(value > 0) {
+                field = value
+                description = null
+                updateDescription()
+            }
         }
 
     private fun updateDescription() {

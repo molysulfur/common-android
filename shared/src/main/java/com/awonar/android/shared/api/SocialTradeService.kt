@@ -9,7 +9,7 @@ import retrofit2.http.GET
 
 interface SocialTradeService {
 
-    @GET("api/v1/users/recommend/traders")
+    @GET("v1/users/recommend/traders")
     fun getRecommended(): Call<CopierRecommendedResponse>
 
     companion object {

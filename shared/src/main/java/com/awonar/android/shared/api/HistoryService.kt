@@ -11,21 +11,21 @@ import retrofit2.http.Query
 
 interface HistoryService {
 
-    @GET("/api/v1/history/copy/id/{id}")
+    @GET("v1/history/copy/id/{id}")
     fun getAggregateWithCopy(@Path("id") id: String): Call<CopiesHistory>
 
-    @GET("/api/v1/history/cash-flow")
+    @GET("v1/history/cash-flow")
     fun getCashFlow(
         @Query("startDate") startDate: Long,
     ): Call<List<HistoryCashFlowResponse>>
 
-    @GET("/api/v1/history/copy/{username}")
+    @GET("v1/history/copy/{username}")
     fun getCopiesHistory(
         @Path("username") username: String, @Query("page") page: Int = 1,
         @Query("startDate") startDate: Long,
     ): Call<CopiesAggregateResponse?>
 
-    @GET("/api/v1/history")
+    @GET("v1/history")
     fun getHistory(
         @Query("limit") limit: Int = 10,
         @Query("page") page: Int = 1,
@@ -33,7 +33,7 @@ interface HistoryService {
         @Query("startDate") startDate: Long,
     ): Call<HistoryResponse>
 
-    @GET("/api/v1/history")
+    @GET("v1/history")
     fun filterHistory(
         @Query("symbol") symbol: String,
         @Query("limit") limit: Int = 10,
@@ -42,7 +42,7 @@ interface HistoryService {
         @Query("startDate") startDate: Long,
     ): Call<HistoryResponse>
 
-    @GET("/api/v1/history")
+    @GET("v1/history")
     fun filterCopyHistory(
         @Query("copyId") copyId: String,
         @Query("limit") limit: Int = 10,
@@ -51,14 +51,14 @@ interface HistoryService {
         @Query("startDate") startDate: Long,
     ): Call<HistoryResponse>
 
-    @GET("/api/v1/history/markets")
+    @GET("v1/history/markets")
     fun getMarketHistory(
         @Query("limit") limit: Int = 10,
         @Query("page") page: Int = 1,
         @Query("startDate") startDate: Long,
     ): Call<MarketHistoryResponse>
 
-    @GET("/api/v1/history/markets")
+    @GET("v1/history/markets")
     fun filterMarketHistory(
         @Query("symbol") symbol: String,
         @Query("limit") limit: Int = 10,
@@ -67,7 +67,7 @@ interface HistoryService {
         @Query("startDate") startDate: Long,
     ): Call<MarketHistoryResponse>
 
-    @GET("/api/v1/history/aggregate")
+    @GET("v1/history/aggregate")
     fun getAggregate(@Query("startDate") startDate: Long): Call<Aggregate>
 
     companion object {

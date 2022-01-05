@@ -11,10 +11,10 @@ import retrofit2.http.Path
 
 interface CurrenciesService {
 
-    @GET("/api/v1/currencies/{currency}")
+    @GET("v1/currencies/{currency}")
     fun getCurrencyRate(@Path("currency") currency: String): Call<Currency>
 
-    @GET("/api/v1/conversions/usd-rate")
+    @GET("v1/conversions/usd-rate")
     fun getConversionRate(): Call<List<Conversion>>
 
     companion object {

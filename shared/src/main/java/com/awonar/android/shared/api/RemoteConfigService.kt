@@ -10,10 +10,10 @@ import retrofit2.http.GET
 
 interface RemoteConfigService {
 
-    @GET("api/v1/countries")
+    @GET("v1/countries")
     fun countries(): Call<List<Country>>
 
-    @GET("api/v1/bank")
+    @GET("v1/bank")
     fun banks(): Call<List<Bank>>
 
 

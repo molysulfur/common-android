@@ -11,19 +11,19 @@ import retrofit2.http.*
 
 interface OrderService {
 
-    @POST("api/v1/exit-orders")
+    @POST("v1/exit-orders")
     fun exitOrder(@Body request: ExitOrderRequest): Call<ExitOrder>
 
-    @POST("api/v1/exit-orders")
+    @POST("v1/exit-orders")
     fun exitOrder(@Body request: ExitOrderPartialRequest): Call<ExitOrder>
 
-    @POST("api/v1/orders")
+    @POST("v1/orders")
     fun openOrder(@Body request: OpenOrderRequest): Call<OpenOrderResponse>
 
-    @PUT("api/v1/positions/{id}")
+    @PUT("v1/positions/{id}")
     fun edit(@Path("id") id: String, @Body request: UpdateOrderRequest): Call<Position>
 
-    @DELETE("api/v1/positions/{id}")
+    @DELETE("v1/positions/{id}")
     fun delete(@Path("id") id: String): Call<Any>
 
     companion object {
