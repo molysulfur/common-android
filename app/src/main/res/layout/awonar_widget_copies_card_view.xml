@@ -34,6 +34,7 @@
             android:id="@+id/awonar_copies_card_image_avatar"
             android:layout_width="144dp"
             android:layout_height="144dp"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -66,7 +67,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/awonar_copies_card_text_change"
-            style="@style/Awonar.SubTitle"
+            style="@style/Awonar.Text.Bold.ExtraLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
@@ -78,7 +79,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/awonar_copies_card_text_description"
-            style="@style/Awonar.SubTitle"
+            style="@style/Awonar.Description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
@@ -89,15 +90,14 @@
             tools:text="@string/awonar_example_name" />
 
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/awonar_copies_card_text_risk"
-            style="@style/Awonar.SubTitle"
-            android:text="@{risk}"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/awonar_copies_card_image_risk"
+            android:layout_width="@dimen/awonar_size_icon"
+            android:layout_height="@dimen/awonar_size_icon"
+            android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="@+id/awonar_copies_card_text_title"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/awonar_copies_card_text_title"
             app:layout_constraintTop_toTopOf="@+id/awonar_copies_card_text_title"
             tools:text="@string/awonar_example_name" />
 

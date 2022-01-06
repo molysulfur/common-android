@@ -14,10 +14,6 @@
             type="String" />
 
         <variable
-            name="risk"
-            type="String" />
-
-        <variable
             name="gain"
             type="String" />
 
@@ -41,10 +37,11 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/awonar_copies_item_text_name"
             style="@style/Awonar.SubTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
             android:text="@{title}"
+            app:layout_constraintEnd_toStartOf="@+id/awonar_copies_item_image_risk"
             app:layout_constraintStart_toEndOf="@+id/awonar_copies_item_image_avatar"
             app:layout_constraintTop_toTopOf="@+id/awonar_copies_item_image_avatar"
             tools:text="@string/awonar_example_name" />
@@ -52,10 +49,11 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/awonar_copies_item_text_subTitle"
             style="@style/Awonar.Description"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/awonar_size_margin_padding_small"
             android:text="@{subTitle}"
+            app:layout_constraintEnd_toStartOf="@+id/awonar_copies_item_image_risk"
             app:layout_constraintStart_toStartOf="@+id/awonar_copies_item_text_name"
             app:layout_constraintTop_toBottomOf="@+id/awonar_copies_item_text_name"
             tools:text="@string/awonar_example_name" />
@@ -63,12 +61,14 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/awonar_copies_item_text_gain"
             style="@style/Awonar.SubTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+            android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+            android:gravity="end"
             android:text="@{gain}"
             app:layout_constraintBottom_toBottomOf="@+id/awonar_copies_item_image_add"
             app:layout_constraintEnd_toStartOf="@+id/awonar_copies_item_image_add"
+            app:layout_constraintStart_toEndOf="@+id/awonar_copies_item_image_risk"
             app:layout_constraintTop_toTopOf="@+id/awonar_copies_item_image_add"
             tools:text="@string/awonar_example_name" />
 
@@ -82,18 +82,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/awonar_copies_item_image_risk"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:paddingEnd="@dimen/awonar_size_margin_padding_large"
-            android:text="@{risk}"
+            android:layout_width="@dimen/awonar_size_icon"
+            android:layout_height="@dimen/awonar_size_icon"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/awonar_copies_item_text_gain"
-            app:layout_constraintStart_toEndOf="@+id/awonar_copies_item_text_name"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="@string/awonar_example_name" />
+            app:layout_constraintEnd_toStartOf="@+id/awonar_copies_item_image_add"
+            app:layout_constraintStart_toEndOf="@+id/awonar_copies_item_image_avatar"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

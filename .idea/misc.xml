@@ -154,6 +154,7 @@
         <entry key="app/src/main/res/layout/awonar_item_section.xml" value="0.2682291666666667" />
         <entry key="app/src/main/res/layout/awonar_item_selector_with_other_choice.xml" value="0.11354166666666667" />
         <entry key="app/src/main/res/layout/awonar_item_title.xml" value="0.20625" />
+        <entry key="app/src/main/res/layout/awonar_item_title_viewmore.xml" value="0.43703703703703706" />
         <entry key="app/src/main/res/layout/awonar_skeleton_item.xml" value="0.2682291666666667" />
         <entry key="app/src/main/res/layout/awonar_widget_card_view_instrument.xml" value="0.14322916666666666" />
         <entry key="app/src/main/res/layout/awonar_widget_cashflow_collaspsible.xml" value="0.16702819956616052" />

@@ -17,6 +17,7 @@ sealed class SocialTradeItem(
 
     @Parcelize
     class CopiesItem(
+        val userId :String?,
         val image: String?,
         val title: String?,
         val subTitle: String?,

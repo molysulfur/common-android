@@ -14,9 +14,11 @@ import com.awonar.android.shared.domain.user.UpdateAboutMeUseCase
 import com.awonar.android.shared.utils.WhileViewSubscribed
 import com.molysulfur.library.result.data
 import com.molysulfur.library.result.succeeded
+import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,9 +40,7 @@ class UserViewModel @Inject constructor(
     fun getUser(needFresh: Boolean) {
         viewModelScope.launch {
             getUserUseCase(UserRequest(needFresh = needFresh)).collect {
-                if (it.succeeded) {
-                    _userState.value = it.data
-                }
+                _userState.value = it.successOr(null)
             }
         }
     }
@@ -49,9 +49,7 @@ class UserViewModel @Inject constructor(
     fun getUser(userId: String) {
         viewModelScope.launch {
             getUserProfileUseCase(UserRequest(userId = userId)).collect {
-                if (it.succeeded) {
-                    _userState.value = it.data
-                }
+                _userState.value = it.successOr(null)
             }
         }
     }

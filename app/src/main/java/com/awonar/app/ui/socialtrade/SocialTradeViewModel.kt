@@ -82,8 +82,13 @@ class SocialTradeViewModel @Inject constructor(
             mostCopies?.forEach { trader ->
                 itemList.add(
                     SocialTradeItem.CopiesItem(
+                        trader.id,
                         trader.image,
-                        trader.username,
+                        title = if (trader.displayFullName) {
+                            "${trader.firstName} ${trader.middleName} ${trader.lastName}"
+                        } else {
+                            trader.username
+                        },
                         trader.username,
                         false,
                         trader.gain,
@@ -95,8 +100,13 @@ class SocialTradeViewModel @Inject constructor(
             lowRisks?.forEach { trader ->
                 itemList.add(
                     SocialTradeItem.CopiesItem(
+                        trader.id,
                         trader.image,
-                        trader.username,
+                        title = if (trader.displayFullName) {
+                            "${trader.firstName} ${trader.middleName} ${trader.lastName}"
+                        } else {
+                            trader.username
+                        },
                         trader.username,
                         false,
                         trader.gain,
@@ -108,8 +118,13 @@ class SocialTradeViewModel @Inject constructor(
             longTerm?.forEach { trader ->
                 itemList.add(
                     SocialTradeItem.CopiesItem(
+                        trader.id,
                         trader.image,
-                        trader.username,
+                        title = if (trader.displayFullName) {
+                            "${trader.firstName} ${trader.middleName} ${trader.lastName}"
+                        } else {
+                            trader.username
+                        },
                         trader.username,
                         false,
                         trader.gain,
@@ -121,6 +136,7 @@ class SocialTradeViewModel @Inject constructor(
             shortTerm?.forEach { trader ->
                 itemList.add(
                     SocialTradeItem.CopiesItem(
+                        trader.id,
                         trader.image,
                         title = if (trader.displayFullName) {
                             "${trader.firstName} ${trader.middleName} ${trader.lastName}"

@@ -7,17 +7,17 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import coil.load
 import coil.transform.CircleCropTransformation
 import com.awonar.android.model.user.User
-import com.awonar.android.shared.constrant.BuildConfig.BASE_IMAGE_URL
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarActivityProfileBinding
 import com.awonar.app.ui.user.UserViewModel
+import com.awonar.app.utils.ImageUtil
 import com.molysulfur.library.activity.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class ProfileActivity : BaseActivity() {
@@ -52,17 +52,27 @@ class ProfileActivity : BaseActivity() {
                     if (userInfo != null) {
                         user = userInfo
                         updateUser()
+                        updateEditVisible()
                     }
                 }
             }
         }
     }
 
+    private fun updateEditVisible() {
+        if (user?.isMe == true) {
+            binding.awonarProfileButtonEditProfile.visibility = View.VISIBLE
+            binding.awonarProfileGroupOptions.visibility = View.GONE
+        } else {
+            binding.awonarProfileButtonEditProfile.visibility = View.GONE
+            binding.awonarProfileGroupOptions.visibility = View.VISIBLE
+        }
+    }
+
     @SuppressLint("SetTextI18n")
     private fun updateUser() {
-        binding.awonarProfileImageAvatar.load(BASE_IMAGE_URL + "${user?.avatar}") {
+        ImageUtil.loadImage(binding.awonarProfileImageAvatar, user?.avatar) {
             crossfade(true)
-            placeholder(R.drawable.awonar_placeholder_avatar)
             error(R.drawable.awonar_placeholder_avatar)
             transformations(CircleCropTransformation())
         }

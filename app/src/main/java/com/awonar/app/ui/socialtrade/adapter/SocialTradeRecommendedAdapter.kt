@@ -15,6 +15,8 @@ class SocialTradeRecommendedAdapter : RecyclerView.Adapter<RecommendedViewHolder
             notifyDataSetChanged()
         }
 
+    var onItemClick: ((String?) -> Unit)? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendedViewHolder {
         return RecommendedViewHolder(
             AwonarItemCopiesRecommendedBinding.inflate(
@@ -26,7 +28,7 @@ class SocialTradeRecommendedAdapter : RecyclerView.Adapter<RecommendedViewHolder
     }
 
     override fun onBindViewHolder(holder: RecommendedViewHolder, position: Int) {
-        holder.bind(itemList[position])
+        holder.bind(itemList[position],onItemClick)
     }
 
     override fun getItemCount(): Int = itemList.size

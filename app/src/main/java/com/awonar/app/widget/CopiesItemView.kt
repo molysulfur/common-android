@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import com.awonar.app.R
 import com.awonar.app.databinding.AwonarWidgetCopiesItemBinding
 import com.awonar.app.utils.ImageUtil
 import com.molysulfur.library.widget.BaseViewGroup
@@ -125,7 +126,21 @@ class CopiesItemView : BaseViewGroup {
         }
 
     private fun updateRisk() {
-        binding.risk = "%s".format(risk)
+        binding.awonarCopiesItemImageRisk.setImageResource(
+            when (risk) {
+                1 -> R.drawable.awonar_ic_risk_1
+                2 -> R.drawable.awonar_ic_risk_2
+                3 -> R.drawable.awonar_ic_risk_3
+                4 -> R.drawable.awonar_ic_risk_4
+                5 -> R.drawable.awonar_ic_risk_5
+                6 -> R.drawable.awonar_ic_risk_6
+                7 -> R.drawable.awonar_ic_risk_7
+                8 -> R.drawable.awonar_ic_risk_8
+                9 -> R.drawable.awonar_ic_risk_9
+                10 -> R.drawable.awonar_ic_risk_10
+                else -> 0
+            }
+        )
     }
 
 

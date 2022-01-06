@@ -8,8 +8,15 @@ import com.awonar.app.ui.socialtrade.adapter.SocialTradeItem
 class CopiesItemViewHolder constructor(
     private val binding: AwonarItemCopiesItemBinding
 ) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(trader: SocialTradeItem.CopiesItem) {
+    fun bind(
+        trader: SocialTradeItem.CopiesItem,
+        onItemClick: ((String?) -> Unit)?,
+        onWatchListClick: (() -> Unit)?
+    ) {
         with(binding.awonarItemCopiesItemHolder) {
+            setOnClickListener {
+                onItemClick?.invoke(trader.userId)
+            }
             title = trader.title
             image = trader.image
             subTitle = trader.subTitle

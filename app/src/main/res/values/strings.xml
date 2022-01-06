@@ -72,4 +72,5 @@
     <string name="awonar_title_stoploss">Stop Loss</string>
     <string name="awonar_text_close">Close</string>
     <string name="awonar_text_confirm">Confirm</string>
+    <string name="awonar_text_viewmore">View more</string>
 </resources>

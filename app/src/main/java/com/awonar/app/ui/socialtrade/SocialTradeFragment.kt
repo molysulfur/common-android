@@ -4,14 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.awonar.app.databinding.AwonarFragmentSocialTradeBinding
+import com.awonar.app.ui.profile.ProfileActivity
 import com.awonar.app.ui.socialtrade.adapter.SocialTradeAdapter
 import com.awonar.app.ui.socialtrade.adapter.SocialTradeHorizontalWrapperAdapter
 import com.awonar.app.ui.socialtrade.adapter.SocialTradeRecommendedAdapter
+import com.molysulfur.library.extension.openActivity
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 
@@ -24,11 +27,25 @@ class SocialTradeFragment : Fragment() {
     private val viewModel: SocialTradeViewModel by activityViewModels()
 
     private val recommendedAdapter: SocialTradeRecommendedAdapter by lazy {
-        SocialTradeRecommendedAdapter()
+        SocialTradeRecommendedAdapter().apply {
+            onItemClick = { userId ->
+                openActivity(
+                    ProfileActivity::class.java,
+                    bundleOf(ProfileActivity.EXTRA_USERID to userId)
+                )
+            }
+        }
     }
 
     private val socialTradeAdapter: SocialTradeAdapter by lazy {
-        SocialTradeAdapter()
+        SocialTradeAdapter().apply {
+            onItemClick = { userId ->
+                openActivity(
+                    ProfileActivity::class.java,
+                    bundleOf(ProfileActivity.EXTRA_USERID to userId)
+                )
+            }
+        }
     }
 
     private val horizontalWrapperAdapter: SocialTradeHorizontalWrapperAdapter by lazy {
