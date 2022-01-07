@@ -46,6 +46,7 @@
         android:padding="@dimen/awonar_size_margin_padding_normal">
 
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/awonar_copier_position_card_image_setting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/awonar_ripple_light_gray"

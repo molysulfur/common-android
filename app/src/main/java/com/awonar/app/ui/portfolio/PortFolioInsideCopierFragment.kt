@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.awonar.app.databinding.AwonarFragmentPortfolioInsideCopierBinding
+import com.awonar.app.dialog.copier.CopierDialog
 import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.market.MarketViewModel
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
@@ -82,6 +83,9 @@ class PortFolioInsideCopierFragment : Fragment() {
         columnsViewModel.setColumnType("market")
         args.positionId.let {
             portFolioViewModel.getCopierPosition(it)
+        }
+        binding.awonarPortfolioInsideCopierPositionHeader.onSetting = {
+            CopierDialog.Builder().build().show(childFragmentManager)
         }
     }
 }

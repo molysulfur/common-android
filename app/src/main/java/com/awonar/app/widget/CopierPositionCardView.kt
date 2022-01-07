@@ -31,7 +31,12 @@ class CopierPositionCardView : BaseViewGroup {
     private var avgOpen: Float = 0f
     private var money: Float = 0f
 
+    var onSetting: (() -> Unit)? = null
+
     override fun setup() {
+        binding.awonarCopierPositionCardImageSetting.setOnClickListener {
+            onSetting?.invoke()
+        }
         updateAvgOpen()
         updateDescription()
         updateImage()
