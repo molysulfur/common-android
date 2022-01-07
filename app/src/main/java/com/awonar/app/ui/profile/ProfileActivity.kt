@@ -11,6 +11,7 @@ import coil.transform.CircleCropTransformation
 import com.awonar.android.model.user.User
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarActivityProfileBinding
+import com.awonar.app.dialog.copier.CopierDialog
 import com.awonar.app.ui.user.UserViewModel
 import com.awonar.app.utils.ImageUtil
 import com.molysulfur.library.activity.BaseActivity
@@ -90,6 +91,12 @@ class ProfileActivity : BaseActivity() {
     }
 
     private fun init() {
+        binding.awonarProfileButtonCopy.setOnClickListener {
+            CopierDialog.Builder()
+                .setCopiesId(user?.id)
+                .build()
+                .show(supportFragmentManager)
+        }
         binding.awonarProfileToolbarProfile.apply {
             setNavigationOnClickListener {
                 onBackPressed()

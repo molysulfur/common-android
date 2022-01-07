@@ -5,15 +5,19 @@ import androidx.lifecycle.viewModelScope
 import com.awonar.android.exception.ValidationAmountCopyException
 import com.awonar.android.exception.ValidationStopLossCopyException
 import com.awonar.android.model.copier.ValidateCopyRequest
+import com.awonar.android.model.socialtrade.Trader
+import com.awonar.android.model.socialtrade.TradersRequest
 import com.awonar.android.shared.domain.copy.GetRatioStopLossUseCase
 import com.awonar.android.shared.domain.copy.GetStopLossAmountCopyUseCase
 import com.awonar.android.shared.domain.copy.ValidateStoplossCopyUseCase
 import com.awonar.android.shared.domain.copy.ValidationAmountCopyUseCase
+import com.awonar.android.shared.domain.socialtrade.GetTradersUseCase
 import com.molysulfur.library.result.Result
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,8 +26,12 @@ class CopyViewModel @Inject constructor(
     private val getRatioStopLossUseCase: GetRatioStopLossUseCase,
     private val getStopLossAmountCopyUseCase: GetStopLossAmountCopyUseCase,
     private val validationAmountCopyUseCase: ValidationAmountCopyUseCase,
-    private val validateStoplossCopyUseCase: ValidateStoplossCopyUseCase
+    private val validateStoplossCopyUseCase: ValidateStoplossCopyUseCase,
+    private val getTradersUseCase: GetTradersUseCase
 ) : ViewModel() {
+
+    private val _traderState: MutableStateFlow<Trader?> = MutableStateFlow(null)
+    val traderState: StateFlow<Trader?> get() = _traderState
 
     private val _amount: MutableStateFlow<Float> = MutableStateFlow(100f)
     val amount: StateFlow<Float> get() = _amount
@@ -84,6 +92,18 @@ class CopyViewModel @Inject constructor(
                 updateStopLoss(exception.value)
             }
         }
+    }
+
+    fun getTraderInfo(copiesId: String?) {
+        copiesId?.let {
+            viewModelScope.launch {
+                getTradersUseCase(TradersRequest(uid = it, page = 1)).collect { result ->
+                    val trader = result.successOr(null)?.get(0)
+                    _traderState.value = trader
+                }
+            }
+        }
+
     }
 
 }

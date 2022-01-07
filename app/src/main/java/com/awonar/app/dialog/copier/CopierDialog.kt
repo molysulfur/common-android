@@ -12,6 +12,7 @@ import com.awonar.app.R
 import com.awonar.app.databinding.AwonarDialogCopierBinding
 import com.awonar.app.dialog.DialogViewModel
 import com.awonar.app.ui.portfolio.PortFolioViewModel
+import com.awonar.app.utils.ImageUtil
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -29,6 +30,14 @@ class CopierDialog : InteractorDialog<CopierMapper, CopierListener, DialogViewMo
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        launchAndRepeatWithViewLifecycle {
+            copyViewModel.traderState.collect {
+                ImageUtil.loadImage(binding.awonarDialogCopierImageAvatar, it?.image)
+                binding.username = it?.username
+                binding.description = "12 Months return"
+                binding.gain = "%.2f%s".format(it?.gain, "%")
+            }
+        }
         launchAndRepeatWithViewLifecycle {
             launch {
                 copyViewModel.amount.collect { amount ->
@@ -71,6 +80,8 @@ class CopierDialog : InteractorDialog<CopierMapper, CopierListener, DialogViewMo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val copiesId = arguments?.getString(EXTRA_ID)
+        copyViewModel.getTraderInfo(copiesId)
         binding.awonarDialogCopierNumberpickerAmount.doAfterFocusChange = { number, hasFocus ->
             if (!hasFocus) {
                 copyViewModel.updateAmount(number)
@@ -122,6 +133,7 @@ class CopierDialog : InteractorDialog<CopierMapper, CopierListener, DialogViewMo
     }
 
     class Builder {
+        private var copiesId: String? = null
         private var key: String? = null
         private var data: Bundle? = null
 
@@ -130,18 +142,26 @@ class CopierDialog : InteractorDialog<CopierMapper, CopierListener, DialogViewMo
             this.key = key
         }
 
+        fun setCopiesId(copiesId: String?): Builder = this.apply {
+            this.copiesId = copiesId
+        }
 
-        fun build(): CopierDialog = CopierDialog.newInstance(key, data)
+
+        fun build(): CopierDialog = CopierDialog.newInstance(key, data, copiesId)
     }
 
     companion object {
 
+        private const val EXTRA_ID = "com.awonar.app.dialog.copier.extra.id"
+
         private fun newInstance(
             key: String?,
-            data: Bundle?
+            data: Bundle?,
+            copiesId: String?
         ) =
             CopierDialog().apply {
                 arguments = createBundle(key, data).apply {
+                    putString(EXTRA_ID, copiesId)
                 }
             }
     }

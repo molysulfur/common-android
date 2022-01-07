@@ -21,6 +21,7 @@ interface SocialTradeService {
         @Query("period") period: String? = "3MonthsAgo",
         @Query("sort") sort: String? = "-gain",
         @Query("maxRisk") maxRisk: Int = 6,
+        @Query("uid") uid: String? = null,
     ): Call<TradersResponse>
 
     companion object {

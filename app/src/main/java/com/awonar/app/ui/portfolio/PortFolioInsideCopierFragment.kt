@@ -85,7 +85,11 @@ class PortFolioInsideCopierFragment : Fragment() {
             portFolioViewModel.getCopierPosition(it)
         }
         binding.awonarPortfolioInsideCopierPositionHeader.onSetting = {
-            CopierDialog.Builder().build().show(childFragmentManager)
+            val copier = portFolioViewModel.copierState.value
+            CopierDialog.Builder()
+                .setCopiesId(copier?.user?.id)
+                .build()
+                .show(childFragmentManager)
         }
     }
 }
