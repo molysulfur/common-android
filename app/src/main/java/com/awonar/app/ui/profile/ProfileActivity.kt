@@ -93,7 +93,7 @@ class ProfileActivity : BaseActivity() {
     private fun init() {
         binding.awonarProfileButtonCopy.setOnClickListener {
             CopierDialog.Builder()
-                .setCopiesId(user?.id)
+                .setCopiesId(userId)
                 .build()
                 .show(supportFragmentManager)
         }

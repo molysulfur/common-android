@@ -13,6 +13,7 @@ import com.awonar.app.databinding.AwonarDialogCopierBinding
 import com.awonar.app.dialog.DialogViewModel
 import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.awonar.app.utils.ImageUtil
+import com.molysulfur.library.extension.toast
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -82,6 +83,16 @@ class CopierDialog : InteractorDialog<CopierMapper, CopierListener, DialogViewMo
         super.onViewCreated(view, savedInstanceState)
         val copiesId = arguments?.getString(EXTRA_ID)
         copyViewModel.getTraderInfo(copiesId)
+        binding.awonarDialogCopierButtonCopy.setOnClickListener {
+            copiesId?.let { id ->
+                copyViewModel.submitCopy(id)
+                toast("Successful.")
+                dismiss()
+            }
+        }
+        binding.awonarDialogCopierCheckboxOpenTrade.setOnCheckedChangeListener { buttonView, isChecked ->
+            copyViewModel.updateIsCopyExist(isChecked)
+        }
         binding.awonarDialogCopierNumberpickerAmount.doAfterFocusChange = { number, hasFocus ->
             if (!hasFocus) {
                 copyViewModel.updateAmount(number)

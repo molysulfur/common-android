@@ -1,5 +1,7 @@
 package com.awonar.android.shared.repos
 
+import com.awonar.android.model.copier.CopiesRequest
+import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.socialtrade.Trader
 import com.awonar.android.model.socialtrade.TradersRequest
 import com.awonar.android.model.socialtrade.TradersResponse
@@ -18,7 +20,8 @@ class SocialTradeRepository @Inject constructor(
     fun getTraders(request: TradersRequest): Flow<Result<List<Trader>?>> =
         object : DirectNetworkFlow<Unit, List<Trader>, TradersResponse>() {
             override fun createCall(): Response<TradersResponse> =
-                service.getTraders(sort = request.filter, page = request.page, uid = request.uid).execute()
+                service.getTraders(sort = request.filter, page = request.page, uid = request.uid)
+                    .execute()
 
             override fun convertToResultType(response: TradersResponse): List<Trader> =
                 response.traders
@@ -37,6 +40,20 @@ class SocialTradeRepository @Inject constructor(
 
             override fun convertToResultType(response: TradersResponse): List<Trader> =
                 response.traders
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+
+        }.asFlow()
+
+    fun createCopy(parameters: CopiesRequest) =
+        object : DirectNetworkFlow<Unit, Copier?, Copier?>() {
+            override fun createCall(): Response<Copier?> =
+                service.createCopy(parameters).execute()
+
+            override fun convertToResultType(response: Copier?): Copier? =
+                response
 
             override fun onFetchFailed(errorMessage: String) {
                 println(errorMessage)

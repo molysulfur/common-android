@@ -4,15 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.awonar.android.exception.ValidationAmountCopyException
 import com.awonar.android.exception.ValidationStopLossCopyException
+import com.awonar.android.model.copier.CopiesRequest
 import com.awonar.android.model.copier.ValidateCopyRequest
 import com.awonar.android.model.socialtrade.Trader
 import com.awonar.android.model.socialtrade.TradersRequest
-import com.awonar.android.shared.domain.copy.GetRatioStopLossUseCase
-import com.awonar.android.shared.domain.copy.GetStopLossAmountCopyUseCase
-import com.awonar.android.shared.domain.copy.ValidateStoplossCopyUseCase
-import com.awonar.android.shared.domain.copy.ValidationAmountCopyUseCase
+import com.awonar.android.shared.domain.copy.*
 import com.awonar.android.shared.domain.socialtrade.GetTradersUseCase
 import com.molysulfur.library.result.Result
+import com.molysulfur.library.result.succeeded
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,8 +26,11 @@ class CopyViewModel @Inject constructor(
     private val getStopLossAmountCopyUseCase: GetStopLossAmountCopyUseCase,
     private val validationAmountCopyUseCase: ValidationAmountCopyUseCase,
     private val validateStoplossCopyUseCase: ValidateStoplossCopyUseCase,
-    private val getTradersUseCase: GetTradersUseCase
+    private val getTradersUseCase: GetTradersUseCase,
+    private val createCopyUseCase: CreateCopyUseCase
 ) : ViewModel() {
+
+    private val _isCopyExistState = MutableStateFlow(false)
 
     private val _traderState: MutableStateFlow<Trader?> = MutableStateFlow(null)
     val traderState: StateFlow<Trader?> get() = _traderState
@@ -104,6 +106,24 @@ class CopyViewModel @Inject constructor(
             }
         }
 
+    }
+
+    fun updateIsCopyExist(isCopyExist: Boolean) {
+        viewModelScope.launch {
+            _isCopyExistState.value = isCopyExist
+        }
+    }
+
+    fun submitCopy(copyId: String) {
+        viewModelScope.launch {
+            val request = CopiesRequest(
+                copyExistingPositions = _isCopyExistState.value,
+                stopLossPercentage = _stopLoss.value.first,
+                initialInvestment = _amount.value,
+                parentUserId = copyId
+            )
+            createCopyUseCase(request).collect {}
+        }
     }
 
 }
