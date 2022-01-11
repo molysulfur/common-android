@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.akexorcist.library.dialoginteractor.DialogLauncher
 import com.akexorcist.library.dialoginteractor.InteractorDialog
 import com.akexorcist.library.dialoginteractor.createBundle
@@ -131,6 +132,9 @@ class CopierDialog : InteractorDialog<CopierMapper, CopierListener, DialogViewMo
         }
         binding.awonarDialogCopierButtonStoplossEdit.setOnClickListener {
             binding.awonarDialogCopierGroupStoploss.visibility = View.VISIBLE
+        }
+        binding.awonarDialogCopierToolbar.setNavigationOnClickListener {
+           findNavController().popBackStack()
         }
     }
 

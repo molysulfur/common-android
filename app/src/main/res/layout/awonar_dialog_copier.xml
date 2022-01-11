@@ -33,6 +33,7 @@
             app:elevation="0dp">
 
             <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/awonar_dialog_copier_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:navigationIcon="@drawable/awonar_ic_close"

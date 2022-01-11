@@ -1,6 +1,8 @@
 package com.awonar.android.shared.repos
 
+import com.awonar.android.model.copier.AddFundRequest
 import com.awonar.android.model.copier.CopiesRequest
+import com.awonar.android.model.core.MessageSuccessResponse
 import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.socialtrade.Trader
 import com.awonar.android.model.socialtrade.TradersRequest
@@ -47,6 +49,20 @@ class SocialTradeRepository @Inject constructor(
 
         }.asFlow()
 
+    fun addFund(parameters: AddFundRequest) =
+        object : DirectNetworkFlow<Unit, Copier?, Copier?>() {
+            override fun createCall(): Response<Copier?> =
+                service.addFund(parameters).execute()
+
+            override fun convertToResultType(response: Copier?): Copier? =
+                response
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+
+        }.asFlow()
+
     fun createCopy(parameters: CopiesRequest) =
         object : DirectNetworkFlow<Unit, Copier?, Copier?>() {
             override fun createCall(): Response<Copier?> =
@@ -54,6 +70,19 @@ class SocialTradeRepository @Inject constructor(
 
             override fun convertToResultType(response: Copier?): Copier? =
                 response
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+
+        }.asFlow()
+
+    fun stopCopy(parameters: String): Flow<Result<Copier?>> =
+        object : DirectNetworkFlow<Unit, Copier?, Copier?>() {
+            override fun createCall(): Response<Copier?> =
+                service.stopCopy(parameters).execute()
+
+            override fun convertToResultType(response: Copier?): Copier? = response
 
             override fun onFetchFailed(errorMessage: String) {
                 println(errorMessage)

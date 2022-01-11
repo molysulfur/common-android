@@ -4,11 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.awonar.android.exception.ValidationAmountCopyException
 import com.awonar.android.exception.ValidationStopLossCopyException
+import com.awonar.android.model.copier.AddFundRequest
 import com.awonar.android.model.copier.CopiesRequest
 import com.awonar.android.model.copier.ValidateCopyRequest
 import com.awonar.android.model.socialtrade.Trader
 import com.awonar.android.model.socialtrade.TradersRequest
 import com.awonar.android.shared.domain.copy.*
+import com.awonar.android.shared.domain.portfolio.GetMyPortFolioUseCase
 import com.awonar.android.shared.domain.socialtrade.GetTradersUseCase
 import com.molysulfur.library.result.Result
 import com.molysulfur.library.result.succeeded
@@ -27,16 +29,26 @@ class CopyViewModel @Inject constructor(
     private val validationAmountCopyUseCase: ValidationAmountCopyUseCase,
     private val validateStoplossCopyUseCase: ValidateStoplossCopyUseCase,
     private val getTradersUseCase: GetTradersUseCase,
-    private val createCopyUseCase: CreateCopyUseCase
+    private val createCopyUseCase: CreateCopyUseCase,
+    private val stopCopyUseCase: StopCopyUseCase,
+    private val getMyPortFolioUseCase: GetMyPortFolioUseCase,
+    private val addFundUseCase: AddFundUseCase
 ) : ViewModel() {
+
+    private val _messageState = MutableStateFlow("")
+    val messageState: StateFlow<String> get() = _messageState
+
+    private val _errorState = MutableStateFlow("")
+    val errorState: StateFlow<String> get() = _errorState
 
     private val _isCopyExistState = MutableStateFlow(false)
 
     private val _traderState: MutableStateFlow<Trader?> = MutableStateFlow(null)
     val traderState: StateFlow<Trader?> get() = _traderState
 
-    private val _amount: MutableStateFlow<Float> = MutableStateFlow(100f)
+    private val _amount: MutableStateFlow<Float> = MutableStateFlow(0f)
     val amount: StateFlow<Float> get() = _amount
+
 
     private val _amountError: MutableStateFlow<String> = MutableStateFlow("")
     val amountError: StateFlow<String> get() = _amountError
@@ -50,6 +62,15 @@ class CopyViewModel @Inject constructor(
     val stopLoss: StateFlow<Pair<Float, Float>> get() = _stopLoss
     private val _stopLossError: MutableStateFlow<String> = MutableStateFlow("")
     val stopLossError: StateFlow<String> get() = _stopLossError
+
+    init {
+        viewModelScope.launch {
+            getMyPortFolioUseCase(true).collect {
+                val newAmount = it.successOr(null)?.available ?: 0f * 0.05f
+                _amount.emit(newAmount)
+            }
+        }
+    }
 
     fun updateAmount(newAmount: Float) {
         _amount.value = newAmount
@@ -123,6 +144,39 @@ class CopyViewModel @Inject constructor(
                 parentUserId = copyId
             )
             createCopyUseCase(request).collect {}
+        }
+    }
+
+    fun stopCopy(id: String) {
+        viewModelScope.launch {
+            stopCopyUseCase(id).collect {
+                if (it.succeeded) {
+                    _messageState.value = "Successful."
+                }
+
+                if (it is Result.Error) {
+                    _errorState.value = it.exception.message ?: ""
+                }
+
+            }
+        }
+    }
+
+    fun addFund(copyId: String) {
+        viewModelScope.launch {
+            val request = AddFundRequest(
+                amount = _amount.value,
+                id = copyId
+            )
+            addFundUseCase(request).collect {
+                if (it.succeeded) {
+                    _messageState.value = "Successful."
+                }
+
+                if (it is Result.Error) {
+                    _errorState.value = it.exception.message ?: ""
+                }
+            }
         }
     }
 
