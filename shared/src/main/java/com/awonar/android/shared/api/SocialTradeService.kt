@@ -1,8 +1,7 @@
 package com.awonar.android.shared.api
 
-import com.awonar.android.model.copier.AddFundRequest
+import com.awonar.android.model.copier.UpdateFundRequest
 import com.awonar.android.model.copier.CopiesRequest
-import com.awonar.android.model.core.MessageSuccessResponse
 import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.socialtrade.TradersResponse
 import com.awonar.android.shared.constrant.BuildConfig
@@ -14,7 +13,7 @@ import retrofit2.http.*
 interface SocialTradeService {
 
     @POST("v1/copy/fund")
-    fun addFund(@Body body: AddFundRequest): Call<Copier>
+    fun addFund(@Body body: UpdateFundRequest): Call<Copier>
 
     @POST("v1/copy")
     fun createCopy(@Body copy: CopiesRequest): Call<Copier>

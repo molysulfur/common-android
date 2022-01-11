@@ -1,8 +1,7 @@
 package com.awonar.android.shared.repos
 
-import com.awonar.android.model.copier.AddFundRequest
+import com.awonar.android.model.copier.UpdateFundRequest
 import com.awonar.android.model.copier.CopiesRequest
-import com.awonar.android.model.core.MessageSuccessResponse
 import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.socialtrade.Trader
 import com.awonar.android.model.socialtrade.TradersRequest
@@ -13,7 +12,6 @@ import com.molysulfur.library.result.Result
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 import javax.inject.Inject
-import javax.inject.Singleton
 
 class SocialTradeRepository @Inject constructor(
     private val service: SocialTradeService
@@ -49,7 +47,7 @@ class SocialTradeRepository @Inject constructor(
 
         }.asFlow()
 
-    fun addFund(parameters: AddFundRequest) =
+    fun addFund(parameters: UpdateFundRequest) =
         object : DirectNetworkFlow<Unit, Copier?, Copier?>() {
             override fun createCall(): Response<Copier?> =
                 service.addFund(parameters).execute()

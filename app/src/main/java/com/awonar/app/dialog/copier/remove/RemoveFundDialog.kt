@@ -1,4 +1,4 @@
-package com.awonar.app.dialog.copier.add
+package com.awonar.app.dialog.copier.remove
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,10 +9,11 @@ import com.akexorcist.library.dialoginteractor.DialogLauncher
 import com.akexorcist.library.dialoginteractor.InteractorDialog
 import com.akexorcist.library.dialoginteractor.createBundle
 import com.awonar.android.model.portfolio.Copier
-import com.awonar.app.databinding.AwonarDialogAddCopierBinding
+import com.awonar.app.databinding.AwonarDialogRemoveCopierBinding
 import com.awonar.app.dialog.DialogViewModel
 import com.awonar.app.dialog.copier.CopyViewModel
-import com.awonar.app.dialog.copier.remove.RemoveFundDialog
+import com.awonar.app.dialog.copier.add.RemoveFundListener
+import com.awonar.app.dialog.copier.add.RemoveFundMapper
 import com.awonar.app.utils.ImageUtil
 import com.molysulfur.library.extension.toast
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
@@ -20,12 +21,14 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
-class AddFundDialog : InteractorDialog<RemoveFundMapper, RemoveFundListener, DialogViewModel>() {
+class RemoveFundDialog : InteractorDialog<RemoveFundMapper, RemoveFundListener, DialogViewModel>() {
 
     private val viewModel: CopyViewModel by activityViewModels()
 
-    private val binding: AwonarDialogAddCopierBinding by lazy {
-        AwonarDialogAddCopierBinding.inflate(layoutInflater)
+    private var copier: Copier? = null
+
+    private val binding: AwonarDialogRemoveCopierBinding by lazy {
+        AwonarDialogRemoveCopierBinding.inflate(layoutInflater)
     }
 
     override fun onCreateView(
@@ -54,13 +57,15 @@ class AddFundDialog : InteractorDialog<RemoveFundMapper, RemoveFundListener, Dia
         launchAndRepeatWithViewLifecycle {
             launch {
                 viewModel.amountError.collect {
-                    binding.awonarDialogAddCopierNumberpickerAmount.setHelp(it)
+                    binding.awonarDialogRemoveCopierNumberpickerAmount.setHelp(it)
                 }
             }
             launch {
-                viewModel.amount.collect {
-                    binding.awonarDialogAddCopierNumberpickerAmount.setNumber(it)
-                    viewModel.validateAmount()
+                viewModel.amount.collect { amount ->
+                    copier?.let {
+                        binding.awonarDialogRemoveCopierNumberpickerAmount.setNumber(amount)
+                        viewModel.validateRemoveAmount(it)
+                    }
                 }
             }
         }
@@ -70,14 +75,14 @@ class AddFundDialog : InteractorDialog<RemoveFundMapper, RemoveFundListener, Dia
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val copier = arguments?.getParcelable<Copier?>(EXTRA_COPIER)
+        copier = arguments?.getParcelable<Copier?>(EXTRA_COPIER)
         copier?.let {
-            ImageUtil.loadImage(binding.awonarDialogAddCopierImageAvatar, it.user.picture)
+            ImageUtil.loadImage(binding.awonarDialogRemoveCopierImageAvatar, it.user.picture)
             binding.username =
                 "%s %s %s".format(it.user.fullName, it.user.middleName, it.user.lastName)
             binding.description = it.parentUsername
         }
-        binding.awonarDialogAddCopierNumberpickerAmount.doAfterFocusChange =
+        binding.awonarDialogRemoveCopierNumberpickerAmount.doAfterFocusChange =
             { value, isFocus ->
                 if (!isFocus) {
                     viewModel.updateAmount(value)
@@ -86,7 +91,7 @@ class AddFundDialog : InteractorDialog<RemoveFundMapper, RemoveFundListener, Dia
 
         binding.awonarDialogAddCopierButtonAddfund.setOnClickListener {
             copier?.id?.let { id ->
-                viewModel.addFund(id)
+                viewModel.removeFund(id)
             }
         }
     }

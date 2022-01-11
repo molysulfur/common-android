@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.awonar.android.exception.ValidationAmountCopyException
 import com.awonar.android.exception.ValidationStopLossCopyException
-import com.awonar.android.model.copier.AddFundRequest
+import com.awonar.android.model.copier.UpdateFundRequest
 import com.awonar.android.model.copier.CopiesRequest
 import com.awonar.android.model.copier.ValidateCopyRequest
+import com.awonar.android.model.copier.ValidateRemoveFundRequest
+import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.socialtrade.Trader
 import com.awonar.android.model.socialtrade.TradersRequest
 import com.awonar.android.shared.domain.copy.*
@@ -21,6 +23,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.abs
 
 @HiltViewModel
 class CopyViewModel @Inject constructor(
@@ -32,7 +35,8 @@ class CopyViewModel @Inject constructor(
     private val createCopyUseCase: CreateCopyUseCase,
     private val stopCopyUseCase: StopCopyUseCase,
     private val getMyPortFolioUseCase: GetMyPortFolioUseCase,
-    private val addFundUseCase: AddFundUseCase
+    private val updateFundUseCase: UpdateFundUseCase,
+    private val validateRemoveFundUseCase: ValidateRemoveFundUseCase
 ) : ViewModel() {
 
     private val _messageState = MutableStateFlow("")
@@ -164,11 +168,44 @@ class CopyViewModel @Inject constructor(
 
     fun addFund(copyId: String) {
         viewModelScope.launch {
-            val request = AddFundRequest(
+            val request = UpdateFundRequest(
                 amount = _amount.value,
                 id = copyId
             )
-            addFundUseCase(request).collect {
+            updateFundUseCase(request).collect {
+                if (it.succeeded) {
+                    _messageState.value = "Successful."
+                }
+
+                if (it is Result.Error) {
+                    _errorState.value = it.exception.message ?: ""
+                }
+            }
+        }
+    }
+
+    fun validateRemoveAmount(copier: Copier) {
+        viewModelScope.launch {
+            val result = validateRemoveFundUseCase(
+                ValidateRemoveFundRequest(
+                    copier,
+                    _amount.value
+                )
+            )
+
+            if (result is Result.Error) {
+                _amountError.value = result.exception.message ?: ""
+            }
+        }
+    }
+
+    fun removeFund(copyId: String) {
+        viewModelScope.launch {
+            val request = UpdateFundRequest(
+                amount = -abs(_amount.value),
+                id = copyId
+            )
+            updateFundUseCase(request).collect {
                 if (it.succeeded) {
                     _messageState.value = "Successful."
                 }

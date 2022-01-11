@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class AddFundRequest(
+data class UpdateFundRequest(
     @SerializedName("amount") val amount: Float,
     @SerializedName("id") val id: String
 ) : Parcelable

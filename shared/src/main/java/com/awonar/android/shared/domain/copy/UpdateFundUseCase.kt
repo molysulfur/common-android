@@ -1,6 +1,6 @@
 package com.awonar.android.shared.domain.copy
 
-import com.awonar.android.model.copier.AddFundRequest
+import com.awonar.android.model.copier.UpdateFundRequest
 import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.shared.di.IoDispatcher
 import com.awonar.android.shared.repos.SocialTradeRepository
@@ -10,10 +10,10 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class AddFundUseCase @Inject constructor(
+class UpdateFundUseCase @Inject constructor(
     private val repository: SocialTradeRepository,
     @IoDispatcher dispatcher: CoroutineDispatcher
-) : FlowUseCase<AddFundRequest, Copier?>(dispatcher) {
-    override fun execute(parameters: AddFundRequest): Flow<Result<Copier?>> =
+) : FlowUseCase<UpdateFundRequest, Copier?>(dispatcher) {
+    override fun execute(parameters: UpdateFundRequest): Flow<Result<Copier?>> =
         repository.addFund(parameters)
 }

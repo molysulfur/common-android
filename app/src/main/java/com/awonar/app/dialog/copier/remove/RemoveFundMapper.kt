@@ -4,7 +4,7 @@ import com.akexorcist.library.dialoginteractor.DialogEvent
 import com.akexorcist.library.dialoginteractor.EventMapper
 import com.akexorcist.library.dialoginteractor.LiveEvent
 
-class AddFundMapper : EventMapper<RemoveFundListener>() {
+class RemoveFundMapper : EventMapper<RemoveFundListener>() {
     companion object {
         const val EVENT_SUCCESS = "event_success"
         const val EVENT_FAILURE = "event_failure"

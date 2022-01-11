@@ -60,6 +60,7 @@
         <entry key="app/src/main/res/layout/awonar_dialog_order.xml" value="0.16348773841961853" />
         <entry key="app/src/main/res/layout/awonar_dialog_order_edit.xml" value="0.21670428893905191" />
         <entry key="app/src/main/res/layout/awonar_dialog_partialclose.xml" value="0.25100401606425704" />
+        <entry key="app/src/main/res/layout/awonar_dialog_remove_copier.xml" value="0.1" />
         <entry key="app/src/main/res/layout/awonar_dialog_stop_copier.xml" value="0.34270833333333334" />
         <entry key="app/src/main/res/layout/awonar_drawer_header_main.xml" value="0.2236024844720497" />
         <entry key="app/src/main/res/layout/awonar_fragment_column_actived.xml" value="0.1" />
