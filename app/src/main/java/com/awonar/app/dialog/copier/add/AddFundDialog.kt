@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
-class AddFundDialog : InteractorDialog<RemoveFundMapper, RemoveFundListener, DialogViewModel>() {
+class AddFundDialog : InteractorDialog<AddFundMapper, AddFundListener, DialogViewModel>() {
 
     private val viewModel: CopyViewModel by activityViewModels()
 
@@ -111,7 +111,7 @@ class AddFundDialog : InteractorDialog<RemoveFundMapper, RemoveFundListener, Dia
 
     companion object {
 
-        private const val EXTRA_COPIER = "com.awonar.app.dialog.stopcopier.extra.copier"
+        private const val EXTRA_COPIER = "com.awonar.app.dialog.addfund.extra.copier"
 
         private fun newInstance(
             key: String?,
@@ -134,8 +134,8 @@ class AddFundDialog : InteractorDialog<RemoveFundMapper, RemoveFundListener, Dia
         )
     }
 
-    override fun bindLauncher(viewModel: DialogViewModel): DialogLauncher<RemoveFundMapper, RemoveFundListener> =
-        viewModel.addCopierDialog
 
     override fun bindViewModel(): Class<DialogViewModel> = DialogViewModel::class.java
+    override fun bindLauncher(viewModel: DialogViewModel): DialogLauncher<AddFundMapper, AddFundListener> =
+        viewModel.addCopierDialog
 }

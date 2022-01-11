@@ -12,6 +12,7 @@ import androidx.navigation.fragment.navArgs
 import com.awonar.app.databinding.AwonarFragmentPortfolioInsideCopierBinding
 import com.awonar.app.dialog.DialogViewModel
 import com.awonar.app.dialog.copier.add.AddFundDialog
+import com.awonar.app.dialog.copier.pause.PauseCopierDialog
 import com.awonar.app.dialog.copier.remove.RemoveFundDialog
 import com.awonar.app.dialog.copier.stop.StopCopierDialog
 import com.awonar.app.dialog.copier.stop.StopCopierListener
@@ -123,6 +124,9 @@ class PortFolioInsideCopierFragment : Fragment() {
                         "remove_fund" -> {
                             openRemoveFundDialog()
                         }
+                        "pause_copy" -> {
+                            openPauseCopyDialog()
+                        }
                         "stop_copy" -> {
                             openStopCopyDialog()
                         }
@@ -141,6 +145,13 @@ class PortFolioInsideCopierFragment : Fragment() {
         }
     }
 
+    private fun openPauseCopyDialog() {
+        PauseCopierDialog.Builder()
+            .setCopies(copier = portFolioViewModel.copierState.value)
+            .build()
+            .show(parentFragmentManager)
+    }
+
     private fun openRemoveFundDialog() {
         RemoveFundDialog.Builder()
             .setCopies(copier = portFolioViewModel.copierState.value)
@@ -157,7 +168,7 @@ class PortFolioInsideCopierFragment : Fragment() {
 
     private fun openStopCopyDialog() {
         StopCopierDialog.Builder()
-            .setCopiesId(copier = portFolioViewModel.copierState.value)
+            .setCopies(copier = portFolioViewModel.copierState.value)
             .build()
             .show(parentFragmentManager)
     }

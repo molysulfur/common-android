@@ -1,4 +1,4 @@
-package com.awonar.app.dialog.copier.stop
+package com.awonar.app.dialog.copier.pause
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,7 +18,8 @@ import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class StopCopierDialog : InteractorDialog<StopCopierMapper, StopCopierListener, DialogViewModel>() {
+class PauseCopierDialog :
+    InteractorDialog<PauseCopierMapper, PauseCopierListener, DialogViewModel>() {
 
     private val binding: AwonarDialogStopCopierBinding by lazy {
         AwonarDialogStopCopierBinding.inflate(layoutInflater)
@@ -54,12 +55,12 @@ class StopCopierDialog : InteractorDialog<StopCopierMapper, StopCopierListener, 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val copier = arguments?.getParcelable<Copier?>(EXTRA_COPIER)
-        copier?.let {
+        copier?.let { copy ->
             val netInvest =
-                copier.initialInvestment.plus(copier.depositSummary).minus(copier.withdrawalSummary)
-            val profit = it.closedPositionsNetProfit
+                copy.initialInvestment.plus(copy.depositSummary).minus(copy.withdrawalSummary)
+            val profit = copy.closedPositionsNetProfit
             val fee = copier.totalFees
-            ImageUtil.loadImage(binding.awonarDialogStopCopierImageAvatar, it.user.picture)
+            ImageUtil.loadImage(binding.awonarDialogStopCopierImageAvatar, copy.user.picture)
             binding.netInvest = "$%.2f".format(netInvest)
             binding.profit = "$%.2f".format(profit)
             binding.fee = "$%.2f".format(fee)
@@ -70,6 +71,10 @@ class StopCopierDialog : InteractorDialog<StopCopierMapper, StopCopierListener, 
                     profit
                 )
             )
+            binding.awonarDialogStopCopierButtonStop.apply {
+                text = if (copy.isPaused) "Resume" else "Pause"
+                setOnClickListener { viewModel.pauseCopy(copy.id, copy.isPaused) }
+            }
         }
         binding.awonarDialogStopCopierToolbar.setNavigationOnClickListener {
             dismiss()
@@ -97,19 +102,19 @@ class StopCopierDialog : InteractorDialog<StopCopierMapper, StopCopierListener, 
         }
 
 
-        fun build(): StopCopierDialog = newInstance(key, data, copier)
+        fun build(): PauseCopierDialog = newInstance(key, data, copier)
     }
 
     companion object {
 
-        private const val EXTRA_COPIER = "com.awonar.app.dialog.stopcopier.extra.copier"
+        private const val EXTRA_COPIER = "com.awonar.app.dialog.pause.extra.copier"
 
         private fun newInstance(
             key: String?,
             data: Bundle?,
             copier: Copier?
         ) =
-            StopCopierDialog().apply {
+            PauseCopierDialog().apply {
                 arguments = createBundle(key, data).apply {
                     putParcelable(EXTRA_COPIER, copier)
                 }
@@ -124,8 +129,8 @@ class StopCopierDialog : InteractorDialog<StopCopierMapper, StopCopierListener, 
         )
     }
 
-    override fun bindLauncher(viewModel: DialogViewModel): DialogLauncher<StopCopierMapper, StopCopierListener> =
-        viewModel.stopCopierDialog
+    override fun bindLauncher(viewModel: DialogViewModel): DialogLauncher<PauseCopierMapper, PauseCopierListener> =
+        viewModel.pauseCopierDialog
 
     override fun bindViewModel(): Class<DialogViewModel> = DialogViewModel::class.java
 }

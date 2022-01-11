@@ -82,6 +82,9 @@ class RemoveFundDialog : InteractorDialog<RemoveFundMapper, RemoveFundListener, 
                 "%s %s %s".format(it.user.fullName, it.user.middleName, it.user.lastName)
             binding.description = it.parentUsername
         }
+        binding.awonarDialogRemoveCopierToolbar.setNavigationOnClickListener {
+            dismiss()
+        }
         binding.awonarDialogRemoveCopierNumberpickerAmount.doAfterFocusChange =
             { value, isFocus ->
                 if (!isFocus) {
@@ -116,7 +119,7 @@ class RemoveFundDialog : InteractorDialog<RemoveFundMapper, RemoveFundListener, 
 
     companion object {
 
-        private const val EXTRA_COPIER = "com.awonar.app.dialog.stopcopier.extra.copier"
+        private const val EXTRA_COPIER = "com.awonar.app.dialog.removefund.extra.copier"
 
         private fun newInstance(
             key: String?,
@@ -140,7 +143,7 @@ class RemoveFundDialog : InteractorDialog<RemoveFundMapper, RemoveFundListener, 
     }
 
     override fun bindLauncher(viewModel: DialogViewModel): DialogLauncher<RemoveFundMapper, RemoveFundListener> =
-        viewModel.addCopierDialog
+        viewModel.removeCopierDialog
 
     override fun bindViewModel(): Class<DialogViewModel> = DialogViewModel::class.java
 }

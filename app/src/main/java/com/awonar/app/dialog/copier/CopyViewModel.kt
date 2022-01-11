@@ -4,10 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.awonar.android.exception.ValidationAmountCopyException
 import com.awonar.android.exception.ValidationStopLossCopyException
-import com.awonar.android.model.copier.UpdateFundRequest
-import com.awonar.android.model.copier.CopiesRequest
-import com.awonar.android.model.copier.ValidateCopyRequest
-import com.awonar.android.model.copier.ValidateRemoveFundRequest
+import com.awonar.android.model.copier.*
 import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.socialtrade.Trader
 import com.awonar.android.model.socialtrade.TradersRequest
@@ -36,7 +33,8 @@ class CopyViewModel @Inject constructor(
     private val stopCopyUseCase: StopCopyUseCase,
     private val getMyPortFolioUseCase: GetMyPortFolioUseCase,
     private val updateFundUseCase: UpdateFundUseCase,
-    private val validateRemoveFundUseCase: ValidateRemoveFundUseCase
+    private val validateRemoveFundUseCase: ValidateRemoveFundUseCase,
+    private val updatePauseCopyUseCase: UpdatePauseCopyUseCase
 ) : ViewModel() {
 
     private val _messageState = MutableStateFlow("")
@@ -208,6 +206,25 @@ class CopyViewModel @Inject constructor(
             updateFundUseCase(request).collect {
                 if (it.succeeded) {
                     _messageState.value = "Successful."
+                }
+
+                if (it is Result.Error) {
+                    _errorState.value = it.exception.message ?: ""
+                }
+            }
+        }
+    }
+
+    fun pauseCopy(copyId: String, isPause: Boolean) {
+        viewModelScope.launch {
+            updatePauseCopyUseCase(
+                PauseCopyRequest(
+                    copyId,
+                    isPause
+                )
+            ).collect {
+                if (it.succeeded) {
+                    _messageState.value = "Successfully."
                 }
 
                 if (it is Result.Error) {
