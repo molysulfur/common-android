@@ -8,10 +8,12 @@ import com.awonar.android.shared.domain.order.CalculateAmountStopLossAndTakeProf
 import com.awonar.android.shared.domain.order.CalculateAmountStopLossAndTakeProfitWithSellUseCase
 import com.awonar.android.shared.repos.CurrenciesRepository
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
+import com.awonar.app.utils.DateUtils
 import com.molysulfur.library.result.data
 import com.molysulfur.library.result.succeeded
 import com.molysulfur.library.usecase.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -20,7 +22,7 @@ class ConvertGroupPositionToItemUseCase @Inject constructor(
     private val currenciesRepository: CurrenciesRepository,
     private val calculateAmountStopLossAndTakeProfitWithBuyUseCase: CalculateAmountStopLossAndTakeProfitWithBuyUseCase,
     private val calculateAmountStopLossAndTakeProfitWithSellUseCase: CalculateAmountStopLossAndTakeProfitWithSellUseCase,
-    @IoDispatcher dispatcher: CoroutineDispatcher
+    @IoDispatcher dispatcher: CoroutineDispatcher,
 ) : UseCase<List<Position>, List<OrderPortfolioItem>>(dispatcher) {
     override suspend fun execute(parameters: List<Position>): MutableList<OrderPortfolioItem> {
         val groupInstrument: Map<Int, List<Position>> = parameters.groupBy { it.instrumentId }
@@ -58,6 +60,7 @@ class ConvertGroupPositionToItemUseCase @Inject constructor(
             val amountTp = 0f
             val slPercent = 0f
             val tpPercent = 0f
+            val date = DateUtils.getDate(positions[0].openDateTime)
             itemList.add(
                 OrderPortfolioItem.InstrumentPortfolioItem(
                     position = positions[0],
@@ -77,7 +80,9 @@ class ConvertGroupPositionToItemUseCase @Inject constructor(
                     amountStopLoss = amountSl,
                     amountTakeProfit = amountTp,
                     stopLossPercent = slPercent,
-                    takeProfitPercent = tpPercent
+                    takeProfitPercent = tpPercent,
+                    date = date,
+                    index = parameters.indexOfFirst { it.instrument.id == positions[0].instrument.id }
                 )
             )
         }
@@ -91,7 +96,7 @@ class ConvertGroupPositionToItemUseCase @Inject constructor(
         rate: Float,
         open: Float,
         unit: Float,
-        isBuy: Boolean
+        isBuy: Boolean,
     ): Float {
         val request = StopLossRequest(
             instrumentId = instrumentId,

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+        android:background="@drawable/awonar_bg_15_white"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="60dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/awonar_ic_private"
+            android:tint="@color/awonar_color_gray" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Awonar.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="This in a private profile" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Awonar.Text.Default.Normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="This user has chosen not to share any trading data. Therefore, this user cannot be copied." />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</layout>

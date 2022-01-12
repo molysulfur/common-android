@@ -16,7 +16,7 @@ class ConvertCopierToItemUseCase @Inject constructor(
 ) : UseCase<List<Copier>, MutableList<OrderPortfolioItem>>(dispatcher) {
     override suspend fun execute(parameters: List<Copier>): MutableList<OrderPortfolioItem> {
         val itemList = mutableListOf<OrderPortfolioItem>()
-        parameters.forEach { copier ->
+        parameters.forEachIndexed { index, copier ->
             val conversions = HashMap<Int, Float>()
             copier.positions?.forEach { position ->
                 val conversion =
@@ -52,7 +52,8 @@ class ConvertCopierToItemUseCase @Inject constructor(
                     current = current,
                     netInvested = netInvested,
                     copyStopLoss = csl,
-                    copyStopLossPercent = cslPercent
+                    copyStopLossPercent = cslPercent,
+                    index = index
                 )
             )
         }

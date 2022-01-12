@@ -2,23 +2,24 @@ package com.awonar.app.ui.portfolio.adapter.holder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.market.Quote
+import com.awonar.android.model.portfolio.Position
 import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.app.databinding.AwonarItemInstrumentOrderBinding
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
-import timber.log.Timber
 
 class InstrumentPortfolioViewHolder constructor(
     private val binding: AwonarItemInstrumentOrderBinding,
-) :
-    RecyclerView.ViewHolder(binding.root) {
+) : RecyclerView.ViewHolder(binding.root) {
+
+    var item: Position? = null
 
     fun bind(
         item: OrderPortfolioItem.InstrumentPortfolioItem,
         columns: List<String>,
-        quotes: Array<Quote>,
-        onClick: ((String, String) -> Unit)?
+        quote: Quote?,
+        onClick: ((Int, String) -> Unit)?,
     ) {
-        val quote = quotes.find { it.id == item.position.instrumentId }
+        this.item = item.position
         quote?.let {
             item.current = if (item.position.isBuy) it.bid else it.ask
             val pl = PortfolioUtil.getProfitOrLoss(
@@ -35,9 +36,8 @@ class InstrumentPortfolioViewHolder constructor(
             item.profitLossPercent = plPercent
         }
         binding.awonarInsturmentOrderItem.setOnClickListener {
-            item.position.let {
-                onClick?.invoke("${it.instrumentId}", "instrument")
-            }
+            onClick?.invoke(item.index, "instrument")
+
         }
         if (columns.isNotEmpty()) {
             binding.column1 = columns[0]

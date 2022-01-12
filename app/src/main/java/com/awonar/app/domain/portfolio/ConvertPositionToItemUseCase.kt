@@ -8,6 +8,7 @@ import com.awonar.android.shared.domain.order.CalculateAmountStopLossAndTakeProf
 import com.awonar.android.shared.domain.order.CalculateAmountStopLossAndTakeProfitWithSellUseCase
 import com.awonar.android.shared.repos.CurrenciesRepository
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
+import com.awonar.app.utils.DateUtils
 import com.molysulfur.library.result.data
 import com.molysulfur.library.result.succeeded
 import com.molysulfur.library.usecase.UseCase
@@ -20,11 +21,11 @@ class ConvertPositionToItemUseCase @Inject constructor(
     private val currenciesRepository: CurrenciesRepository,
     private val calculateAmountStopLossAndTakeProfitWithBuyUseCase: CalculateAmountStopLossAndTakeProfitWithBuyUseCase,
     private val calculateAmountStopLossAndTakeProfitWithSellUseCase: CalculateAmountStopLossAndTakeProfitWithSellUseCase,
-    @IoDispatcher dispatcher: CoroutineDispatcher
+    @IoDispatcher dispatcher: CoroutineDispatcher,
 ) : UseCase<List<Position>, List<OrderPortfolioItem>>(dispatcher) {
     override suspend fun execute(parameters: List<Position>): MutableList<OrderPortfolioItem> {
         val itemList = mutableListOf<OrderPortfolioItem>()
-        parameters.forEach { position ->
+        parameters.forEachIndexed { index, position ->
             val conversionRate =
                 currenciesRepository.getConversionByInstrumentId(position.instrumentId).rateBid
             val invested = position.amount
@@ -43,6 +44,8 @@ class ConvertPositionToItemUseCase @Inject constructor(
             val plPercent = 0f // cal after get realtime
             val pipChange = 0f // cal after get realtime
             val value = 0f// cal after get realtime
+            val date =
+                if (position.exitOrder != null) "Pending" else DateUtils.getDate(position.openDateTime)
             itemList.add(
                 OrderPortfolioItem.InstrumentPortfolioItem(
                     position = position,
@@ -62,7 +65,9 @@ class ConvertPositionToItemUseCase @Inject constructor(
                     amountStopLoss = amountSl,
                     amountTakeProfit = amountTp,
                     stopLossPercent = slPercent,
-                    takeProfitPercent = tpPercent
+                    takeProfitPercent = tpPercent,
+                    date = date,
+                    index = index
                 )
             )
         }
@@ -74,7 +79,7 @@ class ConvertPositionToItemUseCase @Inject constructor(
         rate: Float,
         open: Float,
         unit: Float,
-        isBuy: Boolean
+        isBuy: Boolean,
     ): Float {
         val request = StopLossRequest(
             instrumentId = instrumentId,

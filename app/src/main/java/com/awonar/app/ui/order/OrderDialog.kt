@@ -1,5 +1,6 @@
 package com.awonar.app.ui.order
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import com.awonar.android.model.market.Quote
 import com.awonar.android.model.order.Price
 import com.awonar.android.model.portfolio.Portfolio
 import com.awonar.android.model.tradingdata.TradingData
+import com.awonar.android.shared.steaming.QuoteSteamingManager
 import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarDialogOrderBinding
@@ -27,6 +29,7 @@ import com.molysulfur.library.extension.toast
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogViewModel>() {
 
@@ -55,8 +58,77 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
+        /**
+         * Amount Obsever
+         */
+        launchAndRepeatWithViewLifecycle {
+            launch {
+                orderActivityViewModel.exposureError.collect { error ->
+                    error?.let {
+                        binding.awonarDialogOrderNumberPickerInputAmount.setNumber(it.value)
+                        binding.awonarDialogOrderNumberPickerInputAmount.setHelp(it.message ?: "")
+                    }
+                }
+            }
+            launch {
+                orderViewModel.amountState.collect { amount ->
+                    when (binding.awonarDialogOrderToggleOrderAmountType.checkedButtonId) {
+                        R.id.awonar_dialog_order_button_amount_amount -> {
+                            binding.awonarDialogOrderNumberPickerInputAmount.setNumber(
+                                amount.first)
+                        }
+                        R.id.awonar_dialog_order_button_amount_unit -> {
+                            binding.awonarDialogOrderNumberPickerInputAmount.setNumber(
+                                amount.second)
+                        }
+                    }
+                    validateExposure(amount = amount.first)
+//                    getDefaultTpAndSl()
+//                    updateDetail()
+//                    getOvernight()
+                }
+            }
+        }
+        /**
+         * Rate Obsever
+         */
+        launchAndRepeatWithViewLifecycle {
+            launch {
+                orderActivityViewModel.rateErrorState.collect {
+                    it?.let {
+                        binding.awonarDialogOrderNumberPickerInputRate.setNumber(it.rate)
+                        binding.awonarDialogOrderNumberPickerInputRate.setHelp(it.message ?: "")
+                    }
+                }
+            }
+            launch {
+                orderViewModel.openRate.collect { rate ->
+                    rate?.let {
+                        orderActivityViewModel.validateRate(it, price, instrument?.digit ?: 0)
+                    }
+                }
+            }
+        }
+        /**
+         * streaming data
+         */
+        launchAndRepeatWithViewLifecycle {
+            QuoteSteamingManager.quotesState.collect { quotes ->
+                quote = quotes[instrument?.id]
+                orderViewModel.updateRate(price, marketType)
+                updateCurrentPrice()
+            }
+        }
+        /**
+         * stop loss Observer
+         */
+        launchAndRepeatWithViewLifecycle {
+            orderViewModel.stopLossState.collect {
+
+            }
+        }
         launchAndRepeatWithViewLifecycle {
             launch {
                 orderActivityViewModel.getOrderRequest.collect {
@@ -74,17 +146,9 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                         validateStoploss()
                 }
             }
+
             launch {
-                orderViewModel.amountState.collect {
-//                    binding.awonarDialogOrderNumberPickerInputAmount.setNumber(it)
-                    validateExposure()
-//                    getDefaultTpAndSl()
-//                    updateDetail()
-//                    getOvernight()
-                }
-            }
-            launch {
-                orderActivityViewModel.leverageState.collect {
+                orderViewModel.leverageState.collect {
                     currentLeverage = it
                     binding.awonarDialogOrderNumberPickerInputAmount.setHelp("")
                     binding.awonarDialogOrderCollapseLeverage.setDescription("X$it")
@@ -93,60 +157,14 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                 }
             }
             launch {
-                orderActivityViewModel.rateState.collect {
-                    instrument?.run {
-                        orderActivityViewModel.calculateMaxRate(it, price, digit)
-                        orderActivityViewModel.calculateMinRate(it, price, digit)
-                    }
-                }
-            }
-            launch {
                 orderViewModel.openOrderState.collect { message ->
                     dismiss()
                     toast(message)
                 }
             }
-            launch {
-                portfolioViewModel.portfolioState.collect {
-                    if (it != null) {
-                        portfolio = it
-                        initAmount()
-                    }
-                }
-            }
-            launch {
-                marketViewModel.quoteSteamingState.collect { quotes ->
-                    quote = quotes.find { it.id == instrument?.id }
-                    orderViewModel.updateRate(price, marketType)
-                    updateCurrentPrice()
-                }
-            }
-            launch {
-                marketViewModel.tradingDataState.collect {
-                    if (it != null) {
-                        tradingData = it
-                        tradingData?.let { tradingData ->
-                            updateLeverage(tradingData.defaultLeverage)
-                            initValueWithTradingData()
-                        }
-                    }
-                }
-            }
-            launch {
-                orderViewModel.exposureState.collect {
-                    instrument?.let { instrument ->
-                        orderActivityViewModel.updateAmount(instrument.id, price, it)
-                    }
-                }
-            }
-            launch {
-                orderViewModel.exposureError.collect {
-                    binding.awonarDialogOrderNumberPickerInputAmount.setHelp(it)
-                }
-            }
+
         }
         binding.viewModel = orderViewModel
-        binding.activityViewModel = orderActivityViewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
@@ -155,21 +173,33 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         super.onViewCreated(view, savedInstanceState)
         instrument = arguments?.getParcelable(EXTRA_INSTRUMENT)
         isBuy = arguments?.getBoolean(EXTRA_TYPE, true)
-        binding.digit = instrument?.digit ?: 0
-        binding.awonarDialogOrderToggleOrderAmountType.addOnButtonCheckedListener { _, checkedId, isChecked ->
-            if (isChecked) {
-                when (checkedId) {
-                    R.id.awonar_dialog_order_button_amount_amount -> {
-                        orderActivityViewModel.updateAmountType("amount")
-                        updateDetail()
-                    }
-                    R.id.awonar_dialog_order_button_amount_unit -> {
-                        orderActivityViewModel.updateAmountType("unit")
-                        updateDetail()
+        launchAndRepeatWithViewLifecycle {
+            marketViewModel.tradingDataState.collect {
+                if (it != null) {
+                    tradingData = it
+                    tradingData?.let { tradingData ->
+                        instrument?.let { instrument ->
+                            orderViewModel.updateLeverage(
+                                leverage = tradingData.defaultLeverage,
+                                instrumentId = instrument.id,
+                                price = price
+                            )
+                        }
+
+                        initValueWithTradingData()
                     }
                 }
             }
         }
+        launchAndRepeatWithViewLifecycle {
+            portfolioViewModel.portfolioState.collect {
+                if (it != null) {
+                    portfolio = it
+                    setupDefaultAmount()
+                }
+            }
+        }
+        binding.digit = instrument?.digit ?: 0
         binding.awonarDialogOrderButtonOpenTrade.setOnClickListener {
             instrument?.let { instrument ->
 //                orderActivityViewModel.getOrderRequest(
@@ -180,10 +210,50 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         }
         setupHeader()
         setupRate()
-        initLeverageAdapter()
-        initListenerInputAmount()
+        setupAmount()
+        setupLeverageAdapter()
         initStopLoss()
         initTakeProfit()
+    }
+
+    private fun setupAmount() {
+        binding.awonarDialogOrderNumberPickerInputAmount.doAfterFocusChange = { number, hasFocus ->
+            if (!hasFocus) {
+                when (binding.awonarDialogOrderToggleOrderAmountType.checkedButtonId) {
+                    R.id.awonar_dialog_order_button_amount_amount -> {
+                        instrument?.id?.let {
+                            orderViewModel.updateAmount(
+                                instrumentId = it,
+                                amount = number,
+                                price = price
+                            )
+                        }
+
+                    }
+                    R.id.awonar_dialog_order_button_amount_unit -> {
+                        instrument?.id?.let {
+                            orderViewModel.updateUnits(
+                                instrumentId = it,
+                                units = number,
+                                price = price
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        binding.awonarDialogOrderToggleOrderAmountType.addOnButtonCheckedListener { _, checkedId, _ ->
+            when (checkedId) {
+                R.id.awonar_dialog_order_button_amount_amount -> {
+                    binding.awonarDialogOrderNumberPickerInputAmount.setNumber(orderViewModel.amountState.value.first)
+                    binding.awonarDialogOrderNumberPickerInputAmount.setPrefix("$")
+                }
+                R.id.awonar_dialog_order_button_amount_unit -> {
+                    binding.awonarDialogOrderNumberPickerInputAmount.setNumber(orderViewModel.amountState.value.second)
+                    binding.awonarDialogOrderNumberPickerInputAmount.setPrefix("")
+                }
+            }
+        }
     }
 
     private fun setupRate() {
@@ -194,7 +264,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                 orderViewModel.updateRate(it)
             }
         }
-
         binding.awonarDialogOrderToggleOrderRateType.addOnButtonCheckedListener { _, checkedId, _ ->
             when (checkedId) {
                 R.id.awonar_dialog_order_button_rate_market -> {
@@ -216,11 +285,11 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     }
 
     private fun setupHeader() {
-        instrument?.let {
-            binding.awonarDialogOrderImageAvatar.loadImage(it.logo)
-            binding.awonarDialogOrderTextTitle.text = it.symbol
-            binding.awonarDialogOrderTextDescription.text = it.industry
-            marketViewModel.getTradingData(it.id)
+        instrument?.let { instrument ->
+            binding.awonarDialogOrderImageAvatar.loadImage(instrument.logo)
+            binding.awonarDialogOrderTextTitle.text = instrument.symbol
+            binding.awonarDialogOrderTextDescription.text = instrument.industry
+            marketViewModel.getTradingData(instrument.id)
         }
         binding.awonarDialogOrderImageIconClose.setOnClickListener {
             dismiss()
@@ -249,16 +318,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
 //                price,
 //                orderType ?: "buy"
 //            )
-        }
-    }
-
-    private fun updateLeverage(leverage: Int) {
-        instrument?.let {
-            orderActivityViewModel.updateLeverage(
-                it.id,
-                price,
-                leverage
-            )
         }
     }
 
@@ -331,7 +390,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         orderActivityViewModel.getDetail(portfolio?.available ?: 0f)
     }
 
-    private fun initAmount() {
+    private fun setupDefaultAmount() {
         portfolio?.let { portfolio ->
             instrument?.let { instrument ->
                 orderViewModel.setDefaultAmount(
@@ -340,7 +399,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                     price = price,
                 )
             }
-
         }
     }
 
@@ -360,17 +418,17 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             else -> {
             }
         }
-
         leverageAdapter.leverageString = tradingData?.leverages ?: emptyList()
         binding.awonarDialogOrderCollapseLeverage.setDescription("X$currentLeverage")
     }
 
-    private fun initLeverageAdapter() {
+    private fun setupLeverageAdapter() {
         leverageAdapter = LeverageAdapter().apply {
             onClick = { text ->
                 val newLeverage: Int = text.replace("X", "").toInt()
-                updateLeverage(newLeverage)
-                validateExposure()
+                instrument?.id?.let { id ->
+                    orderViewModel.updateLeverage(newLeverage, id, price)
+                }
             }
         }
         binding.awonarDialogOrderToggleOrderType.addOnButtonCheckedListener { _, checkedId, _ ->
@@ -385,24 +443,17 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         binding.awonarDialogOrderCollapseLeverage.setAdapter(leverageAdapter)
     }
 
-    private fun initListenerInputAmount() {
-        binding.awonarDialogOrderNumberPickerInputAmount.doAfterFocusChange = { number, hasFocus ->
-            if (!hasFocus) {
-                instrument?.run {
-//                    orderViewModel.updateAmount(id, price, number)
-                }
-            }
-        }
-    }
-
-    private fun validateExposure() {
-        instrument?.let {
+    private fun validateExposure(amount: Float) {
+        instrument?.let { instrument ->
             orderActivityViewModel.validatePositionExposure(
-                id = it.id
+                id = instrument.id,
+                amount = amount,
+                leverage = currentLeverage
             )
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateCurrentPrice() {
         quote?.let {
             price = ConverterQuoteUtil.getCurrentPrice(it, currentLeverage, isBuy == true)
@@ -467,7 +518,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             instrument: Instrument?,
             isBuy: Boolean,
             key: String?,
-            data: Bundle?
+            data: Bundle?,
         ) =
             OrderDialog().apply {
                 arguments = createBundle(key, data).apply {

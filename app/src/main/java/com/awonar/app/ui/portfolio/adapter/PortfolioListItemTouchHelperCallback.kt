@@ -14,12 +14,13 @@ import android.graphics.*
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.awonar.app.R
+import com.awonar.app.ui.portfolio.adapter.holder.InstrumentPortfolioViewHolder
 import timber.log.Timber
 
 
 class PortfolioListItemTouchHelperCallback constructor(
     private val action: IPortfolioListItemTouchHelperCallback,
-    val context: Context
+    val context: Context,
 ) : ItemTouchHelper.Callback() {
 
     companion object {
@@ -41,13 +42,13 @@ class PortfolioListItemTouchHelperCallback constructor(
 
     override fun getMovementFlags(
         recyclerView: RecyclerView,
-        viewHolder: RecyclerView.ViewHolder
+        viewHolder: RecyclerView.ViewHolder,
     ): Int = makeMovementFlags(0, LEFT or RIGHT)
 
     override fun onMove(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
-        target: RecyclerView.ViewHolder
+        target: RecyclerView.ViewHolder,
     ): Boolean = false
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
@@ -68,7 +69,7 @@ class PortfolioListItemTouchHelperCallback constructor(
         dX: Float,
         dY: Float,
         actionState: Int,
-        isCurrentlyActive: Boolean
+        isCurrentlyActive: Boolean,
     ) {
         var newDX = dX
         if (actionState == ACTION_STATE_SWIPE) {
@@ -112,7 +113,7 @@ class PortfolioListItemTouchHelperCallback constructor(
         dX: Float,
         dY: Float,
         actionState: Int,
-        isCurrentlyActive: Boolean
+        isCurrentlyActive: Boolean,
     ) {
         recyclerView.setOnTouchListener { v, event ->
             swipeBack =
@@ -147,7 +148,7 @@ class PortfolioListItemTouchHelperCallback constructor(
         viewHolder: RecyclerView.ViewHolder,
         dX: Float, dY: Float,
         actionState: Int,
-        isCurrentlyActive: Boolean
+        isCurrentlyActive: Boolean,
     ) {
         recyclerView.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
@@ -171,7 +172,7 @@ class PortfolioListItemTouchHelperCallback constructor(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
         dX: Float, dY: Float,
-        actionState: Int, isCurrentlyActive: Boolean
+        actionState: Int, isCurrentlyActive: Boolean,
     ) {
         recyclerView.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_UP) {
@@ -206,14 +207,18 @@ class PortfolioListItemTouchHelperCallback constructor(
 
     private fun setItemsClickable(
         recyclerView: RecyclerView,
-        isClickable: Boolean
+        isClickable: Boolean,
     ) {
         for (i in 0 until recyclerView.childCount) {
             recyclerView.getChildAt(i).isClickable = isClickable
         }
     }
 
-    private fun drawButtons(c: Canvas, viewHolder: RecyclerView.ViewHolder) {
+    private fun drawButtons(
+        c: Canvas,
+        viewHolder: RecyclerView.ViewHolder,
+        isExits: Boolean = false,
+    ) {
         val buttonWidthWithoutPadding = (buttonWidth - 20).toFloat()
         val itemView: View = viewHolder.itemView
         val leftButton = RectF(
@@ -243,7 +248,7 @@ class PortfolioListItemTouchHelperCallback constructor(
         val swipeButton2 = SwipeButton(
             text = "SL",
             imageRes = R.drawable.awonar_ic_sl, textSize,
-            color = R.color.awonar_color_orange,
+            color = R.color.awonar_color_secondary,
             rectF = left2Button,
             context = context
         ) { button, position ->
@@ -257,10 +262,11 @@ class PortfolioListItemTouchHelperCallback constructor(
             itemView.right.toFloat(),
             itemView.bottom.toFloat()
         )
+
         val swipeButton3 = SwipeButton(
-            text = "Close",
+            text = if (isExits) "Close" else "Cancel",
             imageRes = R.drawable.awonar_ic_close, textSize,
-            color = R.color.awonar_color_gray,
+            color = if (isExits) R.color.awonar_color_gray else R.color.awonar_color_orange,
             rectF = rightButton,
             context = context
         ) { button, position ->
@@ -278,7 +284,13 @@ class PortfolioListItemTouchHelperCallback constructor(
 
     fun onDraw(c: Canvas) {
         if (currentItemViewHolder != null) {
-            drawButtons(c, currentItemViewHolder!!)
+            when (currentItemViewHolder) {
+                is InstrumentPortfolioViewHolder -> drawButtons(c,
+                    currentItemViewHolder!!,
+                    (currentItemViewHolder!! as InstrumentPortfolioViewHolder).item?.exitOrder != null)
+
+                else -> drawButtons(c, currentItemViewHolder!!)
+            }
         }
     }
 

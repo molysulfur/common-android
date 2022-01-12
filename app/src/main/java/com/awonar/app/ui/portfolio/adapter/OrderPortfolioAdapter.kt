@@ -26,20 +26,27 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             notifyDataSetChanged()
         }
 
-    var quote: Array<Quote> = emptyArray()
+    var quote: MutableMap<Int, Quote> = mutableMapOf()
         set(value) {
             val oldList = field
             field = value
             OrderPortfolioDiffCallback(oldList, value)
         }
 
-    var onClick: ((String, String) -> Unit)? = null
+    var onClick: ((Int, String) -> Unit)? = null
     var onButtonClick: ((String) -> Unit)? = null
     var onViewAllClick: (() -> Unit)? = null
     var onPieChartClick: ((String?) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
+            OrderPortfolioType.SECTION_PORTFOLIO -> SectionViewHolder(
+                AwonarItemSectionBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
             OrderPortfolioType.EMPTY_PORTFOLIO -> EmptyViewHolder(
                 AwonarItemEmptyBinding.inflate(
                     LayoutInflater.from(parent.context),
@@ -134,7 +141,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is InstrumentPortfolioViewHolder -> holder.bind(
                 item as OrderPortfolioItem.InstrumentPortfolioItem,
                 columns,
-                quote,
+                quote[item.position.instrument.id],
                 onClick
             )
             is CopyTradePortfolioViewHolder -> holder.bind(
@@ -145,11 +152,10 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             )
             is InstrumentPositionCardViewHolder -> holder.bind(
                 item as OrderPortfolioItem.InstrumentPositionCardItem,
-                quote
+                quote[item.position.instrument.id],
             )
             is CopierPositionViewHolder -> holder.bind(
                 item as OrderPortfolioItem.CopierPositionCardItem,
-                quote
             )
             is ListItemViewHolder -> holder.bind(
                 item as OrderPortfolioItem.ListItem
@@ -171,12 +177,15 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is OrderPortfolioViewHolder -> holder.bind(
                 item as OrderPortfolioItem.InstrumentOrderItem,
                 columns,
-                quote,
+                quote[item.position.instrument.id],
                 onClick
             )
             is ViewAllViewHolder -> holder.bind(
                 item as OrderPortfolioItem.ViewAllItem,
                 onViewAllClick
+            )
+            is SectionViewHolder -> holder.bind(
+                item as OrderPortfolioItem.SectionItem
             )
         }
     }
@@ -207,7 +216,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private fun sortCopier(
         item: OrderPortfolioItem.CopierPortfolioItem,
-        column: String?
+        column: String?,
     ): Float = when (column) {
         "Invested" -> item.invested
         "P/L($)" -> item.profitLoss
@@ -223,7 +232,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private fun sortPosition(
         item: OrderPortfolioItem.InstrumentPortfolioItem,
-        column: String?
+        column: String?,
     ): Float = when (column) {
         "Invested" -> item.invested
         "Units" -> item.units
@@ -247,8 +256,8 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     class OrderPortfolioDiffCallback(
-        private val oldItems: Array<Quote>?,
-        private val newItems: Array<Quote>?
+        private val oldItems: MutableMap<Int, Quote>?,
+        private val newItems: MutableMap<Int, Quote>?,
     ) : DiffUtil.Callback() {
 
         override fun getOldListSize(): Int = oldItems?.size ?: 0
@@ -256,11 +265,11 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         override fun getNewListSize(): Int = newItems?.size ?: 0
 
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldItems?.getOrNull(oldItemPosition) === newItems?.getOrNull(newItemPosition)
+            return oldItems?.get(oldItemPosition) === newItems?.get(newItemPosition)
         }
 
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldItems?.getOrNull(oldItemPosition) == newItems?.getOrNull(newItemPosition)
+            return oldItems?.get(oldItemPosition) == newItems?.get(newItemPosition)
         }
     }
 

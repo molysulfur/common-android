@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="columnViewModel"
+            type="com.awonar.app.ui.columns.ColumnsViewModel" />
+
+        <variable
+            name="market"
+            type="com.awonar.app.ui.market.MarketViewModel" />
+
+        <variable
+            name="viewModel"
+            type="com.awonar.app.ui.portfolio.PortFolioViewModel" />
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_portfolio_text_title_section"
+            style="@style/Awonar.Text.Bold.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+            android:drawableEnd="@drawable/awonar_ic_dropdown_white"
+            android:drawableTint="@color/black"
+            android:padding="@dimen/awonar_size_margin_padding_normal"
+            android:text="Portfolio"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/awonar_portfolio_image_icon_filter"
+            style="@style/Awonar.Button.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+            android:scaleType="fitXY"
+            android:src="@drawable/awonar_ic_filter"
+            android:tint="@color/awonar_color_primary"
+            app:layout_constraintBottom_toBottomOf="@+id/awonar_portfolio_text_title_section"
+            app:layout_constraintEnd_toStartOf="@+id/awonar_portfolio_image_icon_setting"
+            app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_text_title_section" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/awonar_portfolio_image_icon_setting"
+            style="@style/Awonar.Button.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+            android:scaleType="fitXY"
+            android:src="@drawable/awonar_ic_setting"
+            android:tint="@color/awonar_color_primary"
+            app:layout_constraintBottom_toBottomOf="@+id/awonar_portfolio_text_title_section"
+            app:layout_constraintEnd_toStartOf="@+id/awonar_portfolio_image_change_style"
+            app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_text_title_section" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/awonar_portfolio_image_change_style"
+            style="@style/Awonar.Button.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+            android:scaleType="fitXY"
+            android:src="@drawable/awonar_ic_list"
+            android:tag="market"
+            android:tint="@color/awonar_color_primary"
+            app:layout_constraintBottom_toBottomOf="@+id/awonar_portfolio_text_title_section"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_text_title_section" />
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/awonar_color_background"
+            android:padding="@dimen/awonar_size_margin_padding_extra_small"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_portfolio_text_title_section">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_portfolio_position_text_column_one"
+                style="@style/Awonar.Text.Default.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@{columnViewModel.activedColumnState[0] ?? ``}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/awonar_portfolio_position_text_column_two"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_portfolio_position_text_column_two"
+                style="@style/Awonar.Text.Default.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@{columnViewModel.activedColumnState[1] ?? ``}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/awonar_portfolio_position_text_column_three"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/awonar_portfolio_position_text_column_one"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_portfolio_position_text_column_three"
+                style="@style/Awonar.Text.Default.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@{columnViewModel.activedColumnState[2] ?? ``}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/awonar_portfolio_position_text_column_four"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/awonar_portfolio_position_text_column_two"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_portfolio_position_text_column_four"
+                style="@style/Awonar.Text.Default.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@{columnViewModel.activedColumnState[3] ?? ``}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/awonar_portfolio_position_text_column_three"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/awonar_main_drawer_navigation_host_position"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:defaultNavHost="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+            app:navGraph="@navigation/awonar_position_graph" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

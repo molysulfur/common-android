@@ -20,6 +20,8 @@ import com.awonar.app.dialog.menu.MenuDialog
 import com.awonar.app.dialog.menu.MenuDialogButtonSheet
 import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.market.MarketViewModel
+import com.awonar.app.ui.portfolio.inside.PortFolioInsideCopierFragmentArgs
+import com.awonar.app.ui.portfolio.inside.PortFolioInsideCopierFragmentDirections
 import com.molysulfur.library.extension.toast
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
@@ -75,7 +77,7 @@ class PortFolioInsideCopierFragment : Fragment() {
                     when (pair.second) {
                         "instrument" -> findNavController()
                             .navigate(
-                                PortFolioInsideCopierFragmentDirections.actionPortFolioInsideCopierFragmentToPortFolioInsideInstrumentProfileFragment()
+                                PortFolioInsideCopierFragmentDirections.actionPortFolioInsideCopierFragmentToPortFolioInsideInstrumentCopierFragment()
                                     .apply {
                                         this.copier = copier.id
                                         this.instrumentId = position?.instrumentId ?: 0
@@ -136,7 +138,7 @@ class PortFolioInsideCopierFragment : Fragment() {
             .setMenus(menus)
             .build()
         columnsViewModel.setColumnType("market")
-        args.positionId.let {
+        args.index.let {
             portFolioViewModel.getCopierPosition(it)
         }
 

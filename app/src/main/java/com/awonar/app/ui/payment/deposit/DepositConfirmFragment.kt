@@ -6,11 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.awonar.app.databinding.AwonarFragmentDepositConfirmBinding
+import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
+import kotlinx.coroutines.flow.collect
 
 class DepositConfirmFragment : Fragment() {
 
     private val viewModel: DepositViewModel by activityViewModels()
+
 
     private val binding: AwonarFragmentDepositConfirmBinding by lazy {
         AwonarFragmentDepositConfirmBinding.inflate(layoutInflater)
@@ -22,6 +26,11 @@ class DepositConfirmFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        launchAndRepeatWithViewLifecycle {
+            viewModel.navigationActions.collect {
+                findNavController().navigate(it)
+            }
+        }
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
@@ -37,5 +46,8 @@ class DepositConfirmFragment : Fragment() {
             "%.2f USD".format(viewModel.amount.value.times(viewModel.currencyRate.value))
         binding.commission =
             "%s USD".format(viewModel.paymentSetting.value?.commissionDepositDollar)
+        binding.awonarDepositConfirmButtonSubmit.setOnClickListener {
+            viewModel.navigateQRCodeScanner()
+        }
     }
 }

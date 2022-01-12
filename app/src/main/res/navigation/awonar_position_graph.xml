@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/awonar_position_graph"
+    app:startDestination="@id/positionMarketFragment">
+
+    <fragment
+        android:id="@+id/positionMarketFragment"
+        android:name="com.awonar.app.ui.portfolio.position.PositionMarketFragment"
+        android:label="PositionMarketFragment"
+        tools:layout="@layout/awonar_fragment_position_market">
+
+        <action
+            android:id="@+id/action_positionMarketFragment_to_positionManualFragment"
+            app:destination="@+id/positionManualFragment"
+            app:enterAnim="@anim/common_anim_right_to_left_in"
+            app:exitAnim="@anim/common_anim_right_to_left_out"
+            app:popEnterAnim="@anim/common_anim_left_to_right_in"
+            app:popExitAnim="@anim/common_anim_left_to_right_out" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/positionManualFragment"
+        android:name="com.awonar.app.ui.portfolio.position.PositionManualFragment"
+        android:label="PositionManualFragment"
+        tools:layout="@layout/awonar_fragment_position_manual">
+
+        <action
+            android:id="@+id/action_positionManualFragment_to_positionChartFragment"
+            app:destination="@+id/positionChartFragment"
+            app:enterAnim="@anim/common_anim_right_to_left_in"
+            app:exitAnim="@anim/common_anim_right_to_left_out"
+            app:popEnterAnim="@anim/common_anim_left_to_right_in"
+            app:popExitAnim="@anim/common_anim_left_to_right_out" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/positionChartFragment"
+        android:name="com.awonar.app.ui.portfolio.position.PositionChartFragment"
+        android:label="PositionChartFragment">
+
+        <action
+            android:id="@+id/action_positionChartFragment_to_positionCardFragment"
+            app:destination="@+id/positionCardFragment"
+            app:enterAnim="@anim/common_anim_right_to_left_in"
+            app:exitAnim="@anim/common_anim_right_to_left_out"
+            app:popEnterAnim="@anim/common_anim_left_to_right_in"
+            app:popExitAnim="@anim/common_anim_left_to_right_out" />
+    </fragment>
+    <fragment
+        android:id="@+id/positionCardFragment"
+        android:name="com.awonar.app.ui.portfolio.position.PositionCardFragment"
+        android:label="PositionCardFragment">
+
+        <action
+            android:id="@+id/action_positionCardFragment_to_positionMarketFragment"
+            app:destination="@+id/positionMarketFragment"
+            app:enterAnim="@anim/common_anim_right_to_left_in"
+            app:exitAnim="@anim/common_anim_right_to_left_out"
+            app:popEnterAnim="@anim/common_anim_left_to_right_in"
+            app:popExitAnim="@anim/common_anim_left_to_right_out" />
+    </fragment>
+
+
+</navigation>

@@ -11,11 +11,11 @@ import com.akexorcist.library.dialoginteractor.createBundle
 import com.awonar.android.constrant.MarketOrderType
 import com.awonar.android.model.market.Quote
 import com.awonar.android.model.portfolio.Position
+import com.awonar.android.shared.steaming.QuoteSteamingManager
 import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarDialogPartialcloseBinding
 import com.awonar.app.dialog.DialogViewModel
-import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.order.OrderViewModel
 import com.awonar.app.utils.ImageUtil
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
@@ -26,7 +26,6 @@ class PartialCloseDialog :
 
     private lateinit var binding: AwonarDialogPartialcloseBinding
     private val viewModel: OrderViewModel by activityViewModels()
-    private val marketViewModel: MarketViewModel by activityViewModels()
     private var position: Position? = null
     private var quote: Quote? = null
     private var isPartial = false
@@ -35,7 +34,7 @@ class PartialCloseDialog :
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = AwonarDialogPartialcloseBinding.inflate(inflater)
         launchAndRepeatWithViewLifecycle {
@@ -61,28 +60,20 @@ class PartialCloseDialog :
             }
         }
         launchAndRepeatWithViewLifecycle {
-            marketViewModel.quoteSteamingState.collect { quotes ->
+            QuoteSteamingManager.quotesState.collect { quotes ->
                 if (quote == null) {
-                    quote = quotes.find { it.id == position?.instrument?.id }
+                    quote = quotes[position?.instrument?.id]
                     marketOrderType =
                         if (quote?.status == "open") MarketOrderType.OPEN_ORDER else MarketOrderType.PENDING_ORDER
                     position?.let {
                         viewModel.setDefaultPartialAmount(
                             position = it,
-                            price = ConverterQuoteUtil.getCurrentPrice(
-                                quote = quote!!,
-                                leverage = position?.leverage ?: 1,
-                                isBuy = position?.isBuy == true
-                            )
+                            price = getCurrentPrice()
                         )
                     }
                 }
-                quote = quotes.find { it.id == position?.instrument?.id }
-                val current = ConverterQuoteUtil.getCurrentPrice(
-                    quote = quote!!,
-                    leverage = position?.leverage ?: 1,
-                    isBuy = position?.isBuy == true
-                )
+                quote = quotes[position?.instrument?.id]
+                val current = getCurrentPrice()
                 binding.price = "%s".format(current)
                 position?.let {
                     val pl = viewModel.getProfit(current, it)
@@ -95,11 +86,16 @@ class PartialCloseDialog :
         return binding.root
     }
 
-    private fun getCurrentPrice() = ConverterQuoteUtil.getCurrentPrice(
-        quote!!,
-        position!!.leverage,
-        position!!.isBuy
-    )
+    private fun getCurrentPrice(): Float {
+        quote?.let {
+            return ConverterQuoteUtil.getCurrentPrice(
+                it,
+                position?.leverage ?: 1,
+                position?.isBuy == true
+            )
+        }
+        return 0f
+    }
 
     private fun updateNumberPicker(it: Pair<Float, Float>) {
         when (binding.awonarPartialCloseButtonGroupType.checkedButtonId) {
@@ -166,10 +162,10 @@ class PartialCloseDialog :
                     val current = getCurrentPrice()
                     when (binding.awonarPartialCloseButtonGroupType.checkedButtonId) {
                         R.id.awonar_partial_close_button_amount -> {
-                            viewModel.updateAmount(it.instrument.id, number, it.leverage, current)
+                            viewModel.updateAmount(it.instrument.id, number, current)
                         }
                         R.id.awonar_partial_close_button_units -> {
-                            viewModel.updateUnits(it.instrument.id, number, it.leverage, current)
+                            viewModel.updateUnits(it.instrument.id, number, current)
                         }
                     }
 
@@ -220,7 +216,7 @@ class PartialCloseDialog :
         private fun newInstance(
             position: Position?,
             key: String?,
-            data: Bundle?
+            data: Bundle?,
         ) =
             PartialCloseDialog().apply {
                 arguments = createBundle(key, data).apply {

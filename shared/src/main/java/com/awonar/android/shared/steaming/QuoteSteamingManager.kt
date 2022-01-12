@@ -4,7 +4,11 @@ import com.awonar.android.model.market.Quote
 import com.awonar.android.shared.api.NetworkClient
 import com.awonar.android.shared.db.hawk.AccessTokenManager
 import com.google.gson.Gson
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import okhttp3.*
+import okhttp3.internal.toImmutableMap
 import okio.ByteString
 import org.json.JSONObject
 import timber.log.Timber
@@ -26,11 +30,14 @@ object QuoteSteamingEvent {
 @Singleton
 class QuoteSteamingManager @Inject constructor(
     private val accessTokenManager: AccessTokenManager,
-    private val networkClient: NetworkClient
+    private val networkClient: NetworkClient,
 ) :
     WebSocketListener() {
 
     companion object {
+
+        private val _quotesState = MutableStateFlow(mutableMapOf<Int, Quote>())
+        val quotesState: StateFlow<MutableMap<Int, Quote>> get() = _quotesState
         private val QUOTESTEAMING_CLOSE_CODE = 10000
         private val QUOTESTEAMING_CLOSE_MESSAGE = "Close quote steaming"
         private val EVENT_KEY = "event"
@@ -94,6 +101,12 @@ class QuoteSteamingManager @Inject constructor(
                     data,
                     Array<Quote>::class.java
                 )
+                val mapper = mutableMapOf<Int, Quote>()
+                mapper.putAll(_quotesState.value)
+                quotes.map {
+                    mapper[it.id] = it
+                }
+                _quotesState.value = mapper
                 listener?.marketQuoteCallback(event = event, data = quotes)
             } catch (e: Exception) {
                 e.printStackTrace()
