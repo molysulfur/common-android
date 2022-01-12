@@ -99,6 +99,9 @@ class CopierDialog : InteractorDialog<CopierMapper, CopierListener, DialogViewMo
         super.onViewCreated(view, savedInstanceState)
         val copiesId = arguments?.getString(EXTRA_ID)
         copyViewModel.getTraderInfo(copiesId)
+        binding.awonarDialogCopierToolbar.setNavigationOnClickListener {
+            dismiss()
+        }
         binding.awonarDialogCopierButtonCopy.setOnClickListener {
             copiesId?.let { id ->
                 copyViewModel.submitCopy(id)
