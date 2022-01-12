@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class ValidationAmountCopyUseCase @Inject constructor(
     private val portfolioRepository: PortfolioRepository,
-    @IoDispatcher dispatcher: CoroutineDispatcher
+    @IoDispatcher dispatcher: CoroutineDispatcher,
 ) : UseCase<Float, Unit>(dispatcher) {
     override suspend fun execute(parameters: Float) {
         portfolioRepository.getPortFolio().collect {

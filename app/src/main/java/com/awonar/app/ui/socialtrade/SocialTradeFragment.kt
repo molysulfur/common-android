@@ -17,6 +17,7 @@ import com.awonar.app.ui.socialtrade.adapter.SocialTradeRecommendedAdapter
 import com.molysulfur.library.extension.openActivity
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
+import timber.log.Timber
 
 class SocialTradeFragment : Fragment() {
 

@@ -15,13 +15,16 @@ import retrofit2.Response
 import javax.inject.Inject
 
 class SocialTradeRepository @Inject constructor(
-    private val service: SocialTradeService
+    private val service: SocialTradeService,
 ) {
 
     fun getTraders(request: TradersRequest): Flow<Result<List<Trader>?>> =
         object : DirectNetworkFlow<Unit, List<Trader>, TradersResponse>() {
             override fun createCall(): Response<TradersResponse> =
-                service.getTraders(sort = request.filter, page = request.page, uid = request.uid)
+                service.getTraders(sort = request.filter,
+                    maxRisk = request.maxRisk,
+                    page = request.page,
+                    uid = request.uid)
                     .execute()
 
             override fun convertToResultType(response: TradersResponse): List<Trader> =

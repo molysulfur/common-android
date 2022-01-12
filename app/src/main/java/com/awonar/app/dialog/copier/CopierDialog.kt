@@ -13,6 +13,7 @@ import com.awonar.app.R
 import com.awonar.app.databinding.AwonarDialogCopierBinding
 import com.awonar.app.dialog.DialogViewModel
 import com.awonar.app.ui.portfolio.PortFolioViewModel
+import com.awonar.app.utils.ColorChangingUtil
 import com.awonar.app.utils.ImageUtil
 import com.molysulfur.library.extension.toast
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
@@ -30,14 +31,31 @@ class CopierDialog : InteractorDialog<CopierMapper, CopierListener, DialogViewMo
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         launchAndRepeatWithViewLifecycle {
-            copyViewModel.traderState.collect {
-                ImageUtil.loadImage(binding.awonarDialogCopierImageAvatar, it?.image)
-                binding.username = it?.username
-                binding.description = "12 Months return"
-                binding.gain = "%.2f%s".format(it?.gain, "%")
+            copyViewModel.stopLossError.collect {
+                when (binding.awonarDialogCopierToggleStoploss.checkedButtonId) {
+                    R.id.awonar_dialog_copier_toggle_amount -> {
+                        binding.awonarDialogCopierNumberpickerStoploss.setHelp(copyViewModel.stopLossError.value.first)
+                    }
+                    R.id.awonar_dialog_copier_toggle_ratio -> {
+                        binding.awonarDialogCopierNumberpickerStoploss.setHelp(copyViewModel.stopLossError.value.second)
+                    }
+                }
+            }
+        }
+        launchAndRepeatWithViewLifecycle {
+            copyViewModel.traderState.collect { user ->
+                user?.let {
+                    ImageUtil.loadImage(binding.awonarDialogCopierImageAvatar, it.image)
+                    binding.username = it.username
+                    binding.description = "12 Months return"
+                    binding.gain = "%.2f%s".format(it.gain, "%")
+                    binding.awonarDialogCopierTextGain.setTextColor(ColorChangingUtil.getTextColorChange(
+                        requireContext(),
+                        it.gain))
+                }
             }
         }
         launchAndRepeatWithViewLifecycle {
@@ -60,19 +78,16 @@ class CopierDialog : InteractorDialog<CopierMapper, CopierListener, DialogViewMo
                         "Stop copying if copy value drops below : $%.2f".format(stopLoss.first)
                     when (binding.awonarDialogCopierToggleStoploss.checkedButtonId) {
                         R.id.awonar_dialog_copier_toggle_amount -> {
+                            binding.awonarDialogCopierNumberpickerStoploss.setHelp(copyViewModel.stopLossError.value.first)
                             binding.awonarDialogCopierNumberpickerStoploss.setPrefix("$")
                             binding.awonarDialogCopierNumberpickerStoploss.setNumber(stopLoss.first)
                         }
                         R.id.awonar_dialog_copier_toggle_ratio -> {
+                            binding.awonarDialogCopierNumberpickerStoploss.setHelp(copyViewModel.stopLossError.value.second)
                             binding.awonarDialogCopierNumberpickerStoploss.setPrefix("")
                             binding.awonarDialogCopierNumberpickerStoploss.setNumber(stopLoss.second)
                         }
                     }
-                }
-            }
-            launch {
-                copyViewModel.stopLossError.collect {
-                    binding.awonarDialogCopierNumberpickerStoploss.setHelp(it)
                 }
             }
         }
@@ -121,10 +136,12 @@ class CopierDialog : InteractorDialog<CopierMapper, CopierListener, DialogViewMo
         binding.awonarDialogCopierToggleStoploss.addOnButtonCheckedListener { group, checkedId, isChecked ->
             when (checkedId) {
                 R.id.awonar_dialog_copier_toggle_amount -> {
+                    binding.awonarDialogCopierNumberpickerStoploss.setHelp(copyViewModel.stopLossError.value.first)
                     binding.awonarDialogCopierNumberpickerStoploss.setPrefix("$")
                     binding.awonarDialogCopierNumberpickerStoploss.setNumber(copyViewModel.stopLoss.value.first)
                 }
                 R.id.awonar_dialog_copier_toggle_ratio -> {
+                    binding.awonarDialogCopierNumberpickerStoploss.setHelp(copyViewModel.stopLossError.value.second)
                     binding.awonarDialogCopierNumberpickerStoploss.setPrefix("")
                     binding.awonarDialogCopierNumberpickerStoploss.setNumber(copyViewModel.stopLoss.value.second * 100)
                 }
@@ -134,7 +151,7 @@ class CopierDialog : InteractorDialog<CopierMapper, CopierListener, DialogViewMo
             binding.awonarDialogCopierGroupStoploss.visibility = View.VISIBLE
         }
         binding.awonarDialogCopierToolbar.setNavigationOnClickListener {
-           findNavController().popBackStack()
+            findNavController().popBackStack()
         }
     }
 
@@ -172,7 +189,7 @@ class CopierDialog : InteractorDialog<CopierMapper, CopierListener, DialogViewMo
         private fun newInstance(
             key: String?,
             data: Bundle?,
-            copiesId: String?
+            copiesId: String?,
         ) =
             CopierDialog().apply {
                 arguments = createBundle(key, data).apply {

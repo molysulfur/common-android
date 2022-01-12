@@ -18,11 +18,12 @@ import javax.inject.Inject
 class GetUserProfileUseCase @Inject constructor(
     private val repository: UserRepository,
     private val preference: UserPreferenceManager,
-    @IoDispatcher val ioDispatcher: CoroutineDispatcher
+    @IoDispatcher val ioDispatcher: CoroutineDispatcher,
 ) : FlowUseCase<UserRequest, User?>(ioDispatcher) {
     override fun execute(parameters: UserRequest): Flow<Result<User?>> = flow {
         val owner: User? = preference.get()
         var isMe = true
+        Timber.e("${parameters.userId}, ${owner?.id}")
         val result = if (owner?.id == null || parameters.userId.equals(owner.id)) {
             repository.getUser(UserRequest(needFresh = false))
         } else {

@@ -3,8 +3,6 @@ package com.awonar.app.ui.user
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.awonar.android.model.bookbank.BookBank
-import com.awonar.android.model.payment.MethodPayment
-import com.awonar.android.model.settting.Bank
 import com.awonar.android.model.user.User
 import com.awonar.android.model.user.UserRequest
 import com.awonar.android.shared.domain.bookbank.GetBookBankUseCase

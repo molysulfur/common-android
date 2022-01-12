@@ -7,7 +7,7 @@ import com.awonar.app.databinding.AwonarItemCopiesRecommendedBinding
 import timber.log.Timber
 
 class RecommendedViewHolder constructor(
-    private val binding: AwonarItemCopiesRecommendedBinding
+    private val binding: AwonarItemCopiesRecommendedBinding,
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(trader: Trader, onItemClick: ((String?) -> Unit)?) {
         with(binding.awonarItemCopiesCardHolder) {
@@ -28,7 +28,6 @@ class RecommendedViewHolder constructor(
             }
 
             setOnClickListener {
-                Timber.e("$trader")
                 onItemClick?.invoke(trader.id)
             }
         }

@@ -8,5 +8,6 @@ import kotlinx.parcelize.Parcelize
 data class TradersRequest(
     val filter: String? = null,
     val page: Int = 0,
+    val maxRisk: Int = 6,
     val uid: String? = null,
 ) : Parcelable

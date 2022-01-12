@@ -18,6 +18,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -60,14 +61,21 @@ class CopyViewModel @Inject constructor(
         )
     )
     val stopLoss: StateFlow<Pair<Float, Float>> get() = _stopLoss
-    private val _stopLossError: MutableStateFlow<String> = MutableStateFlow("")
-    val stopLossError: StateFlow<String> get() = _stopLossError
+    private val _stopLossError: MutableStateFlow<Pair<String, String>> = MutableStateFlow(
+        Pair("", "Min 5.00%, Max 95.00%")
+    )
+    val stopLossError: StateFlow<Pair<String, String>> get() = _stopLossError
 
     init {
         viewModelScope.launch {
             getMyPortFolioUseCase(true).collect {
-                val newAmount = it.successOr(null)?.available ?: 0f * 0.05f
-                _amount.emit(newAmount)
+                val available = it.successOr(null)?.available ?: 0f
+                val allocate = it.successOr(null)?.totalAllocated ?: 0f
+                val MAX_AMOUNT = 100000f.minus(allocate)
+                val MIN_AMOUNT = 100f
+                _stopLossError.emit(Pair("Min $%.2f, Max $%.2f".format(MIN_AMOUNT, MAX_AMOUNT),
+                    _stopLossError.value.second))
+                _amount.emit(available.times(0.05f))
             }
         }
     }
@@ -111,7 +119,6 @@ class CopyViewModel @Inject constructor(
             )
             if (result is Result.Error) {
                 val exception = result.exception as ValidationStopLossCopyException
-                _stopLossError.value = exception.errorMessage
                 updateStopLoss(exception.value)
             }
         }
@@ -120,7 +127,9 @@ class CopyViewModel @Inject constructor(
     fun getTraderInfo(copiesId: String?) {
         copiesId?.let {
             viewModelScope.launch {
-                getTradersUseCase(TradersRequest(uid = it, page = 1)).collect { result ->
+                getTradersUseCase(TradersRequest(uid = it,
+                    page = 1,
+                    maxRisk = 10)).collect { result ->
                     val trader = result.successOr(null)?.get(0)
                     _traderState.value = trader
                 }
