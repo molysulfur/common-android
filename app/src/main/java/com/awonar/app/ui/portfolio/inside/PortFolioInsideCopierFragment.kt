@@ -11,6 +11,12 @@ import androidx.navigation.fragment.navArgs
 import com.awonar.android.model.portfolio.Copier
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentPortfolioInsideCopierBinding
+import com.awonar.app.dialog.copier.add.AddFundDialog
+import com.awonar.app.dialog.copier.pause.PauseCopierDialog
+import com.awonar.app.dialog.copier.remove.RemoveFundDialog
+import com.awonar.app.dialog.copier.stop.StopCopierDialog
+import com.awonar.app.dialog.menu.MenuDialog
+import com.awonar.app.dialog.menu.MenuDialogButtonSheet
 import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.portfolio.PortFolioViewModel
@@ -35,6 +41,16 @@ class PortFolioInsideCopierFragment : Fragment() {
     private val binding: AwonarFragmentPortfolioInsideCopierBinding by lazy {
         AwonarFragmentPortfolioInsideCopierBinding.inflate(layoutInflater)
     }
+
+    private var menus: ArrayList<MenuDialog> = arrayListOf(
+        MenuDialog(key = "add_fund", text = "Add Fund"),
+        MenuDialog(key = "remove_fund", text = "Remove Fund"),
+        MenuDialog(key = "pause_copy", text = "Pause Copy"),
+        MenuDialog(key = "set_stoploss", text = "Set Stoploss Copy"),
+        MenuDialog(key = "stop_copy", text = "Stop Copy"),
+    )
+
+    private lateinit var settingBottomSheet: MenuDialogButtonSheet
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -90,6 +106,30 @@ class PortFolioInsideCopierFragment : Fragment() {
     }
 
     private fun setupToolbar() {
+        settingBottomSheet = MenuDialogButtonSheet.Builder()
+            .setListener(object : MenuDialogButtonSheet.MenuDialogButtonSheetListener {
+                override fun onMenuClick(menu: MenuDialog) {
+                    when (menu.key) {
+                        "add_fund" -> {
+                            openAddFundDialog()
+                        }
+                        "remove_fund" -> {
+                            openRemoveFundDialog()
+                        }
+                        "pause_copy" -> {
+                            openPauseCopyDialog()
+                        }
+                        "stop_copy" -> {
+                            openStopCopyDialog()
+                        }
+                    }
+                }
+            })
+            .setMenus(menus)
+            .build()
+        binding.awonarPortfolioInsideCopierPositionHeader.onSetting = {
+            settingBottomSheet.show(childFragmentManager, "SettingButtonSheet")
+        }
         binding.awonarPortfolioInsideInstrumentToolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
@@ -115,6 +155,34 @@ class PortFolioInsideCopierFragment : Fragment() {
                 else -> false
             }
         }
+    }
+
+    private fun openPauseCopyDialog() {
+        PauseCopierDialog.Builder()
+            .setCopies(copier = insideViewModel.copiesState.value)
+            .build()
+            .show(parentFragmentManager)
+    }
+
+    private fun openRemoveFundDialog() {
+        RemoveFundDialog.Builder()
+            .setCopies(copier = insideViewModel.copiesState.value)
+            .build()
+            .show(parentFragmentManager)
+    }
+
+    private fun openAddFundDialog() {
+        AddFundDialog.Builder()
+            .setCopies(copier = insideViewModel.copiesState.value)
+            .build()
+            .show(parentFragmentManager)
+    }
+
+    private fun openStopCopyDialog() {
+        StopCopierDialog.Builder()
+            .setCopies(copier = insideViewModel.copiesState.value)
+            .build()
+            .show(parentFragmentManager)
     }
 
 }

@@ -31,7 +31,7 @@ class AddFundDialog : InteractorDialog<AddFundMapper, AddFundListener, DialogVie
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         launchAndRepeatWithViewLifecycle {
             launch {
@@ -106,7 +106,7 @@ class AddFundDialog : InteractorDialog<AddFundMapper, AddFundListener, DialogVie
         }
 
 
-        fun build(): RemoveFundDialog = newInstance(key, data, copier)
+        fun build(): AddFundDialog = newInstance(key, data, copier)
     }
 
     companion object {
@@ -116,9 +116,9 @@ class AddFundDialog : InteractorDialog<AddFundMapper, AddFundListener, DialogVie
         private fun newInstance(
             key: String?,
             data: Bundle?,
-            copier: Copier?
+            copier: Copier?,
         ) =
-            RemoveFundDialog().apply {
+            AddFundDialog().apply {
                 arguments = createBundle(key, data).apply {
                     putParcelable(EXTRA_COPIER, copier)
                 }

@@ -73,4 +73,8 @@
     <string name="awonar_text_close">Close</string>
     <string name="awonar_text_confirm">Confirm</string>
     <string name="awonar_title_total_close">Total Close</string>
+    <string name="awonar_text_ratio">Ratio</string>
+    <string name="awonar_text_remove_fund">Remove Fund</string>
+    <string name="awonar_text_viewmore">View More</string>
+    <string name="awonar_text_add_fund">Add Fund</string>
 </resources>

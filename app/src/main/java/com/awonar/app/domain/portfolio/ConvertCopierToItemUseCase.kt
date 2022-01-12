@@ -27,10 +27,10 @@ class ConvertCopierToItemUseCase @Inject constructor(
             val totalUnits: Double = sumUnit(copier.positions ?: emptyList())
             val avgOpen: Double = calAvgOpen(copier.positions?.filter { it.isBuy } ?: emptyList(),
                 copier.positions?.filter { !it.isBuy } ?: emptyList())
-            val invested = copier.initialInvestment
             val fees = copier.totalFees
             val csl = copier.stopLossAmount
             val cslPercent = copier.stopLossPercentage
+            val invested = copier.initialInvestment.plus(moneyInMoneyOut)
             val netInvested = copier.initialInvestment.plus(moneyInMoneyOut)
             val current = 0f // not used
             val leverage = 0f  // not used

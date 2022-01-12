@@ -40,8 +40,6 @@ class PortFolioViewModel @Inject constructor(
     private val getPieChartInstrumentAllocateUseCase: GetPieChartInstrumentAllocateUseCase,
     private val getPieChartInstrumentExposureUseCase: GetPieChartInstrumentExposureUseCase,
 ) : ViewModel() {
-    private val  _copierState = MutableStateFlow<Copier?>(null)
-    val copierState get() = _copierState
 
     private val _profitState = MutableStateFlow(0f)
     val profitState: StateFlow<Float> get() = _profitState

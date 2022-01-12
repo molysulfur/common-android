@@ -15,9 +15,8 @@ import com.molysulfur.library.result.Result
 import com.molysulfur.library.result.succeeded
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.abs
@@ -34,14 +33,14 @@ class CopyViewModel @Inject constructor(
     private val getMyPortFolioUseCase: GetMyPortFolioUseCase,
     private val updateFundUseCase: UpdateFundUseCase,
     private val validateRemoveFundUseCase: ValidateRemoveFundUseCase,
-    private val updatePauseCopyUseCase: UpdatePauseCopyUseCase
+    private val updatePauseCopyUseCase: UpdatePauseCopyUseCase,
 ) : ViewModel() {
 
-    private val _messageState = MutableStateFlow("")
-    val messageState: StateFlow<String> get() = _messageState
+    private val _messageState = Channel<String>(Channel.CONFLATED)
+    val messageState: Flow<String> get() = _messageState.receiveAsFlow()
 
-    private val _errorState = MutableStateFlow("")
-    val errorState: StateFlow<String> get() = _errorState
+    private val _errorState = Channel<String>(Channel.CONFLATED)
+    val errorState: Flow<String> get() = _errorState.receiveAsFlow()
 
     private val _isCopyExistState = MutableStateFlow(false)
 
@@ -50,7 +49,6 @@ class CopyViewModel @Inject constructor(
 
     private val _amount: MutableStateFlow<Float> = MutableStateFlow(0f)
     val amount: StateFlow<Float> get() = _amount
-
 
     private val _amountError: MutableStateFlow<String> = MutableStateFlow("")
     val amountError: StateFlow<String> get() = _amountError
@@ -153,11 +151,11 @@ class CopyViewModel @Inject constructor(
         viewModelScope.launch {
             stopCopyUseCase(id).collect {
                 if (it.succeeded) {
-                    _messageState.value = "Successful."
+                    _messageState.send("Successful.")
                 }
 
                 if (it is Result.Error) {
-                    _errorState.value = it.exception.message ?: ""
+                    _errorState.send(it.exception.message ?: "")
                 }
 
             }
@@ -172,11 +170,11 @@ class CopyViewModel @Inject constructor(
             )
             updateFundUseCase(request).collect {
                 if (it.succeeded) {
-                    _messageState.value = "Successful."
+                    _messageState.send("Successful.")
                 }
 
                 if (it is Result.Error) {
-                    _errorState.value = it.exception.message ?: ""
+                    _errorState.send(it.exception.message ?: "")
                 }
             }
         }
@@ -205,11 +203,11 @@ class CopyViewModel @Inject constructor(
             )
             updateFundUseCase(request).collect {
                 if (it.succeeded) {
-                    _messageState.value = "Successful."
+                    _messageState.send("Successful.")
                 }
 
                 if (it is Result.Error) {
-                    _errorState.value = it.exception.message ?: ""
+                    _errorState.send(it.exception.message ?: "")
                 }
             }
         }
@@ -224,11 +222,11 @@ class CopyViewModel @Inject constructor(
                 )
             ).collect {
                 if (it.succeeded) {
-                    _messageState.value = "Successfully."
+                    _messageState.send("Successfully.")
                 }
 
                 if (it is Result.Error) {
-                    _errorState.value = it.exception.message ?: ""
+                    _errorState.send(it.exception.message ?: "")
                 }
             }
         }
