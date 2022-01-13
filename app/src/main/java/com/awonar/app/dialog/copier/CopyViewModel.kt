@@ -66,7 +66,7 @@ class CopyViewModel @Inject constructor(
     )
     val stopLossError: StateFlow<Pair<String, String>> get() = _stopLossError
 
-    init {
+    fun getDefaultAmount() {
         viewModelScope.launch {
             getMyPortFolioUseCase(true).collect {
                 val available = it.successOr(null)?.available ?: 0f
@@ -148,7 +148,7 @@ class CopyViewModel @Inject constructor(
         viewModelScope.launch {
             val request = CopiesRequest(
                 copyExistingPositions = _isCopyExistState.value,
-                stopLossPercentage = _stopLoss.value.first,
+                stopLossPercentage = _stopLoss.value.second.times(100f),
                 initialInvestment = _amount.value,
                 parentUserId = copyId
             )
