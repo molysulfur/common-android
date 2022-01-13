@@ -12,6 +12,7 @@ import com.awonar.android.model.portfolio.Copier
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentPortfolioInsideCopierBinding
 import com.awonar.app.dialog.copier.add.AddFundDialog
+import com.awonar.app.dialog.copier.edit.EditCopierDialog
 import com.awonar.app.dialog.copier.pause.PauseCopierDialog
 import com.awonar.app.dialog.copier.remove.RemoveFundDialog
 import com.awonar.app.dialog.copier.stop.StopCopierDialog
@@ -122,6 +123,9 @@ class PortFolioInsideCopierFragment : Fragment() {
                         "stop_copy" -> {
                             openStopCopyDialog()
                         }
+                        "set_stoploss" -> {
+                            openEditCopyDialog()
+                        }
                     }
                 }
             })
@@ -155,6 +159,13 @@ class PortFolioInsideCopierFragment : Fragment() {
                 else -> false
             }
         }
+    }
+
+    private fun openEditCopyDialog() {
+        EditCopierDialog.Builder()
+            .setCopies(copier = insideViewModel.copiesState.value)
+            .build()
+            .show(parentFragmentManager)
     }
 
     private fun openPauseCopyDialog() {

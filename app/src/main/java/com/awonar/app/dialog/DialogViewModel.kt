@@ -5,6 +5,7 @@ import com.akexorcist.library.dialoginteractor.DialogLauncher
 import com.awonar.app.dialog.copier.CopierMapper
 import com.awonar.app.dialog.copier.add.AddFundMapper
 import com.awonar.app.dialog.copier.add.RemoveFundMapper
+import com.awonar.app.dialog.copier.edit.EditCopierMapper
 import com.awonar.app.dialog.copier.pause.PauseCopierMapper
 import com.awonar.app.dialog.copier.stop.StopCopierMapper
 import com.awonar.app.ui.order.OrderMapper
@@ -20,4 +21,5 @@ class DialogViewModel : ViewModel() {
     val removeCopierDialog = DialogLauncher(RemoveFundMapper::class.java)
     val stopCopierDialog = DialogLauncher(StopCopierMapper::class.java)
     val pauseCopierDialog = DialogLauncher(PauseCopierMapper::class.java)
+    val editStopLossDialog = DialogLauncher(EditCopierMapper::class.java)
 }
