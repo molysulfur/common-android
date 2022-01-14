@@ -9,8 +9,11 @@ import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.socialtrade.Trader
 import com.awonar.android.model.socialtrade.TradersRequest
 import com.awonar.android.shared.domain.copy.*
+import com.awonar.android.shared.domain.currency.GetFloatingPlUseCase
 import com.awonar.android.shared.domain.portfolio.GetMyPortFolioUseCase
 import com.awonar.android.shared.domain.socialtrade.GetTradersUseCase
+import com.awonar.android.shared.utils.PortfolioUtil
+import com.facebook.internal.Validate
 import com.molysulfur.library.result.Result
 import com.molysulfur.library.result.succeeded
 import com.molysulfur.library.result.successOr
@@ -35,6 +38,9 @@ class CopyViewModel @Inject constructor(
     private val updateFundUseCase: UpdateFundUseCase,
     private val validateRemoveFundUseCase: ValidateRemoveFundUseCase,
     private val updatePauseCopyUseCase: UpdatePauseCopyUseCase,
+    private val getFloatingPlUseCase: GetFloatingPlUseCase,
+    private val validateEditStopLossCopyUseCase: ValidateEditStopLossCopyUseCase,
+    private val updateCopyUseCase: UpdateCopyUseCase,
 ) : ViewModel() {
 
     private val _messageState = Channel<String>(Channel.CONFLATED)
@@ -238,6 +244,33 @@ class CopyViewModel @Inject constructor(
                     _errorState.send(it.exception.message ?: "")
                 }
             }
+        }
+    }
+
+    fun validateEditStopLoss(copier: Copier) {
+        viewModelScope.launch {
+            val moneyInOut = copier.depositSummary.minus(copier.withdrawalSummary)
+            val netInvest = copier.initialInvestment.plus(moneyInOut)
+            val floatingPL = getFloatingPlUseCase(copier.positions ?: emptyList()).successOr(0f)
+            val result = validateEditStopLossCopyUseCase(ValidateEditStopLossCopyRequest(
+                stopLoss = _stopLoss.value.first,
+                netInvest = netInvest,
+                pl = floatingPL
+            ))
+            if (result is Result.Error) {
+                val exception = result.exception as ValidationStopLossCopyException
+                updateStopLoss(exception.value)
+            }
+        }
+    }
+
+    fun updateCopy(copyId: String) {
+        viewModelScope.launch {
+            val request = UpdateCopy(
+                id = copyId,
+                stoploss = _stopLoss.value.second.times(100f)
+            )
+            updateCopyUseCase(request).collect {}
         }
     }
 

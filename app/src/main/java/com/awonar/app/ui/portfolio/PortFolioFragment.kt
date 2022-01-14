@@ -114,13 +114,13 @@ class PortFolioFragment : Fragment() {
 //                    columnsViewModel.setColumnType(it)
                 }
             }
-            launch {
-                portViewModel.subscricbeQuote.collect { instrumentIds ->
-                    instrumentIds.forEach {
-                        marketViewModel.subscribe(it)
-                    }
-                }
-            }
+//            launch {
+//                portViewModel.subscricbeQuote.collect { instrumentIds ->
+//                    instrumentIds.forEach {
+//                        marketViewModel.subscribe(it)
+//                    }
+//                }
+//            }
         }
         binding.viewModel = portViewModel
         binding.columnViewModel = columnsViewModel

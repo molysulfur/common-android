@@ -5,13 +5,9 @@ import com.awonar.android.shared.api.NetworkClient
 import com.awonar.android.shared.db.hawk.AccessTokenManager
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import okhttp3.*
-import okhttp3.internal.toImmutableMap
 import okio.ByteString
 import org.json.JSONObject
-import timber.log.Timber
 import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
@@ -44,7 +40,7 @@ class QuoteSteamingManager @Inject constructor(
         private val DATA_KEY = "data"
     }
 
-    private val url: String = "wss://streamer.awonar.com/api/v1/streamer?id=${UUID.randomUUID()}"
+    private val url: String = "wss://ws-dev.awonar.com/api/v1/streamer?id=${UUID.randomUUID()}"
 
     private var client: OkHttpClient? = null
     private var webSocket: WebSocket? = null

@@ -37,7 +37,9 @@ class EditCopierDialog :
         launchAndRepeatWithViewLifecycle {
             launch {
                 viewModel.stopLoss.collect {
-                    viewModel.validateStopLoss()
+                    copier?.let { copier ->
+                        viewModel.validateEditStopLoss(copier)
+                    }
                 }
             }
             launch {
@@ -80,6 +82,9 @@ class EditCopierDialog :
             val netInvest = copier?.initialInvestment?.plus(moneyInOut) ?: 0f
             viewModel.updateAmount(netInvest)
         }
+        binding.awonarDialogEditCopierCheckboxOpenTrade.setOnCheckedChangeListener { buttonView, isChecked ->
+            viewModel.updateIsCopyExist(isChecked)
+        }
         binding.awonarDialogEditCopierNumberpickerStoploss.doAfterFocusChange =
             { number, hasFocus ->
                 if (!hasFocus) {
@@ -108,6 +113,13 @@ class EditCopierDialog :
                 }
             }
         }
+        binding.awonarDialogEditCopierButtonCopy.setOnClickListener {
+            copier?.let { copier ->
+                viewModel.updateCopy(copyId = copier.id)
+            }
+        }
+        binding.awonarDialogEditCopierCheckboxOpenTrade.isChecked =
+            copier?.copyExistingPositions == true
     }
 
     class Builder {

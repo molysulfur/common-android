@@ -3,6 +3,7 @@ package com.awonar.android.shared.api
 import com.awonar.android.model.copier.UpdateFundRequest
 import com.awonar.android.model.copier.CopiesRequest
 import com.awonar.android.model.copier.PauseCopyRequest
+import com.awonar.android.model.copier.UpdateCopy
 import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.socialtrade.TradersResponse
 import com.awonar.android.shared.constrant.BuildConfig
@@ -12,6 +13,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
 interface SocialTradeService {
+
+    @POST("v1/copy/sl")
+    fun updateCopy(@Body body: UpdateCopy): Call<Copier>
 
     @POST("v1/copy/pause")
     fun updatePauseCopy(@Body body: PauseCopyRequest): Call<Copier>

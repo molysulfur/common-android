@@ -178,7 +178,6 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 item as OrderPortfolioItem.InstrumentOrderItem,
                 columns,
                 quote[item.position.instrument.id],
-                onClick
             )
             is ViewAllViewHolder -> holder.bind(
                 item as OrderPortfolioItem.ViewAllItem,

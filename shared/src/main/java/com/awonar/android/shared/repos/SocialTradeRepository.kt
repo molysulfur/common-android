@@ -3,6 +3,7 @@ package com.awonar.android.shared.repos
 import com.awonar.android.model.copier.UpdateFundRequest
 import com.awonar.android.model.copier.CopiesRequest
 import com.awonar.android.model.copier.PauseCopyRequest
+import com.awonar.android.model.copier.UpdateCopy
 import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.socialtrade.Trader
 import com.awonar.android.model.socialtrade.TradersRequest
@@ -98,6 +99,20 @@ class SocialTradeRepository @Inject constructor(
                 service.updatePauseCopy(parameters).execute()
 
             override fun convertToResultType(response: Copier?): Copier? = response
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+
+        }.asFlow()
+
+    fun updateCopy(parameters: UpdateCopy): Flow<Result<Copier?>> =
+        object : DirectNetworkFlow<Unit, Copier?, Copier?>() {
+            override fun createCall(): Response<Copier?> =
+                service.updateCopy(parameters).execute()
+
+            override fun convertToResultType(response: Copier?): Copier? =
+                response
 
             override fun onFetchFailed(errorMessage: String) {
                 println(errorMessage)

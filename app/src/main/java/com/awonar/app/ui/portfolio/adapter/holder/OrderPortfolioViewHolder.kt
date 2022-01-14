@@ -5,6 +5,7 @@ import com.awonar.android.model.market.Quote
 import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.app.databinding.AwonarItemInstrumentOrderBinding
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
+import timber.log.Timber
 
 class OrderPortfolioViewHolder constructor(
     private val binding: AwonarItemInstrumentOrderBinding,
@@ -14,10 +15,10 @@ class OrderPortfolioViewHolder constructor(
     fun bind(
         item: OrderPortfolioItem.InstrumentOrderItem,
         columns: List<String>,
-        quote: Quote?,
-        onClick: ((Int, String) -> Unit)?
+        quote: Quote?
     ) {
         quote?.let {
+            Timber.e("$it")
             item.current = if (item.position.isBuy) it.bid else it.ask
             val pl = PortfolioUtil.getProfitOrLoss(
                 item.current, item.open, item.units, item.conversionRate, item.position.isBuy
