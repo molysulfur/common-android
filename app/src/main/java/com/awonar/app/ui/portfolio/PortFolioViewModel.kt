@@ -191,7 +191,7 @@ class PortFolioViewModel @Inject constructor(
         }
     }
 
-    fun sumTotalProfit(quotes: MutableMap<Int, Quote>) {
+    fun sumTotalProfitAndEquity(portfolio: Portfolio, quotes: MutableMap<Int, Quote>) {
         viewModelScope.launch {
             var plSymbol = 0f
             var plCopy = 0f
@@ -220,13 +220,8 @@ class PortFolioViewModel @Inject constructor(
                 }
             }
             _profitState.value = plSymbol.plus(plCopy)
-        }
-    }
-
-    fun sumTotalEquity(portfolio: Portfolio) {
-        viewModelScope.launch {
             _equityState.value =
-                portfolio.available.plus(portfolio.totalAllocated).plus(_profitState.value)
+                portfolio.available.plus(portfolio.totalAllocated).plus(plSymbol.plus(plCopy))
         }
     }
 }

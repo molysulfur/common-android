@@ -51,8 +51,7 @@ class PortFolioFragment : Fragment() {
             launch {
                 QuoteSteamingManager.quotesState.collect { quotes ->
                     portfolio?.let {
-                        portViewModel.sumTotalProfit(quotes)
-                        portViewModel.sumTotalEquity(it)
+                        portViewModel.sumTotalProfitAndEquity(it, quotes)
                     }
                 }
             }
@@ -130,8 +129,5 @@ class PortFolioFragment : Fragment() {
                 text = "Orders"
             )
         )
-
     }
-
-
 }

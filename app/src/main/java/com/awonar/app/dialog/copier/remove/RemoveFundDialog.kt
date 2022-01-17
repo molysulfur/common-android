@@ -34,7 +34,7 @@ class RemoveFundDialog : InteractorDialog<RemoveFundMapper, RemoveFundListener, 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         launchAndRepeatWithViewLifecycle {
             launch {
@@ -78,8 +78,11 @@ class RemoveFundDialog : InteractorDialog<RemoveFundMapper, RemoveFundListener, 
         copier = arguments?.getParcelable<Copier?>(EXTRA_COPIER)
         copier?.let {
             ImageUtil.loadImage(binding.awonarDialogRemoveCopierImageAvatar, it.user.picture)
-            binding.username =
-                "%s %s %s".format(it.user.fullName, it.user.middleName, it.user.lastName)
+            binding.username = if (it.user.isDisplayName) {
+                "%s".format(it.user.username)
+            } else {
+                "%s %s %s".format(it.user.firstName, it.user.middleName, it.user.lastName)
+            }
             binding.description = it.parentUsername
         }
         binding.awonarDialogRemoveCopierToolbar.setNavigationOnClickListener {
@@ -124,7 +127,7 @@ class RemoveFundDialog : InteractorDialog<RemoveFundMapper, RemoveFundListener, 
         private fun newInstance(
             key: String?,
             data: Bundle?,
-            copier: Copier?
+            copier: Copier?,
         ) =
             RemoveFundDialog().apply {
                 arguments = createBundle(key, data).apply {

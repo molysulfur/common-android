@@ -75,8 +75,11 @@ class EditCopierDialog :
         copier = arguments?.getParcelable(EXTRA_COPIER)
         copier?.let {
             ImageUtil.loadImage(binding.awonarDialogEditCopierImageAvatar, it.user.picture)
-            binding.username =
-                "%s %s %s".format(it.user.fullName, it.user.middleName, it.user.lastName)
+            binding.username = if (it.user.isDisplayName) {
+                "%s".format(it.user.username)
+            } else {
+                "%s %s %s".format(it.user.firstName, it.user.middleName, it.user.lastName)
+            }
             binding.description = it.parentUsername
             val moneyInOut = copier?.depositSummary?.minus(copier?.withdrawalSummary ?: 0f) ?: 0f
             val netInvest = copier?.initialInvestment?.plus(moneyInOut) ?: 0f

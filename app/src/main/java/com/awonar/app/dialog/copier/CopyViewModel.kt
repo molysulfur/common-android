@@ -21,6 +21,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.abs
@@ -158,7 +159,13 @@ class CopyViewModel @Inject constructor(
                 initialInvestment = _amount.value,
                 parentUserId = copyId
             )
-            createCopyUseCase(request).collect {}
+            createCopyUseCase(request).collect {
+                if (it is Result.Error) {
+                    val obj = JSONObject(it.exception.message ?: "")
+                    val message = obj.get("message")
+                    _errorState.send("$message")
+                }
+            }
         }
     }
 
@@ -189,7 +196,9 @@ class CopyViewModel @Inject constructor(
                 }
 
                 if (it is Result.Error) {
-                    _errorState.send(it.exception.message ?: "")
+                    val obj = JSONObject(it.exception.message ?: "")
+                    val message = obj.get("message")
+                    _errorState.send("$message")
                 }
             }
         }
@@ -222,7 +231,9 @@ class CopyViewModel @Inject constructor(
                 }
 
                 if (it is Result.Error) {
-                    _errorState.send(it.exception.message ?: "")
+                    val obj = JSONObject(it.exception.message ?: "")
+                    val message = obj.get("message")
+                    _errorState.send("$message")
                 }
             }
         }
@@ -241,7 +252,9 @@ class CopyViewModel @Inject constructor(
                 }
 
                 if (it is Result.Error) {
-                    _errorState.send(it.exception.message ?: "")
+                    val obj = JSONObject(it.exception.message ?: "")
+                    val message = obj.get("message")
+                    _errorState.send("$message")
                 }
             }
         }
@@ -270,7 +283,13 @@ class CopyViewModel @Inject constructor(
                 id = copyId,
                 stoploss = _stopLoss.value.second.times(100f)
             )
-            updateCopyUseCase(request).collect {}
+            updateCopyUseCase(request).collect {
+                if (it is Result.Error) {
+                    val obj = JSONObject(it.exception.message ?: "")
+                    val message = obj.get("message")
+                    _errorState.send("$message")
+                }
+            }
         }
     }
 

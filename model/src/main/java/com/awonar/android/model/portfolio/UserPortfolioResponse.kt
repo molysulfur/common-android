@@ -42,7 +42,7 @@ data class Copier(
 @Parcelize
 data class UserCopier(
     @SerializedName("id") val id: String,
-    @SerializedName("displayFullName") val fullName: String?,
+    @SerializedName("displayFullName") val isDisplayName: Boolean,
     @SerializedName("firstName") val firstName: String?,
     @SerializedName("lastName") val lastName: String?,
     @SerializedName("middleName") val middleName: String?,

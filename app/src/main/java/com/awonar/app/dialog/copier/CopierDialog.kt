@@ -49,7 +49,10 @@ class CopierDialog : InteractorDialog<CopierMapper, CopierListener, DialogViewMo
             copyViewModel.traderState.collect { user ->
                 user?.let {
                     ImageUtil.loadImage(binding.awonarDialogCopierImageAvatar, it.image)
-                    binding.username = it.username
+                    binding.username = if (it.displayFullName) "%s %s %s".format(
+                        it.firstName,
+                        it.middleName,
+                        it.lastName) else it.username
                     binding.description = "12 Months return"
                     binding.gain = "%.2f%s".format(it.gain, "%")
                     binding.awonarDialogCopierTextGain.setTextColor(ColorChangingUtil.getTextColorChange(
