@@ -15,20 +15,19 @@ class OrderPortfolioViewHolder constructor(
     fun bind(
         item: OrderPortfolioItem.InstrumentOrderItem,
         columns: List<String>,
-        quote: Quote?
     ) {
-        quote?.let {
-            Timber.e("$it")
-            item.current = if (item.position.isBuy) it.bid else it.ask
-            val pl = PortfolioUtil.getProfitOrLoss(
-                item.current, item.open, item.units, item.conversionRate, item.position.isBuy
-            )
-            val value = PortfolioUtil.getValue(pl, item.invested)
-            val plPercent = PortfolioUtil.profitLossPercent(pl, item.invested)
-            item.profitLoss = pl
-            item.value = value
-            item.profitLossPercent = plPercent
-        }
+//        quote?.let {
+//            Timber.e("$it")
+//            item.current = if (item.position.isBuy) it.bid else it.ask
+//            val pl = PortfolioUtil.getProfitOrLoss(
+//                item.current, item.open, item.units, item.conversionRate, item.position.isBuy
+//            )
+//            val value = PortfolioUtil.getValue(pl, item.invested)
+//            val plPercent = PortfolioUtil.profitLossPercent(pl, item.invested)
+//            item.profitLoss = pl
+//            item.value = value
+//            item.profitLossPercent = plPercent
+//        }
         binding.awonarInsturmentOrderItem.setOnClickListener {
 
         }
@@ -38,7 +37,6 @@ class OrderPortfolioViewHolder constructor(
             binding.column3 = columns[2]
             binding.column4 = columns[3]
         }
-        binding.quote = quote
         binding.item = item
     }
 

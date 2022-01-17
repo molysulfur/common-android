@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.awonar.app.domain.portfolio.*
+import timber.log.Timber
 
 @HiltViewModel
 class PortFolioViewModel @Inject constructor(
@@ -190,20 +191,35 @@ class PortFolioViewModel @Inject constructor(
         }
     }
 
-    fun sumTotalProfit(portfolio: Portfolio, quotes: MutableMap<Int, Quote>) {
+    fun sumTotalProfit(quotes: MutableMap<Int, Quote>) {
         viewModelScope.launch {
-            var pl = 0f
+            var plSymbol = 0f
+            var plCopy = 0f
             _positionState.value?.positions?.forEach { position ->
                 quotes[position.instrument.id]?.let { quote ->
                     val current = PortfolioUtil.getCurrent(position.isBuy, quote)
-                    pl += PortfolioUtil.getProfitOrLoss(current,
+                    plSymbol += PortfolioUtil.getProfitOrLoss(
+                        current,
                         position.openRate,
                         position.units,
                         getConversionByInstrumentUseCase(position.instrument.id).successOr(0f),
                         position.isBuy)
                 }
             }
-            _profitState.value = pl
+            _positionState.value?.copies?.forEach { copier ->
+                copier.positions?.forEach { position ->
+                    quotes[position.instrument.id]?.let { quote ->
+                        val current = PortfolioUtil.getCurrent(position.isBuy, quote)
+                        plCopy += PortfolioUtil.getProfitOrLoss(
+                            current,
+                            position.openRate,
+                            position.units,
+                            getConversionByInstrumentUseCase(position.instrument.id).successOr(0f),
+                            position.isBuy)
+                    }
+                }
+            }
+            _profitState.value = plSymbol.plus(plCopy)
         }
     }
 

@@ -287,7 +287,7 @@ class PortfolioListItemTouchHelperCallback constructor(
             when (currentItemViewHolder) {
                 is InstrumentPortfolioViewHolder -> drawButtons(c,
                     currentItemViewHolder!!,
-                    (currentItemViewHolder!! as InstrumentPortfolioViewHolder).item?.exitOrder != null)
+                    (currentItemViewHolder!! as InstrumentPortfolioViewHolder).positionItem?.position?.exitOrder != null)
 
                 else -> drawButtons(c, currentItemViewHolder!!)
             }

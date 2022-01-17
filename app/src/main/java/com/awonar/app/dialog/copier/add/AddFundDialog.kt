@@ -73,8 +73,11 @@ class AddFundDialog : InteractorDialog<AddFundMapper, AddFundListener, DialogVie
         val copier = arguments?.getParcelable<Copier?>(EXTRA_COPIER)
         copier?.let {
             ImageUtil.loadImage(binding.awonarDialogAddCopierImageAvatar, it.user.picture)
-            binding.username =
+            binding.username = if(it.user.private){
+                "%s".format(it.user.username)
+            }else{
                 "%s %s %s".format(it.user.fullName, it.user.middleName, it.user.lastName)
+            }
             binding.description = it.parentUsername
         }
         binding.awonarDialogAddCopierToolbar.setNavigationOnClickListener {

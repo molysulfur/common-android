@@ -20,10 +20,6 @@
             type="String" />
 
         <variable
-            name="quote"
-            type="com.awonar.android.model.market.Quote" />
-
-        <variable
             name="item"
             type="com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem" />
 

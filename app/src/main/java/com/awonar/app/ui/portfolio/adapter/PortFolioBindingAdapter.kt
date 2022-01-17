@@ -1,8 +1,6 @@
 package com.awonar.app.ui.portfolio.adapter
 
-import android.annotation.SuppressLint
 import android.graphics.Canvas
-import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,28 +11,11 @@ import com.awonar.android.model.portfolio.Position
 import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.app.R
-import com.awonar.app.ui.portfolio.PortFolioViewModel
-import com.awonar.app.ui.portfolio.inside.PositionInsideViewModel
 import com.awonar.app.ui.portfolio.position.PositionViewModel
-import com.awonar.app.utils.DateUtils
 import com.awonar.app.widget.CopierPositionCardView
 import com.awonar.app.widget.InstrumentOrderView
 import com.awonar.app.widget.InstrumentPositionCardView
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.collections.HashMap
-
-
-@BindingAdapter("setTotalInvested")
-fun setTotalInvested(
-    textView: TextView,
-    copier: Copier?,
-) {
-    copier?.let {
-        textView.text = "Invested: $%.2f".format(it.investAmount)
-    }
-}
-
 
 @BindingAdapter("initCopierCard")
 fun initCopierCard(
@@ -169,7 +150,7 @@ fun setCopierPositionCard(
             setImage(it.user.picture ?: "")
             setTitle("${it.user.firstName} ${it.user.middleName} ${it.user.lastName}")
             setDescrption(it.user.username ?: "")
-            setInvested(it.investAmount)
+            setInvested(it.initialInvestment)
             setMoney(money)
             setValueInvested(value)
         }
@@ -308,9 +289,6 @@ fun setItemPositionOrderPortfolio(
 ) {
     when (item) {
         is OrderPortfolioItem.InstrumentOrderItem -> item.position.let { position ->
-            view.setImage(position.instrument.logo ?: "")
-            view.setTitle("${if (position.isBuy) "BUY" else "SELL"} ${position.instrument.symbol}")
-            view.setDescription(DateUtils.getDate(position.openDateTime))
             view.setTextColumnOne(
                 getPositionValueByColumn(
                     item,
@@ -361,9 +339,6 @@ fun setItemPositionOrderPortfolio(
             )
         }
         is OrderPortfolioItem.InstrumentPortfolioItem -> item.position.let { position ->
-            view.setImage(position.instrument.logo ?: "")
-            view.setTitle("${if (position.isBuy) "BUY" else "SELL"} ${position.instrument.symbol}")
-            view.setDescription(item.date ?: "")
             view.setTextColumnOne(
                 getPositionValueByColumn(
                     item,
@@ -414,8 +389,6 @@ fun setItemPositionOrderPortfolio(
             )
         }
         is OrderPortfolioItem.CopierPortfolioItem -> item.copier.let { copy ->
-            view.setImage(copy.user.picture ?: "")
-            view.setTitle(copy.user.username ?: "")
             view.setTextColumnOne(
                 getCopierValueByColumn(
                     item,

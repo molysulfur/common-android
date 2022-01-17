@@ -8,10 +8,10 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class UserPortfolioResponse(
-    @SerializedName("copies") val copies: List<Copier>,
-    @SerializedName("entryOrder") val entries: List<EntryOrderPortfolio>,
-    @SerializedName("orders") val orders: List<OrderPortfolio>,
-    @SerializedName("positions") val positions: List<Position>
+    @SerializedName("copies") val copies: List<Copier>?,
+    @SerializedName("entryOrder") val entries: List<EntryOrderPortfolio>?,
+    @SerializedName("orders") val orders: List<OrderPortfolio>?,
+    @SerializedName("positions") val positions: List<Position>?,
 ) : Parcelable
 
 @Parcelize
@@ -36,7 +36,7 @@ data class Copier(
     @SerializedName("stopLossPercentage") val stopLossPercentage: Float,
     @SerializedName("totalFees") val totalFees: Float,
     @SerializedName("withdrawalSummary") val withdrawalSummary: Float,
-    @SerializedName("parentUser") val user: UserCopier
+    @SerializedName("parentUser") val user: UserCopier,
 ) : Parcelable
 
 @Parcelize

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.market.Quote
 import com.awonar.app.databinding.*
 import com.awonar.app.ui.portfolio.adapter.holder.*
+import timber.log.Timber
 
 @SuppressLint("NotifyDataSetChanged")
 class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -38,8 +39,9 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var onViewAllClick: (() -> Unit)? = null
     var onPieChartClick: ((String?) -> Unit)? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
-        when (viewType) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        Timber.e("$viewType")
+        return when (viewType) {
             OrderPortfolioType.SECTION_PORTFOLIO -> SectionViewHolder(
                 AwonarItemSectionBinding.inflate(
                     LayoutInflater.from(parent.context),
@@ -134,6 +136,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
             else -> throw Exception("View Type is not found with $viewType")
         }
+    }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = itemLists[position]
@@ -141,13 +144,11 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is InstrumentPortfolioViewHolder -> holder.bind(
                 item as OrderPortfolioItem.InstrumentPortfolioItem,
                 columns,
-                quote[item.position.instrument.id],
                 onClick
             )
             is CopyTradePortfolioViewHolder -> holder.bind(
                 item as OrderPortfolioItem.CopierPortfolioItem,
                 columns,
-                quote,
                 onClick
             )
             is InstrumentPositionCardViewHolder -> holder.bind(
@@ -177,7 +178,6 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is OrderPortfolioViewHolder -> holder.bind(
                 item as OrderPortfolioItem.InstrumentOrderItem,
                 columns,
-                quote[item.position.instrument.id],
             )
             is ViewAllViewHolder -> holder.bind(
                 item as OrderPortfolioItem.ViewAllItem,

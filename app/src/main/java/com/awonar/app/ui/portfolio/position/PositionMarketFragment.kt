@@ -51,7 +51,9 @@ class PositionMarketFragment : Fragment() {
         launchAndRepeatWithViewLifecycle {
             viewModel.positionState.collect { position ->
                 position?.let {
-                    activityViewModel.convertMarket(position.positions, position.copies)
+                    activityViewModel.convertMarket(
+                        position.positions ?: emptyList(),
+                        position.copies ?: emptyList())
                 }
             }
         }
@@ -60,7 +62,6 @@ class PositionMarketFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
