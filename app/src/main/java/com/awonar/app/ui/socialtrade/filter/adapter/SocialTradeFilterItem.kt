@@ -11,6 +11,7 @@ sealed class SocialTradeFilterItem(
 ) : Parcelable {
     @Parcelize
     class TextListItem(
+        val key: String?,
         val text: String,
         val icon: String? = null,
         val iconRes: Int = 0,

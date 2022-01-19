@@ -4,6 +4,5 @@
         android:id="@+id/awonar_item_list_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/awonar_color_surface"
-        android:textAppearance="?attr/textAppearanceSubtitle1" />
+        android:background="@drawable/awonar_ripple_white" />
 </layout>

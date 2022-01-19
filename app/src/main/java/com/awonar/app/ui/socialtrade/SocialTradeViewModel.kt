@@ -20,7 +20,6 @@ class SocialTradeViewModel @Inject constructor(
     private val getTradersUseCase: GetTradersUseCase,
 ) : ViewModel() {
 
-
     private val traderMostCopies = flow {
         getTradersUseCase(
             TradersRequest(
@@ -34,6 +33,7 @@ class SocialTradeViewModel @Inject constructor(
             emit(it.successOr(emptyList()))
         }
     }
+
     private val lowRisk = flow {
         getTradersUseCase(
             TradersRequest(

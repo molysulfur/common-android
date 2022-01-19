@@ -8,5 +8,13 @@
     <fragment
         android:id="@+id/socialTradeFilterFragment"
         android:name="com.awonar.app.ui.socialtrade.filter.SocialTradeFilterFragment"
-        android:label="SocialTradeFilterFragment" />
+        android:label="SocialTradeFilterFragment">
+        <action
+            android:id="@+id/socialTradeFilterFragment_to_socialTradeFilterSelectorFragment"
+            app:destination="@+id/socialTradeFilterSelectorFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/socialTradeFilterSelectorFragment"
+        android:name="com.awonar.app.ui.socialtrade.filter.SocialTradeFilterSelectorFragment"
+        android:label="SocialTradeFilterSelectorFragment" />
 </navigation>

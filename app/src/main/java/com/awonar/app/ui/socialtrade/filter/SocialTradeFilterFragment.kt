@@ -6,7 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.awonar.app.databinding.AwonarFragmentSocialTradeFilterBinding
+import com.awonar.app.ui.socialtrade.filter.adapter.SocialTradeFilterAdapter
+import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
+import kotlinx.coroutines.flow.collect
 
 class SocialTradeFilterFragment : Fragment() {
 
@@ -21,6 +26,11 @@ class SocialTradeFilterFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
+        launchAndRepeatWithViewLifecycle {
+            viewModel.navigateAction.collect {
+                findNavController().navigate(it)
+            }
+        }
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root

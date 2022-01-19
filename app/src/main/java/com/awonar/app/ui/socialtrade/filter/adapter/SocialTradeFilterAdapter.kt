@@ -7,6 +7,7 @@ import com.awonar.app.databinding.AwonarItemListBinding
 import com.awonar.app.databinding.AwonarItemSectionBinding
 import com.awonar.app.ui.socialtrade.filter.adapter.holder.ListTextViewHolder
 import com.awonar.app.ui.socialtrade.filter.adapter.holder.SectionViewHolder
+import com.awonar.app.ui.socialtrade.filter.adapter.holder.SelectorViewHolder
 
 class SocialTradeFilterAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -15,6 +16,9 @@ class SocialTradeFilterAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
             field = value
             notifyDataSetChanged()
         }
+
+    var onClick: ((String?) -> Unit)? = null
+    var onChecked: ((Boolean) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
@@ -26,7 +30,12 @@ class SocialTradeFilterAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
             SocialTradeFilterType.LIST_TEXT_TYPE -> ListTextViewHolder(
                 AwonarItemListBinding.inflate(LayoutInflater.from(parent.context),
                     parent,
-                    false),
+                    false)
+            )
+            SocialTradeFilterType.LIST_SELECTOR_TYPE -> SelectorViewHolder(
+                AwonarItemListBinding.inflate(LayoutInflater.from(parent.context),
+                    parent,
+                    false)
             )
             else -> throw Error("View type $viewType is not found!")
         }
@@ -35,7 +44,10 @@ class SocialTradeFilterAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
         val item = itemList[position]
         when (holder) {
             is SectionViewHolder -> holder.bind(item as SocialTradeFilterItem.SectionItem)
-            is ListTextViewHolder -> holder.bind(item as SocialTradeFilterItem.TextListItem)
+            is ListTextViewHolder -> holder.bind(item as SocialTradeFilterItem.TextListItem,
+                onClick)
+            is SelectorViewHolder -> holder.bind(item as SocialTradeFilterItem.SelectorListItem,
+                onChecked)
         }
     }
 

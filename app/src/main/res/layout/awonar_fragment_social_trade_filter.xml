@@ -16,6 +16,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/awonar_social_trade_filter_container"
             socialTradeFilterAdapter="@{viewModel.filterItems}"
+            viewModel="@{viewModel}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/awonar_color_background"

@@ -5,19 +5,29 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.app.ui.socialtrade.filter.adapter.SocialTradeFilterAdapter
 import com.awonar.app.ui.socialtrade.filter.adapter.SocialTradeFilterItem
-import timber.log.Timber
 
-@BindingAdapter("socialTradeFilterAdapter")
+@BindingAdapter("socialTradeFilterAdapter", "viewModel")
 fun setSocialTradeFilter(
     recycler: RecyclerView,
     newItemList: MutableList<SocialTradeFilterItem>,
+    viewModel: SocialTradeFilterViewModel,
 ) {
-    Timber.e("$newItemList")
+    val context = recycler.context
     if (recycler.adapter == null) {
         val newAdapter = SocialTradeFilterAdapter()
+            .apply {
+                onClick = { key ->
+                    when (key) {
+                        "period" -> viewModel.navigate(SocialTradeFilterFragmentDirections.socialTradeFilterFragmentToSocialTradeFilterSelectorFragment())
+                    }
+                }
+                onChecked = {
+
+                }
+            }
         with(recycler) {
             layoutManager =
-                LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
+                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = newAdapter
         }
     }
