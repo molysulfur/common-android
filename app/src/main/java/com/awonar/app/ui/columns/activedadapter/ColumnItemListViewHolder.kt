@@ -7,9 +7,11 @@ class ColumnItemListViewHolder constructor(private val binding: AwonarItemListBi
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(text: String, onClick: ((String) -> Unit)?) {
-        binding.text = text
-        binding.awonarItemListText.setOnClickListener {
-            onClick?.invoke(text)
+        with(binding.awonarItemListText) {
+            setTitle(text)
+            setOnClickListener {
+                onClick?.invoke(text)
+            }
         }
 
     }

@@ -52,6 +52,7 @@
         <activity android:name=".ui.marketprofile.MarketProfileActivity" />
         <activity android:name=".ui.columns.ColumnsActivedActivity" />
         <activity android:name=".ui.history.HistoryCashFlowActivity" />
+        <activity android:name=".ui.socialtrade.filter.SocialTradeFilterActivity" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

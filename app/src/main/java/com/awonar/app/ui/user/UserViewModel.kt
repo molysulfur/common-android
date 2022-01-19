@@ -6,6 +6,7 @@ import com.awonar.android.model.bookbank.BookBank
 import com.awonar.android.model.user.User
 import com.awonar.android.model.user.UserRequest
 import com.awonar.android.shared.domain.bookbank.GetBookBankUseCase
+import com.awonar.android.shared.domain.portfolio.GetMyPortFolioUseCase
 import com.awonar.android.shared.domain.profile.GetUserProfileUseCase
 import com.awonar.android.shared.domain.user.GetUserUseCase
 import com.awonar.android.shared.domain.user.UpdateAboutMeUseCase
@@ -24,7 +25,7 @@ class UserViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
     private val getUserProfileUseCase: GetUserProfileUseCase,
     private val getBookBankUseCase: GetBookBankUseCase,
-    private val updateAboutMeUseCase: UpdateAboutMeUseCase
+    private val updateAboutMeUseCase: UpdateAboutMeUseCase,
 ) : ViewModel() {
 
     val bankState: StateFlow<BookBank?> =
@@ -60,7 +61,7 @@ class UserViewModel @Inject constructor(
         twitter: String,
         linkedIn: String,
         youtube: String,
-        website: String
+        website: String,
     ) {
         viewModelScope.launch {
             val user: User? = _userState.value

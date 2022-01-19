@@ -25,11 +25,9 @@ class PortFolioViewModel @Inject constructor(
     private val getMyPortFolioUseCase: GetMyPortFolioUseCase,
     private var getPositionMarketUseCase: GetPositionMarketUseCase,
     private val getPositionUseCase: GetPositionUseCase,
-    private val getCopierUseCase: GetCopierUseCase,
     private val getConversionByInstrumentUseCase: GetConversionByInstrumentUseCase,
     private val getPendingOrdersUseCase: GetPendingOrdersUseCase,
     private var convertPositionToItemUseCase: ConvertPositionToItemUseCase,
-    private var convertPositionWithCopierUseCase: ConvertPositionWithCopierUseCase,
     private var convertPositionToCardItemUseCase: ConvertPositionToCardItemUseCase,
     private var convertCopierToCardItemUseCase: ConvertCopierToCardItemUseCase,
     private var convertOrderPositionToItemUseCase: ConvertOrderPositionToItemUseCase,
@@ -102,22 +100,6 @@ class PortFolioViewModel @Inject constructor(
                     convertPositionToItemUseCase(position).successOr(emptyList()).toMutableList()
                 )
 //                _positionState.emit(position)
-            }
-        }
-    }
-
-    fun getPosition(copyId: String, id: Int) {
-        viewModelScope.launch {
-            getCopierUseCase(copyId).collect { result ->
-                if (result is Result.Success)
-                    _positionOrderList.emit(
-                        convertPositionWithCopierUseCase(
-                            ConvertPositionItemWithCopier(
-                                instrumentFilterId = id,
-                                positions = result.data.positions ?: emptyList()
-                            )
-                        ).successOr(listOf(OrderPortfolioItem.EmptyItem())).toMutableList()
-                    )
             }
         }
     }

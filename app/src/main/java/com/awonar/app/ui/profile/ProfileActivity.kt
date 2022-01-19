@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -12,6 +13,7 @@ import com.awonar.android.model.user.User
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarActivityProfileBinding
 import com.awonar.app.dialog.copier.CopierDialog
+import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.awonar.app.ui.user.UserViewModel
 import com.awonar.app.utils.ImageUtil
 import com.molysulfur.library.activity.BaseActivity
@@ -27,6 +29,7 @@ class ProfileActivity : BaseActivity() {
     private var user: User? = null
 
     private val userViewModel: UserViewModel by viewModels()
+    private val portfolioViewModel: PortFolioViewModel by viewModels()
 
     companion object {
         const val EXTRA_USERID = "com.awonar.app.ui.profile.extra.userid"
@@ -49,9 +52,31 @@ class ProfileActivity : BaseActivity() {
     private fun observer() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                portfolioViewModel.positionState.collect { userPortfolio ->
+                    val copy = userPortfolio?.copies?.find { copy ->
+                        copy.user.id == userId
+                    }
+                    if (copy != null) {
+                        with(binding.awonarProfileButtonCopy) {
+                            text = if (copy.pendingForClosure) "Pending Close" else "Add Fund"
+                            isEnabled = !copy.pendingForClosure
+                        }
+                        if (!copy.pendingForClosure) {
+                            binding.awonarProfileButtonCopy.background = ContextCompat.getDrawable(
+                                baseContext,
+                                R.drawable.awonar_ripple_green)
+
+                        }
+                    }
+                }
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 userViewModel.userState.collect { userInfo ->
                     if (userInfo != null) {
                         user = userInfo
+                        portfolioViewModel.getPosition()
                         updateUser()
                         updateEditVisible()
                     }

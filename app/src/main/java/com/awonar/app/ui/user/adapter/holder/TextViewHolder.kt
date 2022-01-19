@@ -9,6 +9,8 @@ import javax.inject.Inject
 class TextViewHolder @Inject constructor(private val binding: AwonarItemListBinding) :
     RecyclerView.ViewHolder(binding.root) {
     fun bind(item: UserInfoItem.TextItem) {
-        binding.text = item.text
+        with(binding.awonarItemListText) {
+            setTitle(item.text)
+        }
     }
 }

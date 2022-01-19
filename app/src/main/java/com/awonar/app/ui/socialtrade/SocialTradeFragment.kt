@@ -14,6 +14,7 @@ import com.awonar.app.ui.profile.ProfileActivity
 import com.awonar.app.ui.socialtrade.adapter.SocialTradeAdapter
 import com.awonar.app.ui.socialtrade.adapter.SocialTradeHorizontalWrapperAdapter
 import com.awonar.app.ui.socialtrade.adapter.SocialTradeRecommendedAdapter
+import com.awonar.app.ui.socialtrade.filter.SocialTradeFilterActivity
 import com.molysulfur.library.extension.openActivity
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
@@ -62,7 +63,7 @@ class SocialTradeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         launchAndRepeatWithViewLifecycle {
             viewModel.copiesList.collect {
@@ -84,6 +85,11 @@ class SocialTradeFragment : Fragment() {
         with(binding.awonarSocialTradeRecycler) {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = concatAdapter
+        }
+        with(binding.awonarSocialTradeButtonFilter) {
+            setOnClickListener {
+                openActivity(SocialTradeFilterActivity::class.java)
+            }
         }
 
     }

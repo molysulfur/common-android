@@ -8,5 +8,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class TradersResponse(
     @SerializedName("traders") val traders: List<Trader>,
-    @SerializedName("meta") val meta: Meta
-) : Parcelable
+    @SerializedName("meta") val meta: Meta,
+) : Parcelable {
+
+}

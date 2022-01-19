@@ -17,14 +17,17 @@ import javax.inject.Inject
 @HiltViewModel
 class SocialTradeViewModel @Inject constructor(
     private val getRecommendedUseCase: GetRecommendedUseCase,
-    private val getTradersUseCase: GetTradersUseCase
+    private val getTradersUseCase: GetTradersUseCase,
 ) : ViewModel() {
 
 
     private val traderMostCopies = flow {
         getTradersUseCase(
             TradersRequest(
-                filter = "-gain,username",
+                period = arrayListOf("1MonthAgo"),
+                verified = true,
+                maxRisk = 7,
+                sort = arrayListOf("-gain", "username"),
                 page = 1
             )
         ).collect {
@@ -34,7 +37,10 @@ class SocialTradeViewModel @Inject constructor(
     private val lowRisk = flow {
         getTradersUseCase(
             TradersRequest(
-                filter = "-var,-weekly_drawdown,-gain,username",
+                period = arrayListOf("1MonthAgo"),
+                verified = true,
+                maxRisk = 7,
+                sort = arrayListOf("risk", "-gain", "username"),
                 page = 1
             )
         ).collect {
@@ -45,7 +51,10 @@ class SocialTradeViewModel @Inject constructor(
     private val longTerm = flow {
         getTradersUseCase(
             TradersRequest(
-                filter = "var,-gain,daily_drawdown,username",
+                verified = true,
+                maxRisk = 7,
+                sort = arrayListOf("-gain", "username"),
+                period = arrayListOf("6MonthsAgo"),
                 page = 1
             )
         ).collect {
@@ -56,7 +65,10 @@ class SocialTradeViewModel @Inject constructor(
     private val shortTerm = flow {
         getTradersUseCase(
             TradersRequest(
-                filter = "-gain,daily_drawdown,username",
+                verified = true,
+                sort = arrayListOf("-gain", "username"),
+                period = arrayListOf("1MonthAgo"),
+                maxRisk = 8,
                 page = 1
             )
         ).collect {

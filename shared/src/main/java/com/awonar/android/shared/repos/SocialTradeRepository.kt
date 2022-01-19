@@ -13,6 +13,7 @@ import com.molysulfur.library.network.DirectNetworkFlow
 import com.molysulfur.library.result.Result
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
+import timber.log.Timber
 import javax.inject.Inject
 
 class SocialTradeRepository @Inject constructor(
@@ -21,12 +22,41 @@ class SocialTradeRepository @Inject constructor(
 
     fun getTraders(request: TradersRequest): Flow<Result<List<Trader>?>> =
         object : DirectNetworkFlow<Unit, List<Trader>, TradersResponse>() {
-            override fun createCall(): Response<TradersResponse> =
-                service.getTraders(sort = request.filter,
-                    maxRisk = request.maxRisk,
-                    page = request.page,
-                    uid = request.uid)
+            override fun createCall(): Response<TradersResponse> {
+                return service.getTraders(
+                    request.uid,
+                    request.displayFullName,
+                    request.verified,
+                    request.popular,
+                    request.minActiveWeek,
+                    request.maxActiveWeek,
+                    request.minProfitablePercentage,
+                    request.maxAllocatedPercentage,
+                    request.minCopiers,
+                    request.maxCopiers,
+                    request.minWeeklyDrawdown,
+                    request.maxWeeklyDrawdown,
+                    request.minDailyDrawdown,
+                    request.maxDailyDrawdown,
+                    request.minGain,
+                    request.maxGain,
+                    request.minMaxRisk,
+                    request.maxMaxRisk,
+                    request.minRisk,
+                    request.maxRisk,
+                    request.minTrades,
+                    request.maxTrades,
+                    request.period,
+                    request.sort,
+                    request.allocated,
+                    request.page,
+                    request.limit,
+                    request.country,
+                    request.minAllocatedPercentage,
+                    request.maxProfitablePercentage
+                )
                     .execute()
+            }
 
             override fun convertToResultType(response: TradersResponse): List<Trader> =
                 response.traders
