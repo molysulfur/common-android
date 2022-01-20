@@ -7,12 +7,16 @@ import com.awonar.app.ui.socialtrade.filter.adapter.SocialTradeFilterItem
 
 class SelectorViewHolder constructor(private val binding: AwonarItemListBinding) :
     RecyclerView.ViewHolder(binding.root) {
-    fun bind(item: SocialTradeFilterItem.SelectorListItem, onClick: ((Boolean) -> Unit)?) {
+    fun bind(
+        item: SocialTradeFilterItem.SelectorListItem,
+        onClick: ((SocialTradeFilterItem.SelectorListItem) -> Unit)?,
+    ) {
         with(binding.awonarItemListText) {
             setTitle(item.text)
             setEndIcon(if (item.isChecked) R.drawable.awonar_ic_checked else 0)
             setOnClickListener {
-                onClick?.invoke(!item.isChecked)
+                item.isChecked = !item.isChecked
+                onClick?.invoke(item)
             }
         }
     }

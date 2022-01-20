@@ -24,7 +24,7 @@ sealed class SocialTradeFilterItem(
         val text: String,
         val icon: String? = null,
         val iconRes: Int = 0,
-        val isChecked: Boolean = false,
+        var isChecked: Boolean = false,
     ) : SocialTradeFilterItem(LIST_SELECTOR_TYPE)
 
     @Parcelize

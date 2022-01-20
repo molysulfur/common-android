@@ -49,11 +49,11 @@ class SocialTradeRepository @Inject constructor(
                     request.period,
                     request.sort,
                     request.allocated,
-                    request.page,
-                    request.limit,
                     request.country,
                     request.minAllocatedPercentage,
-                    request.maxProfitablePercentage
+                    request.maxProfitablePercentage,
+                    page = request.page,
+                    limit = request.limit,
                 )
                     .execute()
             }

@@ -18,11 +18,11 @@ fun setSocialTradeFilter(
             .apply {
                 onClick = { key ->
                     when (key) {
-                        "period" -> viewModel.navigate(SocialTradeFilterFragmentDirections.socialTradeFilterFragmentToSocialTradeFilterSelectorFragment())
+                        "period" -> viewModel.navigate(SocialTradeFilterFragmentDirections.socialTradeFilterFragmentToSocialTradeFilterSelectorFragment(key))
                     }
                 }
                 onChecked = {
-
+                    viewModel.toggleTimePeriod(it)
                 }
             }
         with(recycler) {

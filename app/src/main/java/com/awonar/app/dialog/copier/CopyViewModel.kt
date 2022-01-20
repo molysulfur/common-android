@@ -134,9 +134,10 @@ class CopyViewModel @Inject constructor(
     fun getTraderInfo(copiesId: String?) {
         copiesId?.let {
             viewModelScope.launch {
-                getTradersUseCase(TradersRequest(uid = it,
+                getTradersUseCase(TradersRequest(
+                    uid = arrayListOf(it),
                     page = 1,
-                    maxRisk = 10)).collect { result ->
+                    maxRisk = arrayListOf("10"))).collect { result ->
                     val trader = result.successOr(null)?.get(0)
                     _traderState.value = trader
                 }

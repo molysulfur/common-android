@@ -16,5 +16,10 @@
     <fragment
         android:id="@+id/socialTradeFilterSelectorFragment"
         android:name="com.awonar.app.ui.socialtrade.filter.SocialTradeFilterSelectorFragment"
-        android:label="SocialTradeFilterSelectorFragment" />
+        android:label="SocialTradeFilterSelectorFragment">
+
+        <argument
+            android:name="filterType"
+            app:argType="string" />
+    </fragment>
 </navigation>

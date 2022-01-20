@@ -24,8 +24,8 @@ class SocialTradeViewModel @Inject constructor(
         getTradersUseCase(
             TradersRequest(
                 period = arrayListOf("1MonthAgo"),
-                verified = true,
-                maxRisk = 7,
+                verified = arrayListOf("true"),
+                maxRisk = arrayListOf("7"),
                 sort = arrayListOf("-gain", "username"),
                 page = 1
             )
@@ -38,8 +38,8 @@ class SocialTradeViewModel @Inject constructor(
         getTradersUseCase(
             TradersRequest(
                 period = arrayListOf("1MonthAgo"),
-                verified = true,
-                maxRisk = 7,
+                verified = arrayListOf("true"),
+                maxRisk = arrayListOf("7"),
                 sort = arrayListOf("risk", "-gain", "username"),
                 page = 1
             )
@@ -51,8 +51,8 @@ class SocialTradeViewModel @Inject constructor(
     private val longTerm = flow {
         getTradersUseCase(
             TradersRequest(
-                verified = true,
-                maxRisk = 7,
+                verified = arrayListOf("true"),
+                maxRisk = arrayListOf("7"),
                 sort = arrayListOf("-gain", "username"),
                 period = arrayListOf("6MonthsAgo"),
                 page = 1
@@ -65,10 +65,10 @@ class SocialTradeViewModel @Inject constructor(
     private val shortTerm = flow {
         getTradersUseCase(
             TradersRequest(
-                verified = true,
+                verified = arrayListOf("true"),
+                maxRisk = arrayListOf("8"),
                 sort = arrayListOf("-gain", "username"),
                 period = arrayListOf("1MonthAgo"),
-                maxRisk = 8,
                 page = 1
             )
         ).collect {
