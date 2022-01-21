@@ -3,45 +3,68 @@ package com.awonar.app.ui.socialtrade.filter
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDirections
-import com.awonar.android.model.socialtrade.TradersRequest
+import com.awonar.android.constrant.returnData
 import com.awonar.android.shared.utils.WhileViewSubscribed
 import com.awonar.app.ui.socialtrade.filter.adapter.SocialTradeFilterItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class SocialTradeFilterViewModel @Inject constructor() : ViewModel() {
 
-    private val payload = MutableStateFlow(TradersRequest())
-
-    private val _selectedTimePeriod = MutableStateFlow<List<String>>(mutableListOf())
-    val selectedTimePeriod get() = _selectedTimePeriod
+    private val payload = MutableStateFlow<Map<String, MutableList<String>?>>(emptyMap())
 
     private val _selectPeriodList = mutableSetOf<String>()
+    private val _inputCustom = arrayListOf<String>()
     private var _itemList = mutableListOf<SocialTradeFilterItem>()
 
-    private val _periodsState =
+    private val _itemListState =
         MutableStateFlow<MutableList<SocialTradeFilterItem>>(mutableListOf())
-    val periodsState: StateFlow<MutableList<SocialTradeFilterItem>> = _periodsState
+    val itemListState: StateFlow<MutableList<SocialTradeFilterItem>> get() = _itemListState
 
-    fun save(key: String) {
-        payload.value.copy().apply {
-            when (key) {
-                "period" -> period = _selectPeriodList.toList()
-            }
+    fun updateCustomValue(first: String?, second: String?) {
+        if (!first.isNullOrEmpty() && !second.isNullOrEmpty()) {
+            _inputCustom.add(first)
+            _inputCustom.add(second)
         }
     }
 
-    fun setFilterList(filters: List<Pair<String, String>>) {
+    fun save(key: String) {
+        val newMep: HashMap<String, MutableList<String>?> = hashMapOf()
+        when (key) {
+            "period" -> newMep[key] = _selectPeriodList.toMutableList()
+            "status" -> {
+                newMep["verified"] =
+                    if (_selectPeriodList.contains("verified")) arrayListOf("true") else null
+                val selectedPopular = _selectPeriodList.find { it == "popular" }
+                newMep["popular"] =
+                    if (selectedPopular != null) arrayListOf(selectedPopular) else null
+            }
+            "return" -> {
+                val data = returnData.find { it.first == _selectPeriodList.toMutableList()[0] }
+                if (_inputCustom.size > 0) {
+                    newMep["return"] = _inputCustom
+                } else {
+                    data?.let {
+                        newMep["return"] = arrayListOf(it.second[0] ?: "", it.second[1] ?: "")
+                    }
+                }
+            }
+        }
+        payload.value = newMep
+    }
+
+    fun setFilterList(key: String, filters: List<Pair<String, String>>) {
         val list = mutableListOf<SocialTradeFilterItem>()
-        payload.value.period?.map {
+        payload.value[key]?.map {
             _selectPeriodList.add(it)
         } ?: mutableListOf()
         filters.forEach { filter ->
-            list.add(SocialTradeFilterItem.SelectorListItem(
+            list.add(SocialTradeFilterItem.MultiSelectorListItem(
                 text = filter.first,
                 isChecked = _selectPeriodList.contains(filter.first)))
         }
@@ -49,7 +72,27 @@ class SocialTradeFilterViewModel @Inject constructor() : ViewModel() {
         publish()
     }
 
-    fun toggleTimePeriod(period: SocialTradeFilterItem.SelectorListItem) {
+    fun setFilterList(
+        key: String,
+        description: String,
+        filters: ArrayList<Pair<String, List<String?>>>,
+    ) {
+        val list = mutableListOf<SocialTradeFilterItem>()
+        val data =
+            filters.find { it == Pair(payload.value[key]?.get(0), payload.value[key]?.get(1)) }
+        data?.let { _selectPeriodList.add(it.first) }
+        list.add(SocialTradeFilterItem.DescriptionItem(description))
+        filters.forEach { filter ->
+            list.add(SocialTradeFilterItem.SingleSelectorListItem(
+                text = filter.first,
+                isChecked = _selectPeriodList.contains(filter.first)))
+        }
+        list.add(SocialTradeFilterItem.RangeInputItem())
+        _itemList = list
+        publish()
+    }
+
+    fun toggleMultiple(period: SocialTradeFilterItem.MultiSelectorListItem) {
         val changed = if (period.isChecked) {
             _selectPeriodList.add(period.text)
         } else {
@@ -58,8 +101,32 @@ class SocialTradeFilterViewModel @Inject constructor() : ViewModel() {
 
         if (changed) {
             _itemList = _itemList.mapTo(mutableListOf()) { item ->
-                if (item is SocialTradeFilterItem.SelectorListItem) {
-                    SocialTradeFilterItem.SelectorListItem(
+                if (item is SocialTradeFilterItem.MultiSelectorListItem) {
+                    SocialTradeFilterItem.MultiSelectorListItem(
+                        text = item.text,
+                        icon = item.icon,
+                        iconRes = item.iconRes,
+                        isChecked = _selectPeriodList.contains(item.text)
+                    )
+                } else {
+                    item
+                }
+            }
+            publish()
+        }
+    }
+
+    fun toggleSingle(item: SocialTradeFilterItem.SingleSelectorListItem) {
+        _selectPeriodList.clear()
+        val changed = if (item.isChecked) {
+            _selectPeriodList.add(item.text)
+        } else {
+            _selectPeriodList.remove(item.text)
+        }
+        if (changed) {
+            _itemList = _itemList.mapTo(mutableListOf()) { item ->
+                if (item is SocialTradeFilterItem.SingleSelectorListItem) {
+                    SocialTradeFilterItem.SingleSelectorListItem(
                         text = item.text,
                         icon = item.icon,
                         iconRes = item.iconRes,
@@ -74,11 +141,12 @@ class SocialTradeFilterViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun publish() {
-        _periodsState.value = _itemList
+        _itemListState.value = _itemList
     }
 
     fun clear() {
         _itemList.clear()
+        _inputCustom.clear()
         _selectPeriodList.clear()
     }
 
@@ -97,7 +165,7 @@ class SocialTradeFilterViewModel @Inject constructor() : ViewModel() {
             val list = mutableListOf<SocialTradeFilterItem>()
             list.add(SocialTradeFilterItem.TextListItem(key = "period",
                 text = "Time Period",
-                meta = payload.value.period?.joinToString(",")))
+                meta = payload.value["period"]?.joinToString(",")))
             list.add(SocialTradeFilterItem.TextListItem(key = "status", text = "Trader Status"))
             list.add(SocialTradeFilterItem.SectionItem(text = "Performance"))
             list.add(SocialTradeFilterItem.TextListItem(key = "return", text = "Return"))

@@ -5,11 +5,11 @@ import com.awonar.app.R
 import com.awonar.app.databinding.AwonarItemListBinding
 import com.awonar.app.ui.socialtrade.filter.adapter.SocialTradeFilterItem
 
-class SelectorViewHolder constructor(private val binding: AwonarItemListBinding) :
+class MultiSelectorViewHolder constructor(private val binding: AwonarItemListBinding) :
     RecyclerView.ViewHolder(binding.root) {
     fun bind(
-        item: SocialTradeFilterItem.SelectorListItem,
-        onClick: ((SocialTradeFilterItem.SelectorListItem) -> Unit)?,
+        item: SocialTradeFilterItem.MultiSelectorListItem,
+        onClick: ((SocialTradeFilterItem.MultiSelectorListItem) -> Unit)?,
     ) {
         with(binding.awonarItemListText) {
             setTitle(item.text)

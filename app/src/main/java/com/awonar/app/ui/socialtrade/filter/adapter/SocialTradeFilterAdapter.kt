@@ -4,11 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.awonar.app.databinding.AwonarItemDescriptionBinding
+import com.awonar.app.databinding.AwonarItemInputRangeBinding
 import com.awonar.app.databinding.AwonarItemListBinding
 import com.awonar.app.databinding.AwonarItemSectionBinding
-import com.awonar.app.ui.socialtrade.filter.adapter.holder.ListTextViewHolder
-import com.awonar.app.ui.socialtrade.filter.adapter.holder.SectionViewHolder
-import com.awonar.app.ui.socialtrade.filter.adapter.holder.SelectorViewHolder
+import com.awonar.app.ui.socialtrade.filter.adapter.holder.*
 
 class SocialTradeFilterAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -22,10 +22,22 @@ class SocialTradeFilterAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 
 
     var onClick: ((String?) -> Unit)? = null
-    var onChecked: ((SocialTradeFilterItem.SelectorListItem) -> Unit)? = null
+    var onChecked: ((SocialTradeFilterItem.MultiSelectorListItem) -> Unit)? = null
+    var onSingleChecked: ((SocialTradeFilterItem.SingleSelectorListItem) -> Unit)? = null
+    var onCustomChange: ((String?, String?) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
+            SocialTradeFilterType.RANGE_INPUT_TYPE -> RangeInputViewHolder(
+                AwonarItemInputRangeBinding.inflate(LayoutInflater.from(parent.context),
+                    parent,
+                    false),
+            )
+            SocialTradeFilterType.DESCRIPTION_TYPE -> DescriptionViewHolder(
+                AwonarItemDescriptionBinding.inflate(LayoutInflater.from(parent.context),
+                    parent,
+                    false),
+            )
             SocialTradeFilterType.SECTION_TYPE -> SectionViewHolder(
                 AwonarItemSectionBinding.inflate(LayoutInflater.from(parent.context),
                     parent,
@@ -36,7 +48,12 @@ class SocialTradeFilterAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
                     parent,
                     false)
             )
-            SocialTradeFilterType.LIST_SELECTOR_TYPE -> SelectorViewHolder(
+            SocialTradeFilterType.LIST_MULTI_SELECTOR_TYPE -> MultiSelectorViewHolder(
+                AwonarItemListBinding.inflate(LayoutInflater.from(parent.context),
+                    parent,
+                    false)
+            )
+            SocialTradeFilterType.LIST_SINGLE_SELECTOR_TYPE -> SingleSelectorViewHolder(
                 AwonarItemListBinding.inflate(LayoutInflater.from(parent.context),
                     parent,
                     false)
@@ -50,8 +67,15 @@ class SocialTradeFilterAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
             is SectionViewHolder -> holder.bind(item as SocialTradeFilterItem.SectionItem)
             is ListTextViewHolder -> holder.bind(item as SocialTradeFilterItem.TextListItem,
                 onClick)
-            is SelectorViewHolder -> holder.bind(item as SocialTradeFilterItem.SelectorListItem,
+            is MultiSelectorViewHolder -> holder.bind(item as SocialTradeFilterItem.MultiSelectorListItem,
                 onChecked)
+            is SingleSelectorViewHolder -> holder.bind(item as SocialTradeFilterItem.SingleSelectorListItem,
+                onSingleChecked)
+            is DescriptionViewHolder -> holder.bind(item as SocialTradeFilterItem.DescriptionItem)
+            is RangeInputViewHolder -> holder.bind(
+                item as SocialTradeFilterItem.RangeInputItem,
+                onCustomChange
+            )
         }
     }
 
