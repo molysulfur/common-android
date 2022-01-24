@@ -8,6 +8,10 @@
         <variable
             name="title"
             type="String" />
+
+        <variable
+            name="buttonText"
+            type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -29,8 +33,8 @@
             style="@style/Awonar.Button.Link"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/awonar_text_viewmore"
             android:padding="@dimen/awonar_size_margin_padding_normal"
+            android:text="@{buttonText}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

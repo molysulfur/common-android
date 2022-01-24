@@ -1,9 +1,11 @@
 package com.awonar.app.ui.socialtrade
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -16,9 +18,9 @@ import com.awonar.app.ui.socialtrade.adapter.SocialTradeHorizontalWrapperAdapter
 import com.awonar.app.ui.socialtrade.adapter.SocialTradeRecommendedAdapter
 import com.awonar.app.ui.socialtrade.filter.SocialTradeFilterActivity
 import com.molysulfur.library.extension.openActivity
+import com.molysulfur.library.extension.openActivityCompatForResult
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
-import timber.log.Timber
 
 class SocialTradeFragment : Fragment() {
 
@@ -38,6 +40,15 @@ class SocialTradeFragment : Fragment() {
             }
         }
     }
+
+    private val getContent =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                val mapper: HashMap<String, String> =
+                    it.data?.getSerializableExtra("map") as (HashMap<String, String>)
+                viewModel.onLoad(mapper)
+            }
+        }
 
     private val socialTradeAdapter: SocialTradeAdapter by lazy {
         SocialTradeAdapter().apply {
@@ -88,7 +99,7 @@ class SocialTradeFragment : Fragment() {
         }
         with(binding.awonarSocialTradeButtonFilter) {
             setOnClickListener {
-                openActivity(SocialTradeFilterActivity::class.java)
+                openActivityCompatForResult(getContent, SocialTradeFilterActivity::class.java)
             }
         }
 

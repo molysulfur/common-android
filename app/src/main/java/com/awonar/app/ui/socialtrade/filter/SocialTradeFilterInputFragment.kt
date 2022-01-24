@@ -8,7 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.awonar.android.constrant.returnData
+import com.awonar.android.constrant.inputData
+import com.awonar.android.constrant.inputDescriptionData
 import com.awonar.app.databinding.AwonarFragmentSocialTradeFilterInputBinding
 
 class SocialTradeFilterInputFragment : Fragment() {
@@ -33,14 +34,10 @@ class SocialTradeFilterInputFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        when (val type = args.filterType) {
-            "return" -> viewModel.setFilterList(type,
-                "Discover people based on their trading performance.",
-                returnData)
-            "risk" -> viewModel.setFilterList(type,
-                "Risk score is calculated or each user from 1 to 10, where 1 is the lowest possible risk, and 10 is the highest possible risk.",
-                returnData)
-        }
+        viewModel.setFilterList(
+            key = args.filterType,
+            description = inputDescriptionData[args.filterType] ?: "",
+            filters = inputData[args.filterType] ?: arrayListOf())
         binding.awonarSocialTradeFilterSelectorButtonApply.setOnClickListener {
             viewModel.save(args.filterType)
             findNavController().popBackStack()

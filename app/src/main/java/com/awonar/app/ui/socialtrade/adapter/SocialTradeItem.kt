@@ -12,12 +12,13 @@ sealed class SocialTradeItem(
 
     @Parcelize
     class TitleItem(
-        val title: String
+        val title: String,
+        val buttonText: String?,
     ) : SocialTradeItem(SocialTradeType.SOCIALTRADE_TITLE)
 
     @Parcelize
     class CopiesItem(
-        val userId :String?,
+        val userId: String?,
         val image: String?,
         val title: String?,
         val subTitle: String?,

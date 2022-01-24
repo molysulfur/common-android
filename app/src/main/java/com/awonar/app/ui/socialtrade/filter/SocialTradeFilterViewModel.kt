@@ -3,7 +3,7 @@ package com.awonar.app.ui.socialtrade.filter
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDirections
-import com.awonar.android.constrant.returnData
+import com.awonar.android.constrant.inputData
 import com.awonar.android.shared.utils.WhileViewSubscribed
 import com.awonar.app.ui.socialtrade.filter.adapter.SocialTradeFilterItem
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,57 +16,92 @@ import javax.inject.Inject
 @HiltViewModel
 class SocialTradeFilterViewModel @Inject constructor() : ViewModel() {
 
-    private val payload = MutableStateFlow<Map<String, MutableList<String>?>>(emptyMap())
+    private val fieldName = mutableMapOf(
+        "return" to "minGain,maxGain",
+        "risk" to "minRisk,maxRisk",
+        "numberCopy" to "minCopiers,maxCopiers",
+        "active" to "minActiveWeek,maxActiveWeek",
+        "profitable" to "minProfitablePercentage,maxProfitablePercentage",
+        "numberTrades" to "minTrades,maxTrades",
+        "daily" to "minDailyDrawdown,maxDailyDrawdown",
+        "weekly" to "minWeeklyDrawdown,maxWeeklyDrawdown"
+    )
+
+    private val _payload = MutableStateFlow<MutableMap<String, String?>>(mutableMapOf())
+    val payload get() = _payload
 
     private val _selectPeriodList = mutableSetOf<String>()
-    private val _inputCustom = arrayListOf<String>()
+    private var _inputCustom = arrayListOf<String>()
     private var _itemList = mutableListOf<SocialTradeFilterItem>()
 
     private val _itemListState =
         MutableStateFlow<MutableList<SocialTradeFilterItem>>(mutableListOf())
     val itemListState: StateFlow<MutableList<SocialTradeFilterItem>> get() = _itemListState
 
+    private val _sendRequest = Channel<Map<String, String?>>(Channel.CONFLATED)
+    val sendRequest get() = _sendRequest.receiveAsFlow()
+
+    fun getRequest() {
+        viewModelScope.launch {
+            val request: Map<String, String?> = _payload.value.filter { it.value != null }
+            Timber.e("$request")
+            _sendRequest.send(request)
+        }
+    }
+
     fun updateCustomValue(first: String?, second: String?) {
         if (!first.isNullOrEmpty() && !second.isNullOrEmpty()) {
-            _inputCustom.add(first)
-            _inputCustom.add(second)
+            _inputCustom = arrayListOf(first, second)
         }
     }
 
     fun save(key: String) {
-        val newMep: HashMap<String, MutableList<String>?> = hashMapOf()
+        val newMep: MutableMap<String, String?> = _payload.value
         when (key) {
-            "period" -> newMep[key] = _selectPeriodList.toMutableList()
             "status" -> {
                 newMep["verified"] =
-                    if (_selectPeriodList.contains("verified")) arrayListOf("true") else null
+                    if (_selectPeriodList.contains("verified")) "true" else null
                 val selectedPopular = _selectPeriodList.find { it == "popular" }
-                newMep["popular"] =
-                    if (selectedPopular != null) arrayListOf(selectedPopular) else null
+                newMep["popular"] = selectedPopular
             }
-            "return" -> {
-                val data = returnData.find { it.first == _selectPeriodList.toMutableList()[0] }
+            "return", "risk", "numberCopy", "active", "profitable", "numberTrades", "daily", "weekly" -> {
+                val fieldNames = fieldName[key]?.split(",")
                 if (_inputCustom.size > 0) {
-                    newMep["return"] = _inputCustom
+                    fieldNames?.get(0)?.let {
+                        newMep[it] = _inputCustom[0]
+                    }
+                    fieldNames?.get(1)?.let {
+                        newMep[it] = _inputCustom[1]
+                    }
                 } else {
+                    val data =
+                        inputData[key]?.find { it.first == _selectPeriodList.toMutableList()[0] }
                     data?.let {
-                        newMep["return"] = arrayListOf(it.second[0] ?: "", it.second[1] ?: "")
+                        fieldNames?.get(0)?.let { key ->
+                            newMep[key] = it.second[0]
+                        }
+                        fieldNames?.get(1)?.let { key ->
+                            newMep[key] = it.second[1]
+                        }
                     }
                 }
             }
+            else -> newMep[key] = _selectPeriodList.joinToString(",")
         }
-        payload.value = newMep
+        _payload.value = newMep
+        clear()
     }
 
     fun setFilterList(key: String, filters: List<Pair<String, String>>) {
         val list = mutableListOf<SocialTradeFilterItem>()
-        payload.value[key]?.map {
+        _payload.value[key]?.split(",")?.map {
             _selectPeriodList.add(it)
         } ?: mutableListOf()
         filters.forEach { filter ->
             list.add(SocialTradeFilterItem.MultiSelectorListItem(
                 text = filter.first,
-                isChecked = _selectPeriodList.contains(filter.first)))
+                value = filter.second,
+                isChecked = _selectPeriodList.contains(filter.second)))
         }
         _itemList = list
         publish()
@@ -78,8 +113,14 @@ class SocialTradeFilterViewModel @Inject constructor() : ViewModel() {
         filters: ArrayList<Pair<String, List<String?>>>,
     ) {
         val list = mutableListOf<SocialTradeFilterItem>()
+        val keys = fieldName[key]
         val data =
-            filters.find { it == Pair(payload.value[key]?.get(0), payload.value[key]?.get(1)) }
+            filters.find {
+                it == Pair(
+                    _payload.value[keys?.get(0) ?: ""]?.get(0),
+                    _payload.value[keys?.get(1) ?: ""]?.get(1)
+                )
+            }
         data?.let { _selectPeriodList.add(it.first) }
         list.add(SocialTradeFilterItem.DescriptionItem(description))
         filters.forEach { filter ->
@@ -87,16 +128,19 @@ class SocialTradeFilterViewModel @Inject constructor() : ViewModel() {
                 text = filter.first,
                 isChecked = _selectPeriodList.contains(filter.first)))
         }
-        list.add(SocialTradeFilterItem.RangeInputItem())
+        list.add(SocialTradeFilterItem.RangeInputItem(
+            "Minimum",
+            "Maximum"
+        ))
         _itemList = list
         publish()
     }
 
     fun toggleMultiple(period: SocialTradeFilterItem.MultiSelectorListItem) {
         val changed = if (period.isChecked) {
-            _selectPeriodList.add(period.text)
+            _selectPeriodList.add(period.value)
         } else {
-            _selectPeriodList.remove(period.text)
+            _selectPeriodList.remove(period.value)
         }
 
         if (changed) {
@@ -104,9 +148,10 @@ class SocialTradeFilterViewModel @Inject constructor() : ViewModel() {
                 if (item is SocialTradeFilterItem.MultiSelectorListItem) {
                     SocialTradeFilterItem.MultiSelectorListItem(
                         text = item.text,
+                        value = item.value,
                         icon = item.icon,
                         iconRes = item.iconRes,
-                        isChecked = _selectPeriodList.contains(item.text)
+                        isChecked = _selectPeriodList.contains(item.value)
                     )
                 } else {
                     item
@@ -160,12 +205,13 @@ class SocialTradeFilterViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+
     val filterItems: StateFlow<MutableList<SocialTradeFilterItem>> =
         flow {
             val list = mutableListOf<SocialTradeFilterItem>()
             list.add(SocialTradeFilterItem.TextListItem(key = "period",
                 text = "Time Period",
-                meta = payload.value["period"]?.joinToString(",")))
+                meta = _payload.value["period"]))
             list.add(SocialTradeFilterItem.TextListItem(key = "status", text = "Trader Status"))
             list.add(SocialTradeFilterItem.SectionItem(text = "Performance"))
             list.add(SocialTradeFilterItem.TextListItem(key = "return", text = "Return"))
@@ -182,7 +228,7 @@ class SocialTradeFilterViewModel @Inject constructor() : ViewModel() {
             list.add(SocialTradeFilterItem.SectionItem(text = "Advance"))
             list.add(SocialTradeFilterItem.TextListItem(key = "daily", text = "Daily drawdown"))
             list.add(SocialTradeFilterItem.TextListItem(key = "weekly", text = "Weekly drawdown"))
-            list.add(SocialTradeFilterItem.TextListItem(key = "country", text = "Country"))
             emit(list)
         }.stateIn(viewModelScope, WhileViewSubscribed, mutableListOf())
 }
+

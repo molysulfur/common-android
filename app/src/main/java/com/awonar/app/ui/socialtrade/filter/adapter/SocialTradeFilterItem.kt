@@ -14,7 +14,10 @@ sealed class SocialTradeFilterItem(
 ) : Parcelable {
 
     @Parcelize
-    class RangeInputItem : SocialTradeFilterItem(RANGE_INPUT_TYPE)
+    class RangeInputItem(
+        val placeholder1: String,
+        val placeholder2: String,
+    ) : SocialTradeFilterItem(RANGE_INPUT_TYPE)
 
     @Parcelize
     data class DescriptionItem(
@@ -34,6 +37,7 @@ sealed class SocialTradeFilterItem(
     @Parcelize
     class MultiSelectorListItem(
         val text: String,
+        val value: String,
         val icon: String? = null,
         val iconRes: Int = 0,
         var isChecked: Boolean = false,

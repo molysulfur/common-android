@@ -13,6 +13,7 @@
         style="@style/Awonar.SubTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="@dimen/awonar_size_margin_padding_normal"
         android:text="@{text}"
         tools:text="@string/awonar_example_name" />
 

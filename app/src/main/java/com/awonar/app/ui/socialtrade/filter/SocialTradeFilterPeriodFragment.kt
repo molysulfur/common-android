@@ -33,13 +33,7 @@ class SocialTradeFilterPeriodFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        when (args.filterType) {
-            "period" -> viewModel.setFilterList(args.filterType, timePeriodsData)
-            "status" -> viewModel.setFilterList(args.filterType, timeStatusData)
-            "allocation" -> viewModel.setFilterList(args.filterType, allocationData)
-        }
-
-
+        viewModel.setFilterList(args.filterType, selectData[args.filterType] ?: arrayListOf())
         binding.awonarSocialTradeFilterSelectorButtonApply.setOnClickListener {
             viewModel.save(args.filterType)
             findNavController().popBackStack()

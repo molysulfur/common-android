@@ -12,6 +12,7 @@ import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,15 +20,31 @@ class SocialTradeViewModel @Inject constructor(
     private val getRecommendedUseCase: GetRecommendedUseCase,
     private val getTradersUseCase: GetTradersUseCase,
 ) : ViewModel() {
+    fun onLoad(request: Map<String, String>) {
+        viewModelScope.launch {
+            getTradersUseCase(
+                TradersRequest(
+                    filter = request,
+                    page = 1,
+                    limit = 5
+                )
+            ).collect {
+                Timber.e("${it.successOr(emptyList())}")
+            }
+        }
+    }
 
     private val traderMostCopies = flow {
         getTradersUseCase(
             TradersRequest(
-                period = arrayListOf("1MonthAgo"),
-                verified = arrayListOf("true"),
-                maxRisk = arrayListOf("7"),
-                sort = arrayListOf("-gain", "username"),
-                page = 1
+                filter = mapOf(
+                    "period" to "1MonthAgo",
+                    "verified" to "true",
+                    "maxRisk" to "7",
+                    "sort" to "-gain,username",
+                ),
+                page = 1,
+                limit = 5
             )
         ).collect {
             emit(it.successOr(emptyList()))
@@ -37,11 +54,14 @@ class SocialTradeViewModel @Inject constructor(
     private val lowRisk = flow {
         getTradersUseCase(
             TradersRequest(
-                period = arrayListOf("1MonthAgo"),
-                verified = arrayListOf("true"),
-                maxRisk = arrayListOf("7"),
-                sort = arrayListOf("risk", "-gain", "username"),
-                page = 1
+                filter = mapOf(
+                    "period" to "1MonthAgo",
+                    "verified" to "true",
+                    "maxRisk" to "7",
+                    "sort" to "risk,-gain,username",
+                ),
+                page = 1,
+                limit = 5
             )
         ).collect {
             emit(it.successOr(emptyList()))
@@ -51,11 +71,14 @@ class SocialTradeViewModel @Inject constructor(
     private val longTerm = flow {
         getTradersUseCase(
             TradersRequest(
-                verified = arrayListOf("true"),
-                maxRisk = arrayListOf("7"),
-                sort = arrayListOf("-gain", "username"),
-                period = arrayListOf("6MonthsAgo"),
-                page = 1
+                filter = mapOf(
+                    "period" to "6MonthsAgo",
+                    "verified" to "true",
+                    "maxRisk" to "7",
+                    "sort" to "-gain,username",
+                ),
+                page = 1,
+                limit = 5
             )
         ).collect {
             emit(it.successOr(emptyList()))
@@ -65,11 +88,14 @@ class SocialTradeViewModel @Inject constructor(
     private val shortTerm = flow {
         getTradersUseCase(
             TradersRequest(
-                verified = arrayListOf("true"),
-                maxRisk = arrayListOf("8"),
-                sort = arrayListOf("-gain", "username"),
-                period = arrayListOf("1MonthAgo"),
-                page = 1
+                filter = mapOf(
+                    "period" to "1MonthAgo",
+                    "verified" to "true",
+                    "maxRisk" to "8",
+                    "sort" to "-gain,username",
+                ),
+                page = 1,
+                limit = 5
             )
         ).collect {
             emit(it.successOr(emptyList()))
@@ -90,7 +116,7 @@ class SocialTradeViewModel @Inject constructor(
             shortTerm
         ) { mostCopies, lowRisks, longTerm, shortTerm ->
             val itemList = mutableListOf<SocialTradeItem>()
-            itemList.add(SocialTradeItem.TitleItem("Most Copies"))
+            itemList.add(SocialTradeItem.TitleItem("Most Copies", "View More"))
             mostCopies?.forEach { trader ->
                 itemList.add(
                     SocialTradeItem.CopiesItem(
@@ -108,7 +134,7 @@ class SocialTradeViewModel @Inject constructor(
                     )
                 )
             }
-            itemList.add(SocialTradeItem.TitleItem("Low Risk"))
+            itemList.add(SocialTradeItem.TitleItem("Low Risk", "View More"))
             lowRisks?.forEach { trader ->
                 itemList.add(
                     SocialTradeItem.CopiesItem(
@@ -126,7 +152,7 @@ class SocialTradeViewModel @Inject constructor(
                     )
                 )
             }
-            itemList.add(SocialTradeItem.TitleItem("Long Term"))
+            itemList.add(SocialTradeItem.TitleItem("Long Term", "View More"))
             longTerm?.forEach { trader ->
                 itemList.add(
                     SocialTradeItem.CopiesItem(
@@ -144,7 +170,7 @@ class SocialTradeViewModel @Inject constructor(
                     )
                 )
             }
-            itemList.add(SocialTradeItem.TitleItem("Short Term"))
+            itemList.add(SocialTradeItem.TitleItem("Short Term", "View More"))
             shortTerm?.forEach { trader ->
                 itemList.add(
                     SocialTradeItem.CopiesItem(

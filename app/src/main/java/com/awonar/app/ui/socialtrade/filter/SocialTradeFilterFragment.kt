@@ -9,13 +9,16 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.awonar.app.databinding.AwonarFragmentSocialTradeFilterBinding
+import com.awonar.app.ui.socialtrade.SocialTradeViewModel
 import com.awonar.app.ui.socialtrade.filter.adapter.SocialTradeFilterAdapter
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
+import timber.log.Timber
 
 class SocialTradeFilterFragment : Fragment() {
 
     private val viewModel: SocialTradeFilterViewModel by activityViewModels()
+    private val socialViewModel: SocialTradeViewModel by activityViewModels()
 
     private val binding: AwonarFragmentSocialTradeFilterBinding by lazy {
         AwonarFragmentSocialTradeFilterBinding.inflate(layoutInflater)
@@ -38,5 +41,8 @@ class SocialTradeFilterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.awonarSocialTradeFilterButtonSubmit.setOnClickListener {
+            viewModel.getRequest()
+        }
     }
 }

@@ -11,5 +11,6 @@ class TitleViewHolder constructor(
 
     fun bind(item: SocialTradeItem.TitleItem) {
         binding.title = item.title
+        binding.buttonText = item.buttonText
     }
 }

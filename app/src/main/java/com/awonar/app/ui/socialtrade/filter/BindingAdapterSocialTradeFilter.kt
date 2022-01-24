@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.app.ui.socialtrade.filter.adapter.SocialTradeFilterAdapter
 import com.awonar.app.ui.socialtrade.filter.adapter.SocialTradeFilterItem
+import timber.log.Timber
 
 @BindingAdapter("socialTradeFilterAdapter", "viewModel")
 fun setSocialTradeFilter(
@@ -21,7 +22,7 @@ fun setSocialTradeFilter(
                         "period", "status", "allocation" -> viewModel.navigate(
                             SocialTradeFilterFragmentDirections.socialTradeFilterFragmentToSocialTradeFilterPeriodFragment(
                                 key))
-                        "return" -> viewModel.navigate(
+                        "return", "risk", "numberCopy", "active", "profitable", "numberTrades", "daily", "weekly" -> viewModel.navigate(
                             SocialTradeFilterFragmentDirections.socialTradeFilterFragmentToSocialTradeFilterInputFragment(
                                 key)
                         )
@@ -30,12 +31,11 @@ fun setSocialTradeFilter(
                 onChecked = {
                     viewModel.toggleMultiple(it)
                 }
-
                 onSingleChecked = {
                     viewModel.toggleSingle(it)
                 }
                 onCustomChange = { first, second ->
-                    viewModel.updateCustomValue(first,second)
+                    viewModel.updateCustomValue(first, second)
                 }
             }
         with(recycler) {

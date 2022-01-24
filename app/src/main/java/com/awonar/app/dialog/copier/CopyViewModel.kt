@@ -12,8 +12,6 @@ import com.awonar.android.shared.domain.copy.*
 import com.awonar.android.shared.domain.currency.GetFloatingPlUseCase
 import com.awonar.android.shared.domain.portfolio.GetMyPortFolioUseCase
 import com.awonar.android.shared.domain.socialtrade.GetTradersUseCase
-import com.awonar.android.shared.utils.PortfolioUtil
-import com.facebook.internal.Validate
 import com.molysulfur.library.result.Result
 import com.molysulfur.library.result.succeeded
 import com.molysulfur.library.result.successOr
@@ -22,7 +20,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.json.JSONObject
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -134,10 +131,13 @@ class CopyViewModel @Inject constructor(
     fun getTraderInfo(copiesId: String?) {
         copiesId?.let {
             viewModelScope.launch {
-                getTradersUseCase(TradersRequest(
-                    uid = arrayListOf(it),
-                    page = 1,
-                    maxRisk = arrayListOf("10"))).collect { result ->
+                getTradersUseCase(
+                    TradersRequest(
+                        filter = mapOf("id" to it, "maxRisk" to "10"),
+                        page = 1,
+                        limit = 1
+                    )
+                ).collect { result ->
                     val trader = result.successOr(null)?.get(0)
                     _traderState.value = trader
                 }
