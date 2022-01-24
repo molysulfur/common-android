@@ -17,10 +17,12 @@ import com.awonar.app.ui.socialtrade.adapter.SocialTradeAdapter
 import com.awonar.app.ui.socialtrade.adapter.SocialTradeHorizontalWrapperAdapter
 import com.awonar.app.ui.socialtrade.adapter.SocialTradeRecommendedAdapter
 import com.awonar.app.ui.socialtrade.filter.SocialTradeFilterActivity
+import com.google.android.material.chip.Chip
 import com.molysulfur.library.extension.openActivity
 import com.molysulfur.library.extension.openActivityCompatForResult
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
+import timber.log.Timber
 
 class SocialTradeFragment : Fragment() {
 
@@ -41,17 +43,11 @@ class SocialTradeFragment : Fragment() {
         }
     }
 
-    private val getContent =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == Activity.RESULT_OK) {
-                val mapper: HashMap<String, String> =
-                    it.data?.getSerializableExtra("map") as (HashMap<String, String>)
-                viewModel.onLoad(mapper)
-            }
-        }
-
     private val socialTradeAdapter: SocialTradeAdapter by lazy {
         SocialTradeAdapter().apply {
+            onLoadMore = {
+                viewModel.filter()
+            }
             onItemClick = { userId ->
                 openActivity(
                     ProfileActivity::class.java,
@@ -65,6 +61,15 @@ class SocialTradeFragment : Fragment() {
         SocialTradeHorizontalWrapperAdapter(recommendedAdapter)
     }
 
+    private val getContent =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                val mapper: HashMap<String, String> =
+                    it.data?.getSerializableExtra("map") as (HashMap<String, String>)
+                viewModel.filter(mapper)
+            }
+        }
+
     private val concatAdapter: ConcatAdapter by lazy {
         val config = ConcatAdapter.Config.Builder().apply {
         }.build()
@@ -76,6 +81,17 @@ class SocialTradeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
+        launchAndRepeatWithViewLifecycle {
+            viewModel.filter.collect { filters ->
+                for ((t, u) in filters ?: mutableMapOf()) {
+                    binding.awonarSocialTradeChipGroupFilter.addView(Chip(requireContext())
+                        .apply {
+                            chipEndPadding = 8f
+                            text = u
+                        })
+                }
+            }
+        }
         launchAndRepeatWithViewLifecycle {
             viewModel.copiesList.collect {
                 socialTradeAdapter.itemList = it
@@ -102,6 +118,5 @@ class SocialTradeFragment : Fragment() {
                 openActivityCompatForResult(getContent, SocialTradeFilterActivity::class.java)
             }
         }
-
     }
 }

@@ -8,6 +8,7 @@ import com.awonar.android.shared.domain.socialtrade.GetRecommendedUseCase
 import com.awonar.android.shared.domain.socialtrade.GetTradersUseCase
 import com.awonar.android.shared.utils.WhileViewSubscribed
 import com.awonar.app.ui.socialtrade.adapter.SocialTradeItem
+import com.molysulfur.library.result.succeeded
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -20,96 +21,185 @@ class SocialTradeViewModel @Inject constructor(
     private val getRecommendedUseCase: GetRecommendedUseCase,
     private val getTradersUseCase: GetTradersUseCase,
 ) : ViewModel() {
-    fun onLoad(request: Map<String, String>) {
+
+    private val _filter: MutableStateFlow<MutableMap<String, String>?> = MutableStateFlow(null)
+    val filter get() = _filter
+    private var page = 0
+
+    private val traderMostCopies = MutableStateFlow<List<Trader>?>(emptyList())
+    private val lowRisk = MutableStateFlow<List<Trader>?>(emptyList())
+    private val longTerm = MutableStateFlow<List<Trader>?>(emptyList())
+    private val shortTerm = MutableStateFlow<List<Trader>?>(emptyList())
+
+    private val _recommendedState = MutableStateFlow<List<Trader>?>(emptyList())
+    val recommendedState: StateFlow<List<Trader>?> = _recommendedState
+    private val _copiesList = MutableStateFlow<MutableList<SocialTradeItem>>(mutableListOf())
+    val copiesList get() = _copiesList
+
+    init {
         viewModelScope.launch {
             getTradersUseCase(
                 TradersRequest(
-                    filter = request,
+                    filter = mapOf(
+                        "period" to "1MonthAgo",
+                        "verified" to "true",
+                        "maxRisk" to "7",
+                        "sort" to "risk,-gain,username",
+                    ),
                     page = 1,
                     limit = 5
                 )
             ).collect {
-                Timber.e("${it.successOr(emptyList())}")
+                lowRisk.emit(it.successOr(emptyList()))
+            }
+        }
+        viewModelScope.launch {
+            getTradersUseCase(
+                TradersRequest(
+                    filter = mapOf(
+                        "period" to "6MonthsAgo",
+                        "verified" to "true",
+                        "maxRisk" to "7",
+                        "sort" to "-gain,username",
+                    ),
+                    page = 1,
+                    limit = 5
+                )
+            ).collect {
+                longTerm.emit(it.successOr(emptyList()))
+            }
+        }
+        viewModelScope.launch {
+            getTradersUseCase(
+                TradersRequest(
+                    filter = mapOf(
+                        "period" to "1MonthAgo",
+                        "verified" to "true",
+                        "maxRisk" to "7",
+                        "sort" to "-gain,username",
+                    ),
+                    page = 1,
+                    limit = 5
+                )
+            ).collect {
+                traderMostCopies.emit(it.successOr(emptyList()))
+            }
+        }
+        viewModelScope.launch {
+            getTradersUseCase(
+                TradersRequest(
+                    filter = mapOf(
+                        "period" to "1MonthAgo",
+                        "verified" to "true",
+                        "maxRisk" to "8",
+                        "sort" to "-gain,username",
+                    ),
+                    page = 1,
+                    limit = 5
+                )
+            ).collect {
+                shortTerm.emit(it.successOr(emptyList()))
+            }
+        }
+        getRecomended()
+        getTraderWithCategory()
+    }
+
+    private fun getRecomended() {
+        viewModelScope.launch {
+            getRecommendedUseCase(Unit).collect {
+                _recommendedState.emit(it.successOr(emptyList()))
             }
         }
     }
 
-    private val traderMostCopies = flow {
-        getTradersUseCase(
-            TradersRequest(
-                filter = mapOf(
-                    "period" to "1MonthAgo",
-                    "verified" to "true",
-                    "maxRisk" to "7",
-                    "sort" to "-gain,username",
-                ),
-                page = 1,
-                limit = 5
-            )
-        ).collect {
-            emit(it.successOr(emptyList()))
+    fun filter() {
+        viewModelScope.launch {
+            getTradersUseCase(
+                TradersRequest(
+                    filter = _filter.value,
+                    page = page
+                )
+            ).collect { copiers ->
+                if (copiers.succeeded) {
+                    val list = copiers.successOr(emptyList())
+                    val itemList: MutableList<SocialTradeItem> =
+                        _copiesList.value.filter { it !is SocialTradeItem.LoadMore }.toMutableList()
+                    if (list.isNullOrEmpty()) {
+                        page = 0
+                    } else {
+                        page++
+                    }
+                    list?.forEach { trader ->
+                        itemList.add(
+                            SocialTradeItem.CopiesItem(
+                                trader.id,
+                                trader.image,
+                                title = if (trader.displayFullName) {
+                                    "${trader.firstName} ${trader.middleName} ${trader.lastName}"
+                                } else {
+                                    trader.username
+                                },
+                                trader.username,
+                                false,
+                                trader.gain,
+                                trader.risk
+                            )
+                        )
+                    }
+                    if (page > 0) {
+                        itemList.add(SocialTradeItem.LoadMore())
+                    }
+                    _copiesList.value = itemList
+                }
+            }
         }
     }
 
-    private val lowRisk = flow {
-        getTradersUseCase(
-            TradersRequest(
-                filter = mapOf(
-                    "period" to "1MonthAgo",
-                    "verified" to "true",
-                    "maxRisk" to "7",
-                    "sort" to "risk,-gain,username",
-                ),
-                page = 1,
-                limit = 5
-            )
-        ).collect {
-            emit(it.successOr(emptyList()))
+    fun filter(request: Map<String, String>) {
+        page = 1
+        Timber.e("$page")
+        _filter.value = request.toMutableMap()
+        _recommendedState.value = emptyList()
+        viewModelScope.launch {
+            getTradersUseCase(
+                TradersRequest(
+                    filter = _filter.value,
+                    page = page
+                )
+            ).collect { copiers ->
+                val itemList = mutableListOf<SocialTradeItem>()
+                copiers.successOr(emptyList())?.forEach { trader ->
+                    itemList.add(
+                        SocialTradeItem.CopiesItem(
+                            trader.id,
+                            trader.image,
+                            title = if (trader.displayFullName) {
+                                "${trader.firstName} ${trader.middleName} ${trader.lastName}"
+                            } else {
+                                trader.username
+                            },
+                            trader.username,
+                            false,
+                            trader.gain,
+                            trader.risk
+                        )
+                    )
+                }
+                page++
+                itemList.add(SocialTradeItem.LoadMore())
+                _copiesList.value = itemList
+            }
         }
     }
 
-    private val longTerm = flow {
-        getTradersUseCase(
-            TradersRequest(
-                filter = mapOf(
-                    "period" to "6MonthsAgo",
-                    "verified" to "true",
-                    "maxRisk" to "7",
-                    "sort" to "-gain,username",
-                ),
-                page = 1,
-                limit = 5
-            )
-        ).collect {
-            emit(it.successOr(emptyList()))
-        }
+    fun removeFilter(key: String) {
+        val filters = _filter.value
+        filters?.remove(key)
     }
 
-    private val shortTerm = flow {
-        getTradersUseCase(
-            TradersRequest(
-                filter = mapOf(
-                    "period" to "1MonthAgo",
-                    "verified" to "true",
-                    "maxRisk" to "8",
-                    "sort" to "-gain,username",
-                ),
-                page = 1,
-                limit = 5
-            )
-        ).collect {
-            emit(it.successOr(emptyList()))
-        }
-    }
-
-    val recommendedState: StateFlow<List<Trader>?> = flow {
-        getRecommendedUseCase(Unit).collect {
-            emit(it.successOr(emptyList()))
-        }
-    }.stateIn(viewModelScope, WhileViewSubscribed, listOf())
-
-    private val _copiesList =
-        combine(
+    private fun getTraderWithCategory() {
+        val traders: Flow<MutableList<SocialTradeItem>> = combine(
             traderMostCopies,
             lowRisk,
             longTerm,
@@ -190,7 +280,10 @@ class SocialTradeViewModel @Inject constructor(
             }
             itemList
         }
-    val copiesList get() = _copiesList
-
-
+        viewModelScope.launch {
+            traders.collect {
+                _copiesList.emit(it)
+            }
+        }
+    }
 }

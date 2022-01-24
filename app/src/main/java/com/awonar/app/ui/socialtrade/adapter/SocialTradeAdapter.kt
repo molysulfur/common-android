@@ -4,7 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.app.databinding.AwonarItemCopiesItemBinding
+import com.awonar.app.databinding.AwonarItemLoadingBinding
 import com.awonar.app.databinding.AwonarItemTitleViewmoreBinding
+import com.awonar.app.ui.history.adapter.holder.LoadMoreViewHolder
 import com.awonar.app.ui.socialtrade.adapter.holder.CopiesItemViewHolder
 import com.awonar.app.ui.socialtrade.adapter.holder.TitleViewHolder
 
@@ -18,6 +20,7 @@ class SocialTradeAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var onItemClick: ((String?) -> Unit)? = null
     var onWatchListClick: (() -> Unit)? = null
+    var onLoadMore: (() -> Unit?)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
@@ -30,6 +33,13 @@ class SocialTradeAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             )
             SocialTradeType.SOCIALTRADE_COPIES_ITEM -> CopiesItemViewHolder(
                 AwonarItemCopiesItemBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+            SocialTradeType.SOCIALTRADE_LOADMORE -> LoadMoreViewHolder(
+                AwonarItemLoadingBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -49,6 +59,9 @@ class SocialTradeAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 onItemClick,
                 onWatchListClick
             )
+            is LoadMoreViewHolder -> {
+                onLoadMore?.invoke()
+            }
         }
     }
 

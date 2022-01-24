@@ -9,6 +9,9 @@ sealed class SocialTradeItem(
     val type: Int,
 ) : Parcelable {
 
+    @Parcelize
+    class LoadMore : SocialTradeItem(SocialTradeType.SOCIALTRADE_LOADMORE)
+
 
     @Parcelize
     class TitleItem(

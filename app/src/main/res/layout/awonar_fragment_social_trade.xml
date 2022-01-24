@@ -2,9 +2,17 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/awonar_social_trade_chip_group_filter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="always"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_social_trade_text_title" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/awonar_social_trade_text_title"
@@ -35,7 +43,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/awonar_social_trade_text_title" />
+            app:layout_constraintTop_toBottomOf="@+id/awonar_social_trade_chip_group_filter" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
