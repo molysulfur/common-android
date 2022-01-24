@@ -15,6 +15,7 @@ sealed class SocialTradeItem(
 
     @Parcelize
     class TitleItem(
+        val key: String,
         val title: String,
         val buttonText: String?,
     ) : SocialTradeItem(SocialTradeType.SOCIALTRADE_TITLE)

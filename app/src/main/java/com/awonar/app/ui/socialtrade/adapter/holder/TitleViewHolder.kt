@@ -6,11 +6,14 @@ import com.awonar.app.databinding.AwonarItemTitleViewmoreBinding
 import com.awonar.app.ui.socialtrade.adapter.SocialTradeItem
 
 class TitleViewHolder constructor(
-    private val binding: AwonarItemTitleViewmoreBinding
+    private val binding: AwonarItemTitleViewmoreBinding,
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: SocialTradeItem.TitleItem) {
+    fun bind(item: SocialTradeItem.TitleItem, onViewMore: ((String) -> Unit)?) {
         binding.title = item.title
         binding.buttonText = item.buttonText
+        binding.awonarTitleButtonViewmore.setOnClickListener {
+            onViewMore?.invoke(item.key)
+        }
     }
 }

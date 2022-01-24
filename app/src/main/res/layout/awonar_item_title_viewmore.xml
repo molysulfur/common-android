@@ -30,6 +30,7 @@
             tools:text="@string/awonar_example_name" />
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/awonar_title_button_viewmore"
             style="@style/Awonar.Button.Link"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

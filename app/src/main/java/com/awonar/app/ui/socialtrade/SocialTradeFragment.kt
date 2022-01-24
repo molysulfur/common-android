@@ -22,7 +22,6 @@ import com.molysulfur.library.extension.openActivity
 import com.molysulfur.library.extension.openActivityCompatForResult
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
-import timber.log.Timber
 
 class SocialTradeFragment : Fragment() {
 
@@ -45,6 +44,12 @@ class SocialTradeFragment : Fragment() {
 
     private val socialTradeAdapter: SocialTradeAdapter by lazy {
         SocialTradeAdapter().apply {
+            onViewMore = { key ->
+                val filter = getFilterWithViewMoreClick(key)
+                filter?.let {
+                    viewModel.filter(it)
+                }
+            }
             onLoadMore = {
                 viewModel.filter()
             }
@@ -55,6 +60,34 @@ class SocialTradeFragment : Fragment() {
                 )
             }
         }
+    }
+
+    private fun getFilterWithViewMoreClick(key: String) = when (key) {
+        "mostCopies" -> mapOf(
+            "period" to "1MonthAgo",
+            "verified" to "true",
+            "maxRisk" to "7",
+            "sort" to "-gain,username",
+        )
+        "lowRisk" -> mapOf(
+            "period" to "1MonthAgo",
+            "verified" to "true",
+            "maxRisk" to "7",
+            "sort" to "risk,-gain,username",
+        )
+        "longTerm" -> mapOf(
+            "period" to "6MonthsAgo",
+            "verified" to "true",
+            "maxRisk" to "7",
+            "sort" to "-gain,username",
+        )
+        "shortTerm" -> mapOf(
+            "period" to "1MonthAgo",
+            "verified" to "true",
+            "maxRisk" to "8",
+            "sort" to "-gain,username",
+        )
+        else -> null
     }
 
     private val horizontalWrapperAdapter: SocialTradeHorizontalWrapperAdapter by lazy {
@@ -83,12 +116,20 @@ class SocialTradeFragment : Fragment() {
     ): View {
         launchAndRepeatWithViewLifecycle {
             viewModel.filter.collect { filters ->
-                for ((t, u) in filters ?: mutableMapOf()) {
-                    binding.awonarSocialTradeChipGroupFilter.addView(Chip(requireContext())
-                        .apply {
-                            chipEndPadding = 8f
-                            text = u
-                        })
+                binding.awonarSocialTradeChipGroupFilter.removeAllViews()
+                for ((key, u) in filters ?: mutableMapOf()) {
+                    u.split(",").forEach { value ->
+                        binding.awonarSocialTradeChipGroupFilter.addView(Chip(requireContext())
+                            .apply {
+                                chipEndPadding = 8f
+                                text = "$key $value"
+                                isCloseIconVisible = true
+                                setOnCloseIconClickListener {
+                                    viewModel.removeFilter(key, value)
+                                }
+                            })
+                    }
+
                 }
             }
         }
