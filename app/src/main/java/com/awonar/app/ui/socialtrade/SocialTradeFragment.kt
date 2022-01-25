@@ -122,14 +122,13 @@ class SocialTradeFragment : Fragment() {
                         binding.awonarSocialTradeChipGroupFilter.addView(Chip(requireContext())
                             .apply {
                                 chipEndPadding = 8f
-                                text = "$key $value"
+                                text = "$key ($value)"
                                 isCloseIconVisible = true
                                 setOnCloseIconClickListener {
                                     viewModel.removeFilter(key, value)
                                 }
                             })
                     }
-
                 }
             }
         }
