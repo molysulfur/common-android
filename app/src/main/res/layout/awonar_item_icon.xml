@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <androidx.appcompat.widget.AppCompatImageView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/awonar_item_icon_image_icon"
+        android:layout_width="@dimen/awonar_size_icon"
+        android:layout_height="@dimen/awonar_size_icon"
+        android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal" />
+
+</layout>

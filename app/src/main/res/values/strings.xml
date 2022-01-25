@@ -61,7 +61,7 @@
     <string name="awonar_text_buy">BUY</string>
     <string name="awonar_text_rate">Rate</string>
     <string name="awonar_text_market">Market</string>
-    <string name="awonar_text_total_open">Total Open</string>
+    <string name="awonar_title_total_open">Total Open</string>
     <string name="awonar_title_history">History</string>
     <string name="awonar_text_invested">Invested</string>
     <string name="awonar_title_total_net_withdraw_amount">Total Net Withdraw amount</string>
@@ -72,4 +72,10 @@
     <string name="awonar_title_stoploss">Stop Loss</string>
     <string name="awonar_text_close">Close</string>
     <string name="awonar_text_confirm">Confirm</string>
+    <string name="awonar_title_total_close">Total Close</string>
+    <string name="awonar_text_ratio">Ratio</string>
+    <string name="awonar_text_remove_fund">Remove Fund</string>
+    <string name="awonar_text_viewmore">View More</string>
+    <string name="awonar_text_add_fund">Add Fund</string>
+    <string name="awonar_text_update">Update</string>
 </resources>

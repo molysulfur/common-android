@@ -11,9 +11,9 @@ import javax.inject.Inject
 
 class ValidateExposureUseCase @Inject constructor(
     private val marketRepository: MarketRepository,
-    @IoDispatcher dispatcher: CoroutineDispatcher
-) : UseCase<ExposureRequest, Boolean>(dispatcher) {
-    override suspend fun execute(parameters: ExposureRequest): Boolean {
+    @IoDispatcher dispatcher: CoroutineDispatcher,
+) : UseCase<ExposureRequest, Unit>(dispatcher) {
+    override suspend fun execute(parameters: ExposureRequest) {
         val trading = marketRepository.getTradingDataById(parameters.instrumentId)
         val exposure = ConverterOrderUtil.getExposure(
             parameters.leverage,
@@ -42,6 +42,5 @@ class ValidateExposureUseCase @Inject constructor(
                 "Minimun position size is $%.2f".format(minimum), minimum
             )
         }
-        return true
     }
 }

@@ -2,8 +2,11 @@ package com.awonar.app.ui.portfolio
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.awonar.android.model.market.Quote
 import com.awonar.android.model.portfolio.*
+import com.awonar.android.shared.domain.market.GetConversionByInstrumentUseCase
 import com.awonar.android.shared.domain.portfolio.*
+import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.android.shared.utils.WhileViewSubscribed
 import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
 import com.molysulfur.library.result.Result
@@ -20,15 +23,11 @@ import timber.log.Timber
 @HiltViewModel
 class PortFolioViewModel @Inject constructor(
     private val getMyPortFolioUseCase: GetMyPortFolioUseCase,
-    private val getPositionManualUseCase: GetPositionManualUseCase,
     private var getPositionMarketUseCase: GetPositionMarketUseCase,
     private val getPositionUseCase: GetPositionUseCase,
-    private val getCopierUseCase: GetCopierUseCase,
+    private val getConversionByInstrumentUseCase: GetConversionByInstrumentUseCase,
     private val getPendingOrdersUseCase: GetPendingOrdersUseCase,
     private var convertPositionToItemUseCase: ConvertPositionToItemUseCase,
-    private var convertCopierToItemUseCase: ConvertCopierToItemUseCase,
-    private var convertGroupPositionToItemUseCase: ConvertGroupPositionToItemUseCase,
-    private var convertPositionWithCopierUseCase: ConvertPositionWithCopierUseCase,
     private var convertPositionToCardItemUseCase: ConvertPositionToCardItemUseCase,
     private var convertCopierToCardItemUseCase: ConvertCopierToCardItemUseCase,
     private var convertOrderPositionToItemUseCase: ConvertOrderPositionToItemUseCase,
@@ -38,8 +37,13 @@ class PortFolioViewModel @Inject constructor(
     private var convertAllocateToPieChartUseCase: ConvertAllocateToPieChartUseCase,
     private val getPieChartMarketAllocateUseCase: GetPieChartMarketAllocateUseCase,
     private val getPieChartInstrumentAllocateUseCase: GetPieChartInstrumentAllocateUseCase,
-    private val getPieChartInstrumentExposureUseCase: GetPieChartInstrumentExposureUseCase
+    private val getPieChartInstrumentExposureUseCase: GetPieChartInstrumentExposureUseCase,
 ) : ViewModel() {
+
+    private val _profitState = MutableStateFlow(0f)
+    val profitState: StateFlow<Float> get() = _profitState
+    private val _equityState = MutableStateFlow(0f)
+    val equityState: StateFlow<Float> get() = _equityState
 
     private val _portfolioType = MutableStateFlow("market")
     val portfolioType: StateFlow<String> get() = _portfolioType
@@ -49,17 +53,13 @@ class PortFolioViewModel @Inject constructor(
     val navigateInsideInstrumentPortfolio: Flow<Pair<String, String>> =
         _navigateInsideInstrumentPortfolio.receiveAsFlow()
 
-    private val _editDialog = Channel<Position?>(capacity = Channel.CONFLATED)
-    val editDialog: Flow<Position?> get() = _editDialog.receiveAsFlow()
-    private val _closeDialog = Channel<Position?>(capacity = Channel.CONFLATED)
-    val closeDialog: Flow<Position?> get() = _closeDialog.receiveAsFlow()
-
     private val _subscricbeQuote = Channel<List<Int>>(capacity = Channel.CONFLATED)
     val subscricbeQuote: Flow<List<Int>> = _subscricbeQuote.receiveAsFlow()
 
     val portfolioState: StateFlow<Portfolio?> = flow {
         getMyPortFolioUseCase(true).collect {
-            this.emit(it.successOr(null))
+            val data = it.successOr(null)
+            this.emit(data)
         }
     }.stateIn(viewModelScope, WhileViewSubscribed, null)
 
@@ -67,52 +67,18 @@ class PortFolioViewModel @Inject constructor(
         MutableStateFlow(mutableListOf(OrderPortfolioItem.EmptyItem()))
     val positionOrderList: StateFlow<MutableList<OrderPortfolioItem>> get() = _positionOrderList
 
-    private val _positionState = MutableStateFlow<List<Position>>(emptyList())
-    val positionState: StateFlow<List<Position>> get() = _positionState
+    private val _positionState = MutableStateFlow<UserPortfolioResponse?>(null)
+    val positionState: StateFlow<UserPortfolioResponse?> get() = _positionState
 
-    private val _copierState = MutableStateFlow<Copier?>(null)
-    val copierState: StateFlow<Copier?> get() = _copierState
-
-
-    fun showEditDialog(position: Int) {
-        viewModelScope.launch {
-            val data = _positionState.value[position]
-            data.let {
-                _editDialog.send(it)
-            }
-        }
-    }
-
-    fun getManualPosition() {
-        viewModelScope.launch {
-            getPositionManualUseCase(Unit).collect { result ->
-                val positionItemResult =
-                    convertPositionToItemUseCase(result.successOr(emptyList())).successOr(emptyList())
-                _subscricbeQuote.send(result.successOr(emptyList()).map { it.instrumentId })
-                _positionOrderList.emit(positionItemResult.toMutableList())
-            }
-        }
-    }
-
-    fun getMarketPosition() {
+    fun getPosition() {
         viewModelScope.launch {
             getPositionMarketUseCase(Unit).collect {
                 val data = it.successOr(null)
-                if (data != null) {
-                    convertToItem(data.positions, data.copies)
-                }
+                _positionState.value = data
             }
         }
     }
 
-    private suspend fun convertToItem(positions: List<Position>, copies: List<Copier>) {
-        val itemList = mutableListOf<OrderPortfolioItem>()
-        val positionItems = convertGroupPositionToItemUseCase(positions).successOr(emptyList())
-        itemList.addAll(positionItems)
-        val copierItems = convertCopierToItemUseCase(copies).successOr(emptyList())
-        itemList.addAll(copierItems)
-        _positionOrderList.emit(itemList)
-    }
 
     fun togglePortfolio(type: String) {
         viewModelScope.launch {
@@ -133,39 +99,7 @@ class PortFolioViewModel @Inject constructor(
                 _positionOrderList.emit(
                     convertPositionToItemUseCase(position).successOr(emptyList()).toMutableList()
                 )
-                _positionState.emit(position)
-            }
-        }
-    }
-
-    fun getPosition(copyId: String, id: Int) {
-        viewModelScope.launch {
-            getCopierUseCase(copyId).collect { result ->
-                if (result is Result.Success)
-                    _positionOrderList.emit(
-                        convertPositionWithCopierUseCase(
-                            ConvertPositionItemWithCopier(
-                                instrumentFilterId = id,
-                                positions = result.data.positions ?: emptyList()
-                            )
-                        ).successOr(listOf(OrderPortfolioItem.EmptyItem())).toMutableList()
-                    )
-                _positionState.emit(result.data?.positions ?: emptyList())
-            }
-        }
-    }
-
-    fun getCopierPosition(id: String) {
-        viewModelScope.launch {
-            getCopierUseCase(id).collect { result ->
-                if (result is Result.Success)
-                    _positionOrderList.emit(
-                        convertGroupPositionToItemUseCase(
-                            result.data.positions ?: emptyList()
-                        ).successOr(emptyList())
-                            .toMutableList()
-                    )
-                _copierState.emit(result.data)
+//                _positionState.emit(position)
             }
         }
     }
@@ -239,16 +173,37 @@ class PortFolioViewModel @Inject constructor(
         }
     }
 
-    fun showCloseDialog(index: Int) {
+    fun sumTotalProfitAndEquity(portfolio: Portfolio, quotes: MutableMap<Int, Quote>) {
         viewModelScope.launch {
-            Timber.e("$index ${_positionOrderList.value.size}")
-            if (index < _positionState.value.size) {
-                val position = (_positionOrderList.value[index] as OrderPortfolioItem.InstrumentPortfolioItem).position
-                Timber.e("$position")
-                _closeDialog.send(position)
+            var plSymbol = 0f
+            var plCopy = 0f
+            _positionState.value?.positions?.forEach { position ->
+                quotes[position.instrument.id]?.let { quote ->
+                    val current = PortfolioUtil.getCurrent(position.isBuy, quote)
+                    plSymbol += PortfolioUtil.getProfitOrLoss(
+                        current,
+                        position.openRate,
+                        position.units,
+                        getConversionByInstrumentUseCase(position.instrument.id).successOr(0f),
+                        position.isBuy)
+                }
             }
+            _positionState.value?.copies?.forEach { copier ->
+                copier.positions?.forEach { position ->
+                    quotes[position.instrument.id]?.let { quote ->
+                        val current = PortfolioUtil.getCurrent(position.isBuy, quote)
+                        plCopy += PortfolioUtil.getProfitOrLoss(
+                            current,
+                            position.openRate,
+                            position.units,
+                            getConversionByInstrumentUseCase(position.instrument.id).successOr(0f),
+                            position.isBuy)
+                    }
+                }
+            }
+            _profitState.value = plSymbol.plus(plCopy)
+            _equityState.value =
+                portfolio.available.plus(portfolio.totalAllocated).plus(plSymbol.plus(plCopy))
         }
     }
-
-
 }

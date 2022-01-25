@@ -1,5 +1,10 @@
 package com.awonar.app.ui.payment.withdraw
 
+import android.os.Build
+import android.text.Html
+import android.view.View
+import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -10,12 +15,33 @@ import com.awonar.app.ui.payment.adapter.DepositAdapter
 import com.awonar.app.ui.payment.adapter.DepositItem
 import com.awonar.app.ui.payment.deposit.DepositViewModel
 
+@BindingAdapter("desinationText")
+fun setDesinationText(
+    textView: AppCompatTextView,
+    text: String?,
+) {
+    if (text == null) {
+        textView.visibility = View.GONE
+    } else {
+        var html = "<p>Your verification code will be sent to</p>"
+        html += "<font color=\"#1A4C8E\">%s</font>".format(text)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            textView.text = Html.fromHtml(html,
+                Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            textView.text = Html.fromHtml(html)
+        }
+        textView.text = text
+        textView.visibility = View.VISIBLE
+    }
+}
+
 @BindingAdapter("withDrawHistory", "page", "viewModel")
 fun setWithdrawHistoryAdapter(
     recycler: RecyclerView,
     withdraw: List<Withdraw>,
     page: Int,
-    viewModel: WithdrawViewModel
+    viewModel: WithdrawViewModel,
 ) {
     if (recycler.adapter == null) {
         recycler.apply {
@@ -49,7 +75,7 @@ fun setWithdrawHistoryAdapter(
 fun setMethodAdapter(
     recycler: RecyclerView,
     payments: List<MethodPayment>,
-    viewModel: WithdrawViewModel
+    viewModel: WithdrawViewModel,
 ) {
     if (recycler.adapter == null) {
         recycler.apply {

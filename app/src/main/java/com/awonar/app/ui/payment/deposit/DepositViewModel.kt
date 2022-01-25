@@ -59,7 +59,6 @@ class DepositViewModel @Inject constructor(
         }.stateIn(viewModelScope, WhileViewSubscribed, emptyList())
 
 
-
     fun getCurrencyForPayment(methodId: String) {
         viewModelScope.launch {
             getPaymentSettingUseCase(methodId).collect {
@@ -154,6 +153,17 @@ class DepositViewModel @Inject constructor(
                 list.addAll(data?.histories ?: emptyList())
                 _historyState.value = list
             }
+        }
+    }
+
+    fun navigateQRCodeScanner() {
+        viewModelScope.launch {
+            _navigationActions.send(
+                DepositConfirmFragmentDirections.actionDepositConfirmFragmentToQRCodePaymentFragment(
+                    _symbolName.value,
+                    _methodId.value
+                )
+            )
         }
     }
 

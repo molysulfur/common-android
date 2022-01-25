@@ -14,5 +14,6 @@ object OrderPortfolioType {
     const val PIECHART_PORTFOLIO = 9
     const val ORDER_PORTFOLIO = 10
     const val VIEWALL_BUTTON = 11
+    const val SECTION_PORTFOLIO = 12
 
 }

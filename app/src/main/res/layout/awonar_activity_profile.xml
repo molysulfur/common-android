@@ -10,7 +10,8 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:elevation="0dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -129,8 +130,10 @@
                     android:layout_height="40dp"
                     android:layout_marginTop="@dimen/awonar_size_margin_padding_large"
                     android:layout_marginEnd="@dimen/awonar_size_margin_padding_small"
+                    android:layout_marginBottom="@dimen/awonar_size_margin_padding_normal"
                     android:minHeight="0dp"
                     android:text="Follow"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/awonar_profile_button_copy"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintHorizontal_weight="1"
@@ -145,6 +148,7 @@
                     android:layout_marginEnd="@dimen/awonar_size_margin_padding_small"
                     android:minHeight="0dp"
                     android:text="Copy"
+                    app:layout_constraintBottom_toBottomOf="@+id/awonar_profile_button_follow"
                     app:layout_constraintEnd_toStartOf="@+id/awonar_profile_button_watchlist"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintHorizontal_weight="1"
@@ -179,14 +183,35 @@
                     app:layout_constraintStart_toEndOf="@+id/awonar_profile_button_watchlist"
                     app:layout_constraintTop_toTopOf="@+id/awonar_profile_button_copy" />
 
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/awonar_profile_group_options"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:constraint_referenced_ids="awonar_profile_button_follow,awonar_profile_button_copy,awonar_profile_button_watchlist,awonar_profile_button_shared" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/awonar_color_background"
+            android:fillViewport="true"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tabLayout"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/awonar_size_margin_padding_large"
+                    android:layout_height="?attr/actionBarSize"
+                    android:elevation="6dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/awonar_profile_button_copy"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:tabIconTint="@color/awonar_selector_tab_primary"
                     app:tabIndicatorColor="@color/awonar_color_primary">
 
@@ -214,58 +239,18 @@
 
                 </com.google.android.material.tabs.TabLayout>
 
-                <androidx.constraintlayout.widget.Group
-                    android:id="@+id/awonar_profile_group_options"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="awonar_profile_button_follow,awonar_profile_button_copy,awonar_profile_button_watchlist,awonar_profile_button_shared" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/awonar_color_background"
-            android:fillViewport="true"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <androidx.appcompat.widget.LinearLayoutCompat
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/awonar_deposit_fragment_container"
+                    android:name="androidx.navigation.fragment.NavHostFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/awonar_size_margin_padding_normal"
-                    android:background="@drawable/awonar_bg_15_white"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="60dp"
+                    android:layout_height="0dp"
+                    app:defaultNavHost="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="96dp"
-                        android:layout_height="96dp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/awonar_ic_private"
-                        android:tint="@color/awonar_color_gray" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        style="@style/Awonar.Title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="This in a private profile" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        style="@style/Awonar.Text.Default.Normal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="This user has chosen not to share any trading data. Therefore, this user cannot be copied." />
-                </androidx.appcompat.widget.LinearLayoutCompat>
+                    app:layout_constraintTop_toBottomOf="@+id/tabLayout"
+                    app:navGraph="@navigation/awonar_profile_graph" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
 

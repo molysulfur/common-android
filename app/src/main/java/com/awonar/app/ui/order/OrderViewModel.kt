@@ -39,7 +39,6 @@ class OrderViewModel @Inject constructor(
     private val validateRateStopLossUseCase: ValidateRateStopLossUseCase,
     private val getConversionByInstrumentUseCase: GetConversionByInstrumentUseCase,
     private val getTradingDataByInstrumentIdUseCase: GetTradingDataByInstrumentIdUseCase,
-    private val validateExposureUseCase: ValidateExposureUseCase,
     private val validatePartialCloseAmountUseCase: ValidatePartialCloseAmountUseCase,
     private val updateOrderUseCase: UpdateOrderUseCase,
     private val getUnitUseCase: GetUnitUseCase,
@@ -47,28 +46,21 @@ class OrderViewModel @Inject constructor(
     private val validateVisiblePartialUseCase: ValidateVisiblePartialUseCase,
     private val closePositionUseCase: ClosePositionUseCase,
     private val closePartialPositionUseCase: ClosePartialPositionUseCase,
-    private val removePositionUseCase: RemovePositionUseCase
+    private val removePositionUseCase: RemovePositionUseCase,
 ) : ViewModel() {
+
+    private val _leverageState = MutableStateFlow(1)
+    val leverageState: StateFlow<Int> get() = _leverageState
+    private val _amountState = MutableStateFlow(Pair(0f, 0f))
+    val amountState: StateFlow<Pair<Float, Float>> get() = _amountState
 
     private val _openOrderState = Channel<String>(capacity = Channel.CONFLATED)
     val openOrderState get() = _openOrderState.receiveAsFlow()
     private val _orderSuccessState = Channel<String>(capacity = Channel.CONFLATED)
     val orderSuccessState get() = _orderSuccessState.receiveAsFlow()
 
-    private val _exposureState = MutableStateFlow<Float>(0f)
-    val exposureState: StateFlow<Float> get() = _exposureState
-    private val _exposureError = MutableStateFlow("")
-    val exposureError: StateFlow<String> get() = _exposureError
-
     private val _openRate = MutableStateFlow<Float?>(null)
     val openRate: StateFlow<Float?> get() = _openRate
-
-    private val _amountState = MutableStateFlow(Pair(0f, 0f))
-    val amountState: StateFlow<Pair<Float, Float>> get() = _amountState
-    private val _amountError = MutableStateFlow("")
-    val amountError: StateFlow<String> get() = _amountError
-    private val _leverageState = MutableStateFlow(1)
-    val leverageState: StateFlow<Int> get() = _leverageState
 
     private val _hasPartialState = MutableStateFlow(false)
     val hasPartialState: StateFlow<Boolean> get() = _hasPartialState
@@ -92,23 +84,6 @@ class OrderViewModel @Inject constructor(
     private val _errorState = MutableStateFlow("")
     val errorState: StateFlow<String> get() = _errorState
 
-    fun validatePositionExposure(instrumentId: Int) {
-        viewModelScope.launch {
-            val amount = _amountState.value
-            val leverage = leverageState.value
-            if (leverage > 0) {
-                val result =
-                    validateExposureUseCase(ExposureRequest(instrumentId, amount.first, leverage))
-                if (result is Result.Error) {
-                    val exception: PositionExposureException =
-                        (result.exception as PositionExposureException)
-                    _exposureState.emit(exception.value)
-                    _exposureError.emit(exception.message ?: "")
-                }
-            }
-        }
-    }
-
     fun setDefaultAmount(instrumentId: Int, available: Float, price: Float) {
         viewModelScope.launch {
             val amount: Float = available.times(0.05f)
@@ -126,7 +101,7 @@ class OrderViewModel @Inject constructor(
     }
 
     fun openOrder(
-        request: OpenOrderRequest
+        request: OpenOrderRequest,
     ) {
         viewModelScope.launch {
             openOrderUseCase(request).collect {
@@ -237,7 +212,7 @@ class OrderViewModel @Inject constructor(
         current: Float,
         unit: Float,
         instrumentId: Int,
-        isBuy: Boolean
+        isBuy: Boolean,
     ) {
         viewModelScope.launch {
             val state: Pair<Float, Float> = _takeProfitState.value.copy()
@@ -283,7 +258,7 @@ class OrderViewModel @Inject constructor(
         current: Float,
         unit: Float,
         instrumentId: Int,
-        isBuy: Boolean
+        isBuy: Boolean,
     ) {
         viewModelScope.launch {
             val state: Pair<Float, Float> = _stopLossState.value.copy()
@@ -359,14 +334,28 @@ class OrderViewModel @Inject constructor(
         }
     }
 
-    fun updateAmount(instrumentId: Int, amount: Float, leverage: Int, price: Float) {
+    fun updateAmount(instrumentId: Int, amount: Float, price: Float) {
         viewModelScope.launch {
             val units = getUnitUseCase(
                 CalAmountUnitRequest(
                     instrumentId = instrumentId,
-                    leverage = leverage,
+                    leverage = _leverageState.value,
                     price = price,
                     amount = amount
+                )
+            ).successOr(0f)
+            _amountState.value = Pair(amount, units)
+        }
+    }
+
+    fun updateUnits(instrumentId: Int, units: Float, price: Float) {
+        viewModelScope.launch {
+            val amount = getAmountUseCase(
+                CalAmountUnitRequest(
+                    instrumentId = instrumentId,
+                    leverage = _leverageState.value,
+                    price = price,
+                    amount = units
                 )
             ).successOr(0f)
             _amountState.value = Pair(amount, units)
@@ -404,25 +393,11 @@ class OrderViewModel @Inject constructor(
 
             if (result is Result.Error) {
                 val exception = result.exception as ValidationException
-                _amountError.value = exception.message ?: ""
-                updateAmount(position.instrument.id, exception.value, position.leverage, price)
+                updateAmount(position.instrument.id, exception.value, price)
             }
         }
     }
 
-    fun updateUnits(id: Int, units: Float, leverage: Int, current: Float) {
-        viewModelScope.launch {
-            val amount = getAmountUseCase(
-                CalAmountUnitRequest(
-                    instrumentId = id,
-                    leverage = leverage,
-                    price = current,
-                    amount = units
-                )
-            ).successOr(0f)
-            _amountState.value = Pair(amount, units)
-        }
-    }
 
     fun setDefaultPartialAmount(position: Position, price: Float) {
         viewModelScope.launch {
@@ -453,7 +428,7 @@ class OrderViewModel @Inject constructor(
             ).successOr(false)
             _hasPartialState.value = hasPartial
             if (hasPartial) {
-                updateAmount(position.instrument.id, defaultAmount, position.leverage, price)
+                updateAmount(position.instrument.id, defaultAmount, price)
             }
         }
     }
@@ -523,6 +498,15 @@ class OrderViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun updateLeverage(leverage: Int, instrumentId: Int, price: Float) {
+        _leverageState.value = leverage
+        updateAmount(
+            instrumentId = instrumentId,
+            amount = _amountState.value.first,
+            price = price
+        )
     }
 
 }

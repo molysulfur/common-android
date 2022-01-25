@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="title"
+            type="String" />
+
+        <variable
+            name="subTitle"
+            type="String" />
+
+        <variable
+            name="meta"
+            type="String" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/awonar_size_margin_padding_normal">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/awoanr_list_item_view_image_icon_start"
+            android:layout_width="@dimen/awonar_size_icon"
+            android:layout_height="@dimen/awonar_size_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/awonar_placeholder_avatar" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awoanr_list_item_view_text_title"
+            style="@style/Awonar.SubTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/awonar_size_margin_padding_small"
+            android:text="@{title}"
+            app:layout_constraintBottom_toTopOf="@+id/awoanr_list_item_view_text_subTitle"
+            app:layout_constraintStart_toEndOf="@+id/awoanr_list_item_view_image_icon_start"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awoanr_list_item_view_text_subTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{subTitle}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/awoanr_list_item_view_text_title"
+            app:layout_constraintTop_toBottomOf="@+id/awoanr_list_item_view_text_title"
+            tools:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awoanr_list_item_view_text_meta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/awonar_size_margin_padding_small"
+            android:text="@{meta}"
+            app:layout_constraintBottom_toBottomOf="@+id/awoanr_list_item_view_image_icon_end"
+            app:layout_constraintEnd_toStartOf="@+id/awoanr_list_item_view_image_icon_end"
+            app:layout_constraintTop_toTopOf="@+id/awoanr_list_item_view_image_icon_end"
+            tools:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/awoanr_list_item_view_image_icon_end"
+            android:layout_width="@dimen/awonar_size_icon"
+            android:layout_height="@dimen/awonar_size_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/awonar_placeholder_avatar" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.awonar.app.ui.user.UserViewModel" />
+    </data>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            setUserInfoAdapter="@{viewModel.userState}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/awonar_color_surface"
+            android:padding="@dimen/awonar_size_margin_padding_normal" />
+    </FrameLayout>
+
+</layout>

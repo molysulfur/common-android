@@ -32,7 +32,7 @@ class MarketViewModel @Inject constructor(
     private val convertInstrumentToItemUseCase: ConvertInstrumentToItemUseCase,
     private val getTradingDataByInstrumentIdUseCase: GetTradingDataByInstrumentIdUseCase,
     private val getConversionByInstrumentUseCase: GetConversionByInstrumentUseCase,
-    private val quoteSteamingManager: QuoteSteamingManager
+    private val quoteSteamingManager: QuoteSteamingManager,
 ) : ViewModel() {
 
     val tradingDataState = MutableSharedFlow<TradingData?>()
@@ -68,7 +68,9 @@ class MarketViewModel @Inject constructor(
         }
 
         override fun marketQuoteCallback(event: String, data: Array<Quote>) {
-            _quoteSteamingState.value = data
+//            _quoteSteamingState.value = data.map {
+//                HashMap(it.id, it)
+//            }
         }
     }
 
@@ -149,13 +151,16 @@ class MarketViewModel @Inject constructor(
     fun subscribe() {
         viewModelScope.launch {
             instruments.collect { instruments ->
-                instruments.forEach { instrument ->
-                    quoteSteamingManager.send(
-                        QuoteSteamingEvent.subscribe,
-                        "${instrument.id}"
-                    )
+                val ids = instruments.map { instrument ->
+                    instrument.id
                 }
-
+                val joinIds = ids.joinToString {
+                    it.toString()
+                }
+                quoteSteamingManager.send(
+                    QuoteSteamingEvent.subscribe,
+                    joinIds
+                )
             }
         }
         quoteSteamingManager.setListener(listener)

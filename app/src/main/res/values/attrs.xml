@@ -47,4 +47,12 @@
         <attr name="instrumentOrderView_setTitle" format="string" />
         <attr name="instrumentOrderView_setDescription" format="string" />
     </declare-styleable>
+
+    <declare-styleable name="ListItemView">
+        <attr name="listItemView_setStartIcon" format="reference" />
+        <attr name="listItemView_setEndIcon" format="reference" />
+        <attr name="listItemView_setTitle" format="string" />
+        <attr name="listItemView_setSubTitle" format="string" />
+        <attr name="listItemView_setMeta" format="string" />
+    </declare-styleable>
 </resources>

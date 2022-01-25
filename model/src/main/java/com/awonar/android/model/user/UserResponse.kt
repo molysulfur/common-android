@@ -80,7 +80,9 @@ data class UserResponse(
         youtubeLink = this.youtube,
         websiteLink = this.website,
         isPrivate = this.isPrivate,
-        isDisplayFullName = this.isDisplayFullName
+        isDisplayFullName = this.isDisplayFullName,
+        address = "%s, %s".format(this.address?.city ?: "", this.address?.countryId ?: ""),
+        createdAt = this.createdAt
     )
 }
 

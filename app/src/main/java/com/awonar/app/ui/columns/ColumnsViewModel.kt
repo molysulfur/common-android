@@ -45,7 +45,7 @@ class ColumnsViewModel @Inject constructor(
     private val _columnState = MutableStateFlow<List<String>>(emptyList())
     val columnState: StateFlow<List<String>> get() = _columnState
 
-    private val _columnType = MutableStateFlow<String?>(null)
+    private val _columnType = MutableStateFlow<String?>("market")
 
     fun setColumnType(type: String) {
         viewModelScope.launch {
@@ -112,8 +112,12 @@ class ColumnsViewModel @Inject constructor(
     fun getColumn() {
         viewModelScope.launch {
             val columns = when (_columnType.value?.lowercase()) {
-                "market" -> getMarketColumnListUseCase(_activedColumnState.value).successOr(emptyList())
-                "manual" -> getManualColumnListUseCase(_activedColumnState.value).successOr(emptyList())
+                "market" -> getMarketColumnListUseCase(_activedColumnState.value).successOr(
+                    emptyList()
+                )
+                "manual" -> getManualColumnListUseCase(_activedColumnState.value).successOr(
+                    emptyList()
+                )
                 "history" -> getHistoryColumnUseCase(_activedColumnState.value).successOr(emptyList())
                 "card" -> emptyList()
                 "piechart" -> emptyList()

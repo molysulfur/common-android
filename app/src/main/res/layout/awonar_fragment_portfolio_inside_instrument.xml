@@ -7,15 +7,15 @@
 
         <variable
             name="viewModel"
-            type="com.awonar.app.ui.portfolio.PortFolioViewModel" />
+            type="com.awonar.app.ui.portfolio.inside.PositionInsideViewModel" />
+
+        <variable
+            name="positionViewModel"
+            type="com.awonar.app.ui.portfolio.position.PositionViewModel" />
 
         <variable
             name="columnsViewModel"
             type="com.awonar.app.ui.columns.ColumnsViewModel" />
-
-        <variable
-            name="marketViewModel"
-            type="com.awonar.app.ui.market.MarketViewModel" />
 
         <variable
             name="column1"
@@ -49,10 +49,6 @@
                 android:orientation="vertical"
                 app:layout_scrollFlags="scroll|snap">
 
-                <include
-                    android:id="@+id/awonar_portfolio_inside_include_allocation"
-                    layout="@layout/awonar_include_allocation" />
-
                 <com.google.android.material.appbar.MaterialToolbar
                     android:id="@+id/awonar_portfolio_inside_instrument_toolbar"
                     android:layout_width="match_parent"
@@ -63,11 +59,7 @@
 
                 <com.awonar.app.widget.InstrumentPositionCardView
                     android:id="@+id/awonar_portfolio_inside_instrument_instrument_position_header"
-                    setInstrumentPositionCard="@{viewModel.positionState[0]}"
-                    conversionRate="@{marketViewModel.conversionRateState}"
-                    isBuy="@{viewModel.positionState[0].buy == true}"
-                    position="@{viewModel.positionState[0]}"
-                    quotes="@{marketViewModel.quoteSteamingState}"
+                    setInstrumentPositionCard="@{viewModel.positionState}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -92,9 +84,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/awonar_portfolio_recycler_container"
                 activedColumn="@{columnsViewModel.activedColumnState}"
-                setPositionAdapter="@{viewModel.positionOrderList}"
-                quotes="@{marketViewModel.quoteSteamingState}"
-                viewModel="@{viewModel}"
+                setInsideAdapter="@{viewModel.positionItems}"
+                viewModel="@{positionViewModel}"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:background="@color/awonar_color_surface"

@@ -14,16 +14,16 @@ import retrofit2.http.Query
 
 interface InstrumentService {
 
-    @GET("api/v1/instruments/last-quote")
+    @GET("v1/instruments/last-quote")
     fun getLastQuote(@Query("ids") ids: List<Int>): Call<List<Quote>>
 
-    @GET("api/v1/trading-data")
+    @GET("v1/trading-data")
     fun getTradingData(): Call<List<TradingData>>
 
-    @GET("api/v1/instruments/{instrumentId}")
+    @GET("v1/instruments/{instrumentId}")
     fun getInstrument(@Path("instrumentId") instrumentId: Int): Call<InstrumentProfile?>
 
-    @GET("api/v1/instruments/slim/filter")
+    @GET("v1/instruments/slim/filter")
     fun getInstruments(): Call<InstrumentResponse>
 
 

@@ -6,6 +6,12 @@
     app:startDestination="@+id/watchListFragment">
 
     <fragment
+        android:id="@+id/socialTradeFragment"
+        android:name="com.awonar.app.ui.socialtrade.SocialTradeFragment"
+        android:label="SocialTradeFragment"
+        tools:layout="@layout/awonar_fragment_social_trade" />
+
+    <fragment
         android:id="@+id/watchListFragment"
         android:name="com.awonar.app.ui.watchlist.WatchListFragment"
         android:label="WatchListFragment"
@@ -15,51 +21,7 @@
         android:id="@+id/portFolioFragment"
         android:name="com.awonar.app.ui.portfolio.PortFolioFragment"
         android:label="PortFolioFragment"
-        tools:layout="@layout/awonar_fragment_portfolio">
-        <action
-            android:id="@+id/action_portFolioFragment_to_portFolioInsideInstrumentPortfolioFragment"
-            app:destination="@+id/portFolioInsideInstrumentPortfolioFragment"
-            app:enterAnim="@anim/common_anim_right_to_left_in"
-            app:exitAnim="@anim/common_anim_right_to_left_out"
-            app:popEnterAnim="@anim/common_anim_left_to_right_in"
-            app:popExitAnim="@anim/common_anim_left_to_right_out"
-            app:popUpTo="@+id/portFolioFragment" />
-
-        <action
-            android:id="@+id/action_portFolioFragment_to_portFolioInsideCopierPortfolioFragment"
-            app:destination="@+id/portFolioInsideCopierFragment"
-            app:enterAnim="@anim/common_anim_right_to_left_in"
-            app:exitAnim="@anim/common_anim_right_to_left_out"
-            app:popEnterAnim="@anim/common_anim_left_to_right_in"
-            app:popExitAnim="@anim/common_anim_left_to_right_out"
-            app:popUpTo="@+id/portFolioFragment" />
-
-        <action
-            android:id="@+id/action_portFolioFragment_to_historyFragment"
-            app:destination="@+id/historyFragment"
-            app:enterAnim="@anim/common_anim_right_to_left_in"
-            app:exitAnim="@anim/common_anim_right_to_left_out"
-            app:popEnterAnim="@anim/common_anim_left_to_right_in"
-            app:popExitAnim="@anim/common_anim_left_to_right_out"
-            app:popUpTo="@+id/portFolioFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/portFolioInsideInstrumentPortfolioFragment"
-        android:name="com.awonar.app.ui.portfolio.PortFolioInsideInstrumentFragment"
-        android:label="PortFolioInsideInstrumentPortfolioFragment">
-
-        <argument
-            android:name="copier"
-            android:defaultValue="null"
-            app:argType="string"
-            app:nullable="true" />
-
-        <argument
-            android:name="instrumentId"
-            android:defaultValue="0"
-            app:argType="integer" />
-    </fragment>
+        tools:layout="@layout/awonar_fragment_portfolio" />
 
 
     <fragment
@@ -96,30 +58,10 @@
         </action>
     </fragment>
 
-
-    <fragment
-        android:id="@+id/portFolioInsideCopierFragment"
-        android:name="com.awonar.app.ui.portfolio.PortFolioInsideCopierFragment"
-        android:label="PortFolioInsideCopierFragment">
-
-        <action
-            android:id="@+id/action_portFolioInsideCopierFragment_to_portFolioInsideInstrumentProfileFragment"
-            app:destination="@+id/portFolioInsideInstrumentPortfolioFragment"
-            app:enterAnim="@anim/common_anim_right_to_left_in"
-            app:exitAnim="@anim/common_anim_right_to_left_out"
-            app:popEnterAnim="@anim/common_anim_left_to_right_in"
-            app:popExitAnim="@anim/common_anim_left_to_right_out"
-            app:popUpTo="@+id/portFolioFragment" />
-
-        <argument
-            android:name="positionId"
-            app:argType="string" />
-    </fragment>
-
     <fragment
         android:id="@+id/historyDetailFragment"
         android:name="com.awonar.app.ui.history.HistoryDetailFragment"
-        android:label="HistoryDetailFragment"></fragment>
+        android:label="HistoryDetailFragment" />
 
     <fragment
         android:id="@+id/historyFragment"
@@ -193,6 +135,5 @@
         android:id="@+id/withdrawFragment"
         android:name="com.awonar.app.ui.payment.withdraw.WithdrawFragment"
         android:label="WithdrawFragment" />
-
 
 </navigation>

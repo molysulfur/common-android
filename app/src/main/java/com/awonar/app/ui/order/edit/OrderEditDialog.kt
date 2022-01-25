@@ -9,6 +9,7 @@ import com.akexorcist.library.dialoginteractor.DialogLauncher
 import com.akexorcist.library.dialoginteractor.InteractorDialog
 import com.akexorcist.library.dialoginteractor.createBundle
 import com.awonar.android.model.portfolio.Position
+import com.awonar.android.shared.steaming.QuoteSteamingManager
 import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.app.R
@@ -32,13 +33,12 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
     private var position: Position? = null
     private var pl: Float = 0f
     private var price: Float = 0f
-    private val marketViewModel: MarketViewModel by activityViewModels()
     private val orderViewModel: OrderViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = AwonarDialogOrderEditBinding.inflate(inflater)
         binding.awonarOrderEditTextNumberpickerTp.setPrefix("$")
@@ -90,8 +90,8 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
             }
         }
         launchAndRepeatWithViewLifecycle {
-            marketViewModel.quoteSteamingState.collect { quotes ->
-                val quote = quotes.find { it.id == position?.instrument?.id }
+            QuoteSteamingManager.quotesState.collect { quotes ->
+                val quote = quotes[position?.instrument?.id]
                 quote?.let {
                     price = ConverterQuoteUtil.getCurrentPrice(
                         it,
@@ -293,7 +293,7 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
         private fun newInstance(
             position: Position?,
             key: String?,
-            data: Bundle?
+            data: Bundle?,
         ) =
             OrderEditDialog().apply {
                 arguments = createBundle(key, data).apply {

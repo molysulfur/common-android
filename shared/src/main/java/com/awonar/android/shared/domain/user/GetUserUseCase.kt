@@ -21,6 +21,7 @@ class GetUserUseCase @Inject constructor(
         flow {
             repository.getUser(parameters).collect {
                 val user = it.successOr(null)
+                user?.isMe = true
                 emit(Result.Success(user))
             }
         }

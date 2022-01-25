@@ -8,7 +8,12 @@ import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
 class CopierPositionViewHolder constructor(private val binding: AwonarItemCopierCardBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: OrderPortfolioItem.CopierPositionCardItem, quotes: Array<Quote>?) {
+    fun bind(item: OrderPortfolioItem.CopierPositionCardItem) {
+        with(binding.awonarItemCopierCard) {
+            val copy = item.copier
+            setImage(copy.user.picture ?: "")
+            setTitle(copy.user.username ?: "")
+        }
         binding.item = item
     }
 }

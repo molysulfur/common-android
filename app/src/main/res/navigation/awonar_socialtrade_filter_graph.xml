@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/awonar_socialtrade_filter_graph"
+    app:startDestination="@id/socialTradeFilterFragment">
+
+
+    <fragment
+        android:id="@+id/socialTradeFilterFragment"
+        android:name="com.awonar.app.ui.socialtrade.filter.SocialTradeFilterFragment"
+        android:label="SocialTradeFilterFragment">
+        <action
+            android:id="@+id/socialTradeFilterFragment_to_socialTradeFilterPeriodFragment"
+            app:destination="@+id/socialTradeFilterPeriodFragment" />
+
+        <action
+            android:id="@+id/socialTradeFilterFragment_to_socialTradeFilterInputFragment"
+            app:destination="@+id/socialTradeFilterInputFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/socialTradeFilterPeriodFragment"
+        android:name="com.awonar.app.ui.socialtrade.filter.SocialTradeFilterPeriodFragment"
+        android:label="SocialTradeFilterSelectorFragment">
+
+        <argument
+            android:name="filterType"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/socialTradeFilterInputFragment"
+        android:name="com.awonar.app.ui.socialtrade.filter.SocialTradeFilterInputFragment"
+        android:label="SocialTradeFilterInputFragment">
+        <argument
+            android:name="filterType"
+            app:argType="string" />
+    </fragment>
+
+
+</navigation>

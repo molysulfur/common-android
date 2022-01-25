@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="username"
+            type="String" />
+
+
+        <variable
+            name="description"
+            type="String" />
+
+        <variable
+            name="stopLossDescription"
+            type="String" />
+
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:elevation="0dp">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/awonar_dialog_add_copier_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:navigationIcon="@drawable/awonar_ic_close"
+                app:title="@string/awonar_text_add_fund" />
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/awonar_dialog_add_copier_image_avatar"
+                android:layout_width="@dimen/awonar_size_avatar"
+                android:layout_height="@dimen/awonar_size_avatar"
+                android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/awonar_placeholder_avatar" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_dialog_add_copier_text_username"
+                style="@style/Awonar.SubTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
+                android:text="@{username}"
+                app:layout_constraintStart_toEndOf="@+id/awonar_dialog_add_copier_image_avatar"
+                app:layout_constraintTop_toTopOf="@+id/awonar_dialog_add_copier_image_avatar"
+                tools:text="@string/awonar_example_name" />
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_dialog_add_copier_text_description"
+                style="@style/Awonar.Description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/awonar_size_text_extra_small"
+                android:text="@{description}"
+                app:layout_constraintStart_toStartOf="@+id/awonar_dialog_add_copier_text_username"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_add_copier_text_username"
+                tools:text="@string/awonar_example_name" />
+
+            <View
+                android:id="@+id/awonar_dialog_copier_divider_1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+                android:background="@color/awonar_color_gray"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_add_copier_image_avatar" />
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_dialog_add_copier_text_title_amount"
+                style="@style/Awonar.SubTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
+                android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+                android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+                android:text="@string/awonar_text_amount"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_copier_divider_1" />
+
+            <com.awonar.app.widget.NumberPickerEditText
+                android:id="@+id/awonar_dialog_add_copier_numberpicker_amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_add_copier_text_title_amount" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_dialog_add_copier_text_remain"
+                style="@style/Awonar.Description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/awonar_size_margin_padding_large"
+                android:gravity="center"
+                android:text="Copy Stop Loss will remain at 60.00%"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_add_copier_numberpicker_amount" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/awonar_dialog_add_copier_button_addfund"
+                style="@style/Awonar.Button.Default.Primary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+                android:text="@string/awonar_text_add_fund"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_add_copier_text_remain" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

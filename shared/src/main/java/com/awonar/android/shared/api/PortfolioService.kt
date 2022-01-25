@@ -9,19 +9,19 @@ import retrofit2.http.GET
 
 interface PortfolioService {
 
-    @GET("api/v1/pending-orders")
+    @GET("v1/pending-orders")
     fun getPendingOrders(): Call<List<PendingOrder>>
 
-    @GET("/api/v1/users/info")
+    @GET("v1/users/info")
     fun getUserPortFolio(): Call<UserPortfolioResponse>
 
-    @GET("/api/v1/positions")
+    @GET("v1/positions")
     fun getMyPositions(): Call<List<Position>>
 
-    @GET("/api/v1/copy")
+    @GET("v1/copy")
     fun getMyCopier(): Call<List<Copier>>
 
-    @GET("api/v1/portfolios")
+    @GET("v1/portfolios")
     fun getPortFolio(): Call<Portfolio>
 
     companion object {

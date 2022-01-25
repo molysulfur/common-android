@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="144dp"
+    android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+    android:background="@drawable/awonar_ripple_tranparent"
+    app:cardCornerRadius="@dimen/awonar_radius_size_normal">
+
+    <com.awonar.app.widget.CopiesCardView
+        android:id="@+id/awonar_item_copies_card_holder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</androidx.cardview.widget.CardView>

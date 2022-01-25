@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/awonar_social_trade_chip_group_filter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="always"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_social_trade_text_title" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_social_trade_text_title"
+            style="@style/Awonar.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/awonar_size_margin_padding_normal"
+            android:text="Social Trade"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/awonar_social_trade_button_filter"
+            style="@style/Awonar.Button.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+            android:src="@drawable/awonar_ic_filter"
+            android:tint="@color/awonar_color_primary"
+            app:layout_constraintBottom_toBottomOf="@+id/awonar_social_trade_text_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/awonar_social_trade_text_title" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/awonar_social_trade_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_social_trade_chip_group_filter" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
+

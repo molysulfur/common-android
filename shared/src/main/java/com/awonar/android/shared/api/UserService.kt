@@ -23,46 +23,46 @@ import retrofit2.http.*
 interface UserService {
 
 
-    @GET("api/v1/questionnaires/user")
+    @GET("v1/questionnaires/user")
     fun getUserAnswer(@Query("questionnaireId") questionnaireId: String): Call<ExperienceAnswerResponse?>
 
-    @PUT("api/v1/questionnaires")
+    @PUT("v1/questionnaires")
     fun updateExperience(@Body experienceRequest: ExperienceRequest): Call<ExperienceAnswerResponse?>
 
-    @GET("api/v1/questionnaires/experience")
+    @GET("v1/questionnaires/experience")
     fun getExperience(): Call<ExperienceResponse?>
 
-    @GET("api/v1/verify/bank")
+    @GET("v1/verify/bank")
     fun getBookBank(): Call<BookBank?>
 
-    @POST("api/v1/verify/bank")
+    @POST("v1/verify/bank")
     fun verifyBookBank(@Body verify: BookBankRequest): Call<BookBank?>
 
-    @POST("api/v1/verify/personal/identity")
+    @POST("v1/verify/personal/identity")
     fun verifyCardId(@Body verify: PersonalCardIdRequest): Call<PersonalInfoResponse?>
 
-    @POST("api/v1/verify/personal/contact")
+    @POST("v1/verify/personal/contact")
     fun verifyAddress(@Body verify: PersonalAddressRequest): Call<PersonalInfoResponse?>
 
-    @POST("api/v1/verify/personal/info")
+    @POST("v1/verify/personal/info")
     fun verifyProfile(@Body verify: PersonalProfileRequest): Call<PersonalInfoResponse?>
 
-    @GET("api/v1/verify/personal")
+    @GET("v1/verify/personal")
     fun getPersonalVerify(): Call<PersonalInfoResponse?>
 
-    @PATCH("api/v1/users/settings")
+    @PATCH("v1/users/settings")
     fun updateTradingActivity(@Body tradingActivity: TradingActivityRequest): Call<UserResponse>
 
-    @GET("api/v1/users/email/{username}/exists")
+    @GET("v1/users/email/{username}/exists")
     fun isExistsEmail(@Path("username") username: String?): Call<ExistsEmailResponse>
 
-    @GET("api/v1/users/profile")
+    @GET("v1/users/profile")
     fun getMe(): Call<UserResponse>
 
-    @GET("api/v1/users/profile/{userId}")
+    @GET("v1/users/profile/{userId}")
     fun getProfile(@Path("userId") userId: String?): Call<UserResponse>
 
-    @PUT("api/v1/users/about")
+    @PUT("v1/users/about")
     fun updateAboutMe(@Body updateAboutMe: UpdateAboutMeRequest): Call<MessageSuccessResponse>
 
     companion object {

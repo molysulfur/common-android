@@ -11,6 +11,7 @@
 
     <com.awonar.app.widget.CopierPositionCardView xmlns:android="http://schemas.android.com/apk/res/android"
         initCopierCard="@{item}"
+        android:id="@+id/awonar_item_copier_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

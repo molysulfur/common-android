@@ -4,10 +4,10 @@ import com.awonar.android.model.market.Quote
 import com.awonar.android.shared.api.NetworkClient
 import com.awonar.android.shared.db.hawk.AccessTokenManager
 import com.google.gson.Gson
+import kotlinx.coroutines.flow.*
 import okhttp3.*
 import okio.ByteString
 import org.json.JSONObject
-import timber.log.Timber
 import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
@@ -26,18 +26,21 @@ object QuoteSteamingEvent {
 @Singleton
 class QuoteSteamingManager @Inject constructor(
     private val accessTokenManager: AccessTokenManager,
-    private val networkClient: NetworkClient
+    private val networkClient: NetworkClient,
 ) :
     WebSocketListener() {
 
     companion object {
+
+        private val _quotesState = MutableStateFlow(mutableMapOf<Int, Quote>())
+        val quotesState: StateFlow<MutableMap<Int, Quote>> get() = _quotesState
         private val QUOTESTEAMING_CLOSE_CODE = 10000
         private val QUOTESTEAMING_CLOSE_MESSAGE = "Close quote steaming"
         private val EVENT_KEY = "event"
         private val DATA_KEY = "data"
     }
 
-    private val url: String = "wss://streamer.awonar.com/api/v1/streamer?id=${UUID.randomUUID()}"
+    private val url: String = "wss://ws-dev.awonar.com/api/v1/streamer?id=${UUID.randomUUID()}"
 
     private var client: OkHttpClient? = null
     private var webSocket: WebSocket? = null
@@ -94,6 +97,12 @@ class QuoteSteamingManager @Inject constructor(
                     data,
                     Array<Quote>::class.java
                 )
+                val mapper = mutableMapOf<Int, Quote>()
+                mapper.putAll(_quotesState.value)
+                quotes.map {
+                    mapper[it.id] = it
+                }
+                _quotesState.value = mapper
                 listener?.marketQuoteCallback(event = event, data = quotes)
             } catch (e: Exception) {
                 e.printStackTrace()

@@ -10,31 +10,31 @@ import retrofit2.http.*
 
 interface PaymentService {
 
-    @GET("api/v1/withdrawal")
+    @GET("v1/withdrawal")
     fun getWithdrawalHistory(
         @Query("page") page: Int,
         @Query("limit") limit: Int = 10
     ): Call<WithdrawHistoryResponse>
 
-    @GET("api/v1/deposit")
+    @GET("v1/deposit")
     fun getDepositHistory(
         @Query("page") page: Int,
         @Query("limit") limit: Int = 10
     ): Call<DepositHistoryResponse>
 
-    @POST("api/v1/withdrawal/local-online-banking")
+    @POST("v1/withdrawal/local-online-banking")
     fun withdrawalBanking(@Body body: WithdrawRequest): Call<Withdraw>
 
-    @POST("api/v1/otp/withdrawal")
+    @POST("v1/otp/withdrawal")
     fun getOTPWithdrawal(@Body body: WithdrawOTPRequest): Call<OTP>
 
-    @POST("api/v1/deposit/qrcode")
+    @POST("v1/deposit/qrcode")
     fun getQrcode(@Body body: DepositRequest): Call<QRCode>
 
-    @GET("api/v1/payment/setting/{id}")
+    @GET("v1/payment/setting/{id}")
     fun getCurrenciesForPayment(@Path("id") id: String): Call<PaymentSetting>
 
-    @GET("api/v1/payment/method")
+    @GET("v1/payment/method")
     fun getMethods(@Query("type") type: String): Call<List<MethodPayment>>
 
 

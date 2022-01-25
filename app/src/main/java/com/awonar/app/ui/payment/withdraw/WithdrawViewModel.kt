@@ -28,13 +28,14 @@ class WithdrawViewModel @Inject constructor(
     private val getPaymentSettingUseCase: GetPaymentSettingUseCase,
     private val getWithdrawOTPUseCase: GetWithdrawOTPUseCase,
     private val createWithdrawUseCase: CreateWithdrawUseCase,
-    private val getWithdrawHistoryUseCase: GetWithdrawHistoryUseCase
+    private val getWithdrawHistoryUseCase: GetWithdrawHistoryUseCase,
 ) : ViewModel() {
 
     private val _historyState = MutableStateFlow<List<Withdraw>>(emptyList())
     val historyState: StateFlow<List<Withdraw>> get() = _historyState
 
     private val _otp = MutableStateFlow<OTP?>(null)
+    val otp: StateFlow<OTP?> = _otp
 
     private val _methodId = MutableStateFlow("")
 
@@ -149,7 +150,7 @@ class WithdrawViewModel @Inject constructor(
                 data?.let {
                     _navigationActions.send(
                         WithdrawOTPFragmentDirections.actionWithdrawOTPFragmentToWithdrawSuccessFragment(
-                            it.id ?: "",
+                            it.withdrawNo ?: "",
                             it.dollarAmount
                         )
                     )

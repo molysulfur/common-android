@@ -15,6 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,8 +30,7 @@ class OrderViewModelActivity @Inject constructor(
     private val calculateAmountStopLossAndTakeProfitWithSellUseCase: CalculateAmountStopLossAndTakeProfitWithSellUseCase,
     private val calculateRateStopLossAndTakeProfitWithBuyUseCase: CalculateRateStopLossAndTakeProfitWithBuyUseCase,
     private val calculateRateStopLossAndTakeProfitsWithSellUseCase: CalculateRateStopLossAndTakeProfitsWithSellUseCase,
-    private val validateMinRateUseCase: ValidateMinRateUseCase,
-    private val validateMaxRateUseCase: ValidateMaxRateUseCase,
+    private val validateRateUseCase: ValidateRateUseCase,
     private val validateExposureUseCase: ValidateExposureUseCase,
     private val validateRateStopLossWithBuyUseCase: ValidateRateStopLossWithBuyUseCase,
     private val validateRateStopLossWithSellUseCase: ValidateRateStopLossWithSellUseCase,
@@ -40,8 +40,14 @@ class OrderViewModelActivity @Inject constructor(
     private val validateAmountStopLossWithNonLeverageSellUseCase: ValidateAmountStopLossWithNonLeverageSellUseCase,
 ) : ViewModel() {
 
+    private val _rateErrorState = MutableStateFlow<RateException?>(null)
+    val rateErrorState: StateFlow<RateException?> get() = _rateErrorState
+    private val _exposureError = MutableStateFlow<PositionExposureException?>(null)
+    val exposureError: StateFlow<PositionExposureException?> get() = _exposureError
+
     private val _getOrderRequest = Channel<OpenOrderRequest>(capacity = Channel.CONFLATED)
     val getOrderRequest get() = _getOrderRequest.receiveAsFlow()
+
 
     private val _detailState = MutableStateFlow("")
     val detailState: StateFlow<String> get() = _detailState
@@ -59,18 +65,15 @@ class OrderViewModelActivity @Inject constructor(
     val overNightFeeState: StateFlow<Float> get() = _overNightFeeState
     private val _overNightFeeWeekState: MutableStateFlow<Float> = MutableStateFlow(0f)
     val overNightFeeWeekState: StateFlow<Float> get() = _overNightFeeWeekState
-    private val _exposureMessageState = MutableStateFlow("")
-    val exposureMessageState: StateFlow<String> get() = _exposureMessageState
+
     private val _exposureState = MutableSharedFlow<Float>()
     val exposureState: SharedFlow<Float> get() = _exposureState
 
     val marketOrderTypeState = MutableStateFlow(MarketOrderType.ENTRY_ORDER)
-    val leverageState = MutableStateFlow(0)
 
-    fun getOvernightFeeDaliy(instrumentId: Int, orderType: String) {
+    fun getOvernightFeeDaliy(instrumentId: Int, orderType: String, leverage: Int) {
         viewModelScope.launch {
             val amount = _amountState.value
-            val leverage = leverageState.value
             val result = getOvernightFeeDaliyUseCase(
                 OvernightFeeRequest(
                     instrumentId = instrumentId,
@@ -84,25 +87,26 @@ class OrderViewModelActivity @Inject constructor(
     }
 
     fun getOvernightFeeWeek(instrumentId: Int, orderType: String) {
-        viewModelScope.launch {
-            val amount = _amountState.value
-            val leverage = leverageState.value
-            val result = getOvernightFeeWeeklyUseCase(
-                OvernightFeeRequest(
-                    instrumentId = instrumentId,
-                    amount = amount,
-                    leverage = leverage,
-                    orderType = orderType
-                )
-            )
-            _overNightFeeWeekState.emit(result.successOr(0f))
-        }
+//        viewModelScope.launch {
+//            val amount = _amountState.value
+//            val leverage = leverageState.value
+//            val result = getOvernightFeeWeeklyUseCase(
+//                OvernightFeeRequest(
+//                    instrumentId = instrumentId,
+//                    amount = amount,
+//                    leverage = leverage,
+//                    orderType = orderType
+//                )
+//            )
+//            _overNightFeeWeekState.emit(result.successOr(0f))
+//        }
     }
 
     fun validateStopLoss(
         instrument: Instrument,
         openPrice: Float,
-        orderType: String
+        orderType: String,
+        leverage: Int,
     ) {
         viewModelScope.launch {
             val stoploss = _stopLossState.value?.copy()
@@ -116,7 +120,7 @@ class OrderViewModelActivity @Inject constructor(
                     openPrice = openPrice
                 )
                 val result: Result<Price>? = when (stoploss.type) {
-                    "amount" -> validateAmountStopLoss(data, orderType)
+                    "amount" -> validateAmountStopLoss(data, orderType, leverage)
                     "rate" -> validateRateStopLoss(data, orderType)
                     else -> null
                 }
@@ -131,9 +135,9 @@ class OrderViewModelActivity @Inject constructor(
 
     private suspend fun validateAmountStopLoss(
         data: ValidateStopLossRequest,
-        type: String
+        type: String,
+        leverage: Int,
     ): Result<Price> {
-        val leverage = leverageState.value
         return when {
             leverage == 1 && type == "buy" -> {
                 validateAmountStopLossWithNonLeverageBuyUseCase(data)
@@ -155,7 +159,7 @@ class OrderViewModelActivity @Inject constructor(
 
     private suspend fun validateRateStopLoss(
         data: ValidateStopLossRequest,
-        type: String
+        type: String,
     ): Result<Price> = when (type) {
         "buy" -> validateRateStopLossWithBuyUseCase(
             data
@@ -225,69 +229,21 @@ class OrderViewModelActivity @Inject constructor(
 
     fun validatePositionExposure(
         id: Int,
+        amount: Float,
+        leverage: Int,
     ) {
         viewModelScope.launch {
-            val amount = _amountState.value
-            val leverage = leverageState.value
             if (leverage > 0) {
-                val result = validateExposureUseCase(ExposureRequest(id, amount.amount, leverage))
+                val result = validateExposureUseCase(ExposureRequest(id, amount, leverage))
                 if (result is Result.Error) {
                     val exception: PositionExposureException =
                         (result.exception as PositionExposureException)
-                    _exposureState.emit(exception.value)
-                    _exposureMessageState.emit(exception.message ?: "")
+                    _exposureError.emit(exception)
                 }
             }
         }
     }
 
-
-    fun getDefaultAmount(instrumentId: Int, price: Float, available: Float) {
-        viewModelScope.launch {
-            val amount: Float = available.times(0.05f)
-            val leverage: Int = leverageState.value
-            val unitAmount = getUnitUseCase(
-                CalAmountUnitRequest(
-                    instrumentId = instrumentId,
-                    leverage = leverage,
-                    price = price,
-                    amount = amount
-                )
-            )
-            _amountState.value =
-                _amountState.value.copy(amount = amount, unit = unitAmount.successOr(0f))
-        }
-    }
-
-    fun calculateMaxRate(rate: Float, currentRate: Float, digit: Int) {
-        viewModelScope.launch {
-            val result: Result<Boolean?> = validateMaxRateUseCase(
-                ValidateRateRequest(
-                    rate = rate,
-                    currentRate = currentRate,
-                    digit = digit
-                )
-            )
-            if (result is Result.Error) {
-                _rateState.emit((result.exception as RateException).rate)
-            }
-        }
-    }
-
-    fun calculateMinRate(rate: Float, currentRate: Float, digit: Int) {
-        viewModelScope.launch {
-            val result: Result<Boolean?> = validateMinRateUseCase(
-                ValidateRateRequest(
-                    rate = rate,
-                    currentRate = currentRate,
-                    digit = digit
-                )
-            )
-            if (result is Result.Error) {
-                _rateState.emit((result.exception as RateException).rate)
-            }
-        }
-    }
 
     fun updateMarketOrderType(type: MarketOrderType) {
         viewModelScope.launch {
@@ -314,33 +270,11 @@ class OrderViewModelActivity @Inject constructor(
         _amountState.value = _amountState.value.copy(type = type)
     }
 
-    fun updateLeverage(instrumentId: Int, price: Float, newLeverage: Int) {
-        viewModelScope.launch {
-            leverageState.emit(newLeverage)
-            updateAmount(instrumentId, price, amountState.value.amount)
-        }
-    }
-
-    fun updateAmount(instrumentId: Int, price: Float, number: Float) {
-        viewModelScope.launch {
-            val amount: Price = _amountState.value
-            val leverage = leverageState.value
-            when (amount.type) {
-                "amount" -> {
-                    getUnit(instrumentId, price, leverage, number)
-                }
-                "unit" -> {
-                    getAmount(instrumentId, price, leverage, number)
-                }
-            }
-        }
-    }
-
     private fun getAmount(
         instrumentId: Int,
         price: Float,
         leverage: Int,
-        unit: Float
+        unit: Float,
     ) {
         viewModelScope.launch {
             val request = CalAmountUnitRequest(
@@ -359,7 +293,7 @@ class OrderViewModelActivity @Inject constructor(
         instrumentId: Int,
         price: Float,
         leverage: Int,
-        amount: Float
+        amount: Float,
     ) {
         viewModelScope.launch {
             val request = CalAmountUnitRequest(
@@ -533,58 +467,53 @@ class OrderViewModelActivity @Inject constructor(
     }
 
     fun getDetail(available: Float) {
-        viewModelScope.launch {
-            var message = ""
-            val amount = _amountState.value
-            val leverage = leverageState.value
-            if (available < amount.amount) {
-                _buttonText.value = "Deposit"
-                message = "Deposit %.2f $ for order to open this trade.".format(
-                    amount.amount.minus(available)
-                )
-
-            } else {
-                _buttonText.value = "Open Trade"
-                val amountUnit: Float = when (amount.type) {
-                    "amount" -> amount.unit
-                    else -> amount.amount
-                }
-                val equity: Float = (amount.amount.div(available)) * 100
-                message = "%.2f Units | %.2f%s of equity | Exposure $%.2f".format(
-                    amountUnit,
-                    equity,
-                    "%",
-                    amount.amount.times(leverage)
-                )
-            }
-            _detailState.emit(message)
-        }
-    }
-
-    fun getOrderRequest(instrumentId: Int, orderType: String) {
-        viewModelScope.launch {
-            val amount = _amountState.value
-            val rate = _rateState.value
-            val sl = _stopLossState.value
-            val tp = _takeProfit.value
-            val leverage = leverageState.value
-            val request = OpenOrderRequest(
-                instrumentId = instrumentId,
-                amount = amount.amount,
-                isBuy = orderType == "buy",
-                leverage = leverage,
-                rate = rate,
-                stopLoss = sl?.unit ?: 0f,
-                takeProfit = tp?.unit ?: 0f,
-                units = amount.unit,
-            )
-            _getOrderRequest.send(request)
-        }
+//        viewModelScope.launch {
+//            var message = ""
+//            val amount = _amountState.value
+//            val leverage = leverageState.value
+//            if (available < amount.amount) {
+//                _buttonText.value = "Deposit"
+//                message = "Deposit %.2f $ for order to open this trade.".format(
+//                    amount.amount.minus(available)
+//                )
+//
+//            } else {
+//                _buttonText.value = "Open Trade"
+//                val amountUnit: Float = when (amount.type) {
+//                    "amount" -> amount.unit
+//                    else -> amount.amount
+//                }
+//                val equity: Float = (amount.amount.div(available)) * 100
+//                message = "%.2f Units | %.2f%s of equity | Exposure $%.2f".format(
+//                    amountUnit,
+//                    equity,
+//                    "%",
+//                    amount.amount.times(leverage)
+//                )
+//            }
+//            _detailState.emit(message)
+//        }
     }
 
     fun updateTakeProfitType(type: String) {
         viewModelScope.launch {
             _takeProfit.value = _takeProfit.value?.copy(type = type)
+        }
+    }
+
+    fun validateRate(rate: Float, price: Float, digit: Int) {
+        viewModelScope.launch {
+            val result = validateRateUseCase(ValidateRateRequest(rate = rate,
+                currentRate = price,
+                digit = digit))
+            when (result) {
+                is Result.Success -> _rateErrorState.emit(null)
+                is Result.Error -> {
+                    val error = result.exception as RateException
+                    _rateErrorState.emit(error)
+                }
+                else -> {}
+            }
         }
     }
 

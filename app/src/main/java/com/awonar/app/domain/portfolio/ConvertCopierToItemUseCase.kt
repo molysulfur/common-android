@@ -16,7 +16,7 @@ class ConvertCopierToItemUseCase @Inject constructor(
 ) : UseCase<List<Copier>, MutableList<OrderPortfolioItem>>(dispatcher) {
     override suspend fun execute(parameters: List<Copier>): MutableList<OrderPortfolioItem> {
         val itemList = mutableListOf<OrderPortfolioItem>()
-        parameters.forEach { copier ->
+        parameters.forEachIndexed { index, copier ->
             val conversions = HashMap<Int, Float>()
             copier.positions?.forEach { position ->
                 val conversion =
@@ -27,10 +27,10 @@ class ConvertCopierToItemUseCase @Inject constructor(
             val totalUnits: Double = sumUnit(copier.positions ?: emptyList())
             val avgOpen: Double = calAvgOpen(copier.positions?.filter { it.isBuy } ?: emptyList(),
                 copier.positions?.filter { !it.isBuy } ?: emptyList())
-            val invested = copier.initialInvestment
             val fees = copier.totalFees
             val csl = copier.stopLossAmount
             val cslPercent = copier.stopLossPercentage
+            val invested = copier.initialInvestment.plus(moneyInMoneyOut)
             val netInvested = copier.initialInvestment.plus(moneyInMoneyOut)
             val current = 0f // not used
             val leverage = 0f  // not used
@@ -52,7 +52,8 @@ class ConvertCopierToItemUseCase @Inject constructor(
                     current = current,
                     netInvested = netInvested,
                     copyStopLoss = csl,
-                    copyStopLossPercent = cslPercent
+                    copyStopLossPercent = cslPercent,
+                    index = index
                 )
             )
         }
