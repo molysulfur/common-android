@@ -12,30 +12,15 @@ import com.awonar.app.ui.setting.SettingViewModel
 class WatchListFragment : Fragment() {
 
 
-    private var _binding: AwonarFragmentWatchlistBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
-    private val viewModel: SettingViewModel by activityViewModels()
+    private val binding: AwonarFragmentWatchlistBinding by lazy {
+        AwonarFragmentWatchlistBinding.inflate(layoutInflater)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = AwonarFragmentWatchlistBinding.inflate(inflater, container, false)
-        _binding!!.lifecycleOwner = activity
+        binding.lifecycleOwner = activity
         return binding.root
-    }
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-
     }
 }

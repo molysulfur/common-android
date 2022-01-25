@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/awonar_watchlist_graph"
+    app:startDestination="@id/watchlistFolderFragment">
+
+    <fragment
+        android:id="@+id/watchlistFolderFragment"
+        android:name="com.awonar.app.ui.watchlist.WatchlistFolderFragment"
+        android:label="WatchlistFolderFragment" />
+</navigation>

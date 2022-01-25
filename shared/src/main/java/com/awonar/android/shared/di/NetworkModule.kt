@@ -82,4 +82,11 @@ class NetworkModule {
     fun provideSocialTradeService(client: NetworkClient): SocialTradeService {
         return SocialTradeService.create(client)
     }
+
+    @Singleton
+    @Provides
+    fun provideWatchlistService(client: NetworkClient): WatchlistService {
+        return WatchlistService.create(client)
+    }
 }
+
