@@ -12,7 +12,7 @@ interface InstrumentDao {
     fun loadAllByIds(id: IntArray): List<Instrument>
 
     @Query("SELECT * FROM instruments WHERE id = :id")
-    fun loadById(id: Int): Instrument
+    fun loadById(id: Int): Instrument?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(tradingDataList: List<Instrument>)

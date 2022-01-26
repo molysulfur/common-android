@@ -10,14 +10,17 @@ interface WatchlistFolderDao {
     fun getAll(): List<Folder>
 
     @Query("SELECT * FROM watchlist_folders WHERE id IN (:id)")
-    fun loadAllByIds(id: IntArray): List<Folder>
+    fun loadAllByIds(id: ArrayList<String>): List<Folder>
 
     @Query("SELECT * FROM watchlist_folders WHERE id = :id")
-    fun loadById(id: Int): Folder
+    fun loadById(id: String): Folder
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(tradingDataList: List<Folder>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(tradingDataList: Folder)
+
     @Delete
-    fun delete(user: Folder)
+    fun delete(folder: Folder)
 }

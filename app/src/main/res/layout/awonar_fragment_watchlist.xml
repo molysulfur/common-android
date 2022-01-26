@@ -78,6 +78,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/awonar_portfolio_text_title_total_allocate" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/awonar_watchlist_button_setting"
                     style="@style/Awonar.Button.Icon"
                     android:layout_width="@dimen/awonar_size_icon"
                     android:layout_height="@dimen/awonar_size_icon"

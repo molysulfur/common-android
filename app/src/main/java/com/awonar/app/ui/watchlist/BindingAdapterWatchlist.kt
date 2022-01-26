@@ -9,17 +9,21 @@ import com.awonar.app.ui.watchlist.adapter.WatchlistFolderAdapter
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import timber.log.Timber
 
-@BindingAdapter("setFolderAdapter")
+@BindingAdapter("setFolderAdapter", "viewModel")
 fun setFolderAdapter(
     recycler: RecyclerView,
     itemList: List<Folder>,
+    viewModel: WatchlistViewModel,
 ) {
-    Timber.e("$itemList")
     if (recycler.adapter == null) {
         with(recycler) {
             layoutManager =
                 LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
-            adapter = WatchlistFolderAdapter()
+            adapter = WatchlistFolderAdapter().apply {
+                onClose = {
+                    viewModel.deleteFolder(it)
+                }
+            }
         }
     }
     with(recycler.adapter as WatchlistFolderAdapter) {

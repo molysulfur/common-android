@@ -1,16 +1,24 @@
 package com.awonar.android.shared.api
 
+import com.awonar.android.model.core.MessageSuccessResponse
+import com.awonar.android.model.watchlist.AddWatchlistRequest
 import com.awonar.android.model.watchlist.WatchlistFolder
 import com.awonar.android.shared.constrant.BuildConfig
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
+import retrofit2.http.*
 
 interface WatchlistService {
 
     @GET("v1/watchlist/folder")
     fun getFolders(): Call<List<WatchlistFolder>>
+
+    @POST("v1/watchlist/folder")
+    fun addFolder(@Body request: AddWatchlistRequest): Call<WatchlistFolder>
+
+    @DELETE("v1/watchlist/folder/{id}")
+    fun deleteFolder(@Path("id") id: String): Call<MessageSuccessResponse>
 
     companion object {
 

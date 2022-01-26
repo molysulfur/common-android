@@ -12,13 +12,13 @@ data class WatchlistFolder(
     @SerializedName("static") val static: Boolean,
     @SerializedName("recentlyInvested") val recentlyInvested: Boolean,
     @SerializedName("default") val default: Boolean,
-    @SerializedName("items") val items: List<WatchlistFolderItem>,
+    @SerializedName("items") val items: List<WatchlistFolderItem>?,
 ) : Parcelable
 
 @Parcelize
 data class WatchlistFolderItem(
     @SerializedName("id") val id: String?,
     @SerializedName("uid") val uid: String?,
-    @SerializedName("instrumentId") val instrumentId: Int,
+    @SerializedName("instrumentId") val instrumentId: Int?,
     @SerializedName("type") val type: String?,
 ) : Parcelable

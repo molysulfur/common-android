@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.AppCompatImageView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/awonar_logo_image_logo"
-    android:layout_width="@dimen/awonar_size_avatar"
-    android:layout_height="@dimen/awonar_size_avatar"
+    android:layout_width="@dimen/awonar_size_icon"
+    android:layout_height="@dimen/awonar_size_icon"
     android:layout_margin="@dimen/awonar_size_margin_padding_small"
-    android:scaleType="centerCrop" />
+    android:scaleType="fitCenter" />

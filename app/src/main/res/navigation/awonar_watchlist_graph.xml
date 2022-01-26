@@ -8,4 +8,9 @@
         android:id="@+id/watchlistFolderFragment"
         android:name="com.awonar.app.ui.watchlist.WatchlistFolderFragment"
         android:label="WatchlistFolderFragment" />
+
+    <fragment
+        android:id="@+id/addWatchlistFolderFragment"
+        android:name="com.awonar.app.ui.watchlist.AddWatchlistFolderActivity"
+        android:label="AddWatchlistFolderFragment" />
 </navigation>
