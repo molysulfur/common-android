@@ -15,6 +15,5 @@ class DatabaseConverter {
     fun toListString(stringList: String): List<String> {
         return Gson().fromJson(stringList, genericType<List<String>>())
     }
-
 }
 

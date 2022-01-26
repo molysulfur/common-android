@@ -5,9 +5,30 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.watchlist.Folder
+import com.awonar.app.ui.watchlist.adapter.WatchlistAdapter
 import com.awonar.app.ui.watchlist.adapter.WatchlistFolderAdapter
+import com.awonar.app.ui.watchlist.adapter.WatchlistItem
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import timber.log.Timber
+
+@BindingAdapter("setWatchlistAdapter")
+fun setWatchlistAdapter(
+    recycler: RecyclerView,
+    itemList: MutableList<WatchlistItem>,
+) {
+    if (recycler.adapter == null) {
+        with(recycler) {
+            layoutManager =
+                LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
+            adapter = WatchlistAdapter().apply {
+
+            }
+        }
+    }
+    with(recycler.adapter as WatchlistAdapter) {
+        this.itemList = itemList
+    }
+}
 
 @BindingAdapter("setFolderAdapter", "viewModel")
 fun setFolderAdapter(
@@ -20,6 +41,9 @@ fun setFolderAdapter(
             layoutManager =
                 LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
             adapter = WatchlistFolderAdapter().apply {
+                onCardClick = {
+                    viewModel.navigate(it)
+                }
                 onClose = {
                     viewModel.deleteFolder(it)
                 }

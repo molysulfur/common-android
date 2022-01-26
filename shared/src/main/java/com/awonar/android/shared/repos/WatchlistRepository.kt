@@ -4,6 +4,7 @@ import com.awonar.android.model.core.MessageSuccessResponse
 import com.awonar.android.model.watchlist.AddWatchlistRequest
 import com.awonar.android.model.watchlist.Folder
 import com.awonar.android.model.watchlist.WatchlistFolder
+import com.awonar.android.model.watchlist.WatchlistInfo
 import com.awonar.android.shared.api.WatchlistService
 import com.awonar.android.shared.db.room.instrument.InstrumentDao
 import com.awonar.android.shared.db.room.watchlist.WatchlistFolderDao
@@ -53,12 +54,31 @@ class WatchlistRepository @Inject constructor(
                 val folderEntities = mutableListOf<Folder>()
                 response.forEach { folder ->
                     try {
-                        val images = folder.items?.map {
+                        val infos = folder.items?.map {
                             if (it.instrumentId ?: 0 > 0) {
                                 val instrument = instrumentDao.loadById(it.instrumentId ?: 0)
-                                instrument?.logo ?: ""
+                                WatchlistInfo(
+                                    instrumentId = it.instrumentId ?: 0,
+                                    uid = it.uid,
+                                    image = instrument?.logo,
+                                    title = instrument?.symbol,
+                                    subTitle = "",
+                                    type = it.type
+                                )
                             } else {
-                                ""
+                                WatchlistInfo(
+                                    instrumentId = it.instrumentId ?: 0,
+                                    uid = it.uid,
+                                    image = it.trader?.image,
+                                    title = if (it.trader?.displayFullName == true) "%s %s %s".format(
+                                        it.trader?.firstName,
+                                        it.trader?.middleName,
+                                        it.trader?.lastName) else it.trader?.username,
+                                    subTitle = it.trader?.username ?: "",
+                                    risk = it.trader?.risk ?: 0,
+                                    gain = it.trader?.gain ?: 0f,
+                                    type = it.type
+                                )
                             }
                         }
                         val entity = Folder(
@@ -68,7 +88,7 @@ class WatchlistRepository @Inject constructor(
                             static = folder.static,
                             default = folder.default,
                             recentlyInvested = folder.recentlyInvested,
-                            images = images ?: arrayListOf()
+                            infos = infos ?: arrayListOf()
                         )
                         folderEntities.add(entity)
                     } catch (e: Exception) {
@@ -114,7 +134,7 @@ class WatchlistRepository @Inject constructor(
                     static = response.static,
                     default = response.default,
                     recentlyInvested = response.recentlyInvested,
-                    images = arrayListOf()
+                    infos = arrayListOf()
                 )
                 return listOf(entity)
             }

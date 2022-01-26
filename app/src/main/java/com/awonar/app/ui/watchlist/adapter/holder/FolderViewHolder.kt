@@ -3,6 +3,7 @@ package com.awonar.app.ui.watchlist.adapter.holder
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.watchlist.Folder
 import com.awonar.app.databinding.AwonarItemFolderWatchlistBinding
+import timber.log.Timber
 
 class FolderViewHolder constructor(private val binding: AwonarItemFolderWatchlistBinding) :
     RecyclerView.ViewHolder(binding.root) {
@@ -26,7 +27,9 @@ class FolderViewHolder constructor(private val binding: AwonarItemFolderWatchlis
             setTitle(watchlistFolder.name ?: "")
             setSubTitle("items : ${watchlistFolder.totalItem}")
             isCloseIconVisible(!watchlistFolder.static)
-            setRecentImage(watchlistFolder.images.filterIndexed { index, image -> !image.isNullOrEmpty() && index < LIMIT_RECENT })
+            val images =
+                watchlistFolder.infos.filterIndexed { index, watchlist -> !watchlist.image.isNullOrEmpty() && index < LIMIT_RECENT }
+            setRecentImage(images.map { it.image ?: "" })
         }
     }
 }

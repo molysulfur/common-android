@@ -1,6 +1,7 @@
 package com.awonar.android.model.watchlist
 
 import android.os.Parcelable
+import com.awonar.android.model.socialtrade.Trader
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
@@ -21,4 +22,5 @@ data class WatchlistFolderItem(
     @SerializedName("uid") val uid: String?,
     @SerializedName("instrumentId") val instrumentId: Int?,
     @SerializedName("type") val type: String?,
+    @SerializedName("trader") val trader: Trader?,
 ) : Parcelable

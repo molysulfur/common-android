@@ -7,6 +7,7 @@ import com.awonar.android.shared.domain.watchlist.AddWatchlistFolderUseCase
 import com.awonar.android.shared.domain.watchlist.DeleteWatchlistFolderUseCase
 import com.awonar.android.shared.domain.watchlist.GetWatchlistFoldersUseCase
 import com.awonar.android.shared.utils.JsonUtil
+import com.awonar.app.ui.watchlist.adapter.WatchlistItem
 import com.molysulfur.library.result.Result
 import com.molysulfur.library.result.succeeded
 import com.molysulfur.library.result.successOr
@@ -23,18 +24,21 @@ class WatchlistViewModel @Inject constructor(
     private val deleteWatchlistFolderUseCase: DeleteWatchlistFolderUseCase,
 ) : ViewModel() {
 
+    private val _navigateAction = Channel<String>(Channel.CONFLATED)
+    val navigateAction get() = _navigateAction.receiveAsFlow()
+
     private val _progress = MutableStateFlow(false)
     val progress get() = _progress
 
     private val _folders = MutableStateFlow(emptyList<Folder>())
     val folders get() = _folders
+    private val _watchlist = MutableStateFlow(mutableListOf<WatchlistItem>())
+    val watchlist get() = _watchlist
 
     private val _finished = Channel<Unit>(Channel.CONFLATED)
     val finished get() = _finished.receiveAsFlow()
-
     private val _errorState = Channel<String>(Channel.CONFLATED)
     val errorState get() = _errorState.receiveAsFlow()
-
 
     init {
         val folders = flow {
@@ -88,4 +92,50 @@ class WatchlistViewModel @Inject constructor(
             }
         }
     }
+
+    fun navigate(id: String) {
+        viewModelScope.launch {
+            _navigateAction.send(id)
+        }
+    }
+
+    fun getWatchlist(watchlistId: String) {
+        viewModelScope.launch {
+            val folder = _folders.value.first { it.id == watchlistId }
+            val list = mutableListOf<WatchlistItem>()
+            list.add(WatchlistItem.ColumnItem(
+                "Market",
+                "Sell",
+                "Buy"
+            ))
+            folder.infos.filter { it.type == "instrument" }.forEach { info ->
+                list.add(
+                    WatchlistItem.InstrumentItem(
+                        instrumentId = info.instrumentId,
+                        title = info.title,
+                        image = info.image
+                    )
+                )
+            }
+            list.add(WatchlistItem.ColumnItem(
+                "People",
+                "Risk",
+                "Change"
+            ))
+            folder.infos.filter { it.type == "user" }.forEach { info ->
+                list.add(
+                    WatchlistItem.TraderItem(
+                        uid = info.uid,
+                        title = info.title,
+                        subTitle = info.subTitle,
+                        image = info.image,
+                        risk = info.risk,
+                        gain = info.gain
+                    )
+                )
+            }
+            _watchlist.emit(list)
+        }
+    }
+
 }

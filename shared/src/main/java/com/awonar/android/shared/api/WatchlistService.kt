@@ -11,7 +11,7 @@ import retrofit2.http.*
 
 interface WatchlistService {
 
-    @GET("v1/watchlist/folder")
+    @GET("v1/watchlist/folder/mobile")
     fun getFolders(): Call<List<WatchlistFolder>>
 
     @POST("v1/watchlist/folder")

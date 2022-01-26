@@ -128,6 +128,7 @@
         <entry key="app/src/main/res/layout/awonar_fragment_watchlist.xml" value="0.15572916666666667" />
         <entry key="app/src/main/res/layout/awonar_fragment_watchlist_add.xml" value="0.2703125" />
         <entry key="app/src/main/res/layout/awonar_fragment_watchlist_folder.xml" value="0.2703125" />
+        <entry key="app/src/main/res/layout/awonar_fragment_watchlist_list.xml" value="0.3880208333333333" />
         <entry key="app/src/main/res/layout/awonar_fragment_withdraw.xml" value="0.10885416666666667" />
         <entry key="app/src/main/res/layout/awonar_fragment_withdraw_banking.xml" value="0.1" />
         <entry key="app/src/main/res/layout/awonar_fragment_withdraw_history.xml" value="0.2635416666666667" />
@@ -174,6 +175,7 @@
         <entry key="app/src/main/res/layout/awonar_item_selector_with_other_choice.xml" value="0.11354166666666667" />
         <entry key="app/src/main/res/layout/awonar_item_title.xml" value="0.20625" />
         <entry key="app/src/main/res/layout/awonar_item_title_viewmore.xml" value="0.43703703703703706" />
+        <entry key="app/src/main/res/layout/awonar_item_watchlist_columns.xml" value="0.3880208333333333" />
         <entry key="app/src/main/res/layout/awonar_skeleton_item.xml" value="0.2682291666666667" />
         <entry key="app/src/main/res/layout/awonar_widget_card_view_instrument.xml" value="0.14322916666666666" />
         <entry key="app/src/main/res/layout/awonar_widget_cashflow_collaspsible.xml" value="0.16702819956616052" />

@@ -12,15 +12,17 @@ import com.awonar.android.model.watchlist.Folder
 import com.awonar.android.shared.db.room.conversionrate.ConversionRateDao
 import com.awonar.android.shared.db.room.instrument.InstrumentDao
 import com.awonar.android.shared.db.room.trading.TradingDataDao
+import com.awonar.android.shared.db.room.watchlist.WatchlistConverter
 import com.awonar.android.shared.db.room.watchlist.WatchlistFolderDao
 
 @Database(
     entities = [TradingData::class, Conversion::class, Instrument::class, Folder::class],
-    version = 2,
+    version = 1,
     exportSchema = false
 )
 @TypeConverters(
-    DatabaseConverter::class
+    DatabaseConverter::class,
+    WatchlistConverter::class
 )
 abstract class AppDatabase : RoomDatabase() {
 
@@ -47,8 +49,6 @@ abstract class AppDatabase : RoomDatabase() {
                 instance
             }
         }
-
-
     }
 
 

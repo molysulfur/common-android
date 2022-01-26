@@ -6,13 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.awonar.app.databinding.AwonarFragmentWatchlistFolderBinding
+import androidx.navigation.fragment.navArgs
+import com.awonar.app.databinding.AwonarFragmentWatchlistListBinding
 
-class WatchlistFolderFragment : Fragment() {
+class WatchlistListFragment : Fragment() {
 
-    private val binding: AwonarFragmentWatchlistFolderBinding by lazy {
-        AwonarFragmentWatchlistFolderBinding.inflate(layoutInflater)
+    private val binding: AwonarFragmentWatchlistListBinding by lazy {
+        AwonarFragmentWatchlistListBinding.inflate(layoutInflater)
     }
+
+    private val args: WatchlistListFragmentArgs by navArgs()
 
     private val viewModel: WatchlistViewModel by activityViewModels()
 
@@ -28,5 +31,6 @@ class WatchlistFolderFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.getWatchlist(args.watchlistId)
     }
 }
