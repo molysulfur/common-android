@@ -50,7 +50,6 @@ class InstrumentPortfolioViewHolder constructor(
             QuoteSteamingManager.quotesState.collect { quotes ->
                 positionItem?.let { positionItem ->
                     val quote = quotes[positionItem.position.instrument.id]
-                    Timber.e("${positionItem.position.instrument.symbol} ${positionItem.position.instrument.id} ${quote?.bid}")
                     quote?.let {
                         positionItem.current = if (positionItem.position.isBuy) it.bid else it.ask
                         val pl = PortfolioUtil.getProfitOrLoss(

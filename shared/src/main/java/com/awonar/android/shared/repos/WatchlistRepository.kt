@@ -93,11 +93,7 @@ class WatchlistRepository @Inject constructor(
                         folderEntities.add(entity)
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        Timber.e(e.message)
                     }
-                }
-                folderEntities.forEach {
-                    Timber.e("${it.id} ${it.name}")
                 }
                 return folderEntities
             }
@@ -107,9 +103,6 @@ class WatchlistRepository @Inject constructor(
             }
 
             override fun saveToDb(data: List<Folder>) {
-                data.forEach {
-                    Timber.e("${it.id} ${it.name}")
-                }
                 foldersDao.insertAll(data)
             }
 

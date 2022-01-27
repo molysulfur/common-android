@@ -1,15 +1,14 @@
 package com.awonar.app.ui.watchlist
 
+import android.graphics.Canvas
 import android.view.View
 import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.watchlist.Folder
-import com.awonar.app.ui.watchlist.adapter.WatchlistAdapter
-import com.awonar.app.ui.watchlist.adapter.WatchlistFolderAdapter
-import com.awonar.app.ui.watchlist.adapter.WatchlistItem
+import com.awonar.app.ui.watchlist.adapter.*
 import com.google.android.material.progressindicator.CircularProgressIndicator
-import timber.log.Timber
 
 @BindingAdapter("setWatchlistAdapter")
 fun setWatchlistAdapter(
@@ -18,16 +17,38 @@ fun setWatchlistAdapter(
 ) {
     if (recycler.adapter == null) {
         with(recycler) {
+            setTouchHelper(recycler)
             layoutManager =
                 LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
-            adapter = WatchlistAdapter().apply {
-
-            }
+            adapter = WatchlistAdapter()
         }
     }
     with(recycler.adapter as WatchlistAdapter) {
         this.itemList = itemList
     }
+}
+
+private fun setTouchHelper(recycler: RecyclerView) {
+    val touchHelperCallback = WatchlistTouchHelperCallback(
+        object : IWatchlistTouchHelperCallback {
+            override fun onClose(id: String) {
+            }
+
+            override fun onClose(id: Int) {
+            }
+
+        }, recycler.context
+    )
+    val helper = ItemTouchHelper(touchHelperCallback)
+    helper.attachToRecyclerView(recycler)
+    recycler.addItemDecoration(object :
+        RecyclerView.ItemDecoration() {
+
+        override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+            super.onDraw(c, parent, state)
+            touchHelperCallback.onDraw(c)
+        }
+    })
 }
 
 @BindingAdapter("setFolderAdapter", "viewModel")

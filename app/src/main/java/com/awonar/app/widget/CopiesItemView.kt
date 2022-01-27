@@ -17,16 +17,33 @@ class CopiesItemView : BaseViewGroup {
 
     private lateinit var binding: AwonarWidgetCopiesItemBinding
 
+    var hasWatchlistIcon: Boolean = false
+        set(value) {
+            if (field != value) {
+                field = value
+                updateHasWatchlistIcon()
+            }
+        }
+
+    private fun updateHasWatchlistIcon() {
+        binding.awonarCopiesItemImageAdd.visibility =
+            if (hasWatchlistIcon) View.VISIBLE else View.GONE
+    }
+
     var gainColor: Int = 0
         set(value) {
-            if (value != null) {
+            if (value > 0) {
                 field = value
                 updateGainColor()
             }
         }
 
     private fun updateGainColor() {
-        binding.awonarCopiesItemTextGain.setTextColor(ContextCompat.getColor(context, gainColor))
+        when {
+            gainColor > 0 -> binding.awonarCopiesItemTextGain.setTextColor(ContextCompat.getColor(
+                context,
+                gainColor))
+        }
     }
 
     var image: String? = null
@@ -143,8 +160,19 @@ class CopiesItemView : BaseViewGroup {
         )
     }
 
+    var watchlistClick: (() -> Unit)? = null
 
     override fun setup() {
+        updateChange()
+        updateGainColor()
+        updateHasWatchlistIcon()
+        updateImage()
+        updateRisk()
+        updateSubTitle()
+        updateTitle()
+        binding.awonarCopiesItemImageAdd.setOnClickListener {
+            watchlistClick?.invoke()
+        }
     }
 
     override fun getLayoutResource(): View {
@@ -177,6 +205,6 @@ class CopiesItemView : BaseViewGroup {
         context: Context,
         attrs: AttributeSet?,
         defStyleAttr: Int,
-        defStyleRes: Int
+        defStyleRes: Int,
     ) : super(context, attrs, defStyleAttr, defStyleRes)
 }

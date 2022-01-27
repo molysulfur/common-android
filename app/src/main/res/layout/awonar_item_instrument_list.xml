@@ -4,5 +4,7 @@
     <com.awonar.app.widget.InstrumentItemView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/awonar_instrument_item_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@drawable/awonar_ripple_white"
+        android:padding="@dimen/awonar_size_margin_padding_normal" />
 </layout>

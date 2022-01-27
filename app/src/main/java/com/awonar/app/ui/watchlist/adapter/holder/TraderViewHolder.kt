@@ -15,7 +15,8 @@ class TraderViewHolder constructor(private val binding: AwonarItemCopiesItemBind
             subTitle = traderItem.subTitle
             risk = traderItem.risk
             gain = traderItem.gain
-            gainColor = ColorChangingUtil.getTextColorChange(context, traderItem.gain)
+            gainColor = ColorChangingUtil.getTextColorChange(traderItem.gain)
+            hasWatchlistIcon = false
         }
     }
 
