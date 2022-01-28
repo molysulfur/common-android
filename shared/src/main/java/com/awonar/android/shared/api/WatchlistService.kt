@@ -20,6 +20,9 @@ interface WatchlistService {
     @DELETE("v1/watchlist/folder/{id}")
     fun deleteFolder(@Path("id") id: String): Call<MessageSuccessResponse>
 
+    @DELETE("v1/watchlist/items/{id}")
+    fun deleteItem(@Path("id") id: String): Call<MessageSuccessResponse>
+
     companion object {
 
         fun create(client: NetworkClient): WatchlistService = Retrofit.Builder()

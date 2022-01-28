@@ -2,11 +2,14 @@ package com.awonar.app.ui.watchlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.awonar.android.model.watchlist.DeleteWatchlistRequest
 import com.awonar.android.model.watchlist.Folder
 import com.awonar.android.shared.domain.watchlist.AddWatchlistFolderUseCase
 import com.awonar.android.shared.domain.watchlist.DeleteWatchlistFolderUseCase
+import com.awonar.android.shared.domain.watchlist.DeleteWatchlistUseCase
 import com.awonar.android.shared.domain.watchlist.GetWatchlistFoldersUseCase
 import com.awonar.android.shared.utils.JsonUtil
+import com.awonar.app.domain.watchlist.ConvertWatchlistItemUseCase
 import com.awonar.app.ui.watchlist.adapter.WatchlistItem
 import com.molysulfur.library.result.Result
 import com.molysulfur.library.result.succeeded
@@ -15,6 +18,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,6 +26,8 @@ class WatchlistViewModel @Inject constructor(
     private val getWatchlistFoldersUseCase: GetWatchlistFoldersUseCase,
     private val addWatchlistFolderUseCase: AddWatchlistFolderUseCase,
     private val deleteWatchlistFolderUseCase: DeleteWatchlistFolderUseCase,
+    private val deleteWatchlistUseCase: DeleteWatchlistUseCase,
+    private val convertWatchlistItemUseCase: ConvertWatchlistItemUseCase,
 ) : ViewModel() {
 
     private val _navigateAction = Channel<String>(Channel.CONFLATED)
@@ -102,39 +108,37 @@ class WatchlistViewModel @Inject constructor(
     fun getWatchlist(watchlistId: String) {
         viewModelScope.launch {
             val folder = _folders.value.first { it.id == watchlistId }
-            val list = mutableListOf<WatchlistItem>()
-            list.add(WatchlistItem.ColumnItem(
-                "Market",
-                "Sell",
-                "Buy"
-            ))
-            folder.infos.filter { it.type == "instrument" }.forEach { info ->
-                list.add(
-                    WatchlistItem.InstrumentItem(
-                        instrumentId = info.instrumentId,
-                        title = info.title,
-                        image = info.image
-                    )
-                )
+            val list = convertWatchlistItemUseCase(folder.infos).successOr(mutableListOf())
+            _watchlist.value = list.toMutableList()
+        }
+    }
+
+    fun removeItem(position: Int) {
+        viewModelScope.launch {
+            val id = when (val item = _watchlist.value[position]) {
+                is WatchlistItem.InstrumentItem -> item.id
+                is WatchlistItem.TraderItem -> item.id
+                else -> null
             }
-            list.add(WatchlistItem.ColumnItem(
-                "People",
-                "Risk",
-                "Change"
-            ))
-            folder.infos.filter { it.type == "user" }.forEach { info ->
-                list.add(
-                    WatchlistItem.TraderItem(
-                        uid = info.uid,
-                        title = info.title,
-                        subTitle = info.subTitle,
-                        image = info.image,
-                        risk = info.risk,
-                        gain = info.gain
-                    )
-                )
+            var folder = _folders.value.find { it.infos.find { it.id == id } != null }
+            id?.let { _ ->
+                deleteWatchlistUseCase(DeleteWatchlistRequest(
+                    folderId = folder?.id ?: "",
+                    itemId = id
+                )).collect {
+                    if (it.succeeded) {
+                        val newFolders = it.successOr(emptyList())
+                        _folders.emit(newFolders)
+                        folder?.id?.let { id ->
+                            getWatchlist(id)
+                        }
+                    }
+                    if (it is Result.Error) {
+                        val message = JsonUtil.getError(it.exception.message)
+                        _errorState.send(message)
+                    }
+                }
             }
-            _watchlist.emit(list)
         }
     }
 

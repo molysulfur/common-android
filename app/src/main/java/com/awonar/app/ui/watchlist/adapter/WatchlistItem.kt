@@ -18,6 +18,7 @@ sealed class WatchlistItem(
 
     @Parcelize
     data class InstrumentItem(
+        val id: String?,
         val instrumentId: Int,
         val title: String?,
         val image: String?,
@@ -25,6 +26,7 @@ sealed class WatchlistItem(
 
     @Parcelize
     data class TraderItem(
+        val id: String?,
         val uid: String?,
         val title: String?,
         val subTitle: String?,

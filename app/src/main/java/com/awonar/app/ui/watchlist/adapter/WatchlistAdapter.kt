@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.app.databinding.*
 import com.awonar.app.ui.watchlist.adapter.holder.*
+import timber.log.Timber
 
 class WatchlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

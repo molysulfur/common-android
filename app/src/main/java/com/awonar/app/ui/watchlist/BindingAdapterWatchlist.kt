@@ -9,15 +9,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.watchlist.Folder
 import com.awonar.app.ui.watchlist.adapter.*
 import com.google.android.material.progressindicator.CircularProgressIndicator
+import timber.log.Timber
 
-@BindingAdapter("setWatchlistAdapter")
+@BindingAdapter("setWatchlistAdapter", "viewModel")
 fun setWatchlistAdapter(
     recycler: RecyclerView,
     itemList: MutableList<WatchlistItem>,
+    viewModel: WatchlistViewModel,
 ) {
     if (recycler.adapter == null) {
         with(recycler) {
-            setTouchHelper(recycler)
+            setTouchHelper(recycler, viewModel)
             layoutManager =
                 LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
             adapter = WatchlistAdapter()
@@ -28,15 +30,12 @@ fun setWatchlistAdapter(
     }
 }
 
-private fun setTouchHelper(recycler: RecyclerView) {
+private fun setTouchHelper(recycler: RecyclerView, viewModel: WatchlistViewModel) {
     val touchHelperCallback = WatchlistTouchHelperCallback(
         object : IWatchlistTouchHelperCallback {
-            override fun onClose(id: String) {
+            override fun onClose(position: Int) {
+                viewModel.removeItem(position)
             }
-
-            override fun onClose(id: Int) {
-            }
-
         }, recycler.context
     )
     val helper = ItemTouchHelper(touchHelperCallback)

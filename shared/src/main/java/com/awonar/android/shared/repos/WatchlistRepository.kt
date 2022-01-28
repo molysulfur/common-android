@@ -58,6 +58,7 @@ class WatchlistRepository @Inject constructor(
                             if (it.instrumentId ?: 0 > 0) {
                                 val instrument = instrumentDao.loadById(it.instrumentId ?: 0)
                                 WatchlistInfo(
+                                    id = it.id,
                                     instrumentId = it.instrumentId ?: 0,
                                     uid = it.uid,
                                     image = instrument?.logo,
@@ -67,6 +68,7 @@ class WatchlistRepository @Inject constructor(
                                 )
                             } else {
                                 WatchlistInfo(
+                                    id = it.id,
                                     instrumentId = it.instrumentId ?: 0,
                                     uid = it.uid,
                                     image = it.trader?.image,
@@ -143,6 +145,27 @@ class WatchlistRepository @Inject constructor(
             }
 
             override fun onFetchFailed(errorMessage: String) {
+            }
+
+        }.asFlow()
+
+    fun deleteWatchlist(folderId: String, itemId: String) =
+        object : DirectNetworkFlow<String, List<Folder>, MessageSuccessResponse>() {
+            override fun createCall(): Response<MessageSuccessResponse> =
+                service.deleteItem(itemId).execute()
+
+            override fun convertToResultType(response: MessageSuccessResponse): List<Folder> {
+                val folder = foldersDao.loadById(folderId)
+                folder.let { item ->
+                    item.infos = item.infos.filter { it.id != itemId }
+                    foldersDao.update(item)
+                }
+                Timber.e("$folder")
+                return foldersDao.getAll()
+            }
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
             }
 
         }.asFlow()

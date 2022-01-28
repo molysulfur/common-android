@@ -2,7 +2,6 @@ package com.awonar.app.ui.watchlist.adapter
 
 interface IWatchlistTouchHelperCallback {
 
-    fun onClose(id: String)
+    fun onClose(position: Int)
 
-    fun onClose(id: Int)
 }

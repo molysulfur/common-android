@@ -15,17 +15,18 @@ import kotlinx.parcelize.Parcelize
 data class Folder(
     @PrimaryKey
     @ColumnInfo(name = "id") val id: String,
-    @ColumnInfo(name = "name") val name: String?,
-    @ColumnInfo(name = "totalItem") val totalItem: Int,
-    @ColumnInfo(name = "static") val static: Boolean,
-    @ColumnInfo(name = "recentlyInvested") val recentlyInvested: Boolean,
-    @ColumnInfo(name = "default") val default: Boolean,
-    @ColumnInfo(name = "infos") val infos: List<WatchlistInfo>,
+    @ColumnInfo(name = "name") var name: String?,
+    @ColumnInfo(name = "totalItem") var totalItem: Int,
+    @ColumnInfo(name = "static") var static: Boolean,
+    @ColumnInfo(name = "recentlyInvested") var recentlyInvested: Boolean,
+    @ColumnInfo(name = "default") var default: Boolean,
+    @ColumnInfo(name = "infos") var infos: List<WatchlistInfo>,
 ) : Parcelable
 
 
 @Parcelize
 data class WatchlistInfo(
+    val id: String?,
     val instrumentId: Int,
     val uid: String?,
     val image: String?,

@@ -16,10 +16,13 @@ interface WatchlistFolderDao {
     fun loadById(id: String): Folder
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(tradingDataList: List<Folder>)
+    fun insertAll(folder: List<Folder>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(tradingDataList: Folder)
+    fun insert(folder: Folder)
+
+    @Update
+    fun update(folder: Folder)
 
     @Delete
     fun delete(folder: Folder)
