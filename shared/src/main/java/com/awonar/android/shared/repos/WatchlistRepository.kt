@@ -10,6 +10,7 @@ import com.awonar.android.shared.db.room.instrument.InstrumentDao
 import com.awonar.android.shared.db.room.watchlist.WatchlistFolderDao
 import com.molysulfur.library.network.DirectNetworkFlow
 import com.molysulfur.library.network.NetworkFlow
+import com.molysulfur.library.result.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.Response
@@ -105,6 +106,7 @@ class WatchlistRepository @Inject constructor(
             }
 
             override fun saveToDb(data: List<Folder>) {
+                foldersDao.clear()
                 foldersDao.insertAll(data)
             }
 
@@ -160,7 +162,26 @@ class WatchlistRepository @Inject constructor(
                     item.infos = item.infos.filter { it.id != itemId }
                     foldersDao.update(item)
                 }
-                Timber.e("$folder")
+                return foldersDao.getAll()
+            }
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+
+        }.asFlow()
+
+    fun setDefault(folderId: String): Flow<Result<List<Folder>?>> =
+        object : DirectNetworkFlow<String, List<Folder>, MessageSuccessResponse>() {
+            override fun createCall(): Response<MessageSuccessResponse> =
+                service.setDefault(folderId).execute()
+
+            override fun convertToResultType(response: MessageSuccessResponse): List<Folder> {
+                val newFolder = foldersDao.getAll().map {
+                    it.default = it.id == folderId
+                    it
+                }
+                foldersDao.updateFolders(newFolder)
                 return foldersDao.getAll()
             }
 

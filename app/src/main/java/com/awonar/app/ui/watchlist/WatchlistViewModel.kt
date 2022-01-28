@@ -4,10 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.awonar.android.model.watchlist.DeleteWatchlistRequest
 import com.awonar.android.model.watchlist.Folder
-import com.awonar.android.shared.domain.watchlist.AddWatchlistFolderUseCase
-import com.awonar.android.shared.domain.watchlist.DeleteWatchlistFolderUseCase
-import com.awonar.android.shared.domain.watchlist.DeleteWatchlistUseCase
-import com.awonar.android.shared.domain.watchlist.GetWatchlistFoldersUseCase
+import com.awonar.android.shared.domain.watchlist.*
 import com.awonar.android.shared.utils.JsonUtil
 import com.awonar.app.domain.watchlist.ConvertWatchlistItemUseCase
 import com.awonar.app.ui.watchlist.adapter.WatchlistItem
@@ -28,7 +25,11 @@ class WatchlistViewModel @Inject constructor(
     private val deleteWatchlistFolderUseCase: DeleteWatchlistFolderUseCase,
     private val deleteWatchlistUseCase: DeleteWatchlistUseCase,
     private val convertWatchlistItemUseCase: ConvertWatchlistItemUseCase,
+    private val updateDefaultFolderUseCase : UpdateDefaultFolderUseCase
 ) : ViewModel() {
+
+    private val _showDialog = Channel<String>(Channel.CONFLATED)
+    val showDialog get() = _showDialog.receiveAsFlow()
 
     private val _navigateAction = Channel<String>(Channel.CONFLATED)
     val navigateAction get() = _navigateAction.receiveAsFlow()
@@ -137,6 +138,26 @@ class WatchlistViewModel @Inject constructor(
                         val message = JsonUtil.getError(it.exception.message)
                         _errorState.send(message)
                     }
+                }
+            }
+        }
+    }
+
+    fun show() {
+        viewModelScope.launch {
+            _showDialog.send("")
+        }
+    }
+
+    fun setDefault(folderId: String) {
+        viewModelScope.launch {
+            updateDefaultFolderUseCase(folderId).collect {
+                if (it.succeeded) {
+                    _folders.emit(it.successOr(emptyList()))
+                }
+                if (it is Result.Error) {
+                    val message = JsonUtil.getError(it.exception.message)
+                    _errorState.send(message)
                 }
             }
         }

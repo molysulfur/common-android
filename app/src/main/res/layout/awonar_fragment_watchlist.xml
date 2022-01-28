@@ -60,7 +60,7 @@
 
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/appCompatButton"
+                    android:id="@+id/awonar_watchlist_button_sector"
                     style="@style/Awonar.Button.Link"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -79,9 +79,9 @@
                     android:layout_height="@dimen/awonar_size_icon"
                     android:layout_margin="@dimen/awonar_size_margin_padding_normal"
                     android:src="@drawable/awonar_ic_setting"
-                    app:layout_constraintBottom_toBottomOf="@+id/appCompatButton"
+                    app:layout_constraintBottom_toBottomOf="@+id/awonar_watchlist_button_sector"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/appCompatButton" />
+                    app:layout_constraintTop_toTopOf="@+id/awonar_watchlist_button_sector" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.appbar.AppBarLayout>
 

@@ -20,7 +20,7 @@ class MenuDialogButtonSheet(private val listener: MenuDialogButtonSheetListener?
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         binding = AwonarDialogBottomMenuBinding.inflate(layoutInflater)
         return binding?.root
@@ -85,5 +85,5 @@ data class MenuDialog(
     val key: String? = null,
     val icon: String? = null,
     val iconRes: Int = 0,
-    val text: String? = null
+    val text: String? = null,
 ) : Parcelable

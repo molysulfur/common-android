@@ -11,6 +11,9 @@ import retrofit2.http.*
 
 interface WatchlistService {
 
+    @PUT("v1/watchlist/folder/{folderId}/default")
+    fun setDefault(@Path("folderId") folderId: String): Call<MessageSuccessResponse>
+
     @GET("v1/watchlist/folder/mobile")
     fun getFolders(): Call<List<WatchlistFolder>>
 
