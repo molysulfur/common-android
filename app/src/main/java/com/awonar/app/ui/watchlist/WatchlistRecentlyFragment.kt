@@ -17,7 +17,7 @@ import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
-class WatchlistListFragment : Fragment() {
+class WatchlistRecentlyFragment : Fragment() {
 
     companion object {
         private const val DEFAULT_DIALOG = "com.awonar.app.ui.watchlist.dialog.set_default"
@@ -94,7 +94,7 @@ class WatchlistListFragment : Fragment() {
     ): View {
         launchAndRepeatWithViewLifecycle {
             viewModel.folders.collect {
-                viewModel.getWatchlist(args.watchlistId)
+                viewModel.getWatchlistRecently()
             }
         }
         launchAndRepeatWithViewLifecycle {
@@ -114,5 +114,6 @@ class WatchlistListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.setTitle("Recently")
     }
 }

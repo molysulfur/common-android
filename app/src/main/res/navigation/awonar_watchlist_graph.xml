@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/awonar_watchlist_graph"
-    app:startDestination="@id/watchlistFolderFragment">
+    app:startDestination="@+id/watchlistDefaultFragment">
 
     <fragment
         android:id="@+id/watchlistFolderFragment"
@@ -23,4 +23,12 @@
             android:name="watchlistId"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/watchlistRecentlyFragment"
+        android:name="com.awonar.app.ui.watchlist.WatchlistRecentlyFragment"
+        android:label="WatchlistRecentlyFragment" />
+    <fragment
+        android:id="@+id/watchlistDefaultFragment"
+        android:name="com.awonar.app.ui.watchlist.WatchlistDefaultFragment"
+        android:label="WatchlistDefaultFragment" />
 </navigation>

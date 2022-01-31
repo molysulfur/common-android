@@ -3,6 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="sector"
+            type="String" />
+    </data>
+
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -67,7 +74,7 @@
                     android:layout_margin="@dimen/awonar_size_margin_padding_normal"
                     android:drawableEnd="@drawable/awonar_ic_expand"
                     android:drawableTint="@color/awonar_color_primary"
-                    android:text="Watchlist"
+                    android:text="@{sector}"
                     android:textSize="@dimen/awonar_size_text_large"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/awonar_portfolio_text_title_total_allocate" />

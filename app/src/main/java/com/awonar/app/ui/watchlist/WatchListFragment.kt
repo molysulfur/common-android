@@ -8,6 +8,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentWatchlistBinding
 import com.awonar.app.dialog.menu.MenuDialog
@@ -27,6 +28,19 @@ class WatchListFragment : Fragment() {
         override fun onMenuClick(menu: MenuDialog) {
             when (menu.key) {
                 "default" -> {
+                    binding.awonarWatchlistFragmentHost
+                        .findNavController()
+                        .navigate(R.id.watchlistDefaultFragment)
+                }
+                "recently" -> {
+                    binding.awonarWatchlistFragmentHost
+                        .findNavController()
+                        .navigate(R.id.watchlistRecentlyFragment)
+                }
+                "all" -> {
+                    binding.awonarWatchlistFragmentHost
+                        .findNavController()
+                        .navigate(R.id.watchlistFolderFragment)
                 }
             }
         }
@@ -38,6 +52,11 @@ class WatchListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
+        launchAndRepeatWithViewLifecycle {
+            viewModel.title.collect { title ->
+                binding.sector = title
+            }
+        }
         launchAndRepeatWithViewLifecycle {
             viewModel.navigateAction.collect {
                 binding.awonarWatchlistFragmentHost
@@ -58,10 +77,10 @@ class WatchListFragment : Fragment() {
             val folders = viewModel.folders.value
             settingDialog = MenuDialogButtonSheet.Builder()
                 .setMenus(arrayListOf(
-                    MenuDialog(key = "add",
+                    MenuDialog(key = "default",
                         iconRes = R.drawable.awonar_ic_add_list,
                         text = folders.find { it.default }?.name),
-                    MenuDialog(key = "default",
+                    MenuDialog(key = "recently",
                         iconRes = R.drawable.awonar_ic_add_list,
                         text = folders.find { it.static }?.name),
                     MenuDialog(key = "all",
@@ -70,7 +89,7 @@ class WatchListFragment : Fragment() {
                 ))
                 .setListener(dialogListener)
                 .build()
-            settingDialog.show(childFragmentManager,"Title")
+            settingDialog.show(childFragmentManager, "Title")
         }
         binding.awonarWatchlistButtonSetting.setOnClickListener {
             viewModel.show()

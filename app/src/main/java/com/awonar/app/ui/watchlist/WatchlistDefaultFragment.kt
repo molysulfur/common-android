@@ -17,7 +17,7 @@ import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
-class WatchlistListFragment : Fragment() {
+class WatchlistDefaultFragment : Fragment() {
 
     companion object {
         private const val DEFAULT_DIALOG = "com.awonar.app.ui.watchlist.dialog.set_default"
@@ -60,9 +60,6 @@ class WatchlistListFragment : Fragment() {
     private val settingListener = object : MenuDialogButtonSheet.MenuDialogButtonSheetListener {
         override fun onMenuClick(menu: MenuDialog) {
             when (menu.key) {
-                "default" -> {
-                    viewModel.setDefault(args.watchlistId)
-                }
                 "add" -> {
                     addWatchlistDialog.show(childFragmentManager, ADD_DIALOG)
                 }
@@ -75,13 +72,7 @@ class WatchlistListFragment : Fragment() {
             .setMenus(arrayListOf(
                 MenuDialog(key = "add",
                     iconRes = R.drawable.awonar_ic_add_list,
-                    text = "Add Watchlist"),
-                MenuDialog(key = "default",
-                    iconRes = R.drawable.awonar_ic_add_list,
-                    text = "Set Default"),
-                MenuDialog(key = "delete",
-                    iconRes = R.drawable.awonar_ic_add_list,
-                    text = "Delete Folder")
+                    text = "Add Watchlist")
             ))
             .setListener(settingListener)
             .build()
@@ -94,7 +85,7 @@ class WatchlistListFragment : Fragment() {
     ): View {
         launchAndRepeatWithViewLifecycle {
             viewModel.folders.collect {
-                viewModel.getWatchlist(args.watchlistId)
+                viewModel.getWatchlistDefault()
             }
         }
         launchAndRepeatWithViewLifecycle {

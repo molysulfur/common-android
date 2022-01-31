@@ -31,6 +31,9 @@ class WatchlistViewModel @Inject constructor(
     private val updateDefaultFolderUseCase: UpdateDefaultFolderUseCase,
 ) : ViewModel() {
 
+    private val _title = MutableStateFlow("")
+    val title get() = _title
+
     private val _showDialog = Channel<String>(Channel.CONFLATED)
     val showDialog get() = _showDialog.receiveAsFlow()
 
@@ -219,6 +222,29 @@ class WatchlistViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun getWatchlistDefault() {
+        viewModelScope.launch {
+            val folder = _folders.value.find { it.default }
+            val list =
+                convertWatchlistItemUseCase(folder?.infos ?: emptyList()).successOr(mutableListOf())
+            _title.value = folder?.name ?: ""
+            _watchlist.value = list.toMutableList()
+        }
+    }
+
+    fun getWatchlistRecently() {
+        viewModelScope.launch {
+            val folder = _folders.value.find { it.recentlyInvested }
+            val list =
+                convertWatchlistItemUseCase(folder?.infos ?: emptyList()).successOr(mutableListOf())
+            _watchlist.value = list.toMutableList()
+        }
+    }
+
+    fun setTitle(text: String) {
+        _title.value = text
     }
 
 }
