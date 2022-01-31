@@ -1,6 +1,7 @@
 package com.awonar.app.ui.watchlist
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -47,46 +48,44 @@ class AddWatchlistItemActivity : BaseActivity() {
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.successState.collect {
-                    val instrumentList = marketViewModel.instruments.value
-                    val instruments =
-                        instrumentList.filter { it.categories.contains(addType?.lowercase()) }
-                    viewModel.convertItemsWithInstrumentExsit(instruments, folderId)
+                launch {
+                    viewModel.successState.collect {
+                        val instrumentList = marketViewModel.instruments.value
+                        val instruments =
+                            instrumentList.filter { it.categories.contains(addType?.lowercase()) }
+                        viewModel.convertItemsWithInstrumentExsit(instruments, folderId)
+                    }
                 }
-            }
-        }
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.watchlist.collect { itemList ->
-                    with(binding.awonarWatchlistAddItemRecyclerList) {
-                        if (adapter == null) {
-                            layoutManager =
-                                LinearLayoutManager(context,
-                                    LinearLayoutManager.VERTICAL,
-                                    false)
-                            adapter = WatchlistAdapter().apply {
-                                onToggleWatchlistInstrument = { id, isSelected ->
-                                    if (isSelected) {
-                                        viewModel.addItem(id, folderId)
-                                    } else {
-                                        viewModel.removeItem(id, folderId)
+                launch {
+                    viewModel.watchlist.collect { itemList ->
+                        with(binding.awonarWatchlistAddItemRecyclerList) {
+                            if (adapter == null) {
+                                layoutManager =
+                                    LinearLayoutManager(context,
+                                        LinearLayoutManager.VERTICAL,
+                                        false)
+                                adapter = WatchlistAdapter().apply {
+                                    onToggleWatchlistInstrument = { id, isSelected ->
+                                        if (isSelected) {
+                                            viewModel.addItem(id, folderId)
+                                        } else {
+                                            viewModel.removeItem(id, folderId)
+                                        }
                                     }
                                 }
                             }
-                        }
-                        with(adapter as WatchlistAdapter) {
-                            this.itemList = itemList
+                            with(adapter as WatchlistAdapter) {
+                                this.itemList = itemList
+                            }
                         }
                     }
                 }
-            }
-        }
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                marketViewModel.instruments.collect { instrumentList ->
-                    val instruments =
-                        instrumentList.filter { it.categories.contains(addType?.lowercase()) }
-                    viewModel.convertItemsWithInstrumentExsit(instruments, folderId)
+                launch {
+                    marketViewModel.instruments.collect { instrumentList ->
+                        val instruments =
+                            instrumentList.filter { it.categories.contains(addType?.lowercase()) }
+                        viewModel.convertItemsWithInstrumentExsit(instruments, folderId)
+                    }
                 }
             }
         }

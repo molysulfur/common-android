@@ -70,6 +70,7 @@ class WatchlistViewModel @Inject constructor(
     }
 
     fun convertItemsWithInstrumentExsit(instruments: List<Instrument>, folderId: String?) {
+        _progress.value = true
         val itemLists = mutableListOf<WatchlistItem>()
         instruments.forEach { instrument ->
             itemLists.add(
@@ -81,6 +82,7 @@ class WatchlistViewModel @Inject constructor(
                 )
             )
         }
+        _progress.value = false
         _watchlist.value = itemLists.toMutableList()
     }
 
