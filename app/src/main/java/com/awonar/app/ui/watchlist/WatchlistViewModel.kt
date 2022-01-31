@@ -2,6 +2,8 @@ package com.awonar.app.ui.watchlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.awonar.android.model.market.Instrument
+import com.awonar.android.model.watchlist.AddWatchlistItemRequest
 import com.awonar.android.model.watchlist.DeleteWatchlistRequest
 import com.awonar.android.model.watchlist.Folder
 import com.awonar.android.shared.domain.watchlist.*
@@ -24,8 +26,9 @@ class WatchlistViewModel @Inject constructor(
     private val addWatchlistFolderUseCase: AddWatchlistFolderUseCase,
     private val deleteWatchlistFolderUseCase: DeleteWatchlistFolderUseCase,
     private val deleteWatchlistUseCase: DeleteWatchlistUseCase,
+    private val addWatchlistUseCase: AddWatchlistUseCase,
     private val convertWatchlistItemUseCase: ConvertWatchlistItemUseCase,
-    private val updateDefaultFolderUseCase : UpdateDefaultFolderUseCase
+    private val updateDefaultFolderUseCase: UpdateDefaultFolderUseCase,
 ) : ViewModel() {
 
     private val _showDialog = Channel<String>(Channel.CONFLATED)
@@ -46,6 +49,8 @@ class WatchlistViewModel @Inject constructor(
     val finished get() = _finished.receiveAsFlow()
     private val _errorState = Channel<String>(Channel.CONFLATED)
     val errorState get() = _errorState.receiveAsFlow()
+    private val _successState = Channel<String>(Channel.CONFLATED)
+    val successState get() = _successState.receiveAsFlow()
 
     init {
         val folders = flow {
@@ -62,13 +67,27 @@ class WatchlistViewModel @Inject constructor(
         }
     }
 
+    fun convertItemsWithInstrumentExsit(instruments: List<Instrument>, folderId: String?) {
+        val itemLists = mutableListOf<WatchlistItem>()
+        instruments.forEach { instrument ->
+            itemLists.add(
+                WatchlistItem.SelectorItem(
+                    instrumentId = instrument.id,
+                    image = instrument.logo,
+                    title = instrument.symbol,
+                    isSelected = _folders.value.find { it.id == folderId }?.infos?.find { it.instrumentId == instrument.id } != null
+                )
+            )
+        }
+        _watchlist.value = itemLists.toMutableList()
+    }
+
     fun addFolder(name: String) {
         viewModelScope.launch {
             addWatchlistFolderUseCase(name).collectLatest {
                 if (it.succeeded) {
                     _finished.send(Unit)
-                }
-                if (it is Result.Error) {
+                } else if (it is Result.Error) {
                     val message = JsonUtil.getError(it.exception.message)
                     _errorState.send(message)
                 }
@@ -81,8 +100,7 @@ class WatchlistViewModel @Inject constructor(
             deleteWatchlistFolderUseCase(id).collectLatest {
                 if (it.succeeded) {
                     _folders.emit(it.successOr(emptyList()))
-                }
-                if (it is Result.Error) {
+                } else if (it is Result.Error) {
                     val message = JsonUtil.getError(it.exception.message)
                     _errorState.send(message)
                 }
@@ -108,9 +126,51 @@ class WatchlistViewModel @Inject constructor(
 
     fun getWatchlist(watchlistId: String) {
         viewModelScope.launch {
-            val folder = _folders.value.first { it.id == watchlistId }
-            val list = convertWatchlistItemUseCase(folder.infos).successOr(mutableListOf())
+            val folder = _folders.value.find { it.id == watchlistId }
+            val list =
+                convertWatchlistItemUseCase(folder?.infos ?: emptyList()).successOr(mutableListOf())
             _watchlist.value = list.toMutableList()
+        }
+    }
+
+    fun addItem(id: Int, folderId: String?) {
+        viewModelScope.launch {
+            val folder = _folders.value.find { it.id == folderId }
+            id.let { _ ->
+                addWatchlistUseCase(AddWatchlistItemRequest(
+                    folderId = folder?.id ?: "",
+                    instrumentId = id
+                )).collect {
+                    if (it.succeeded) {
+                        _folders.emit(it.successOr(emptyList()))
+                        _successState.send("")
+                    } else if (it is Result.Error) {
+                        val message = JsonUtil.getError(it.exception.message)
+                        _errorState.send(message)
+                    }
+                }
+            }
+        }
+    }
+
+    fun removeItem(instrumentId: Int, folderId: String?) {
+        viewModelScope.launch {
+            val folder = _folders.value.find { it.id == folderId }
+            val id = folder?.infos?.find { it.instrumentId == instrumentId }?.id
+            id?.let { _ ->
+                deleteWatchlistUseCase(DeleteWatchlistRequest(
+                    folderId = folder.id,
+                    itemId = id
+                )).collect {
+                    if (it.succeeded) {
+                        _folders.emit(it.successOr(emptyList()))
+                        _successState.send("")
+                    } else if (it is Result.Error) {
+                        val message = JsonUtil.getError(it.exception.message)
+                        _errorState.send(message)
+                    }
+                }
+            }
         }
     }
 
@@ -121,7 +181,7 @@ class WatchlistViewModel @Inject constructor(
                 is WatchlistItem.TraderItem -> item.id
                 else -> null
             }
-            var folder = _folders.value.find { it.infos.find { it.id == id } != null }
+            val folder = _folders.value.find { it.infos.find { it.id == id } != null }
             id?.let { _ ->
                 deleteWatchlistUseCase(DeleteWatchlistRequest(
                     folderId = folder?.id ?: "",
@@ -133,8 +193,7 @@ class WatchlistViewModel @Inject constructor(
                         folder?.id?.let { id ->
                             getWatchlist(id)
                         }
-                    }
-                    if (it is Result.Error) {
+                    } else if (it is Result.Error) {
                         val message = JsonUtil.getError(it.exception.message)
                         _errorState.send(message)
                     }
@@ -154,8 +213,7 @@ class WatchlistViewModel @Inject constructor(
             updateDefaultFolderUseCase(folderId).collect {
                 if (it.succeeded) {
                     _folders.emit(it.successOr(emptyList()))
-                }
-                if (it is Result.Error) {
+                } else if (it is Result.Error) {
                     val message = JsonUtil.getError(it.exception.message)
                     _errorState.send(message)
                 }

@@ -10,6 +10,15 @@ sealed class WatchlistItem(
 ) : Parcelable {
 
     @Parcelize
+    data class SelectorItem(
+        val instrumentId: Int = 0,
+        val uid: String? = null,
+        val image: String?,
+        val title: String?,
+        val isSelected: Boolean,
+    ) : WatchlistItem(WatchlistType.WATCHLIST_ITEM_SELECTOR)
+
+    @Parcelize
     data class ColumnItem(
         val column1: String,
         val column2: String,

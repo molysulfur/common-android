@@ -1,8 +1,7 @@
 package com.awonar.android.shared.api
 
 import com.awonar.android.model.core.MessageSuccessResponse
-import com.awonar.android.model.watchlist.AddWatchlistRequest
-import com.awonar.android.model.watchlist.WatchlistFolder
+import com.awonar.android.model.watchlist.*
 import com.awonar.android.shared.constrant.BuildConfig
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -25,6 +24,12 @@ interface WatchlistService {
 
     @DELETE("v1/watchlist/items/{id}")
     fun deleteItem(@Path("id") id: String): Call<MessageSuccessResponse>
+
+    @POST("v1/watchlist/folder/{folder_id}/items")
+    fun addItem(
+        @Path("folder_id") id: String,
+        @Body body: AddWatchlistItemRequest,
+    ): Call<WatchlistFolderItem>
 
     companion object {
 

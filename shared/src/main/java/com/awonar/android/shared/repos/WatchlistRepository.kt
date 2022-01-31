@@ -1,10 +1,7 @@
 package com.awonar.android.shared.repos
 
 import com.awonar.android.model.core.MessageSuccessResponse
-import com.awonar.android.model.watchlist.AddWatchlistRequest
-import com.awonar.android.model.watchlist.Folder
-import com.awonar.android.model.watchlist.WatchlistFolder
-import com.awonar.android.model.watchlist.WatchlistInfo
+import com.awonar.android.model.watchlist.*
 import com.awonar.android.shared.api.WatchlistService
 import com.awonar.android.shared.db.room.instrument.InstrumentDao
 import com.awonar.android.shared.db.room.watchlist.WatchlistFolderDao
@@ -31,7 +28,7 @@ class WatchlistRepository @Inject constructor(
 
             override fun convertToResultType(response: MessageSuccessResponse): List<Folder> {
                 val folder = foldersDao.loadById(id)
-                folder.let {
+                folder?.let {
                     foldersDao.delete(it)
                 }
                 return foldersDao.getAll()
@@ -158,8 +155,37 @@ class WatchlistRepository @Inject constructor(
 
             override fun convertToResultType(response: MessageSuccessResponse): List<Folder> {
                 val folder = foldersDao.loadById(folderId)
-                folder.let { item ->
+                folder?.let { item ->
                     item.infos = item.infos.filter { it.id != itemId }
+                    foldersDao.update(item)
+                }
+                return foldersDao.getAll()
+            }
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+
+        }.asFlow()
+
+    fun addWatchlist(request: AddWatchlistItemRequest) =
+        object : DirectNetworkFlow<String, List<Folder>, WatchlistFolderItem>() {
+            override fun createCall(): Response<WatchlistFolderItem> =
+                service.addItem(request.folderId, request).execute()
+
+            override fun convertToResultType(response: WatchlistFolderItem): List<Folder> {
+                val instrument = instrumentDao.loadById(response.instrumentId ?: 0)
+                val info = WatchlistInfo(
+                    id = response.id,
+                    instrumentId = response.instrumentId ?: 0,
+                    uid = response.uid,
+                    image = instrument?.logo,
+                    title = instrument?.symbol,
+                    subTitle = null,
+                    type = response.type)
+                val folder = foldersDao.loadById(request.folderId)
+                folder?.let { item ->
+                    item.infos = item.infos + info
                     foldersDao.update(item)
                 }
                 return foldersDao.getAll()

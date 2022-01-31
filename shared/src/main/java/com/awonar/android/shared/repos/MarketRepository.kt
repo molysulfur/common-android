@@ -13,7 +13,6 @@ import com.molysulfur.library.network.NetworkFlow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.Response
-import timber.log.Timber
 import javax.inject.Inject
 
 open class MarketRepository @Inject constructor(
@@ -100,7 +99,6 @@ open class MarketRepository @Inject constructor(
 
 
             override fun saveToDb(data: List<Instrument>) {
-                Timber.e("$data")
                 instrumentDao.insertAll(data)
             }
 

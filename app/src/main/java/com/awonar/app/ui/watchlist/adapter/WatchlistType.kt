@@ -6,4 +6,5 @@ object WatchlistType {
     const val WATCHLIST_TRADER = 2
     const val WATCHLIST_BUTTON = 3
     const val WATCHLIST_EMPTY = 4
+    const val WATCHLIST_ITEM_SELECTOR = 5
 }

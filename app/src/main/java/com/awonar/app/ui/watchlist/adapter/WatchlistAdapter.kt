@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.app.databinding.*
 import com.awonar.app.ui.watchlist.adapter.holder.*
-import timber.log.Timber
 
 class WatchlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -15,8 +14,17 @@ class WatchlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             notifyDataSetChanged()
         }
 
+
+    var onToggleWatchlistInstrument: ((Int, Boolean) -> Unit)? = null
+    var onToggleWatchlistTrader: ((String?, Boolean) -> Unit)? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
+            WatchlistType.WATCHLIST_ITEM_SELECTOR -> ListSelectorViewHolder(
+                AwonarItemListBinding.inflate(LayoutInflater.from(parent.context),
+                    parent,
+                    false)
+            )
             WatchlistType.WATCHLIST_COLUMNS -> ColumnViewHolder(
                 AwonarItemWatchlistColumnsBinding.inflate(LayoutInflater.from(parent.context),
                     parent,
@@ -48,6 +56,8 @@ class WatchlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = itemList[position]
         when (holder) {
+            is ListSelectorViewHolder -> holder.bind(item as WatchlistItem.SelectorItem,
+                onToggleWatchlistInstrument, onToggleWatchlistTrader)
             is ColumnViewHolder -> holder.bind(item as WatchlistItem.ColumnItem)
             is InstrumentViewHolder -> holder.bind(item as WatchlistItem.InstrumentItem)
             is TraderViewHolder -> holder.bind(item as WatchlistItem.TraderItem)

@@ -16,7 +16,7 @@ interface WatchlistFolderDao {
     fun loadAllByIds(id: ArrayList<String>): List<Folder>
 
     @Query("SELECT * FROM watchlist_folders WHERE id = :id")
-    fun loadById(id: String): Folder
+    fun loadById(id: String): Folder?
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     fun insertAll(folder: List<Folder>)
