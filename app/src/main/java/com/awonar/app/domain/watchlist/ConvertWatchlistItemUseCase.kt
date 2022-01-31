@@ -22,6 +22,7 @@ class ConvertWatchlistItemUseCase @Inject constructor(
         if (instruments.isEmpty()) {
             list.add(
                 WatchlistItem.ButtonItem(
+                    key = "add",
                     buttonText = "Add Markets"
                 )
             )
@@ -59,6 +60,7 @@ class ConvertWatchlistItemUseCase @Inject constructor(
         if (traders.isEmpty()) {
             list.add(
                 WatchlistItem.ButtonItem(
+                    key = "people",
                     buttonText = "Find People"
                 )
             )

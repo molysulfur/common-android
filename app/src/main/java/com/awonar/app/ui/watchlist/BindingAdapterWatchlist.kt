@@ -22,7 +22,11 @@ fun setWatchlistAdapter(
             setTouchHelper(recycler, viewModel)
             layoutManager =
                 LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
-            adapter = WatchlistAdapter()
+            adapter = WatchlistAdapter().apply {
+                onButtonClick = {
+                    viewModel.openAddWatchlist()
+                }
+            }
         }
     }
     with(recycler.adapter as WatchlistAdapter) {

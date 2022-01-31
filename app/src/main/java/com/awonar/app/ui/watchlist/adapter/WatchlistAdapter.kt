@@ -17,6 +17,7 @@ class WatchlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var onToggleWatchlistInstrument: ((Int, Boolean) -> Unit)? = null
     var onToggleWatchlistTrader: ((String?, Boolean) -> Unit)? = null
+    var onButtonClick: ((String?) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
@@ -61,7 +62,7 @@ class WatchlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is ColumnViewHolder -> holder.bind(item as WatchlistItem.ColumnItem)
             is InstrumentViewHolder -> holder.bind(item as WatchlistItem.InstrumentItem)
             is TraderViewHolder -> holder.bind(item as WatchlistItem.TraderItem)
-            is ButtonViewHolder -> holder.bind(item as WatchlistItem.ButtonItem)
+            is ButtonViewHolder -> holder.bind(item as WatchlistItem.ButtonItem, onButtonClick)
             is EmptyViewHolder -> holder.bind(item as WatchlistItem.EmptyItem)
         }
     }

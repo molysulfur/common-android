@@ -62,16 +62,6 @@ class WatchListFragment : Fragment() {
                 binding.sector = title
             }
         }
-        launchAndRepeatWithViewLifecycle {
-            viewModel.navigateAction.collect {
-                binding.awonarWatchlistFragmentHost
-                    .findNavController()
-                    .navigate(R.id.watchlistListFragment, bundleOf(
-                        "watchlistId" to it
-                    ))
-
-            }
-        }
         binding.lifecycleOwner = activity
         return binding.root
     }

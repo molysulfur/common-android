@@ -6,8 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentWatchlistFolderBinding
 import com.awonar.app.dialog.menu.MenuDialog
@@ -55,6 +58,15 @@ class WatchlistFolderFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
+        launchAndRepeatWithViewLifecycle {
+            viewModel.navigateAction.collect {
+                findNavController()
+                    .navigate(R.id.watchlistListFragment, bundleOf(
+                        "watchlistId" to it
+                    ))
+
+            }
+        }
         launchAndRepeatWithViewLifecycle {
             viewModel.showDialog.collect {
                 settingDialog.show(childFragmentManager, FOLDER_DIALOG_TAG)

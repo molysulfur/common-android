@@ -251,4 +251,10 @@ class WatchlistViewModel @Inject constructor(
         _title.value = text
     }
 
+    fun openAddWatchlist() {
+        viewModelScope.launch {
+            _navigateAction.send("add")
+        }
+    }
+
 }

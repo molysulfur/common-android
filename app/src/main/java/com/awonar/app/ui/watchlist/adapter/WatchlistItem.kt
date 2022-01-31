@@ -46,6 +46,7 @@ sealed class WatchlistItem(
 
     @Parcelize
     data class ButtonItem(
+        val key: String?,
         val buttonText: String?,
         val icon: String? = null,
         val iconRes: Int = 0,
