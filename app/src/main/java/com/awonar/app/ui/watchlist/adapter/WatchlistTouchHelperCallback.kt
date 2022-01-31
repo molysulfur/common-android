@@ -12,6 +12,9 @@ import android.graphics.*
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.awonar.app.R
+import com.awonar.app.ui.watchlist.adapter.holder.ButtonViewHolder
+import com.awonar.app.ui.watchlist.adapter.holder.ColumnViewHolder
+import com.awonar.app.ui.watchlist.adapter.holder.EmptyViewHolder
 
 class WatchlistTouchHelperCallback(
     private val action: IWatchlistTouchHelperCallback,
@@ -65,6 +68,7 @@ class WatchlistTouchHelperCallback(
         actionState: Int,
         isCurrentlyActive: Boolean,
     ) {
+        if (disableTouchHolder(viewHolder)) return
         var newDX = dX
         if (actionState == ACTION_STATE_SWIPE) {
             if (buttonShowedState != ItemState.GONE) {
@@ -92,9 +96,24 @@ class WatchlistTouchHelperCallback(
             }
         }
         if (buttonShowedState == ItemState.GONE) {
-            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            super.onChildDraw(c,
+                recyclerView,
+                viewHolder,
+                dX,
+                dY,
+                actionState,
+                isCurrentlyActive);
         }
         currentItemViewHolder = viewHolder
+    }
+
+    private fun disableTouchHolder(viewHolder: RecyclerView.ViewHolder): Boolean {
+        when (viewHolder) {
+            is ButtonViewHolder -> return true
+            is ColumnViewHolder -> return true
+            is EmptyViewHolder -> return true
+        }
+        return false
     }
 
     @SuppressLint("ClickableViewAccessibility")

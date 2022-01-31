@@ -42,6 +42,9 @@ class AddWatchlistItemActivity : BaseActivity() {
             folderId = it.getString(EXTRA_FOLDER)
             addType = it.getString(EXTRA_TYPE)
         }
+        binding.awonarWatchlistAddItemToolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.successState.collect {

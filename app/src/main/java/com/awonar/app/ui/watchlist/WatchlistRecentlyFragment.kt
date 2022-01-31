@@ -19,73 +19,10 @@ import timber.log.Timber
 
 class WatchlistRecentlyFragment : Fragment() {
 
-    companion object {
-        private const val DEFAULT_DIALOG = "com.awonar.app.ui.watchlist.dialog.set_default"
-        private const val ADD_DIALOG = "com.awonar.app.ui.watchlist.dialog.add_watchlist"
-    }
-
     private val binding: AwonarFragmentWatchlistListBinding by lazy {
         AwonarFragmentWatchlistListBinding.inflate(layoutInflater)
     }
     private val viewModel: WatchlistViewModel by activityViewModels()
-    private val args: WatchlistListFragmentArgs by navArgs()
-
-    private val addListener = object : MenuDialogButtonSheet.MenuDialogButtonSheetListener {
-        override fun onMenuClick(menu: MenuDialog) {
-            openActivity(AddWatchlistItemActivity::class.java, bundleOf(
-                AddWatchlistItemActivity.EXTRA_TYPE to menu.key,
-                AddWatchlistItemActivity.EXTRA_FOLDER to args.watchlistId
-            ))
-        }
-    }
-
-    private val addWatchlistDialog by lazy {
-        MenuDialogButtonSheet.Builder()
-            .setMenus(arrayListOf(
-                MenuDialog(key = "stocks",
-                    text = "Stocks"),
-                MenuDialog(key = "crypto",
-                    text = "Crypto"),
-                MenuDialog(key = "currencies",
-                    text = "Currencies"),
-                MenuDialog(key = "etfs",
-                    text = "ETFs"),
-                MenuDialog(key = "Commodities",
-                    text = "commodities")
-            ))
-            .setListener(addListener)
-            .build()
-    }
-
-    private val settingListener = object : MenuDialogButtonSheet.MenuDialogButtonSheetListener {
-        override fun onMenuClick(menu: MenuDialog) {
-            when (menu.key) {
-                "default" -> {
-                    viewModel.setDefault(args.watchlistId)
-                }
-                "add" -> {
-                    addWatchlistDialog.show(childFragmentManager, ADD_DIALOG)
-                }
-            }
-        }
-    }
-
-    private val settingDialog by lazy {
-        MenuDialogButtonSheet.Builder()
-            .setMenus(arrayListOf(
-                MenuDialog(key = "add",
-                    iconRes = R.drawable.awonar_ic_add_list,
-                    text = "Add Watchlist"),
-                MenuDialog(key = "default",
-                    iconRes = R.drawable.awonar_ic_add_list,
-                    text = "Set Default"),
-                MenuDialog(key = "delete",
-                    iconRes = R.drawable.awonar_ic_add_list,
-                    text = "Delete Folder")
-            ))
-            .setListener(settingListener)
-            .build()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -95,11 +32,6 @@ class WatchlistRecentlyFragment : Fragment() {
         launchAndRepeatWithViewLifecycle {
             viewModel.folders.collect {
                 viewModel.getWatchlistRecently()
-            }
-        }
-        launchAndRepeatWithViewLifecycle {
-            viewModel.showDialog.collect {
-                settingDialog.show(childFragmentManager, DEFAULT_DIALOG)
             }
         }
         binding.viewModel = viewModel

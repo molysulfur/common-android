@@ -3,6 +3,7 @@
 
 
     <data>
+
         <variable
             name="viewModel"
             type="com.awonar.app.ui.watchlist.WatchlistViewModel" />
@@ -17,14 +18,14 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/awonar_watchlist_add_item_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:navigationIcon="@drawable/awonar_ic_close"
                 app:title="Add Watchlist" />
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            xmlns:android="http://schemas.android.com/apk/res/android"
+        <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/awonar_watchlist_add_item_recycler_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

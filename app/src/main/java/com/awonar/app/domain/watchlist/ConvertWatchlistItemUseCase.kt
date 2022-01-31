@@ -17,7 +17,16 @@ class ConvertWatchlistItemUseCase @Inject constructor(
             "Sell",
             "Buy"
         ))
-        parameters.filter { it.type == "instrument" }.forEach { info ->
+
+        val instruments = parameters.filter { it.type == "instrument" }
+        if (instruments.isEmpty()) {
+            list.add(
+                WatchlistItem.ButtonItem(
+                    buttonText = "Add Markets"
+                )
+            )
+        }
+        instruments.forEach { info ->
             list.add(
                 WatchlistItem.InstrumentItem(
                     id = info.id,
@@ -27,12 +36,14 @@ class ConvertWatchlistItemUseCase @Inject constructor(
                 )
             )
         }
+
         list.add(WatchlistItem.ColumnItem(
             "People",
             "Risk",
             "Change"
         ))
-        parameters.filter { it.type == "user" }.forEach { info ->
+        val traders = parameters.filter { it.type == "user" }
+        traders.forEach { info ->
             list.add(
                 WatchlistItem.TraderItem(
                     id = info.id,
@@ -42,6 +53,13 @@ class ConvertWatchlistItemUseCase @Inject constructor(
                     image = info.image,
                     risk = info.risk,
                     gain = info.gain
+                )
+            )
+        }
+        if (traders.isEmpty()) {
+            list.add(
+                WatchlistItem.ButtonItem(
+                    buttonText = "Find People"
                 )
             )
         }

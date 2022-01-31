@@ -17,7 +17,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -100,12 +99,16 @@ class WatchlistViewModel @Inject constructor(
 
     fun deleteFolder(id: String) {
         viewModelScope.launch {
-            deleteWatchlistFolderUseCase(id).collectLatest {
-                if (it.succeeded) {
-                    _folders.emit(it.successOr(emptyList()))
-                } else if (it is Result.Error) {
-                    val message = JsonUtil.getError(it.exception.message)
-                    _errorState.send(message)
+            if (_folders.value.find { it.id == id }?.default == true) {
+                _errorState.send("Default Folder cann't removed.")
+            } else {
+                deleteWatchlistFolderUseCase(id).collectLatest {
+                    if (it.succeeded) {
+                        _folders.emit(it.successOr(emptyList()))
+                    } else if (it is Result.Error) {
+                        val message = JsonUtil.getError(it.exception.message)
+                        _errorState.send(message)
+                    }
                 }
             }
         }
@@ -132,6 +135,7 @@ class WatchlistViewModel @Inject constructor(
             val folder = _folders.value.find { it.id == watchlistId }
             val list =
                 convertWatchlistItemUseCase(folder?.infos ?: emptyList()).successOr(mutableListOf())
+            _title.value = folder?.name ?: ""
             _watchlist.value = list.toMutableList()
         }
     }

@@ -20,21 +20,20 @@ import timber.log.Timber
 class WatchlistDefaultFragment : Fragment() {
 
     companion object {
-        private const val DEFAULT_DIALOG = "com.awonar.app.ui.watchlist.dialog.set_default"
-        private const val ADD_DIALOG = "com.awonar.app.ui.watchlist.dialog.add_watchlist"
+        private const val DEFAULT_DIALOG = "com.awonar.app.ui.watchlist.dialog.default.set_default"
+        private const val ADD_DIALOG = "com.awonar.app.ui.watchlist.dialog.default.add_watchlist"
     }
 
     private val binding: AwonarFragmentWatchlistListBinding by lazy {
         AwonarFragmentWatchlistListBinding.inflate(layoutInflater)
     }
     private val viewModel: WatchlistViewModel by activityViewModels()
-    private val args: WatchlistListFragmentArgs by navArgs()
 
     private val addListener = object : MenuDialogButtonSheet.MenuDialogButtonSheetListener {
         override fun onMenuClick(menu: MenuDialog) {
             openActivity(AddWatchlistItemActivity::class.java, bundleOf(
                 AddWatchlistItemActivity.EXTRA_TYPE to menu.key,
-                AddWatchlistItemActivity.EXTRA_FOLDER to args.watchlistId
+                AddWatchlistItemActivity.EXTRA_FOLDER to viewModel.folders.value.find { it.default }?.id
             ))
         }
     }
@@ -48,7 +47,7 @@ class WatchlistDefaultFragment : Fragment() {
                     text = "Crypto"),
                 MenuDialog(key = "currencies",
                     text = "Currencies"),
-                MenuDialog(key = "etfs",
+                MenuDialog(key = "etf",
                     text = "ETFs"),
                 MenuDialog(key = "Commodities",
                     text = "commodities")

@@ -8,11 +8,11 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentWatchlistBinding
 import com.awonar.app.dialog.menu.MenuDialog
 import com.awonar.app.dialog.menu.MenuDialogButtonSheet
+import com.molysulfur.library.extension.toast
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 
@@ -52,6 +52,11 @@ class WatchListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
+        launchAndRepeatWithViewLifecycle {
+            viewModel.errorState.collect {
+                toast(it)
+            }
+        }
         launchAndRepeatWithViewLifecycle {
             viewModel.title.collect { title ->
                 binding.sector = title
