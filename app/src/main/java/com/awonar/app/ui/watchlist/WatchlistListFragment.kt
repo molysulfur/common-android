@@ -93,7 +93,7 @@ class WatchlistListFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         launchAndRepeatWithViewLifecycle {
-            viewModel.navigateAction.collect {
+            viewModel.openActivity.collect {
                 addWatchlistDialog.show(childFragmentManager, ADD_DIALOG)
             }
         }

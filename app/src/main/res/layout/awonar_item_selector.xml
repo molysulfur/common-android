@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <com.google.android.material.textfield.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/awonar_item_selector_input_selector"
+        style="@style/Awonar.EditText.Dropdown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/awonar_size_margin_padding_normal">
+
+        <AutoCompleteTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:padding="@dimen/awonar_size_margin_padding_normal" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+</layout>

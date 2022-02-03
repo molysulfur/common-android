@@ -7,12 +7,24 @@
     <fragment
         android:id="@+id/watchlistFolderFragment"
         android:name="com.awonar.app.ui.watchlist.WatchlistFolderFragment"
-        android:label="WatchlistFolderFragment" />
+        android:label="WatchlistFolderFragment">
+
+        <action
+            android:id="@+id/watchlistFolderFragment_to_watchlistDeleteFragment"
+            app:destination="@+id/watchlistDeleteFragment" />
+
+        <action
+            android:id="@+id/watchlistFolderFragment_to_watchlistListFragment"
+            app:destination="@+id/watchlistListFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/addWatchlistFolderFragment"
         android:name="com.awonar.app.ui.watchlist.AddWatchlistFolderActivity"
-        android:label="AddWatchlistFolderFragment" />
+        android:label="AddWatchlistFolderFragment">
+
+
+    </fragment>
 
     <fragment
         android:id="@+id/watchlistListFragment"

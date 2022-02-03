@@ -16,6 +16,12 @@ class NetworkModule {
 
     @Singleton
     @Provides
+    fun provideProfileService(client: NetworkClient): ProfileService {
+        return ProfileService.create(client)
+    }
+
+    @Singleton
+    @Provides
     fun provideAccessTokenManager(app: Application) = AccessTokenManager(hawk = HawkUtil(app))
 
     @Singleton

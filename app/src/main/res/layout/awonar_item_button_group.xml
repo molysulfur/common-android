@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="button1"
+            type="String" />
+
+        <variable
+            name="button2"
+            type="String" />
+    </data>
+
+    <com.google.android.material.button.MaterialButtonToggleGroup xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/awonar_item_button_group_container"
+        style="@style/Awonar.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+        app:checkedButton="@+id/awonar_item_button_group_button_first"
+        app:layout_constraintBottom_toBottomOf="@+id/awonar_numberpicker_collapsible_text_title_amount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/awonar_numberpicker_collapsible_text_title_amount">
+
+        <Button
+            android:id="@+id/awonar_item_button_group_button_first"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{button1}" />
+
+        <Button
+            android:id="@+id/awonar_item_button_group_button_second"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{button2}" />
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+</layout>

@@ -1,7 +1,9 @@
 package com.awonar.app.ui.watchlist
 
+import androidx.annotation.NonNull
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavDirections
 import com.awonar.android.model.market.Instrument
 import com.awonar.android.model.watchlist.AddWatchlistItemRequest
 import com.awonar.android.model.watchlist.DeleteWatchlistRequest
@@ -36,8 +38,11 @@ class WatchlistViewModel @Inject constructor(
     private val _showDialog = Channel<String>(Channel.CONFLATED)
     val showDialog get() = _showDialog.receiveAsFlow()
 
-    private val _navigateAction = Channel<String>(Channel.CONFLATED)
+    private val _navigateAction = Channel<NavDirections>(Channel.CONFLATED)
     val navigateAction get() = _navigateAction.receiveAsFlow()
+
+    private val _openActivity = Channel<String>(Channel.CONFLATED)
+    val openActivity get() = _openActivity.receiveAsFlow()
 
     private val _progress = MutableStateFlow(false)
     val progress get() = _progress
@@ -126,7 +131,7 @@ class WatchlistViewModel @Inject constructor(
         }
     }
 
-    fun navigate(id: String) {
+    fun navigate(id: NavDirections) {
         viewModelScope.launch {
             _navigateAction.send(id)
         }
@@ -255,7 +260,7 @@ class WatchlistViewModel @Inject constructor(
 
     fun openAddWatchlist() {
         viewModelScope.launch {
-            _navigateAction.send("add")
+            _openActivity.send("add")
         }
     }
 

@@ -205,7 +205,7 @@
                 android:layout_height="match_parent">
 
                 <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/tabLayout"
+                    android:id="@+id/awonar_profile_tabs_menu"
                     android:layout_width="0dp"
                     android:layout_height="?attr/actionBarSize"
                     android:elevation="6dp"
@@ -228,6 +228,7 @@
                         android:icon="@drawable/awonar_ic_about" />
 
                     <com.google.android.material.tabs.TabItem
+                        android:id="@+id/awonar_profile_tab_chart"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:icon="@drawable/awonar_ic_statistics" />
@@ -239,9 +240,8 @@
 
                 </com.google.android.material.tabs.TabLayout>
 
-
                 <androidx.fragment.app.FragmentContainerView
-                    android:id="@+id/awonar_deposit_fragment_container"
+                    android:id="@+id/awonar_profile_fragment_host"
                     android:name="androidx.navigation.fragment.NavHostFragment"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
@@ -249,7 +249,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tabLayout"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_profile_tabs_menu"
                     app:navGraph="@navigation/awonar_profile_graph" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>

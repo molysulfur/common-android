@@ -12,7 +12,7 @@ import javax.inject.Inject
 class GetInstrumentListUseCase @Inject constructor(
     private val repository: MarketRepository,
     @IoDispatcher val ioDispatcher: CoroutineDispatcher
-) : FlowUseCase<Unit, List<Instrument>?>(ioDispatcher) {
-    override fun execute(parameters: Unit): Flow<Result<List<Instrument>?>> =
-        repository.getInstrumentList()
+) : FlowUseCase<Boolean, List<Instrument>?>(ioDispatcher) {
+    override fun execute(parameters: Boolean): Flow<Result<List<Instrument>?>> =
+        repository.getInstrumentList(parameters)
 }

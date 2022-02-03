@@ -9,6 +9,7 @@
 
     <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
+        android:id="@+id/awonar_watchlist_list_recycler_container"
         setWatchlistAdapter="@{viewModel.watchlist}"
         viewModel="@{viewModel}"
         android:layout_height="match_parent" />

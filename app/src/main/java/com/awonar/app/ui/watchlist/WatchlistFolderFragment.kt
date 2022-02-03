@@ -27,6 +27,7 @@ class WatchlistFolderFragment : Fragment() {
 
     private val binding: AwonarFragmentWatchlistFolderBinding by lazy {
         AwonarFragmentWatchlistFolderBinding.inflate(layoutInflater)
+        AwonarFragmentWatchlistFolderBinding.inflate(layoutInflater)
     }
 
     private val getContent =
@@ -60,11 +61,7 @@ class WatchlistFolderFragment : Fragment() {
     ): View {
         launchAndRepeatWithViewLifecycle {
             viewModel.navigateAction.collect {
-                findNavController()
-                    .navigate(R.id.watchlistListFragment, bundleOf(
-                        "watchlistId" to it
-                    ))
-
+                findNavController().navigate(it)
             }
         }
         launchAndRepeatWithViewLifecycle {

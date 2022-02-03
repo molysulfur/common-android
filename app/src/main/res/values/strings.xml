@@ -78,4 +78,5 @@
     <string name="awonar_text_viewmore">View More</string>
     <string name="awonar_text_add_fund">Add Fund</string>
     <string name="awonar_text_update">Update</string>
+    <string name="awonar_text_cancel">Cancel</string>
 </resources>

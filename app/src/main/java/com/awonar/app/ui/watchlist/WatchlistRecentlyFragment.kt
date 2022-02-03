@@ -1,5 +1,6 @@
 package com.awonar.app.ui.watchlist
 
+import android.graphics.Canvas
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +9,14 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentWatchlistListBinding
 import com.awonar.app.dialog.menu.MenuDialog
 import com.awonar.app.dialog.menu.MenuDialogButtonSheet
+import com.awonar.app.ui.watchlist.adapter.IWatchlistTouchHelperCallback
+import com.awonar.app.ui.watchlist.adapter.WatchlistTouchHelperCallback
 import com.molysulfur.library.extension.openActivity
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect

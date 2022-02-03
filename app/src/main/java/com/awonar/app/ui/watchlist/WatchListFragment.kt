@@ -12,6 +12,7 @@ import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentWatchlistBinding
 import com.awonar.app.dialog.menu.MenuDialog
 import com.awonar.app.dialog.menu.MenuDialogButtonSheet
+import com.awonar.app.ui.market.MarketViewModel
 import com.molysulfur.library.extension.toast
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
@@ -23,6 +24,7 @@ class WatchListFragment : Fragment() {
     }
 
     private val viewModel: WatchlistViewModel by activityViewModels()
+    private val marketViewModel: MarketViewModel by activityViewModels()
 
     private val dialogListener = object : MenuDialogButtonSheet.MenuDialogButtonSheetListener {
         override fun onMenuClick(menu: MenuDialog) {

@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.watchlist.Folder
 import com.awonar.app.ui.watchlist.adapter.*
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.CircularProgressIndicator
-import timber.log.Timber
 
 @BindingAdapter("setWatchlistAdapter", "viewModel")
 fun setWatchlistAdapter(
@@ -66,10 +66,20 @@ fun setFolderAdapter(
                 LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
             adapter = WatchlistFolderAdapter().apply {
                 onCardClick = {
-                    viewModel.navigate(it)
+                    viewModel.navigate(WatchlistFolderFragmentDirections.watchlistFolderFragmentToWatchlistListFragment(
+                        it))
                 }
                 onClose = {
-                    viewModel.deleteFolder(it)
+                    MaterialAlertDialogBuilder(recycler.context)
+                        .setTitle("Are you sure?")
+                        .setMessage("You want to delete folder?")
+                        .setPositiveButton("Cancel") { dialog, which ->
+                            dialog.dismiss()
+                        }
+                        .setNegativeButton("Delete") { dialog, which ->
+                            viewModel.deleteFolder(it)
+                        }
+                        .show()
                 }
             }
         }

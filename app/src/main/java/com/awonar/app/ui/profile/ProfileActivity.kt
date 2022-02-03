@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.findNavController
 import coil.transform.CircleCropTransformation
 import com.awonar.android.model.user.User
 import com.awonar.app.R
@@ -16,6 +17,7 @@ import com.awonar.app.dialog.copier.CopierDialog
 import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.awonar.app.ui.user.UserViewModel
 import com.awonar.app.utils.ImageUtil
+import com.google.android.material.tabs.TabLayout
 import com.molysulfur.library.activity.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -45,6 +47,20 @@ class ProfileActivity : BaseActivity() {
         intent.extras?.apply {
             userId = getString(EXTRA_USERID)
         }
+        binding.awonarProfileTabsMenu.addOnTabSelectedListener(object :
+            TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                binding.awonarProfileFragmentHost.findNavController()
+                    .navigate(R.id.statisticProfileFragment)
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+
+        })
         observer()
         init()
     }
