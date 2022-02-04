@@ -1,6 +1,8 @@
 package com.awonar.android.shared.api
 
+import com.awonar.android.model.user.DrawdownResponse
 import com.awonar.android.model.user.StatGainResponse
+import com.awonar.android.model.user.StatRiskResponse
 import com.awonar.android.shared.constrant.BuildConfig
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -9,6 +11,12 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface ProfileService {
+
+    @GET("v1/users/stats/{uid}")
+    fun getDrawdown(@Path("uid") uid: String): Call<DrawdownResponse>
+
+    @GET("v1/users/stats/risk/history/{uid}")
+    fun getRiskStatistic(@Path("uid") uid: String): Call<StatRiskResponse>
 
     @GET("v1/users/stats/gain/{uid}")
     fun getGrowthStatistic(@Path("uid") uid: String): Call<StatGainResponse>

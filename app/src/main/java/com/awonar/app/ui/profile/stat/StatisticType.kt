@@ -7,4 +7,8 @@ object StatisticType {
     const val STATISTIC_BUTTON_GROUP = 2
     const val STATISTIC_SELECTOR = 3
     const val STATISTIC_TOTAL_GAIN = 4
+    const val STATISTIC_BLANK = 5
+    const val STATISTIC_BUTTON = 6
+    const val STATISTIC_RISK = 7
+    const val STATISTIC_TEXT_BOX = 8
 }

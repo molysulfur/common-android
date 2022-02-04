@@ -15,7 +15,10 @@ class SelectorViewHolder constructor(private val binding: AwonarItemSelectorBind
         with(binding.awonarItemSelectorInputSelector) {
             val adapter =
                 ArrayAdapter(context, R.layout.awonar_item_text_view, selectorItem.selectorList)
-            (editText as? AutoCompleteTextView)?.setAdapter(adapter)
+            (editText as? AutoCompleteTextView)?.apply {
+                setText("${selectorItem.current}")
+                setAdapter(adapter)
+            }
         }
     }
 }

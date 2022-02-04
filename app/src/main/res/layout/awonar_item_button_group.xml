@@ -15,7 +15,7 @@
     <com.google.android.material.button.MaterialButtonToggleGroup xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/awonar_item_button_group_container"
-        style="@style/Awonar.Button"
+        style="@style/Awonar.Button.Toggle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/awonar_size_margin_padding_normal"
@@ -26,14 +26,18 @@
 
         <Button
             android:id="@+id/awonar_item_button_group_button_first"
+            style="?attr/materialButtonOutlinedStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/awonar_selector_toggle_button_primary"
             android:text="@{button1}" />
 
         <Button
             android:id="@+id/awonar_item_button_group_button_second"
+            style="?attr/materialButtonOutlinedStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/awonar_selector_toggle_button_primary"
             android:text="@{button2}" />
 
     </com.google.android.material.button.MaterialButtonToggleGroup>
