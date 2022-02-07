@@ -7,13 +7,28 @@ import com.awonar.app.ui.profile.stat.StatisticItem
 import com.awonar.app.ui.profile.stat.StatisticLayoutManager
 import timber.log.Timber
 
-@BindingAdapter("statisticAdapter")
+@BindingAdapter("statisticAdapter", "viewModel")
 fun setStatisicAdapter(
     recycler: RecyclerView,
     itemList: MutableList<StatisticItem>,
+    viewModel: ProfileViewModel,
 ) {
     if (recycler.adapter == null) {
-        val statAdapter = StatisticAdapter()
+        val statAdapter = StatisticAdapter().apply {
+            onSelected = { yearString ->
+                try {
+                    yearString?.toInt()?.let {
+                        viewModel.changeGrowthYear(it)
+                    }
+                } catch (e: NumberFormatException) {
+                    e.printStackTrace()
+                }
+            }
+
+            onClick = {
+                viewModel.toggleShowMoreGrowth()
+            }
+        }
         with(recycler) {
             adapter = statAdapter
             layoutManager = StatisticLayoutManager(recycler.context, statAdapter, 3)

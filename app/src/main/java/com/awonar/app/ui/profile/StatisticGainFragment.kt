@@ -27,6 +27,9 @@ class StatisticGainFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         launchAndRepeatWithViewLifecycle {
+
+        }
+        launchAndRepeatWithViewLifecycle {
             userViewModel.userState.collect { user ->
                 if (user != null) {
                     user.id?.let { uid ->
@@ -38,5 +41,10 @@ class StatisticGainFragment : Fragment() {
         binding.viewModel = profileViewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
     }
 }

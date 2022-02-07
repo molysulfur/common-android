@@ -25,6 +25,7 @@ class StatisticAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
     var onClick: ((String?) -> Unit)? = null
+    var onSelected: ((String?) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
@@ -86,7 +87,7 @@ class StatisticAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is ButtonViewHolder -> holder.bind(item as StatisticItem.ButtonItem, onClick)
             is TotalGainViewHolder -> holder.bind(item as StatisticItem.TotalGainItem)
             is ButtonGroupViewHolder -> holder.bind(item as StatisticItem.ButtonGroupItem)
-            is SelectorViewHolder -> holder.bind(item as StatisticItem.SelectorItem)
+            is SelectorViewHolder -> holder.bind(item as StatisticItem.SelectorItem,onSelected)
             is PositveNegativeChartViewHolder -> holder.bind(item as StatisticItem.PositiveNegativeChartItem)
         }
     }
