@@ -17,6 +17,10 @@ import kotlinx.coroutines.flow.collect
 
 class StatisticProfileFragment : Fragment() {
 
+    companion object {
+        fun newInstance(): StatisticProfileFragment = StatisticProfileFragment()
+    }
+
     private val binding: AwonarFragmentProfileStatisticBinding by lazy {
         AwonarFragmentProfileStatisticBinding.inflate(layoutInflater)
     }

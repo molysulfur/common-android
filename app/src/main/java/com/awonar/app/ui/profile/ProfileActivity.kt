@@ -15,9 +15,11 @@ import com.awonar.app.R
 import com.awonar.app.databinding.AwonarActivityProfileBinding
 import com.awonar.app.dialog.copier.CopierDialog
 import com.awonar.app.ui.portfolio.PortFolioViewModel
+import com.awonar.app.ui.profile.adapter.ProfilePagerAdapter
 import com.awonar.app.ui.user.UserViewModel
 import com.awonar.app.utils.ImageUtil
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.molysulfur.library.activity.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -47,22 +49,19 @@ class ProfileActivity : BaseActivity() {
         intent.extras?.apply {
             userId = getString(EXTRA_USERID)
         }
-        binding.awonarProfileTabsMenu.addOnTabSelectedListener(object :
-            TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                binding.awonarProfileFragmentHost.findNavController()
-                    .navigate(R.id.statisticProfileFragment)
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-            }
-
-        })
+        setupViewPager()
         observer()
         init()
+    }
+
+    private fun setupViewPager() {
+        with(binding.awonarProfilePagerInfo) {
+            adapter = ProfilePagerAdapter(supportFragmentManager, lifecycle)
+        }
+        TabLayoutMediator(binding.awonarProfileTabsMenu,
+            binding.awonarProfilePagerInfo) { tab, position ->
+            tab.setIcon(ProfilePagerAdapter.ICON_TABS[position])
+        }.attach()
     }
 
     private fun observer() {
@@ -81,7 +80,6 @@ class ProfileActivity : BaseActivity() {
                             binding.awonarProfileButtonCopy.background = ContextCompat.getDrawable(
                                 baseContext,
                                 R.drawable.awonar_ripple_green)
-
                         }
                     }
                 }

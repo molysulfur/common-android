@@ -213,44 +213,16 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:tabIconTint="@color/awonar_selector_tab_primary"
-                    app:tabIndicatorColor="@color/awonar_color_primary">
+                    app:tabIndicatorColor="@color/awonar_color_primary" />
 
-                    <com.google.android.material.tabs.TabItem
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:icon="@drawable/awonar_ic_timeline" />
-
-                    <com.google.android.material.tabs.TabItem
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="false"
-                        android:icon="@drawable/awonar_ic_about" />
-
-                    <com.google.android.material.tabs.TabItem
-                        android:id="@+id/awonar_profile_tab_chart"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:icon="@drawable/awonar_ic_statistics" />
-
-                    <com.google.android.material.tabs.TabItem
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:icon="@drawable/awonar_ic_portfolio" />
-
-                </com.google.android.material.tabs.TabLayout>
-
-                <androidx.fragment.app.FragmentContainerView
-                    android:id="@+id/awonar_profile_fragment_host"
-                    android:name="androidx.navigation.fragment.NavHostFragment"
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/awonar_profile_pager_info"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    app:defaultNavHost="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/awonar_profile_tabs_menu"
-                    app:navGraph="@navigation/awonar_profile_graph" />
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_profile_tabs_menu" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
 
