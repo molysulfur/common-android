@@ -50,9 +50,7 @@ class PortFolioFragment : Fragment() {
         launchAndRepeatWithViewLifecycle {
             launch {
                 QuoteSteamingManager.quotesState.collect { quotes ->
-                    portfolio?.let {
-                        portViewModel.sumTotalProfitAndEquity(it, quotes)
-                    }
+                    portViewModel.sumTotalProfitAndEquity(quotes)
                 }
             }
             launch {
@@ -78,30 +76,8 @@ class PortFolioFragment : Fragment() {
                 }
             }
             launch {
-                portViewModel.profitState.collect {
-                    binding.awonarPortfolioTextTitleProfit.setTextColor(ColorChangingUtil.getTextColorChange(
-                        requireContext(),
-                        it))
-                    binding.awonarPortfolioTextTitleProfit.text =
-                        "Profit : \$%.2f".format(it)
-                }
-            }
-            launch {
-                portViewModel.equityState.collect {
-                    binding.awonarPortfolioTextTitleEquity.setTextColor(ColorChangingUtil.getTextColorChange(
-                        requireContext(),
-                        it))
-                    binding.awonarPortfolioTextTitleEquity.text =
-                        "Equity : \$%.2f".format(it)
-                }
-            }
-            launch {
                 portViewModel.portfolioState.collect {
                     portfolio = it
-                    binding.awonarPortfolioTextTitleAvailable.text =
-                        "Available : \$%.2f".format(portfolio?.available ?: 0f)
-                    binding.awonarPortfolioTextTitleTotalAllocate.text =
-                        "Allocate : \$%.2f".format(portfolio?.totalAllocated ?: 0f)
                 }
             }
         }

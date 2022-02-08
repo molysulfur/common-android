@@ -18,9 +18,10 @@ class MenuDialogButtonSheetAdapter(private val onClick: ((MenuDialog) -> Unit)?)
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        viewType: Int
+        viewType: Int,
     ): MenuDialogButtonSheetViewHolder =
-        MenuDialogButtonSheetViewHolder(AwonarItemButtonItemBinding.inflate(LayoutInflater.from(parent.context)))
+        MenuDialogButtonSheetViewHolder(AwonarItemButtonItemBinding.inflate(LayoutInflater.from(
+            parent.context), parent, false))
 
     override fun onBindViewHolder(holder: MenuDialogButtonSheetViewHolder, position: Int) {
         holder.bind(itemList[position], onClick)

@@ -11,15 +11,18 @@ import com.awonar.app.ui.watchlist.adapter.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.CircularProgressIndicator
 
-@BindingAdapter("setWatchlistAdapter", "viewModel")
+@BindingAdapter("setWatchlistAdapter", "viewModel", "enableTouchHelper")
 fun setWatchlistAdapter(
     recycler: RecyclerView,
     itemList: MutableList<WatchlistItem>,
     viewModel: WatchlistViewModel,
+    isEnable: Boolean? = false,
 ) {
     if (recycler.adapter == null) {
         with(recycler) {
-            setTouchHelper(recycler, viewModel)
+            if (isEnable == true) {
+                setTouchHelper(recycler, viewModel)
+            }
             layoutManager =
                 LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
             adapter = WatchlistAdapter().apply {

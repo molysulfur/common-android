@@ -173,26 +173,16 @@ class PortFolioViewModel @Inject constructor(
         }
     }
 
-    fun sumTotalProfitAndEquity(portfolio: Portfolio, quotes: MutableMap<Int, Quote>) {
+    fun sumTotalProfitAndEquity(quotes: MutableMap<Int, Quote>) {
         viewModelScope.launch {
-            var plSymbol = 0f
-            var plCopy = 0f
-            _positionState.value?.positions?.forEach { position ->
-                quotes[position.instrument.id]?.let { quote ->
-                    val current = PortfolioUtil.getCurrent(position.isBuy, quote)
-                    plSymbol += PortfolioUtil.getProfitOrLoss(
-                        current,
-                        position.openRate,
-                        position.units,
-                        getConversionByInstrumentUseCase(position.instrument.id).successOr(0f),
-                        position.isBuy)
-                }
-            }
-            _positionState.value?.copies?.forEach { copier ->
-                copier.positions?.forEach { position ->
+            val portfolio = portfolioState.value
+            if (portfolio != null) {
+                var plSymbol = 0f
+                var plCopy = 0f
+                _positionState.value?.positions?.forEach { position ->
                     quotes[position.instrument.id]?.let { quote ->
                         val current = PortfolioUtil.getCurrent(position.isBuy, quote)
-                        plCopy += PortfolioUtil.getProfitOrLoss(
+                        plSymbol += PortfolioUtil.getProfitOrLoss(
                             current,
                             position.openRate,
                             position.units,
@@ -200,10 +190,24 @@ class PortFolioViewModel @Inject constructor(
                             position.isBuy)
                     }
                 }
+                _positionState.value?.copies?.forEach { copier ->
+                    copier.positions?.forEach { position ->
+                        quotes[position.instrument.id]?.let { quote ->
+                            val current = PortfolioUtil.getCurrent(position.isBuy, quote)
+                            plCopy += PortfolioUtil.getProfitOrLoss(
+                                current,
+                                position.openRate,
+                                position.units,
+                                getConversionByInstrumentUseCase(position.instrument.id).successOr(
+                                    0f),
+                                position.isBuy)
+                        }
+                    }
+                }
+                _profitState.value = plSymbol.plus(plCopy)
+                _equityState.value =
+                    portfolio.available.plus(portfolio.totalAllocated).plus(plSymbol.plus(plCopy))
             }
-            _profitState.value = plSymbol.plus(plCopy)
-            _equityState.value =
-                portfolio.available.plus(portfolio.totalAllocated).plus(plSymbol.plus(plCopy))
         }
     }
 }

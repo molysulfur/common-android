@@ -1,6 +1,7 @@
-package com.awonar.app.ui.portfolio.adapter
+package com.awonar.app.ui.portfolio
 
 import android.graphics.Canvas
+import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,11 +12,64 @@ import com.awonar.android.model.portfolio.Position
 import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.app.R
+import com.awonar.app.ui.portfolio.adapter.IPortfolioListItemTouchHelperCallback
+import com.awonar.app.ui.portfolio.adapter.OrderPortfolioAdapter
+import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
+import com.awonar.app.ui.portfolio.adapter.PortfolioListItemTouchHelperCallback
 import com.awonar.app.ui.portfolio.position.PositionViewModel
+import com.awonar.app.utils.ColorChangingUtil
 import com.awonar.app.widget.CopierPositionCardView
 import com.awonar.app.widget.InstrumentOrderView
 import com.awonar.app.widget.InstrumentPositionCardView
 import kotlin.collections.HashMap
+
+@BindingAdapter("setAvaliable")
+fun setAvaliable(
+    textView: TextView,
+    avaliable: Float,
+) {
+    with(textView) {
+        text = "Avaliable: $%.2f".format(avaliable)
+    }
+}
+
+@BindingAdapter("setAllocate")
+fun setAllocate(
+    textView: TextView,
+    allocate: Float,
+) {
+    with(textView) {
+        text = "Allocate: $%.2f".format(allocate)
+    }
+}
+
+
+@BindingAdapter("setProfit")
+fun setProfit(
+    textView: TextView,
+    profit: Float,
+) {
+    with(textView) {
+        setTextColor(ColorChangingUtil.getTextColorChange(
+            textView.context,
+            profit))
+        text = "Profit: $%.2f".format(profit)
+    }
+}
+
+@BindingAdapter("setEquity")
+fun setEquity(
+    textView: TextView,
+    equity: Float,
+) {
+    with(textView) {
+        setTextColor(ColorChangingUtil.getTextColorChange(
+            textView.context,
+            equity))
+        text = "Equity: $%.2f".format(equity)
+    }
+}
+
 
 @BindingAdapter("initCopierCard")
 fun initCopierCard(

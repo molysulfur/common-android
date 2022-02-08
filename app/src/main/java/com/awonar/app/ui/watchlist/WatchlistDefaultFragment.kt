@@ -93,6 +93,7 @@ class WatchlistDefaultFragment : Fragment() {
             }
         }
         binding.viewModel = viewModel
+        binding.enableTouch = true
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }

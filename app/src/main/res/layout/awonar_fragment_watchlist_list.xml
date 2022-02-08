@@ -2,16 +2,22 @@
 <layout>
 
     <data>
+
         <variable
             name="viewModel"
             type="com.awonar.app.ui.watchlist.WatchlistViewModel" />
+
+        <variable
+            name="enableTouch"
+            type="Boolean" />
     </data>
 
     <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
         android:id="@+id/awonar_watchlist_list_recycler_container"
+        enableTouchHelper="@{enableTouch}"
         setWatchlistAdapter="@{viewModel.watchlist}"
         viewModel="@{viewModel}"
+        android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
 </layout>

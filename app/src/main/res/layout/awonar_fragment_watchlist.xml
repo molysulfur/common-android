@@ -6,6 +6,10 @@
     <data>
 
         <variable
+            name="portViewModel"
+            type="com.awonar.app.ui.portfolio.PortFolioViewModel" />
+
+        <variable
             name="sector"
             type="String" />
     </data>
@@ -25,8 +29,9 @@
                 app:layout_scrollFlags="snap|scroll">
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/awonar_portfolio_text_title_available"
+                    android:id="@+id/awonar_watchlist_text_title_available"
                     style="@style/Awonar.Text.Default.Normal"
+                    setAvaliable="@{portViewModel.portfolioState.available}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
@@ -36,34 +41,36 @@
                     tools:text="@string/awonar_example_name" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/awonar_portfolio_text_title_total_allocate"
+                    android:id="@+id/awonar_watchlist_text_title_total_allocate"
                     style="@style/Awonar.Text.Default.Normal"
+                    setAllocate="@{portViewModel.portfolioState.totalAllocated}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
-                    app:layout_constraintStart_toStartOf="@+id/awonar_portfolio_text_title_available"
-                    app:layout_constraintTop_toBottomOf="@+id/awonar_portfolio_text_title_available"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_watchlist_text_title_available"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_watchlist_text_title_available"
                     tools:text="@string/awonar_example_name" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/awonar_portfolio_text_title_equity"
+                    android:id="@+id/awonar_watchlist_text_title_equity"
                     style="@style/Awonar.Text.Default.Normal"
+                    setEquity="@{portViewModel.equityState}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Equity"
-                    app:layout_constraintEnd_toEndOf="@+id/awonar_portfolio_text_title_profit"
-                    app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_text_title_total_allocate"
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_watchlist_text_title_profit"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_watchlist_text_title_total_allocate"
                     tools:text="@string/awonar_example_name" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/awonar_portfolio_text_title_profit"
+                    android:id="@+id/awonar_watchlist_text_title_profit"
                     style="@style/Awonar.Text.Default.Normal"
+                    setProfit="@{portViewModel.profitState}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
                     android:text="Profit"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_text_title_available"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_watchlist_text_title_available"
                     tools:text="@string/awonar_example_name" />
 
 
@@ -78,7 +85,7 @@
                     android:text="@{sector}"
                     android:textSize="@dimen/awonar_size_text_large"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/awonar_portfolio_text_title_total_allocate" />
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_watchlist_text_title_total_allocate" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/awonar_watchlist_button_setting"

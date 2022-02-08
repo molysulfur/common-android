@@ -8,14 +8,17 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
+import com.awonar.android.shared.steaming.QuoteSteamingManager
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentWatchlistBinding
 import com.awonar.app.dialog.menu.MenuDialog
 import com.awonar.app.dialog.menu.MenuDialogButtonSheet
 import com.awonar.app.ui.market.MarketViewModel
+import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.molysulfur.library.extension.toast
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class WatchListFragment : Fragment() {
 
@@ -24,7 +27,8 @@ class WatchListFragment : Fragment() {
     }
 
     private val viewModel: WatchlistViewModel by activityViewModels()
-    private val marketViewModel: MarketViewModel by activityViewModels()
+    private val portViewModel: PortFolioViewModel by activityViewModels()
+
 
     private val dialogListener = object : MenuDialogButtonSheet.MenuDialogButtonSheetListener {
         override fun onMenuClick(menu: MenuDialog) {
@@ -55,6 +59,11 @@ class WatchListFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         launchAndRepeatWithViewLifecycle {
+            QuoteSteamingManager.quotesState.collect { quotes ->
+                portViewModel.sumTotalProfitAndEquity(quotes)
+            }
+        }
+        launchAndRepeatWithViewLifecycle {
             viewModel.errorState.collect {
                 toast(it)
             }
@@ -64,6 +73,7 @@ class WatchListFragment : Fragment() {
                 binding.sector = title
             }
         }
+        binding.portViewModel = portViewModel
         binding.lifecycleOwner = activity
         return binding.root
     }
