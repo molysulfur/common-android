@@ -16,7 +16,7 @@ fun setInstrumentCategoryItem(
     if (recyclerView.adapter == null) {
         recyclerView.layoutManager =
             LinearLayoutManager(recyclerView.context, LinearLayoutManager.VERTICAL, false)
-        recyclerView.adapter = InstrumentListAdapter(viewModel).apply {
+        recyclerView.adapter = InstrumentListAdapter().apply {
             onViewMoreClick = { arg ->
                 viewModel?.onViewMore(arg)
             }
@@ -34,7 +34,7 @@ fun setInstrumentListITem(
     if (recyclerView.adapter == null) {
         recyclerView.layoutManager =
             LinearLayoutManager(recyclerView.context, LinearLayoutManager.VERTICAL, false)
-        recyclerView.adapter = InstrumentListAdapter(viewModel)
+        recyclerView.adapter = InstrumentListAdapter()
     }
     (recyclerView.adapter as InstrumentListAdapter).itemList = instrument
 }

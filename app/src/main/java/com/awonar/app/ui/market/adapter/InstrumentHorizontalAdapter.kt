@@ -8,7 +8,7 @@ import com.awonar.app.databinding.AwonarItemInstrumentCardBinding
 import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.market.holder.InstrumentCardViewHolder
 
-class InstrumentHorizontalAdapter constructor(private val viewModel: MarketViewModel?) :
+class InstrumentHorizontalAdapter :
     RecyclerView.Adapter<InstrumentCardViewHolder>() {
 
     var itemList: List<Instrument> = emptyList()
@@ -29,7 +29,7 @@ class InstrumentHorizontalAdapter constructor(private val viewModel: MarketViewM
         )
 
     override fun onBindViewHolder(holder: InstrumentCardViewHolder, position: Int) {
-        holder.bind(itemList[position],viewModel,onInstrumentClick)
+        holder.bind(itemList[position], onInstrumentClick)
     }
 
     override fun getItemCount(): Int = itemList.size

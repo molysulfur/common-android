@@ -9,7 +9,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class ConvertRememberToItemUseCase @Inject constructor(
-    @MainDispatcher dispatcher: CoroutineDispatcher
+    @MainDispatcher dispatcher: CoroutineDispatcher,
 ) : UseCase<List<Instrument>, List<InstrumentItem>>(dispatcher) {
 
     companion object {
@@ -18,21 +18,15 @@ class ConvertRememberToItemUseCase @Inject constructor(
 
     override suspend fun execute(instruments: List<Instrument>): List<InstrumentItem> {
         val itemList = arrayListOf<InstrumentItem>()
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Stocks"))
-        itemList.add(InstrumentItem.BlankItem())
         takeInstrumentWithCategory(instruments, "stocks").forEachIndexed { index, instrument ->
             addInstrument(itemList, index, instrument)
         }
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.InstrumentViewMoreItem(MarketViewMoreArg("stocks", "category")))
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Currencies"))
-        itemList.add(InstrumentItem.BlankItem())
         takeInstrumentWithCategory(instruments, "currencies").forEachIndexed { index, instrument ->
             addInstrument(itemList, index, instrument)
         }
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(
             InstrumentItem.InstrumentViewMoreItem(
                 MarketViewMoreArg(
@@ -41,21 +35,15 @@ class ConvertRememberToItemUseCase @Inject constructor(
                 )
             )
         )
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Crypto"))
-        itemList.add(InstrumentItem.BlankItem())
         takeInstrumentWithCategory(instruments, "crypto").forEachIndexed { index, instrument ->
             addInstrument(itemList, index, instrument)
         }
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.InstrumentViewMoreItem(MarketViewMoreArg("crypto", "category")))
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Technology"))
-        itemList.add(InstrumentItem.BlankItem())
         takeInstrumentWithSector(instruments, "technology").forEachIndexed { index, instrument ->
             addInstrument(itemList, index, instrument)
         }
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(
             InstrumentItem.InstrumentViewMoreItem(
                 MarketViewMoreArg(
@@ -64,13 +52,10 @@ class ConvertRememberToItemUseCase @Inject constructor(
                 )
             )
         )
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Healthcare"))
-        itemList.add(InstrumentItem.BlankItem())
         takeInstrumentWithSector(instruments, "healthcare").forEachIndexed { index, instrument ->
             addInstrument(itemList, index, instrument)
         }
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(
             InstrumentItem.InstrumentViewMoreItem(
                 MarketViewMoreArg(
@@ -79,16 +64,13 @@ class ConvertRememberToItemUseCase @Inject constructor(
                 )
             )
         )
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Financial Service"))
-        itemList.add(InstrumentItem.BlankItem())
         takeInstrumentWithSector(
             instruments,
             "financial-services"
         ).forEachIndexed { index, instrument ->
             addInstrument(itemList, index, instrument)
         }
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(
             InstrumentItem.InstrumentViewMoreItem(
                 MarketViewMoreArg(
@@ -103,7 +85,7 @@ class ConvertRememberToItemUseCase @Inject constructor(
     private fun addInstrument(
         itemList: ArrayList<InstrumentItem>,
         index: Int,
-        instrument: Instrument
+        instrument: Instrument,
     ) {
         if (index > 0) {
             itemList.add(InstrumentItem.DividerItem())
@@ -113,13 +95,15 @@ class ConvertRememberToItemUseCase @Inject constructor(
 
     private fun takeInstrumentWithCategory(
         instruments: List<Instrument>,
-        category: String
+        category: String,
     ): List<Instrument> =
-        instruments.filter { it.categories?.contains(category) == true }.take(RECOMMENDED_LIMIT)
+        instruments.filter { val contains = it.categories.contains(category)
+            contains
+        }.take(RECOMMENDED_LIMIT)
 
     private fun takeInstrumentWithSector(
         instruments: List<Instrument>,
-        sector: String
+        sector: String,
     ): List<Instrument> =
         instruments.filter { it.sector?.contains(sector) == true }.take(RECOMMENDED_LIMIT)
 }
