@@ -35,7 +35,6 @@ class MarketProfileActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        observe()
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         binding.awonarMarketProfileToolbarProfile.setNavigationOnClickListener {
@@ -46,20 +45,6 @@ class MarketProfileActivity : BaseActivity() {
             if (instrumentId > 0) {
                 viewModel.getInstrumentProfile(instrumentId)
                 marketViewModel.subscribe(instrumentId)
-            }
-        }
-    }
-
-    private fun observe() {
-        lifecycleScope.launch {
-            launch {
-                marketViewModel.quoteSteamingState.collect { quotes ->
-                    val quote = quotes.findLast { quote ->
-                        quote.id == instrumentId
-                    }
-                    binding.awonarMarketProfileTextPricing.text = "${quote?.close ?: 0f}"
-                    setChangeText(quote)
-                }
             }
         }
     }

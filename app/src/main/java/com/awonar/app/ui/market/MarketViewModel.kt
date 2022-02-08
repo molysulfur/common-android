@@ -46,7 +46,8 @@ class MarketViewModel @Inject constructor(
     private val _viewMoreState = Channel<MarketViewMoreArg?>(capacity = Channel.CONFLATED)
     val viewMoreState = _viewMoreState.receiveAsFlow()
 
-    private val _quoteSteamingState = MutableStateFlow<Array<Quote>>(emptyArray())
+    private val _quoteSteamingState
+    = MutableStateFlow<Array<Quote>>(emptyArray())
     val quoteSteamingState: StateFlow<Array<Quote>> get() = _quoteSteamingState
 
     private val _marketTabState =
