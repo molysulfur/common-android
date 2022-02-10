@@ -10,7 +10,7 @@ class RiskViewHolder constructor(private val binding: AwonarItemListBinding) :
 
     fun bind(item: StatisticItem.RiskItem) {
         with(binding.awonarItemListText) {
-            setTitle("Average Risk Scroe of The Last 7 Day")
+            setTitle("Average Risk Score of The Last 7 Days")
             setStartIcon(riskIcon(item.risk))
         }
     }

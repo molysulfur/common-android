@@ -48,14 +48,6 @@ class PortFolioViewModel @Inject constructor(
     private val _portfolioType = MutableStateFlow("market")
     val portfolioType: StateFlow<String> get() = _portfolioType
 
-    private val _navigateInsideInstrumentPortfolio =
-        Channel<Pair<String, String>>(capacity = Channel.CONFLATED)
-    val navigateInsideInstrumentPortfolio: Flow<Pair<String, String>> =
-        _navigateInsideInstrumentPortfolio.receiveAsFlow()
-
-    private val _subscricbeQuote = Channel<List<Int>>(capacity = Channel.CONFLATED)
-    val subscricbeQuote: Flow<List<Int>> = _subscricbeQuote.receiveAsFlow()
-
     val portfolioState: StateFlow<Portfolio?> = flow {
         getMyPortFolioUseCase(true).collect {
             val data = it.successOr(null)
@@ -83,12 +75,6 @@ class PortFolioViewModel @Inject constructor(
     fun togglePortfolio(type: String) {
         viewModelScope.launch {
             _portfolioType.emit(type)
-        }
-    }
-
-    fun navigateInsidePortfolio(it: String, type: String) {
-        viewModelScope.launch {
-            _navigateInsideInstrumentPortfolio.send(Pair(it, type))
         }
     }
 

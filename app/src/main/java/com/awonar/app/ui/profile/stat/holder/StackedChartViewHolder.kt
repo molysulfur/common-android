@@ -1,18 +1,14 @@
 package com.awonar.app.ui.profile.stat.holder
 
-import android.graphics.Color
 import androidx.recyclerview.widget.RecyclerView
-import com.awonar.app.databinding.AwonarItemBarchartBinding
+import com.awonar.app.databinding.AwonarItemStackedChartBinding
 import com.awonar.app.ui.profile.stat.StatisticItem
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
-import com.github.mikephil.charting.data.Entry
+import com.awonar.app.widget.StackedRechartWebView
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.molysulfur.library.utils.ColorUtils
+import timber.log.Timber
+import java.time.Month
 
-class StackedChartViewHolder constructor(private val binding: AwonarItemBarchartBinding) :
+class StackedChartViewHolder constructor(private val binding: AwonarItemStackedChartBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     private val formatter = object : IndexAxisValueFormatter() {
@@ -22,32 +18,31 @@ class StackedChartViewHolder constructor(private val binding: AwonarItemBarchart
     }
 
     fun bind(item: StatisticItem.StackedChartItem) {
-        with(binding.awonarItemBarchart) {
-            description.isEnabled = false
-            setDrawValueAboveBar(true)
-            val xAxis: XAxis = xAxis
-            xAxis.setDrawGridLines(false)
-            xAxis.setDrawAxisLine(false)
-            xAxis.textSize = 12f
-            xAxis.granularity = 1f
-            xAxis.valueFormatter = formatter
-            val values = mutableListOf<BarEntry>()
-            val colors = mutableListOf<Int>()
-            val green: Int = Color.rgb(43, 172, 64)
-            val red: Int = Color.rgb(255, 1, 0)
-            for (i in 0 until item.entries.size) {
-                val d: BarEntry = item.entries[i]
-                values.add(d)
-                if (d.y >= 0) colors.add(green) else colors.add(red)
-                colors.add(0)
+        val entities: List<StackedRechartWebView.StackedRechartEntity> =
+            item.entries.mapIndexed { index, entry ->
+                if (entry.data != null) {
+                    StackedRechartWebView.StackedRechartEntity(
+                        label = Month.values()[index].toString(),
+                        avg = (entry.data as FloatArray)[0],
+                        max = (entry.data as FloatArray)[1]
+                    )
+                } else {
+                    StackedRechartWebView.StackedRechartEntity(
+                        label = Month.values()[index].toString(),
+                        avg = 0f,
+                        max = 0f
+                    )
+                }
             }
-            val barDataSet = BarDataSet(values, "Values")
-            barDataSet.colors = colors
-            barDataSet.barBorderWidth = 1f
-            setDrawGridBackground(false)
-            data = BarData(barDataSet).apply {
-            }
-            invalidate()
+        with(binding.awonarItemStackedchart) {
+            setListener(object : StackedRechartWebView.IStackedRechartListener {
+                override fun chartAlready() {
+                    post {
+                        setData(entities)
+                    }
+                }
+            })
+            start()
         }
     }
 }

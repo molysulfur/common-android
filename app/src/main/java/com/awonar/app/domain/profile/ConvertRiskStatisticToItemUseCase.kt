@@ -24,6 +24,7 @@ class ConvertRiskStatisticToItemUseCase @Inject constructor(
         }
         risks?.forEachIndexed { index, statRisk ->
             entries[index] = BarEntry(index.toFloat(),
+                0f,
                 floatArrayOf(statRisk.risk.toFloat(), statRisk.maxRisk.toFloat()))
         }
         itemList.add(StatisticItem.StackedChartItem(entries))
@@ -32,7 +33,7 @@ class ConvertRiskStatisticToItemUseCase @Inject constructor(
             subTitle = "Daliy"))
         itemList.add(StatisticItem.TextBoxItem(
             title = "%.2f".format(drawdown?.weeklyDrawdown?.times(100)),
-            subTitle = "Weeklu"
+            subTitle = "Weekly"
         ))
         itemList.add(StatisticItem.TextBoxItem(
             title = "%.2f".format(drawdown?.yearlyDrawdown?.times(100)),

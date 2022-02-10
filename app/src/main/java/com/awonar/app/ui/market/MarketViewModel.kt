@@ -38,7 +38,6 @@ class MarketViewModel @Inject constructor(
     val tradingDataState = MutableSharedFlow<TradingData?>()
 
     private val _conversionRateState = MutableStateFlow(0f)
-    val conversionRateState: StateFlow<Float> get() = _conversionRateState
 
     private val _conversionRateListState = MutableStateFlow<HashMap<Int, Float>>(hashMapOf())
     val conversionRateListState: StateFlow<HashMap<Int, Float>> get() = _conversionRateListState

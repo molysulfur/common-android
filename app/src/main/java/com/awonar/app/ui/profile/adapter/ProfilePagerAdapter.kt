@@ -6,6 +6,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.adapter.FragmentViewHolder
 import com.awonar.app.R
+import com.awonar.app.ui.profile.ProfilePrivateFragment
 import com.awonar.app.ui.profile.StatisticProfileFragment
 import com.awonar.app.ui.user.UserInfoFragment
 import timber.log.Timber
@@ -26,10 +27,10 @@ class ProfilePagerAdapter constructor(fragmentManager: FragmentManager, lifecycl
     override fun getItemCount(): Int = ICON_TABS.size
 
     override fun createFragment(position: Int): Fragment = when (position) {
-            0 -> UserInfoFragment.newInstance()
-            1 -> StatisticProfileFragment.newInstance()
-            2 -> StatisticProfileFragment.newInstance()
-            3 -> StatisticProfileFragment.newInstance()
-            else -> StatisticProfileFragment.newInstance()
-        }
+        0 -> UserInfoFragment.newInstance()
+        1 -> ProfilePrivateFragment()
+        2 -> StatisticProfileFragment.newInstance()
+        3 -> ProfilePrivateFragment()
+        else -> StatisticProfileFragment.newInstance()
+    }
 }

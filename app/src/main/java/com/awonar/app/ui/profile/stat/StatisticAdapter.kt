@@ -2,7 +2,9 @@ package com.awonar.app.ui.profile.stat
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.awonar.android.model.market.Quote
 import com.awonar.app.databinding.*
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_BLANK
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_BUTTON
@@ -19,8 +21,11 @@ class StatisticAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var itemList = mutableListOf<StatisticItem>()
         set(value) {
+            var old = field
             field = value
-            notifyDataSetChanged()
+            DiffUtil
+                .calculateDiff(StatisticalDiffCallback(old, value))
+                .dispatchUpdatesTo(this)
         }
 
 
@@ -55,7 +60,7 @@ class StatisticAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     false)
             )
             STATISTIC_CHART_STACKED -> StackedChartViewHolder(
-                AwonarItemBarchartBinding.inflate(LayoutInflater.from(parent.context),
+                AwonarItemStackedChartBinding.inflate(LayoutInflater.from(parent.context),
                     parent,
                     false)
             )
@@ -87,7 +92,7 @@ class StatisticAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is ButtonViewHolder -> holder.bind(item as StatisticItem.ButtonItem, onClick)
             is TotalGainViewHolder -> holder.bind(item as StatisticItem.TotalGainItem)
             is ButtonGroupViewHolder -> holder.bind(item as StatisticItem.ButtonGroupItem)
-            is SelectorViewHolder -> holder.bind(item as StatisticItem.SelectorItem,onSelected)
+            is SelectorViewHolder -> holder.bind(item as StatisticItem.SelectorItem, onSelected)
             is PositveNegativeChartViewHolder -> holder.bind(item as StatisticItem.PositiveNegativeChartItem)
         }
     }
@@ -95,4 +100,23 @@ class StatisticAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemCount(): Int = itemList.size
 
     override fun getItemViewType(position: Int): Int = itemList[position].type
+
+    class StatisticalDiffCallback(
+        private val oldItems: MutableList<StatisticItem>?,
+        private val newItems: MutableList<StatisticItem>?,
+    ) : DiffUtil.Callback() {
+
+        override fun getOldListSize(): Int = oldItems?.size ?: 0
+
+        override fun getNewListSize(): Int = newItems?.size ?: 0
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldItems?.get(oldItemPosition) === newItems?.get(newItemPosition)
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldItems?.get(oldItemPosition) == newItems?.get(newItemPosition)
+        }
+    }
+
 }
