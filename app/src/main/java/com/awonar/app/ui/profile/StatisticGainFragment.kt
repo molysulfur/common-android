@@ -11,6 +11,7 @@ import com.awonar.app.databinding.AwonarFragmentStatisticGainBinding
 import com.awonar.app.ui.user.UserViewModel
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
+import java.util.*
 
 class StatisticGainFragment : Fragment() {
 
@@ -33,7 +34,10 @@ class StatisticGainFragment : Fragment() {
             userViewModel.userState.collect { user ->
                 if (user != null) {
                     user.id?.let { uid ->
-                        profileViewModel.getGrowthStatistic(uid)
+                        profileViewModel.getGrowthStatistic(
+                            uid,
+                            Calendar.getInstance().get(Calendar.YEAR)
+                        )
                     }
                 }
             }

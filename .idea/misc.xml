@@ -171,6 +171,7 @@
         <entry key="app/src/main/res/layout/awonar_item_instrument_list.xml" value="0.121875" />
         <entry key="app/src/main/res/layout/awonar_item_instrument_order.xml" value="0.2171875" />
         <entry key="app/src/main/res/layout/awonar_item_instrument_position.xml" value="0.12760416666666666" />
+        <entry key="app/src/main/res/layout/awonar_item_line_chart.xml" value="0.1658828559213339" />
         <entry key="app/src/main/res/layout/awonar_item_list.xml" value="0.12239583333333333" />
         <entry key="app/src/main/res/layout/awonar_item_list_piechart.xml" value="0.37777777777777777" />
         <entry key="app/src/main/res/layout/awonar_item_list_selector.xml" value="0.28177083333333336" />

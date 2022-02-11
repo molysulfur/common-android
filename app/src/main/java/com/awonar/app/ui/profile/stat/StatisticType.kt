@@ -11,4 +11,5 @@ object StatisticType {
     const val STATISTIC_BUTTON = 6
     const val STATISTIC_RISK = 7
     const val STATISTIC_TEXT_BOX = 8
+    const val STATISTIC_CHART_LINE = 9
 }

@@ -9,8 +9,15 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ProfileService {
+
+    @GET("v1/users/stats/gain/days/{uid}")
+    fun getGrowthDay(
+        @Path("uid") uid: String,
+        @Query("year") year: String,
+    ): Call<HashMap<String, Float>>
 
     @GET("v1/users/stats/{uid}")
     fun getDrawdown(@Path("uid") uid: String): Call<DrawdownResponse>

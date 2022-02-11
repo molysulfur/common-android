@@ -15,10 +15,14 @@ fun setStatisicAdapter(
 ) {
     if (recycler.adapter == null) {
         val statAdapter = StatisticAdapter().apply {
+            onChecked = {
+                viewModel.changeTypeGrowth(it)
+
+            }
             onSelected = { yearString ->
                 try {
                     yearString?.toInt()?.let {
-                        viewModel.changeGrowthYear(it)
+                        viewModel.getGrowthStatistic("",it)
                     }
                 } catch (e: NumberFormatException) {
                     e.printStackTrace()

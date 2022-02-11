@@ -1,11 +1,17 @@
 package com.awonar.app.ui.profile.stat
 
 import android.os.Parcelable
+import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_CHART_LINE
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import kotlinx.parcelize.Parcelize
 
 sealed class StatisticItem(val type: Int) : Parcelable {
+
+    @Parcelize
+    data class GrowthDayItem(
+        val entries: List<Entry>,
+    ) : StatisticItem(STATISTIC_CHART_LINE)
 
     @Parcelize
     data class TextBoxItem(
@@ -35,6 +41,7 @@ sealed class StatisticItem(val type: Int) : Parcelable {
     data class ButtonGroupItem(
         val buttonText1: String,
         val buttonText2: String,
+        val isGrowth: Boolean = false,
     ) : StatisticItem(StatisticType.STATISTIC_BUTTON_GROUP)
 
     @Parcelize

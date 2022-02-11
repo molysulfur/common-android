@@ -55,4 +55,17 @@ class ProfileRepository @Inject constructor(
                 println(errorMessage)
             }
         }.asFlow()
+
+    fun getGrowthDayStatistic(uid: String, year: String): Flow<Result<HashMap<String, Float>?>> =
+        object : DirectNetworkFlow<Unit, HashMap<String, Float>, HashMap<String, Float>>() {
+            override fun createCall(): Response<HashMap<String, Float>> =
+                service.getGrowthDay(uid, year).execute()
+
+            override fun convertToResultType(response: HashMap<String, Float>): HashMap<String, Float> =
+                response
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+        }.asFlow()
 }

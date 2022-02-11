@@ -14,4 +14,14 @@ object DateUtils {
         }
         return ""
     }
+
+    fun getDate(dateString: String?, pattern: String, format: String = "dd-MM-yyyy HH:mm"): String {
+        val parser = SimpleDateFormat(pattern, Locale.getDefault())
+        val formatter = SimpleDateFormat(format, Locale.getDefault())
+        dateString?.let {
+            val date = parser.parse(dateString)
+            return formatter.format(date)
+        }
+        return ""
+    }
 }

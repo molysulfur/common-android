@@ -9,6 +9,7 @@ import com.awonar.app.databinding.*
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_BLANK
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_BUTTON
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_BUTTON_GROUP
+import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_CHART_LINE
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_CHART_POSITIVE_NEGATIVE
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_CHART_STACKED
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_RISK
@@ -31,9 +32,15 @@ class StatisticAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var onClick: ((String?) -> Unit)? = null
     var onSelected: ((String?) -> Unit)? = null
+    var onChecked: ((Boolean) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
+            STATISTIC_CHART_LINE -> GrowthDayViewHolder(
+                AwonarItemLineChartBinding.inflate(LayoutInflater.from(parent.context),
+                    parent,
+                    false)
+            )
             STATISTIC_TEXT_BOX -> TextBoxViewHolder(
                 AwonarItemTextBoxBinding.inflate(LayoutInflater.from(parent.context),
                     parent,
@@ -86,12 +93,13 @@ class StatisticAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = itemList[position]
         when (holder) {
+            is GrowthDayViewHolder -> holder.bind(item as StatisticItem.GrowthDayItem)
             is TextBoxViewHolder -> holder.bind(item as StatisticItem.TextBoxItem)
             is RiskViewHolder -> holder.bind(item as StatisticItem.RiskItem)
             is StackedChartViewHolder -> holder.bind(item as StatisticItem.StackedChartItem)
             is ButtonViewHolder -> holder.bind(item as StatisticItem.ButtonItem, onClick)
             is TotalGainViewHolder -> holder.bind(item as StatisticItem.TotalGainItem)
-            is ButtonGroupViewHolder -> holder.bind(item as StatisticItem.ButtonGroupItem)
+            is ButtonGroupViewHolder -> holder.bind(item as StatisticItem.ButtonGroupItem,onChecked)
             is SelectorViewHolder -> holder.bind(item as StatisticItem.SelectorItem, onSelected)
             is PositveNegativeChartViewHolder -> holder.bind(item as StatisticItem.PositiveNegativeChartItem)
         }

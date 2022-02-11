@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.market.Quote
 import com.awonar.app.databinding.*
 import com.awonar.app.ui.portfolio.adapter.holder.*
-import timber.log.Timber
 
 @SuppressLint("NotifyDataSetChanged")
 class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -40,7 +39,6 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var onPieChartClick: ((String?) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        Timber.e("$viewType")
         return when (viewType) {
             OrderPortfolioType.SECTION_PORTFOLIO -> SectionViewHolder(
                 AwonarItemSectionBinding.inflate(
