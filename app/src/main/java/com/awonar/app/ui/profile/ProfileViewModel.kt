@@ -13,11 +13,13 @@ import com.awonar.app.domain.profile.ConvertGrowthStatisticToItemUseCase
 import com.awonar.app.domain.profile.ConvertRiskStatisticToItemUseCase
 import com.awonar.app.domain.profile.StatRiskItemRequest
 import com.awonar.app.ui.profile.stat.StatisticItem
+import com.molysulfur.library.result.Result
 import com.molysulfur.library.result.data
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -46,23 +48,29 @@ class ProfileViewModel @Inject constructor(
 
     fun getGrowthStatistic(uid: String, year: Int) {
         viewModelScope.launch {
-            if (uid.isNotBlank()) {
+            if (!uid.isNullOrBlank()) {
                 _userId.value = uid
             }
+            _currentYear.value = year
             val dayGrowth =
-                getGrowthDayStatisticUseCase(StatGainDayRequest(_userId.value ?: "", "$year"))
+                getGrowthDayStatisticUseCase(StatGainDayRequest(_userId.value ?: "",
+                    "${_currentYear.value}"))
             val monthGrowth = getGrowthStatisticUseCase(_userId.value ?: "")
-            val growthResult = combine(dayGrowth, monthGrowth) { _dayGrowthInfo, _growthInfo ->
+            val growthResult = combine(dayGrowth, monthGrowth) { dayGrowthInfo, growthInfo ->
                 var itemList = mutableListOf<StatisticItem>()
-                if (_growthInfo.successOr(null) != null) {
-                    itemList = convertGrowthStatisticToItemUseCase(ConvertGrowthRequest(
-                        stat = _growthInfo.data!!,
-                        year = _currentYear.value,
-                        statDay = _dayGrowthInfo.successOr(emptyMap()) ?: emptyMap(),
-                        isShowGrowth = _isShowGrowthChart.value,
-                        isShowMore = _isShowMore.value
-                    )).successOr(
-                        mutableListOf())
+                if (dayGrowthInfo is Result.Success && growthInfo is Result.Success) {
+                    _dayGrowthInfo.value = dayGrowthInfo.successOr(emptyMap()) ?: emptyMap()
+                    _growthInfo.value = growthInfo.successOr(null)
+                    if (_growthInfo.value != null) {
+                        itemList = convertGrowthStatisticToItemUseCase(ConvertGrowthRequest(
+                            stat = _growthInfo.value!!,
+                            year = _currentYear.value,
+                            statDay = _dayGrowthInfo.value,
+                            isShowGrowth = _isShowGrowthChart.value,
+                            isShowMore = _isShowMore.value
+                        )).successOr(
+                            mutableListOf())
+                    }
                 }
                 itemList
             }

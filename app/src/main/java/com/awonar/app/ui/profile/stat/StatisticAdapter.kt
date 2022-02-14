@@ -22,11 +22,8 @@ class StatisticAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var itemList = mutableListOf<StatisticItem>()
         set(value) {
-            var old = field
             field = value
-            DiffUtil
-                .calculateDiff(StatisticalDiffCallback(old, value))
-                .dispatchUpdatesTo(this)
+            notifyDataSetChanged()
         }
 
 
@@ -99,7 +96,8 @@ class StatisticAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is StackedChartViewHolder -> holder.bind(item as StatisticItem.StackedChartItem)
             is ButtonViewHolder -> holder.bind(item as StatisticItem.ButtonItem, onClick)
             is TotalGainViewHolder -> holder.bind(item as StatisticItem.TotalGainItem)
-            is ButtonGroupViewHolder -> holder.bind(item as StatisticItem.ButtonGroupItem,onChecked)
+            is ButtonGroupViewHolder -> holder.bind(item as StatisticItem.ButtonGroupItem,
+                onChecked)
             is SelectorViewHolder -> holder.bind(item as StatisticItem.SelectorItem, onSelected)
             is PositveNegativeChartViewHolder -> holder.bind(item as StatisticItem.PositiveNegativeChartItem)
         }
