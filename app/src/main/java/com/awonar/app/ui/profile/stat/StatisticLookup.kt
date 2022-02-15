@@ -16,6 +16,9 @@ class StatisticLookup(private val adapter: RecyclerView.Adapter<*>, private val 
         StatisticType.STATISTIC_RISK -> columnCount
         StatisticType.STATISTIC_CHART_STACKED -> columnCount
         StatisticType.STATISTIC_CHART_LINE -> columnCount
+        StatisticType.STATISTIC_CHART_PIE -> columnCount
+        StatisticType.STATISTIC_LIST_ITEM -> columnCount
+        StatisticType.STATISTIC_DIVIDER -> columnCount
         else -> 1
     }
 }

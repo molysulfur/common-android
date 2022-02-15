@@ -37,6 +37,8 @@ class ConvertGrowthStatisticToItemUseCase @Inject constructor(
             buttonText2 = "Growth",
             isGrowth = parameters.isShowGrowth
         ))
+        val dates = stat.years.map { DateUtils.getDate(it.date, "yyyy") }
+        itemList.add(StatisticItem.SelectorItem(thisYear, dates))
         if (parameters.isShowGrowth) {
             var counting = 0f
             val entries = parameters.statDay.map {
@@ -77,8 +79,6 @@ class ConvertGrowthStatisticToItemUseCase @Inject constructor(
         itemList: MutableList<StatisticItem>,
         thisYear: Int,
     ) {
-        val dates = stat.years.map { DateUtils.getDate(it.date, "yyyy") }
-        itemList.add(StatisticItem.SelectorItem(thisYear, dates))
         val entries = MutableList(12) { index ->
             Entry(index.toFloat(), 0f)
         }

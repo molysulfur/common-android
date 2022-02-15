@@ -12,4 +12,7 @@ object StatisticType {
     const val STATISTIC_RISK = 7
     const val STATISTIC_TEXT_BOX = 8
     const val STATISTIC_CHART_LINE = 9
+    const val STATISTIC_CHART_PIE = 10
+    const val STATISTIC_LIST_ITEM = 11
+    const val STATISTIC_DIVIDER = 12
 }

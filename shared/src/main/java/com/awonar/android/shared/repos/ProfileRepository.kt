@@ -4,6 +4,7 @@ import com.awonar.android.model.portfolio.PendingOrder
 import com.awonar.android.model.user.DrawdownResponse
 import com.awonar.android.model.user.StatGainResponse
 import com.awonar.android.model.user.StatRiskResponse
+import com.awonar.android.model.user.StatTradeResponse
 import com.awonar.android.shared.api.ProfileService
 import com.molysulfur.library.network.DirectNetworkFlow
 import com.molysulfur.library.result.Result
@@ -62,6 +63,19 @@ class ProfileRepository @Inject constructor(
                 service.getGrowthDay(uid, year).execute()
 
             override fun convertToResultType(response: HashMap<String, Float>): HashMap<String, Float> =
+                response
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+        }.asFlow()
+
+    fun getStatTrade(uid: String): Flow<Result<StatTradeResponse?>> =
+        object : DirectNetworkFlow<Unit, StatTradeResponse?, StatTradeResponse?>() {
+            override fun createCall(): Response<StatTradeResponse?> =
+                service.getStatTrade(uid).execute()
+
+            override fun convertToResultType(response: StatTradeResponse?): StatTradeResponse? =
                 response
 
             override fun onFetchFailed(errorMessage: String) {

@@ -42,6 +42,7 @@ class StatisticProfileFragment : Fragment() {
         activity?.supportFragmentManager?.commit {
             replace<StatisticGainFragment>(R.id.awonar_profile_statistic_layout_gain)
             replace<StatisticRiskFragment>(R.id.awonar_profile_statistic_layout_risk)
+            replace<StatisticMostTradingFragment>(R.id.awonar_profile_statistic_layout_most_trading)
             setReorderingAllowed(true)
         }
     }

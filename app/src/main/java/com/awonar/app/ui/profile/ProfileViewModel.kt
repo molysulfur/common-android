@@ -4,14 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.awonar.android.model.user.StatGainDayRequest
 import com.awonar.android.model.user.StatGainResponse
-import com.awonar.android.shared.domain.profile.GetDrawdownUseCase
-import com.awonar.android.shared.domain.profile.GetGrowthDayStatisticUseCase
-import com.awonar.android.shared.domain.profile.GetGrowthStatisticUseCase
-import com.awonar.android.shared.domain.profile.GetRiskStatisticUseCase
-import com.awonar.app.domain.profile.ConvertGrowthRequest
-import com.awonar.app.domain.profile.ConvertGrowthStatisticToItemUseCase
-import com.awonar.app.domain.profile.ConvertRiskStatisticToItemUseCase
-import com.awonar.app.domain.profile.StatRiskItemRequest
+import com.awonar.android.shared.domain.profile.*
+import com.awonar.app.domain.profile.*
 import com.awonar.app.ui.profile.stat.StatisticItem
 import com.molysulfur.library.result.Result
 import com.molysulfur.library.result.data
@@ -30,8 +24,10 @@ class ProfileViewModel @Inject constructor(
     private val getGrowthDayStatisticUseCase: GetGrowthDayStatisticUseCase,
     private val getRiskStatisticUseCase: GetRiskStatisticUseCase,
     private val getDrawdownUseCase: GetDrawdownUseCase,
+    private val getTradingStatisticUseCase: GetTradingStatisticUseCase,
     private val convertGrowthStatisticToItemUseCase: ConvertGrowthStatisticToItemUseCase,
     private val convertRiskStatisticToItemUseCase: ConvertRiskStatisticToItemUseCase,
+    private val convertMostTradingStatisticToItemUseCase: ConvertMostTradingStatisticToItemUseCase,
 ) : ViewModel() {
     private val _currentYear = MutableStateFlow(Calendar.getInstance().get(Calendar.YEAR))
     private val _isShowMore = MutableStateFlow(false)
@@ -45,6 +41,9 @@ class ProfileViewModel @Inject constructor(
 
     private val _riskItemsState = MutableStateFlow<MutableList<StatisticItem>>(mutableListOf())
     val riskItemsState: StateFlow<MutableList<StatisticItem>> get() = _riskItemsState
+
+    private val _mostTradingState = MutableStateFlow<MutableList<StatisticItem>>(mutableListOf())
+    val mostTradingState: StateFlow<MutableList<StatisticItem>> get() = _mostTradingState
 
     fun getGrowthStatistic(uid: String, year: Int) {
         viewModelScope.launch {
@@ -108,6 +107,16 @@ class ProfileViewModel @Inject constructor(
                         isShowGrowth = _isShowGrowthChart.value,
                         isShowMore = _isShowMore.value
                     )).successOr(mutableListOf())
+            }
+        }
+    }
+
+    fun getMostTrading(userId: String) {
+        viewModelScope.launch {
+            getTradingStatisticUseCase(userId).collect {
+                val data = it.successOr(null)
+                _mostTradingState.value =
+                    convertMostTradingStatisticToItemUseCase(data).successOr(mutableListOf())
             }
         }
     }

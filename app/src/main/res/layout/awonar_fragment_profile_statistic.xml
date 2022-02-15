@@ -32,6 +32,13 @@
                 android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
                 app:layout_constraintTop_toBottomOf="@+id/awonar_profile_statistic_layout_gain" />
 
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/awonar_profile_statistic_layout_most_trading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_profile_statistic_layout_risk" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>

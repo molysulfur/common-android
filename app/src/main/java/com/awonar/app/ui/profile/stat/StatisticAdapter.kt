@@ -10,8 +10,11 @@ import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_BLANK
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_BUTTON
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_BUTTON_GROUP
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_CHART_LINE
+import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_CHART_PIE
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_CHART_POSITIVE_NEGATIVE
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_CHART_STACKED
+import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_DIVIDER
+import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_LIST_ITEM
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_RISK
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_SELECTOR
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_TEXT_BOX
@@ -33,6 +36,21 @@ class StatisticAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
+            STATISTIC_DIVIDER -> DividerViewHolder(
+                AwonarItemDividerBinding.inflate(LayoutInflater.from(parent.context),
+                    parent,
+                    false)
+            )
+            STATISTIC_LIST_ITEM -> ListItemViewHolder(
+                AwonarItemListBinding.inflate(LayoutInflater.from(parent.context),
+                    parent,
+                    false)
+            )
+            STATISTIC_CHART_PIE -> PiechartViewHolder(
+                AwonarItemPiechartBinding.inflate(LayoutInflater.from(parent.context),
+                    parent,
+                    false)
+            )
             STATISTIC_CHART_LINE -> GrowthDayViewHolder(
                 AwonarItemLineChartBinding.inflate(LayoutInflater.from(parent.context),
                     parent,
@@ -90,6 +108,8 @@ class StatisticAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = itemList[position]
         when (holder) {
+            is ListItemViewHolder -> holder.bind(item as StatisticItem.ListItem)
+            is PiechartViewHolder -> holder.bind(item as StatisticItem.PieChartItem)
             is GrowthDayViewHolder -> holder.bind(item as StatisticItem.GrowthDayItem)
             is TextBoxViewHolder -> holder.bind(item as StatisticItem.TextBoxItem)
             is RiskViewHolder -> holder.bind(item as StatisticItem.RiskItem)

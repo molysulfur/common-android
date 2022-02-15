@@ -3,6 +3,7 @@ package com.awonar.android.shared.api
 import com.awonar.android.model.user.DrawdownResponse
 import com.awonar.android.model.user.StatGainResponse
 import com.awonar.android.model.user.StatRiskResponse
+import com.awonar.android.model.user.StatTradeResponse
 import com.awonar.android.shared.constrant.BuildConfig
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -12,6 +13,9 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ProfileService {
+
+    @GET("v1/users/stats/trades/{uid}")
+    fun getStatTrade(@Path("uid") uid: String): Call<StatTradeResponse?>
 
     @GET("v1/users/stats/gain/days/{uid}")
     fun getGrowthDay(
