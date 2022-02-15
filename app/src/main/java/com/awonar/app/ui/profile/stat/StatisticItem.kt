@@ -5,12 +5,21 @@ import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_CHART_LINE
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_CHART_PIE
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_DIVIDER
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_LIST_ITEM
+import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_TOTAL_TRADE
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.PieEntry
 import kotlinx.parcelize.Parcelize
 
 sealed class StatisticItem(val type: Int) : Parcelable {
+
+    @Parcelize
+    data class TotalTradeItem(
+        val total: Int,
+        val profitAvg: Float,
+        val lossAvg: Float,
+    ) : StatisticItem(STATISTIC_TOTAL_TRADE)
+
 
     @Parcelize
     class DividerItem : StatisticItem(STATISTIC_DIVIDER)

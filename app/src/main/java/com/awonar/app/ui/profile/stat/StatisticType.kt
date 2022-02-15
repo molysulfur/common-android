@@ -15,4 +15,5 @@ object StatisticType {
     const val STATISTIC_CHART_PIE = 10
     const val STATISTIC_LIST_ITEM = 11
     const val STATISTIC_DIVIDER = 12
+    const val STATISTIC_TOTAL_TRADE = 13
 }

@@ -39,7 +39,20 @@ class ConvertMostTradingStatisticToItemUseCase @Inject constructor(
         itemList.add(StatisticItem.PieChartItem(pieChartItem))
         itemList.addAll(mostTradeList)
         itemList.add(StatisticItem.DividerItem())
+        itemList.add(
+            StatisticItem.TotalTradeItem(
+                total = parameters?.tradeTotal ?: 0,
+                profitAvg = parameters?.avgProfit ?: 0f,
+                lossAvg = parameters?.avgLoss ?: 0f,
+            ))
 
+        parameters?.performanceTrades?.map {
+            itemList.add(StatisticItem.ListItem(
+                text = it.category,
+                number = it.ratio
+            ))
+            it
+        }
         return itemList
     }
 }

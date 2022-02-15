@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.awonar.android.model.market.Quote
 import com.awonar.app.databinding.*
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_BLANK
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_BUTTON
@@ -19,6 +18,7 @@ import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_RISK
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_SELECTOR
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_TEXT_BOX
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_TOTAL_GAIN
+import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_TOTAL_TRADE
 import com.awonar.app.ui.profile.stat.holder.*
 
 class StatisticAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -36,6 +36,11 @@ class StatisticAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
+            STATISTIC_TOTAL_TRADE -> TotalTradeViewHolder(
+                AwonarItemTotalTradeBinding.inflate(LayoutInflater.from(parent.context),
+                    parent,
+                    false)
+            )
             STATISTIC_DIVIDER -> DividerViewHolder(
                 AwonarItemDividerBinding.inflate(LayoutInflater.from(parent.context),
                     parent,
@@ -108,6 +113,7 @@ class StatisticAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = itemList[position]
         when (holder) {
+            is TotalTradeViewHolder -> holder.bind(item as StatisticItem.TotalTradeItem)
             is ListItemViewHolder -> holder.bind(item as StatisticItem.ListItem)
             is PiechartViewHolder -> holder.bind(item as StatisticItem.PieChartItem)
             is GrowthDayViewHolder -> holder.bind(item as StatisticItem.GrowthDayItem)

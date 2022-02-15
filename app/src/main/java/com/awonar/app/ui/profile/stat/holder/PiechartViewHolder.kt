@@ -18,15 +18,6 @@ class PiechartViewHolder constructor(private val binding: AwonarItemPiechartBind
         val dataSet = PieDataSet(item.entries, "Most Trading")
         dataSet.colors = ColorTemplate.MATERIAL_COLORS.toMutableList()
         binding.awonrItemPiechart.apply {
-            setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
-                override fun onValueSelected(e: Entry?, h: Highlight?) {
-
-                }
-
-                override fun onNothingSelected() {
-                }
-
-            })
             isRotationEnabled = false
             legend.isEnabled = false
             setUsePercentValues(true)
