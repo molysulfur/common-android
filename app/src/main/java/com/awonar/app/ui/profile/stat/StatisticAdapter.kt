@@ -13,6 +13,7 @@ import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_CHART_PIE
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_CHART_POSITIVE_NEGATIVE
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_CHART_STACKED
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_DIVIDER
+import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_LINEAR_COLORS
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_LIST_ITEM
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_RISK
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_SELECTOR
@@ -36,6 +37,11 @@ class StatisticAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
+            STATISTIC_LINEAR_COLORS -> HorizontalColorsViewHolder(
+                AwonarItemLinearViewBinding.inflate(LayoutInflater.from(parent.context),
+                    parent,
+                    false)
+            )
             STATISTIC_TOTAL_TRADE -> TotalTradeViewHolder(
                 AwonarItemTotalTradeBinding.inflate(LayoutInflater.from(parent.context),
                     parent,
@@ -47,7 +53,7 @@ class StatisticAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     false)
             )
             STATISTIC_LIST_ITEM -> ListItemViewHolder(
-                AwonarItemListBinding.inflate(LayoutInflater.from(parent.context),
+                AwonarItemMarkerListItemBinding.inflate(LayoutInflater.from(parent.context),
                     parent,
                     false)
             )
@@ -113,6 +119,7 @@ class StatisticAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = itemList[position]
         when (holder) {
+            is HorizontalColorsViewHolder -> holder.bind(item as StatisticItem.LinearColorsItem)
             is TotalTradeViewHolder -> holder.bind(item as StatisticItem.TotalTradeItem)
             is ListItemViewHolder -> holder.bind(item as StatisticItem.ListItem)
             is PiechartViewHolder -> holder.bind(item as StatisticItem.PieChartItem)

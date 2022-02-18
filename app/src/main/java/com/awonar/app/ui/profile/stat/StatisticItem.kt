@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_CHART_LINE
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_CHART_PIE
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_DIVIDER
+import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_LINEAR_COLORS
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_LIST_ITEM
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_TOTAL_TRADE
 import com.github.mikephil.charting.data.BarEntry
@@ -20,6 +21,10 @@ sealed class StatisticItem(val type: Int) : Parcelable {
         val lossAvg: Float,
     ) : StatisticItem(STATISTIC_TOTAL_TRADE)
 
+    @Parcelize
+    data class LinearColorsItem(
+        val weightList: List<Float>,
+    ) : StatisticItem(STATISTIC_LINEAR_COLORS)
 
     @Parcelize
     class DividerItem : StatisticItem(STATISTIC_DIVIDER)
@@ -28,6 +33,7 @@ sealed class StatisticItem(val type: Int) : Parcelable {
     data class ListItem(
         val text: String?,
         val number: Float,
+        val color: Int = 0,
     ) : StatisticItem(STATISTIC_LIST_ITEM)
 
     @Parcelize

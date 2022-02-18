@@ -4,6 +4,7 @@ import com.awonar.android.model.user.StatTradeResponse
 import com.awonar.android.shared.di.IoDispatcher
 import com.awonar.app.ui.profile.stat.StatisticItem
 import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.utils.ColorTemplate
 import com.molysulfur.library.usecase.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import timber.log.Timber
@@ -45,13 +46,18 @@ class ConvertMostTradingStatisticToItemUseCase @Inject constructor(
                 profitAvg = parameters?.avgProfit ?: 0f,
                 lossAvg = parameters?.avgLoss ?: 0f,
             ))
-
-        parameters?.performanceTrades?.map {
+        val colors = ColorTemplate.MATERIAL_COLORS.toMutableList()
+        val sortPerformance = parameters?.performanceTrades?.sortedByDescending { it.ratio }
+        val weights = sortPerformance?.map {
+            it.ratio
+        } ?: arrayListOf()
+        itemList.add(StatisticItem.LinearColorsItem(weights))
+        sortPerformance?.forEachIndexed { index, statPerformanceTrade ->
             itemList.add(StatisticItem.ListItem(
-                text = it.category,
-                number = it.ratio
+                text = statPerformanceTrade.category,
+                number = statPerformanceTrade.ratio,
+                color = colors[index % colors.size]
             ))
-            it
         }
         return itemList
     }

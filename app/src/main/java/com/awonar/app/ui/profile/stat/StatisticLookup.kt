@@ -20,6 +20,7 @@ class StatisticLookup(private val adapter: RecyclerView.Adapter<*>, private val 
         StatisticType.STATISTIC_LIST_ITEM -> columnCount
         StatisticType.STATISTIC_DIVIDER -> columnCount
         StatisticType.STATISTIC_TOTAL_TRADE -> columnCount
+        StatisticType.STATISTIC_LINEAR_COLORS -> columnCount
         else -> 1
     }
 }
