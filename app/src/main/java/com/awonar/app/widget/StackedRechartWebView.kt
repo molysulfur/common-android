@@ -9,6 +9,7 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import com.awonar.android.shared.utils.JsonUtil
 import kotlinx.parcelize.Parcelize
+import java.util.*
 
 
 @SuppressLint("JavascriptInterface", "SetJavaScriptEnabled")
@@ -68,5 +69,6 @@ class StackedRechartWebView @JvmOverloads constructor(
         val label: String?,
         val avg: Float,
         val max: Float,
+        val year: Int,
     ) : Parcelable
 }

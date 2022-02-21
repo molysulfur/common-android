@@ -64,10 +64,13 @@ class ConvertGrowthStatisticToItemUseCase @Inject constructor(
             }
             itemList.add(StatisticItem.ButtonItem("View Less"))
         } else {
-            val currentGain = stat.months.last()
-            val monthName = DateUtils.getDate(currentGain.date, "MMMM")
+            val currentGain = stat.months.findLast { gain ->
+                val gainYear = DateUtils.getDate(gain.date, "YYYY").toInt()
+                gainYear == thisYear
+            }
+            val monthName = DateUtils.getDate(currentGain?.date, "MMMM")
             itemList.add(StatisticItem.TotalGainItem(monthName,
-                currentGain.gain.times(100)))
+                currentGain?.gain?.times(100) ?: 0f))
             itemList.add(StatisticItem.ButtonItem("View More"))
         }
 

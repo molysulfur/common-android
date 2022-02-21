@@ -15,7 +15,6 @@ class GrowthDayViewHolder constructor(private val binding: AwonarItemLineChartBi
         with(binding.awonarItemLineChart) {
             axisRight.isEnabled = false
             xAxis.isEnabled = false
-            description.text = ""
             legend.isEnabled = false
             val set1 = LineDataSet(item.entries, "Days Growth")
             with(set1) {
@@ -23,6 +22,7 @@ class GrowthDayViewHolder constructor(private val binding: AwonarItemLineChartBi
                 cubicIntensity = 0.2f
                 circleRadius = 4f
                 setDrawCircles(false)
+                setDrawValues(false)
                 lineWidth = 1.8f
             }
             val dataSets = arrayListOf<ILineDataSet>()

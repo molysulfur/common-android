@@ -67,11 +67,12 @@
         <entry key="app/src/main/res/layout/awonar_dialog_bottom_menu.xml" value="0.15348439504061565" />
         <entry key="app/src/main/res/layout/awonar_dialog_copier.xml" value="0.20885416666666667" />
         <entry key="app/src/main/res/layout/awonar_dialog_copier_edit.xml" value="0.3880208333333333" />
+        <entry key="app/src/main/res/layout/awonar_dialog_edit_copier.xml" value="0.2715477293790547" />
         <entry key="app/src/main/res/layout/awonar_dialog_order.xml" value="0.16348773841961853" />
         <entry key="app/src/main/res/layout/awonar_dialog_order_edit.xml" value="0.21670428893905191" />
         <entry key="app/src/main/res/layout/awonar_dialog_partialclose.xml" value="0.25100401606425704" />
-        <entry key="app/src/main/res/layout/awonar_dialog_remove_copier.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/awonar_dialog_stop_copier.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/awonar_dialog_remove_copier.xml" value="0.2715477293790547" />
+        <entry key="app/src/main/res/layout/awonar_dialog_stop_copier.xml" value="0.12612227447627192" />
         <entry key="app/src/main/res/layout/awonar_drawer_header_main.xml" value="0.2236024844720497" />
         <entry key="app/src/main/res/layout/awonar_fragment_column_actived.xml" value="0.1" />
         <entry key="app/src/main/res/layout/awonar_fragment_deposit.xml" value="0.1" />
@@ -191,6 +192,7 @@
         <entry key="app/src/main/res/layout/awonar_item_selector.xml" value="0.5" />
         <entry key="app/src/main/res/layout/awonar_item_selector_with_other_choice.xml" value="0.11354166666666667" />
         <entry key="app/src/main/res/layout/awonar_item_stacked_chart.xml" value="0.15348439504061565" />
+        <entry key="app/src/main/res/layout/awonar_item_text.xml" value="0.12612227447627192" />
         <entry key="app/src/main/res/layout/awonar_item_text_box.xml" value="0.30683760683760686" />
         <entry key="app/src/main/res/layout/awonar_item_text_view.xml" value="0.15348439504061565" />
         <entry key="app/src/main/res/layout/awonar_item_title.xml" value="0.20625" />

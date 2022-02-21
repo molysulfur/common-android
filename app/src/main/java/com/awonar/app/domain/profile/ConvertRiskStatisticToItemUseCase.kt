@@ -5,10 +5,13 @@ import com.awonar.android.model.user.DrawdownResponse
 import com.awonar.android.model.user.StatRiskResponse
 import com.awonar.android.shared.di.IoDispatcher
 import com.awonar.app.ui.profile.stat.StatisticItem
+import com.awonar.app.utils.DateUtils
+import com.awonar.app.widget.StackedRechartWebView
 import com.github.mikephil.charting.data.BarEntry
 import com.molysulfur.library.usecase.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.parcelize.Parcelize
+import java.time.Month
 import javax.inject.Inject
 
 class ConvertRiskStatisticToItemUseCase @Inject constructor(
@@ -20,12 +23,23 @@ class ConvertRiskStatisticToItemUseCase @Inject constructor(
         val itemList = mutableListOf<StatisticItem>()
         itemList.add(StatisticItem.RiskItem(1))
         val entries = MutableList(12) { index ->
-            BarEntry(index.toFloat(), 0f)
-        }
-        risks?.forEachIndexed { index, statRisk ->
-            entries[index] = BarEntry(index.toFloat(),
+            StackedRechartWebView.StackedRechartEntity(
+                null,
                 0f,
-                floatArrayOf(statRisk.risk.toFloat(), statRisk.maxRisk.toFloat()))
+                index.toFloat(),
+                0
+            )
+        }
+        val startPosition = 12f.minus(risks?.size ?: 0)
+        risks?.forEachIndexed { index, statRisk ->
+            val newIndex = startPosition.plus(index)
+            entries[newIndex.toInt()] = StackedRechartWebView.StackedRechartEntity(
+                label = Month.values()[newIndex.toInt()].toString(),
+                avg = statRisk.risk.toFloat(),
+                max = statRisk.maxRisk.toFloat(),
+                year = DateUtils.getDate(statRisk.date, "YYYY").toInt()
+            )
+
         }
         itemList.add(StatisticItem.StackedChartItem(entries))
         itemList.add(StatisticItem.TextBoxItem(

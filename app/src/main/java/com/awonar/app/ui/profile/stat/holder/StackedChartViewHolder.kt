@@ -18,22 +18,7 @@ class StackedChartViewHolder constructor(private val binding: AwonarItemStackedC
     }
 
     fun bind(item: StatisticItem.StackedChartItem) {
-        val entities: List<StackedRechartWebView.StackedRechartEntity> =
-            item.entries.mapIndexed { index, entry ->
-                if (entry.data != null) {
-                    StackedRechartWebView.StackedRechartEntity(
-                        label = Month.values()[index].toString(),
-                        avg = (entry.data as FloatArray)[0],
-                        max = (entry.data as FloatArray)[1]
-                    )
-                } else {
-                    StackedRechartWebView.StackedRechartEntity(
-                        label = Month.values()[index].toString(),
-                        avg = 0f,
-                        max = 0f
-                    )
-                }
-            }
+        val entities: List<StackedRechartWebView.StackedRechartEntity> = item.entries
         with(binding.awonarItemStackedchart) {
             setListener(object : StackedRechartWebView.IStackedRechartListener {
                 override fun chartAlready() {

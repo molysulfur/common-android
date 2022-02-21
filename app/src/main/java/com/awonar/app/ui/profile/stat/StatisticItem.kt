@@ -7,6 +7,7 @@ import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_DIVIDER
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_LINEAR_COLORS
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_LIST_ITEM
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_TOTAL_TRADE
+import com.awonar.app.widget.StackedRechartWebView
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.PieEntry
@@ -54,7 +55,7 @@ sealed class StatisticItem(val type: Int) : Parcelable {
 
     @Parcelize
     data class StackedChartItem(
-        val entries: List<BarEntry>,
+        val entries: List<StackedRechartWebView.StackedRechartEntity>,
     ) : StatisticItem(StatisticType.STATISTIC_CHART_STACKED)
 
     @Parcelize

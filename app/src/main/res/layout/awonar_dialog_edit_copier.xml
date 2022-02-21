@@ -99,26 +99,26 @@
                 tools:text="@string/awonar_example_name" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/awonar_dialog_edit_copier_text_title_stoploss"
+                android:id="@+id/awonar_dialog_edit_copier_text_title_stopcopy"
                 style="@style/Awonar.SubTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/awonar_size_margin_padding_normal"
                 android:layout_marginTop="@dimen/awonar_size_margin_padding_large"
                 android:text="Stop Copy"
-                app:layout_constraintEnd_toStartOf="@+id/awonar_dialog_edit_copier_toggle_stoploss"
+                app:layout_constraintEnd_toStartOf="@+id/awonar_dialog_edit_copier_toggle_stopcopy"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_edit_copier_text_stoploss_description" />
 
             <com.google.android.material.button.MaterialButtonToggleGroup
-                android:id="@+id/awonar_dialog_edit_copier_toggle_stoploss"
+                android:id="@+id/awonar_dialog_edit_copier_toggle_stopcopy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
                 app:checkedButton="@+id/awonar_dialog_edit_copier_toggle_amount"
-                app:layout_constraintBottom_toBottomOf="@+id/awonar_dialog_edit_copier_text_title_stoploss"
+                app:layout_constraintBottom_toBottomOf="@+id/awonar_dialog_edit_copier_text_title_stopcopy"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/awonar_dialog_edit_copier_text_title_stoploss"
+                app:layout_constraintTop_toTopOf="@+id/awonar_dialog_edit_copier_text_title_stopcopy"
                 app:selectionRequired="true"
                 app:singleSelection="true">
 
@@ -141,13 +141,13 @@
             </com.google.android.material.button.MaterialButtonToggleGroup>
 
             <com.awonar.app.widget.NumberPickerEditText
-                android:id="@+id/awonar_dialog_edit_copier_numberpicker_stoploss"
+                android:id="@+id/awonar_dialog_edit_copier_numberpicker_stopcopy"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/awonar_size_margin_padding_normal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_edit_copier_text_title_stoploss" />
+                app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_edit_copier_text_title_stopcopy" />
 
             <View
                 android:id="@+id/awonar_dialog_edit_copier_divider_2"
@@ -155,8 +155,7 @@
                 android:layout_height="1dp"
                 android:layout_margin="@dimen/awonar_size_margin_padding_normal"
                 android:background="@color/awonar_color_gray"
-                app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_edit_copier_numberpicker_stoploss" />
-
+                app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_edit_copier_numberpicker_stopcopy" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/awonar_dialog_edit_copier_checkbox_open_trade"

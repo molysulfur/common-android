@@ -100,9 +100,11 @@ class PartialCloseDialog :
     private fun updateNumberPicker(it: Pair<Float, Float>) {
         when (binding.awonarPartialCloseButtonGroupType.checkedButtonId) {
             R.id.awonar_partial_close_button_amount -> {
+                binding.awonarPartialCloseNumberpickerAmount.setPrefix("$")
                 binding.awonarPartialCloseNumberpickerAmount.setNumber(it.first)
             }
             R.id.awonar_partial_close_button_units -> {
+                binding.awonarPartialCloseNumberpickerAmount.setPrefix("")
                 binding.awonarPartialCloseNumberpickerAmount.setNumber(it.second)
             }
         }

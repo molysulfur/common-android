@@ -38,7 +38,6 @@ class PortFolioInsideInstrumentFragment : Fragment() {
 
     private val portFolioViewModel: PortFolioViewModel by activityViewModels()
     private val activityViewModel: PositionInsideViewModel by activityViewModels()
-    private val marketViewModel: MarketViewModel by activityViewModels()
     private val columnsViewModel: ColumnsViewModel by activityViewModels()
     private val orderViewModel: OrderViewModel by activityViewModels()
 
