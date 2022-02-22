@@ -20,14 +20,13 @@ import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentPortfolioInsideInstrumentBinding
 import com.awonar.app.ui.columns.ColumnsViewModel
-import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.order.OrderDialog
 import com.awonar.app.ui.order.OrderViewModel
 import com.awonar.app.ui.order.edit.OrderEditDialog
 import com.awonar.app.ui.order.partialclose.PartialCloseDialog
 import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.awonar.app.ui.portfolio.adapter.IPortfolioListItemTouchHelperCallback
-import com.awonar.app.ui.portfolio.adapter.OrderPortfolioAdapter
+import com.awonar.app.ui.portfolio.adapter.PortfolioAdapter
 import com.awonar.app.ui.portfolio.adapter.PortfolioListItemTouchHelperCallback
 import com.google.android.material.snackbar.Snackbar
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
@@ -138,7 +137,7 @@ class PortFolioInsideInstrumentFragment : Fragment() {
     private fun updatePositionItem(quotes: MutableMap<Int, Quote>) {
         val adapter = binding.awonarPortfolioRecyclerContainer.adapter
         if (adapter != null) {
-            (adapter as OrderPortfolioAdapter).let {
+            (adapter as PortfolioAdapter).let {
                 it.quote = quotes
             }
         }

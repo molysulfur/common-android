@@ -141,7 +141,7 @@ class PartialCloseDialog :
                 }
             } else {
                 position?.let {
-                    viewModel.closePosition(it.id, marketOrderType)
+                    viewModel.closePosition(it.id ?: "", marketOrderType)
                 }
             }
         }

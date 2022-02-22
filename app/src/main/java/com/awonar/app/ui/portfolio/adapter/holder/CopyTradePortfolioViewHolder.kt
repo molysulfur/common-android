@@ -3,19 +3,19 @@ package com.awonar.app.ui.portfolio.adapter.holder
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.shared.steaming.QuoteSteamingManager
 import com.awonar.android.shared.utils.PortfolioUtil
-import com.awonar.app.databinding.AwonarItemInstrumentOrderBinding
-import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
+import com.awonar.app.databinding.AwonarItemPositionBinding
+import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class CopyTradePortfolioViewHolder constructor(
-    private val binding: AwonarItemInstrumentOrderBinding,
+    private val binding: AwonarItemPositionBinding,
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(
-        item: OrderPortfolioItem.CopierPortfolioItem,
+        item: PortfolioItem.CopierPortfolioItem,
         columns: List<String>,
         onClick: ((Int, String) -> Unit)?,
     ) {
@@ -37,7 +37,7 @@ class CopyTradePortfolioViewHolder constructor(
         binding.item = item
     }
 
-    private fun setupDataSteaming(item: OrderPortfolioItem.CopierPortfolioItem) {
+    private fun setupDataSteaming(item: PortfolioItem.CopierPortfolioItem) {
         CoroutineScope(Dispatchers.IO).launch {
             QuoteSteamingManager.quotesState.collect { quotes ->
                 val sumFloatingPL = 0f

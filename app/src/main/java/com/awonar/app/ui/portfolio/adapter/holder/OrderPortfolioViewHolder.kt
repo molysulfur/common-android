@@ -1,19 +1,16 @@
 package com.awonar.app.ui.portfolio.adapter.holder
 
 import androidx.recyclerview.widget.RecyclerView
-import com.awonar.android.model.market.Quote
-import com.awonar.android.shared.utils.PortfolioUtil
-import com.awonar.app.databinding.AwonarItemInstrumentOrderBinding
-import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
-import timber.log.Timber
+import com.awonar.app.databinding.AwonarItemPositionBinding
+import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 
 class OrderPortfolioViewHolder constructor(
-    private val binding: AwonarItemInstrumentOrderBinding,
+    private val binding: AwonarItemPositionBinding,
 ) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(
-        item: OrderPortfolioItem.InstrumentOrderItem,
+        item: PortfolioItem.InstrumentItem,
         columns: List<String>,
     ) {
 //        quote?.let {

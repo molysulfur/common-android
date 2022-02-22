@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 class PortfolioRepository @Inject constructor(
     private val portfolioService: PortfolioService,
-    private val preference: PortfolioActivedColumnManager
+    private val preference: PortfolioActivedColumnManager,
 ) {
 
     fun getPendingOrders() =
@@ -63,10 +63,24 @@ class PortfolioRepository @Inject constructor(
 
     }.asFlow()
 
+    fun getUserPortfolio(username: String) =
+        object : DirectNetworkFlow<Boolean, UserPortfolioResponse, UserPortfolioResponse>() {
+            override fun createCall(): Response<UserPortfolioResponse> =
+                portfolioService.getUserPositionManual(username).execute()
+
+            override fun convertToResultType(response: UserPortfolioResponse): UserPortfolioResponse =
+                response
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+
+        }.asFlow()
+
     fun getUserPortfolio() =
         object : DirectNetworkFlow<Boolean, UserPortfolioResponse, UserPortfolioResponse>() {
             override fun createCall(): Response<UserPortfolioResponse> =
-                portfolioService.getUserPortFolio().execute()
+                portfolioService.getMyPositionManual().execute()
 
             override fun convertToResultType(response: UserPortfolioResponse): UserPortfolioResponse =
                 response

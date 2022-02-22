@@ -2,7 +2,7 @@ package com.awonar.app.ui.portfolio.adapter.holder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.app.databinding.AwonarItemPiechartBinding
-import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
+import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
@@ -15,7 +15,7 @@ class PieChartViewHolder constructor(private val binding: AwonarItemPiechartBind
     RecyclerView.ViewHolder(binding.root) {
 
 
-    fun bind(item: OrderPortfolioItem.PieChartItem, onPieChartClick: ((String?) -> Unit)?) {
+    fun bind(item: PortfolioItem.PieChartItem, onPieChartClick: ((String?) -> Unit)?) {
         val dataSet = PieDataSet(item.entries, "Exposure")
         dataSet.colors = ColorTemplate.MATERIAL_COLORS.toMutableList()
         binding.awonrItemPiechart.apply {

@@ -6,6 +6,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.adapter.FragmentViewHolder
 import com.awonar.app.R
+import com.awonar.app.ui.portfolio.UserPortfolioFragment
 import com.awonar.app.ui.profile.ProfilePrivateFragment
 import com.awonar.app.ui.profile.StatisticProfileFragment
 import com.awonar.app.ui.user.UserInfoFragment
@@ -30,7 +31,7 @@ class ProfilePagerAdapter constructor(fragmentManager: FragmentManager, lifecycl
         0 -> ProfilePrivateFragment()
         1 -> UserInfoFragment.newInstance()
         2 -> StatisticProfileFragment.newInstance()
-        3 -> ProfilePrivateFragment()
+        3 -> UserPortfolioFragment.newInstance()
         else -> StatisticProfileFragment.newInstance()
     }
 }

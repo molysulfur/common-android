@@ -483,7 +483,7 @@ class OrderViewModel @Inject constructor(
             } else {
                 updateOrderUseCase(
                     UpdateOrderRequest(
-                        id = position.id,
+                        id = position.id ?: "",
                         unitsToReduce = unitReduct
                     )
                 ).collect {

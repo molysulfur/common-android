@@ -7,13 +7,12 @@ import com.awonar.android.shared.di.IoDispatcher
 import com.awonar.android.shared.domain.order.CalculateAmountStopLossAndTakeProfitWithBuyUseCase
 import com.awonar.android.shared.domain.order.CalculateAmountStopLossAndTakeProfitWithSellUseCase
 import com.awonar.android.shared.repos.CurrenciesRepository
-import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
+import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 import com.awonar.app.utils.DateUtils
 import com.molysulfur.library.result.data
 import com.molysulfur.library.result.succeeded
 import com.molysulfur.library.usecase.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -23,10 +22,10 @@ class ConvertGroupPositionToItemUseCase @Inject constructor(
     private val calculateAmountStopLossAndTakeProfitWithBuyUseCase: CalculateAmountStopLossAndTakeProfitWithBuyUseCase,
     private val calculateAmountStopLossAndTakeProfitWithSellUseCase: CalculateAmountStopLossAndTakeProfitWithSellUseCase,
     @IoDispatcher dispatcher: CoroutineDispatcher,
-) : UseCase<List<Position>, List<OrderPortfolioItem>>(dispatcher) {
-    override suspend fun execute(parameters: List<Position>): MutableList<OrderPortfolioItem> {
+) : UseCase<List<Position>, List<PortfolioItem>>(dispatcher) {
+    override suspend fun execute(parameters: List<Position>): MutableList<PortfolioItem> {
         val groupInstrument: Map<Int, List<Position>> = parameters.groupBy { it.instrumentId }
-        val itemList = mutableListOf<OrderPortfolioItem>()
+        val itemList = mutableListOf<PortfolioItem>()
         for ((key, positions) in groupInstrument) {
             val conversionRate = currenciesRepository.getConversionByInstrumentId(key).rateBid
             val invested: Double = positions.sumOf { it.amount.toDouble() }
@@ -62,9 +61,9 @@ class ConvertGroupPositionToItemUseCase @Inject constructor(
             val tpPercent = 0f
             val date = DateUtils.getDate(positions[0].openDateTime)
             itemList.add(
-                OrderPortfolioItem.InstrumentPortfolioItem(
+                PortfolioItem.InstrumentPortfolioItem(
                     position = positions[0],
-                    conversionRate = conversionRate,
+                 /*   conversionRate = conversionRate,
                     invested = invested.toFloat(),
                     units = units.toFloat(),
                     open = avgOpen.toFloat(),
@@ -80,7 +79,7 @@ class ConvertGroupPositionToItemUseCase @Inject constructor(
                     amountStopLoss = amountSl,
                     amountTakeProfit = amountTp,
                     stopLossPercent = slPercent,
-                    takeProfitPercent = tpPercent,
+                    takeProfitPercent = tpPercent,*/
                     date = date,
                     index = parameters.indexOfFirst { it.instrument.id == positions[0].instrument.id }
                 )

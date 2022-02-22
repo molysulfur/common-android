@@ -13,15 +13,37 @@ import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.app.R
 import com.awonar.app.ui.portfolio.adapter.IPortfolioListItemTouchHelperCallback
-import com.awonar.app.ui.portfolio.adapter.OrderPortfolioAdapter
-import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
+import com.awonar.app.ui.portfolio.adapter.PortfolioAdapter
+import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 import com.awonar.app.ui.portfolio.adapter.PortfolioListItemTouchHelperCallback
 import com.awonar.app.ui.portfolio.position.PositionViewModel
 import com.awonar.app.utils.ColorChangingUtil
 import com.awonar.app.widget.CopierPositionCardView
-import com.awonar.app.widget.InstrumentOrderView
+import com.awonar.app.widget.PositionView
 import com.awonar.app.widget.InstrumentPositionCardView
 import kotlin.collections.HashMap
+
+@BindingAdapter("setUserPortfolio", "column1", "column2", "column3", "column4")
+fun setUserPortfolio(
+    recycler: RecyclerView,
+    itemList: MutableList<PortfolioItem>,
+    column1: String?,
+    column2: String?,
+    column3: String?,
+    column4: String?,
+) {
+    if (recycler.adapter == null) {
+        with(recycler) {
+            adapter = PortfolioAdapter()
+            layoutManager =
+                LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
+        }
+    }
+    with(recycler.adapter as PortfolioAdapter) {
+        itemLists = itemList
+        columns = arrayListOf(column1 ?: "", column2 ?: "", column3 ?: "", column4 ?: "")
+    }
+}
 
 @BindingAdapter("setAvaliable")
 fun setAvaliable(
@@ -74,7 +96,7 @@ fun setEquity(
 @BindingAdapter("initCopierCard")
 fun initCopierCard(
     view: CopierPositionCardView,
-    item: OrderPortfolioItem.CopierPositionCardItem?,
+    item: PortfolioItem.CopierPositionCardItem?,
 ) {
     item?.let {
         view.setImage(item.copier.user.picture ?: "")
@@ -91,7 +113,7 @@ fun initCopierCard(
 @BindingAdapter("initInstrumentPositionCard")
 fun setInstrumentPositionCardView(
     view: InstrumentPositionCardView,
-    item: OrderPortfolioItem.InstrumentPositionCardItem?,
+    item: PortfolioItem.InstrumentPositionCardItem?,
 ) {
     item?.let {
         view.setImage(item.position.instrument.logo ?: "")
@@ -109,7 +131,7 @@ fun setInstrumentPositionCardView(
 @BindingAdapter("instrumentPositionCardItem", "quote")
 fun setInsturmentPositionCardWithQuote(
     view: InstrumentPositionCardView,
-    item: OrderPortfolioItem.InstrumentPositionCardItem?,
+    item: PortfolioItem.InstrumentPositionCardItem?,
     quote: Quote?,
 ) {
     quote?.let {
@@ -133,13 +155,13 @@ fun setInsturmentPositionCardWithQuote(
 @BindingAdapter("setItemListCard")
 fun setPositionCardAdapter(
     recycler: RecyclerView,
-    items: MutableList<OrderPortfolioItem>,
+    items: MutableList<PortfolioItem>,
 ) {
     if (recycler.adapter == null) {
         recycler.apply {
             layoutManager =
                 LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
-            adapter = OrderPortfolioAdapter().apply {
+            adapter = PortfolioAdapter().apply {
                 onClick = { it, type ->
                 }
             }
@@ -164,7 +186,7 @@ fun setPositionCardAdapter(
             }
         })
     }
-    (recycler.adapter as OrderPortfolioAdapter).itemLists = items
+    (recycler.adapter as PortfolioAdapter).itemLists = items
 }
 
 @BindingAdapter("copier", "conversionRateList", "quote")
@@ -262,7 +284,7 @@ fun updateQuoteInstrumentPosition(
 @BindingAdapter("setInsideAdapter", "activedColumn", "viewModel")
 fun setInsidePositionAdapter(
     recycler: RecyclerView,
-    items: MutableList<OrderPortfolioItem>,
+    items: MutableList<PortfolioItem>,
     activedColumn: List<String>?,
     viewModel: PositionViewModel?,
 ) {
@@ -270,7 +292,7 @@ fun setInsidePositionAdapter(
         recycler.apply {
             layoutManager =
                 LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
-            adapter = OrderPortfolioAdapter().apply {
+            adapter = PortfolioAdapter().apply {
                 onClick = { index, type ->
                     viewModel?.navigateInstrumentInside(index, "copies_instrument")
                 }
@@ -278,7 +300,7 @@ fun setInsidePositionAdapter(
         }
     }
 
-    val adapter = recycler.adapter as OrderPortfolioAdapter
+    val adapter = recycler.adapter as PortfolioAdapter
     adapter.apply {
         columns = activedColumn ?: emptyList()
         itemLists = items
@@ -288,7 +310,7 @@ fun setInsidePositionAdapter(
 @BindingAdapter("setPositionAdapter", "activedColumn", "viewModel")
 fun setPositionAdapter(
     recycler: RecyclerView,
-    items: MutableList<OrderPortfolioItem>,
+    items: MutableList<PortfolioItem>,
     activedColumn: List<String> = emptyList(),
     viewModel: PositionViewModel,
 ) {
@@ -296,7 +318,7 @@ fun setPositionAdapter(
         recycler.apply {
             layoutManager =
                 LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
-            adapter = OrderPortfolioAdapter().apply {
+            adapter = PortfolioAdapter().apply {
                 onClick = { it, type ->
                     viewModel.navigateInstrumentInside(it, type)
                 }
@@ -325,7 +347,7 @@ fun setPositionAdapter(
             }
         }
     }
-    val adapter = recycler.adapter as OrderPortfolioAdapter
+    val adapter = recycler.adapter as PortfolioAdapter
     adapter.apply {
         columns = activedColumn
         itemLists = items
@@ -334,15 +356,15 @@ fun setPositionAdapter(
 
 @BindingAdapter("setPositionOrder", "column1", "column2", "column3", "column4")
 fun setItemPositionOrderPortfolio(
-    view: InstrumentOrderView,
-    item: OrderPortfolioItem?,
+    view: PositionView,
+    item: PortfolioItem?,
     column1: String?,
     column2: String?,
     column3: String?,
     column4: String?,
 ) {
     when (item) {
-        is OrderPortfolioItem.InstrumentOrderItem -> item.position.let { position ->
+        is PortfolioItem.InstrumentItem -> item.position.let { position ->
             view.setTextColumnOne(
                 getPositionValueByColumn(
                     item,
@@ -392,7 +414,7 @@ fun setItemPositionOrderPortfolio(
                 )
             )
         }
-        is OrderPortfolioItem.InstrumentPortfolioItem -> item.position.let { position ->
+        is PortfolioItem.InstrumentPortfolioItem -> item.position.let { position ->
             view.setTextColumnOne(
                 getPositionValueByColumn(
                     item,
@@ -442,7 +464,7 @@ fun setItemPositionOrderPortfolio(
                 )
             )
         }
-        is OrderPortfolioItem.CopierPortfolioItem -> item.copier.let { copy ->
+        is PortfolioItem.CopierPortfolioItem -> item.copier.let { copy ->
             view.setTextColumnOne(
                 getCopierValueByColumn(
                     item,
@@ -498,7 +520,7 @@ fun setItemPositionOrderPortfolio(
 }
 
 private fun getCopierColorByColumn(
-    item: OrderPortfolioItem.CopierPortfolioItem,
+    item: PortfolioItem.CopierPortfolioItem,
     column: String,
 ): Int = when {
     column == "P/L($)" && item.profitLoss < 0 -> R.color.awonar_color_orange
@@ -509,7 +531,7 @@ private fun getCopierColorByColumn(
 }
 
 private fun getCopierValueByColumn(
-    item: OrderPortfolioItem.CopierPortfolioItem,
+    item: PortfolioItem.CopierPortfolioItem,
     column: String,
 ): String = when (column) {
     "Invested" -> "$%.2f".format(item.invested)
@@ -524,20 +546,20 @@ private fun getCopierValueByColumn(
 }
 
 private fun getPositionColorColoumn(
-    item: OrderPortfolioItem.InstrumentPortfolioItem,
+    item: PortfolioItem.InstrumentPortfolioItem,
     column: String,
 ): Int = when {
-    column == "P/L($)" && item.profitLoss < 0 -> R.color.awonar_color_orange
-    column == "P/L($)" && item.profitLoss >= 0 -> R.color.awonar_color_green
-    column == "P/L(%)" && item.profitLossPercent < 0 -> R.color.awonar_color_orange
-    column == "P/L(%)" && item.profitLossPercent >= 0 -> R.color.awonar_color_green
-    column == "Pip Change" && item.pipChange < 0 -> R.color.awonar_color_orange
-    column == "Pip Change" && item.pipChange >= 0 -> R.color.awonar_color_green
+    column == "P/L($)" && item.position.profitLoss < 0 -> R.color.awonar_color_orange
+    column == "P/L($)" && item.position.profitLoss >= 0 -> R.color.awonar_color_green
+    column == "P/L(%)" && item.position.profitLossPercent < 0 -> R.color.awonar_color_orange
+    column == "P/L(%)" && item.position.profitLossPercent >= 0 -> R.color.awonar_color_green
+    column == "Pip Change" && item.position.pipChange < 0 -> R.color.awonar_color_orange
+    column == "Pip Change" && item.position.pipChange >= 0 -> R.color.awonar_color_green
     else -> 0
 }
 
 private fun getPositionColorColoumn(
-    item: OrderPortfolioItem.InstrumentOrderItem,
+    item: PortfolioItem.InstrumentItem,
     column: String,
 ): Int = when {
     column == "P/L($)" && item.profitLoss < 0 -> R.color.awonar_color_orange
@@ -550,31 +572,31 @@ private fun getPositionColorColoumn(
 }
 
 private fun getPositionValueByColumn(
-    item: OrderPortfolioItem.InstrumentPortfolioItem,
+    item: PortfolioItem.InstrumentPortfolioItem,
     column: String,
 ): String = when (column) {
-    "Invested" -> "$%.2f".format(item.invested)
-    "Units" -> "%.2f".format(item.units)
-    "Open", "Avg. Open" -> "%s".format(item.open)
-    "Current" -> "%s".format(item.current)
-    "P/L($)" -> "$%.2f".format(item.profitLoss)
-    "P/L(%)" -> "%.2f%s".format(item.profitLossPercent, "%")
-    "Pip Change" -> "%s".format(item.pipChange.toInt())
-    "Leverage" -> "%s".format(item.leverage)
-    "Value" -> "$%.2f".format(item.value)
-    "Fee" -> "$%.2f".format(item.fees)
-    "Execute at" -> "$%s".format(item.invested)
-    "SL" -> "%s".format(item.stopLoss)
-    "TP" -> "%s".format(item.takeProfit)
-    "SL($)" -> "$%.2f".format(item.amountStopLoss)
-    "TP($)" -> "$%.2f".format(item.amountTakeProfit)
-    "SL(%)" -> "%.2f%s".format(item.stopLossPercent, "%")
-    "TP(%)" -> "%.2f%s".format(item.takeProfitPercent, "%")
+    "Invested" -> "$%.2f".format(item.position.invested)
+    "Units" -> "%.2f".format(item.position.units)
+    "Open", "Avg. Open" -> "%s".format(item.position.open)
+    "Current" -> "%s".format(item.position.current)
+    "P/L($)" -> "$%.2f".format(item.position.profitLoss)
+    "P/L(%)" -> "%.2f%s".format(item.position.profitLossPercent, "%")
+    "Pip Change" -> "%s".format(item.position.pipChange.toInt())
+    "Leverage" -> "%s".format(item.position.leverage)
+    "Value" -> "$%.2f".format(item.position.value)
+    "Fee" -> "$%.2f".format(item.position.fees)
+    "Execute at" -> "$%s".format(item.position.invested)
+    "SL" -> "%s".format(item.position.stopLoss)
+    "TP" -> "%s".format(item.position.takeProfit)
+    "SL($)" -> "$%.2f".format(item.position.amountStopLoss)
+    "TP($)" -> "$%.2f".format(item.position.amountTakeProfit)
+    "SL(%)" -> "%.2f%s".format(item.position.stopLossPercent, "%")
+    "TP(%)" -> "%.2f%s".format(item.position.takeProfitPercent, "%")
     else -> ""
 }
 
 private fun getPositionValueByColumn(
-    item: OrderPortfolioItem.InstrumentOrderItem,
+    item: PortfolioItem.InstrumentItem,
     column: String,
 ): String = when (column) {
     "Invested" -> "$%.2f".format(item.invested)

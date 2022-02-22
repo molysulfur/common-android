@@ -10,14 +10,15 @@ import com.awonar.app.databinding.*
 import com.awonar.app.ui.portfolio.adapter.holder.*
 
 @SuppressLint("NotifyDataSetChanged")
-class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var pieChartType: String = "exposure"
 
-    var itemLists: MutableList<OrderPortfolioItem> = mutableListOf(OrderPortfolioItem.EmptyItem())
+    var itemLists: MutableList<PortfolioItem> = mutableListOf(PortfolioItem.EmptyItem())
         set(value) {
+            val oldList = field
             field = value
-            notifyDataSetChanged()
+            DiffUtil.calculateDiff(PortfolioDiffCallback(oldList, value)).dispatchUpdatesTo(this)
         }
 
     var columns: List<String> = listOf()
@@ -28,9 +29,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var quote: MutableMap<Int, Quote> = mutableMapOf()
         set(value) {
-            val oldList = field
             field = value
-            OrderPortfolioDiffCallback(oldList, value)
         }
 
     var onClick: ((Int, String) -> Unit)? = null
@@ -40,91 +39,91 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            OrderPortfolioType.SECTION_PORTFOLIO -> SectionViewHolder(
+            PortfolioType.SECTION_PORTFOLIO -> SectionViewHolder(
                 AwonarItemSectionBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
             )
-            OrderPortfolioType.EMPTY_PORTFOLIO -> EmptyViewHolder(
+            PortfolioType.EMPTY_PORTFOLIO -> EmptyViewHolder(
                 AwonarItemEmptyBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
             )
-            OrderPortfolioType.INSTRUMENT_PORTFOLIO -> InstrumentPortfolioViewHolder(
-                AwonarItemInstrumentOrderBinding.inflate(
+            PortfolioType.INSTRUMENT_PORTFOLIO -> InstrumentPortfolioViewHolder(
+                AwonarItemPositionBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
             )
-            OrderPortfolioType.ORDER_PORTFOLIO -> OrderPortfolioViewHolder(
-                AwonarItemInstrumentOrderBinding.inflate(
+            PortfolioType.ORDER_PORTFOLIO -> OrderPortfolioViewHolder(
+                AwonarItemPositionBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
             )
-            OrderPortfolioType.COPYTRADE_PORTFOLIO -> CopyTradePortfolioViewHolder(
-                AwonarItemInstrumentOrderBinding.inflate(
+            PortfolioType.COPYTRADE_PORTFOLIO -> CopyTradePortfolioViewHolder(
+                AwonarItemPositionBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
             )
-            OrderPortfolioType.INSTRUMENT_POSITION_CARD -> InstrumentPositionCardViewHolder(
+            PortfolioType.INSTRUMENT_POSITION_CARD -> InstrumentPositionCardViewHolder(
                 AwonarItemInstrumentPositionBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
             )
-            OrderPortfolioType.COPY_POSITION_CARD -> CopierPositionViewHolder(
+            PortfolioType.COPY_POSITION_CARD -> CopierPositionViewHolder(
                 AwonarItemCopierCardBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
             )
-            OrderPortfolioType.LIST_ITEM_PORTFOLIO -> ListItemViewHolder(
+            PortfolioType.LIST_ITEM_PORTFOLIO -> ListItemViewHolder(
                 AwonarItemListPiechartBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
             )
-            OrderPortfolioType.TITLE_CENTER_PORTFOLIO -> TitleViewHolder(
+            PortfolioType.TITLE_CENTER_PORTFOLIO -> TitleViewHolder(
                 AwonarItemCenterTitleBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
             )
-            OrderPortfolioType.SUBTITLE_CENTER_PORTFOLIO -> SubTitleViewHolder(
+            PortfolioType.SUBTITLE_CENTER_PORTFOLIO -> SubTitleViewHolder(
                 AwonarItemCenterSubtitleBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
             )
-            OrderPortfolioType.BUTTON_PORTFOLIO -> PieChartTypeButtonViewHolder(
+            PortfolioType.BUTTON_PORTFOLIO -> PieChartTypeButtonViewHolder(
                 AwonarItemButtonViewmoreBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
             )
-            OrderPortfolioType.VIEWALL_BUTTON -> ViewAllViewHolder(
+            PortfolioType.VIEWALL_BUTTON -> ViewAllViewHolder(
                 AwonarItemButtonViewmoreBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
             )
-            OrderPortfolioType.PIECHART_PORTFOLIO -> PieChartViewHolder(
+            PortfolioType.PIECHART_PORTFOLIO -> PieChartViewHolder(
                 AwonarItemPiechartBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -140,49 +139,49 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val item = itemLists[position]
         when (holder) {
             is InstrumentPortfolioViewHolder -> holder.bind(
-                item as OrderPortfolioItem.InstrumentPortfolioItem,
+                item as PortfolioItem.InstrumentPortfolioItem,
                 columns,
                 onClick
             )
             is CopyTradePortfolioViewHolder -> holder.bind(
-                item as OrderPortfolioItem.CopierPortfolioItem,
+                item as PortfolioItem.CopierPortfolioItem,
                 columns,
                 onClick
             )
             is InstrumentPositionCardViewHolder -> holder.bind(
-                item as OrderPortfolioItem.InstrumentPositionCardItem,
+                item as PortfolioItem.InstrumentPositionCardItem,
                 quote[item.position.instrument.id],
             )
             is CopierPositionViewHolder -> holder.bind(
-                item as OrderPortfolioItem.CopierPositionCardItem,
+                item as PortfolioItem.CopierPositionCardItem,
             )
             is ListItemViewHolder -> holder.bind(
-                item as OrderPortfolioItem.ListItem
+                item as PortfolioItem.ListItem
             )
             is TitleViewHolder -> holder.bind(
-                item as OrderPortfolioItem.TitleItem
+                item as PortfolioItem.TitleItem
             )
             is SubTitleViewHolder -> holder.bind(
-                item as OrderPortfolioItem.SubTitleItem
+                item as PortfolioItem.SubTitleItem
             )
             is PieChartTypeButtonViewHolder -> holder.bind(
-                item as OrderPortfolioItem.ButtonItem,
+                item as PortfolioItem.ButtonItem,
                 onButtonClick
             )
             is PieChartViewHolder -> holder.bind(
-                item as OrderPortfolioItem.PieChartItem,
+                item as PortfolioItem.PieChartItem,
                 onPieChartClick
             )
             is OrderPortfolioViewHolder -> holder.bind(
-                item as OrderPortfolioItem.InstrumentOrderItem,
+                item as PortfolioItem.InstrumentItem,
                 columns,
             )
             is ViewAllViewHolder -> holder.bind(
-                item as OrderPortfolioItem.ViewAllItem,
+                item as PortfolioItem.ViewAllItem,
                 onViewAllClick
             )
             is SectionViewHolder -> holder.bind(
-                item as OrderPortfolioItem.SectionItem
+                item as PortfolioItem.SectionItem
             )
         }
     }
@@ -195,15 +194,15 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         when (isDesc) {
             true -> itemLists.sortByDescending {
                 when (it) {
-                    is OrderPortfolioItem.InstrumentPortfolioItem -> sortPosition(it, column)
-                    is OrderPortfolioItem.CopierPortfolioItem -> sortCopier(it, column)
+                    is PortfolioItem.InstrumentPortfolioItem -> sortPosition(it, column)
+                    is PortfolioItem.CopierPortfolioItem -> sortCopier(it, column)
                     else -> 0f
                 }
             }
             else -> itemLists.sortBy {
                 when (it) {
-                    is OrderPortfolioItem.InstrumentPortfolioItem -> sortPosition(it, column)
-                    is OrderPortfolioItem.CopierPortfolioItem -> sortCopier(it, column)
+                    is PortfolioItem.InstrumentPortfolioItem -> sortPosition(it, column)
+                    is PortfolioItem.CopierPortfolioItem -> sortCopier(it, column)
                     else -> 0f
                 }
             }
@@ -212,7 +211,7 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     private fun sortCopier(
-        item: OrderPortfolioItem.CopierPortfolioItem,
+        item: PortfolioItem.CopierPortfolioItem,
         column: String?,
     ): Float = when (column) {
         "Invested" -> item.invested
@@ -228,33 +227,33 @@ class OrderPortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     private fun sortPosition(
-        item: OrderPortfolioItem.InstrumentPortfolioItem,
+        item: PortfolioItem.InstrumentPortfolioItem,
         column: String?,
     ): Float = when (column) {
-        "Invested" -> item.invested
-        "Units" -> item.units
-        "Open" -> item.open
-        "Current" -> item.current
-        "P/L($)" -> item.profitLoss
-        "P/L(%)" -> item.profitLossPercent
-        "Pip Change" -> item.pipChange
-        "Leverage" -> item.leverage.toFloat()
-        "Value" -> item.value
-        "Fee" -> item.fees
-        "Execute at" -> item.invested
-        "SL" -> item.stopLoss
-        "TP" -> item.takeProfit
-        "SL($)" -> item.amountStopLoss
-        "TP($)" -> item.amountTakeProfit
-        "SL(%)" -> item.stopLossPercent
-        "TP(%)" -> item.takeProfitPercent
-        "Avg. Open" -> item.open
+        "Invested" -> item.position.invested
+        "Units" -> item.position.units
+        "Open" -> item.position.open
+        "Current" -> item.position.current
+        "P/L($)" -> item.position.profitLoss
+        "P/L(%)" -> item.position.profitLossPercent
+        "Pip Change" -> item.position.pipChange
+        "Leverage" -> item.position.leverage.toFloat()
+        "Value" -> item.position.value
+        "Fee" -> item.position.fees
+        "Execute at" -> item.position.invested
+        "SL" -> item.position.stopLoss
+        "TP" -> item.position.takeProfit
+        "SL($)" -> item.position.amountStopLoss
+        "TP($)" -> item.position.amountTakeProfit
+        "SL(%)" -> item.position.stopLossPercent
+        "TP(%)" -> item.position.takeProfitPercent
+        "Avg. Open" -> item.position.open
         else -> 0f
     }
 
-    class OrderPortfolioDiffCallback(
-        private val oldItems: MutableMap<Int, Quote>?,
-        private val newItems: MutableMap<Int, Quote>?,
+    class PortfolioDiffCallback(
+        private val oldItems: MutableList<PortfolioItem>?,
+        private val newItems: MutableList<PortfolioItem>?,
     ) : DiffUtil.Callback() {
 
         override fun getOldListSize(): Int = oldItems?.size ?: 0

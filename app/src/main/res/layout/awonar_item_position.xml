@@ -21,11 +21,11 @@
 
         <variable
             name="item"
-            type="com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem" />
+            type="com.awonar.app.ui.portfolio.adapter.PortfolioItem" />
 
     </data>
 
-    <com.awonar.app.widget.InstrumentOrderView xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.awonar.app.widget.PositionView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/awonar_insturment_order_item"
         column1="@{column1}"
         column2="@{column2}"

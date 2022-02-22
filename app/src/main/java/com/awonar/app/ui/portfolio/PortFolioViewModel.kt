@@ -8,12 +8,10 @@ import com.awonar.android.shared.domain.market.GetConversionByInstrumentUseCase
 import com.awonar.android.shared.domain.portfolio.*
 import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.android.shared.utils.WhileViewSubscribed
-import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
-import com.molysulfur.library.result.Result
+import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 import com.molysulfur.library.result.data
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,6 +22,7 @@ import timber.log.Timber
 class PortFolioViewModel @Inject constructor(
     private val getMyPortFolioUseCase: GetMyPortFolioUseCase,
     private var getPositionMarketUseCase: GetPositionMarketUseCase,
+    private val getPositionManualUseCase: GetPositionManualUseCase,
     private val getPositionUseCase: GetPositionUseCase,
     private val getConversionByInstrumentUseCase: GetConversionByInstrumentUseCase,
     private val getPendingOrdersUseCase: GetPendingOrdersUseCase,
@@ -46,7 +45,6 @@ class PortFolioViewModel @Inject constructor(
     val equityState: StateFlow<Float> get() = _equityState
 
     private val _portfolioType = MutableStateFlow("market")
-    val portfolioType: StateFlow<String> get() = _portfolioType
 
     val portfolioState: StateFlow<Portfolio?> = flow {
         getMyPortFolioUseCase(true).collect {
@@ -55,12 +53,35 @@ class PortFolioViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, WhileViewSubscribed, null)
 
-    private val _positionOrderList: MutableStateFlow<MutableList<OrderPortfolioItem>> =
-        MutableStateFlow(mutableListOf(OrderPortfolioItem.EmptyItem()))
-    val positionOrderList: StateFlow<MutableList<OrderPortfolioItem>> get() = _positionOrderList
+    private val _positionList: MutableStateFlow<MutableList<PortfolioItem>> =
+        MutableStateFlow(mutableListOf(PortfolioItem.EmptyItem()))
+    val positionList: StateFlow<MutableList<PortfolioItem>> get() = _positionList
 
     private val _positionState = MutableStateFlow<UserPortfolioResponse?>(null)
     val positionState: StateFlow<UserPortfolioResponse?> get() = _positionState
+
+    fun getManual(username: String? = null) {
+        viewModelScope.launch {
+            getPositionManualUseCase(username).collect {
+                val data = it.successOr(null)
+                val itemList = mutableListOf<PortfolioItem>()
+                data?.positions?.forEachIndexed { index, position ->
+                    itemList.add(PortfolioItem.InstrumentPortfolioItem(
+                        position = position,
+                        date = null,
+                        index = index
+
+                    ))
+                }
+                data?.copies?.forEachIndexed { index, copier ->
+                    itemList.add(PortfolioItem.CopierPortfolioItem(
+                        copier = copier
+                    ))
+                }
+                _positionList.emit(itemList)
+            }
+        }
+    }
 
     fun getPosition() {
         viewModelScope.launch {
@@ -82,7 +103,7 @@ class PortFolioViewModel @Inject constructor(
         viewModelScope.launch {
             getPositionUseCase(instrumentId).collect {
                 val position = it.successOr(emptyList())
-                _positionOrderList.emit(
+                _positionList.emit(
                     convertPositionToItemUseCase(position).successOr(emptyList()).toMutableList()
                 )
 //                _positionState.emit(position)
@@ -93,7 +114,7 @@ class PortFolioViewModel @Inject constructor(
     fun getCardPosition() {
         viewModelScope.launch {
             getPositionMarketUseCase(Unit).collect { result ->
-                val itemList = mutableListOf<OrderPortfolioItem>()
+                val itemList = mutableListOf<PortfolioItem>()
                 val positionResult = convertPositionToCardItemUseCase(
                     result.data?.positions ?: emptyList()
                 ).successOr(
@@ -105,7 +126,7 @@ class PortFolioViewModel @Inject constructor(
                     )
                 itemList.addAll(positionResult)
                 itemList.addAll(copierResult)
-                _positionOrderList.emit(itemList)
+                _positionList.emit(itemList)
             }
         }
     }
@@ -114,8 +135,8 @@ class PortFolioViewModel @Inject constructor(
         viewModelScope.launch {
             getPendingOrdersUseCase(Unit).collect {
                 val data = it.successOr(mutableListOf())
-                _positionOrderList.emit(
-                    convertOrderPositionToItemUseCase(data).successOr(listOf(OrderPortfolioItem.EmptyItem()))
+                _positionList.emit(
+                    convertOrderPositionToItemUseCase(data).successOr(listOf(PortfolioItem.EmptyItem()))
                         .toMutableList()
                 )
             }
@@ -135,7 +156,7 @@ class PortFolioViewModel @Inject constructor(
                         type in arrayListOf("stocks", "currencies", "crypto")
                     )
                 ).successOr(emptyList())
-                _positionOrderList.emit(items.toMutableList())
+                _positionList.emit(items.toMutableList())
             }
         }
     }
@@ -154,7 +175,7 @@ class PortFolioViewModel @Inject constructor(
                         type in arrayListOf("stocks", "currencies", "crypto")
                     )
                 ).successOr(emptyList())
-                _positionOrderList.emit(items.toMutableList())
+                _positionList.emit(items.toMutableList())
             }
         }
     }

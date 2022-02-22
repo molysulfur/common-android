@@ -5,7 +5,7 @@
 
         <variable
             name="item"
-            type="com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem.InstrumentPositionCardItem" />
+            type="com.awonar.app.ui.portfolio.adapter.PortfolioItem.InstrumentPositionCardItem" />
 
         <variable
             name="quote"

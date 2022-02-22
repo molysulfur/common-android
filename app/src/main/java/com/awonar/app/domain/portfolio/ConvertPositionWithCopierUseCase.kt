@@ -7,7 +7,7 @@ import com.awonar.android.shared.di.IoDispatcher
 import com.awonar.android.shared.domain.order.CalculateAmountStopLossAndTakeProfitWithBuyUseCase
 import com.awonar.android.shared.domain.order.CalculateAmountStopLossAndTakeProfitWithSellUseCase
 import com.awonar.android.shared.repos.CurrenciesRepository
-import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
+import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 import com.awonar.app.utils.DateUtils
 import com.molysulfur.library.result.data
 import com.molysulfur.library.result.succeeded
@@ -20,10 +20,10 @@ class ConvertPositionWithCopierUseCase @Inject constructor(
     private val calculateAmountStopLossAndTakeProfitWithBuyUseCase: CalculateAmountStopLossAndTakeProfitWithBuyUseCase,
     private val calculateAmountStopLossAndTakeProfitWithSellUseCase: CalculateAmountStopLossAndTakeProfitWithSellUseCase,
     @IoDispatcher dispatcher: CoroutineDispatcher,
-) : UseCase<ConvertPositionItemWithCopier, List<OrderPortfolioItem>>(dispatcher) {
-    override suspend fun execute(parameters: ConvertPositionItemWithCopier): List<OrderPortfolioItem> {
+) : UseCase<ConvertPositionItemWithCopier, List<PortfolioItem>>(dispatcher) {
+    override suspend fun execute(parameters: ConvertPositionItemWithCopier): List<PortfolioItem> {
         val instrumentId = parameters.instrumentFilterId
-        val itemList = mutableListOf<OrderPortfolioItem>()
+        val itemList = mutableListOf<PortfolioItem>()
         parameters.positions.filter { it.instrumentId == instrumentId }
             .forEachIndexed { index, position ->
                 val conversionRate =
@@ -45,25 +45,25 @@ class ConvertPositionWithCopierUseCase @Inject constructor(
                 val pipChange = 0f // cal after get realtime
                 val value = 0f// cal after get realtime
                 itemList.add(
-                    OrderPortfolioItem.InstrumentPortfolioItem(
+                    PortfolioItem.InstrumentPortfolioItem(
                         position = position,
-                        conversionRate = conversionRate,
-                        invested = invested,
-                        units = units,
-                        open = open,
-                        current = current,
-                        stopLoss = sl,
-                        takeProfit = tp,
-                        profitLoss = pl,
-                        profitLossPercent = plPercent,
-                        pipChange = pipChange,
-                        leverage = leverage,
-                        value = value,
-                        fees = fees,
-                        amountStopLoss = amountSl,
-                        amountTakeProfit = amountTp,
-                        stopLossPercent = slPercent,
-                        takeProfitPercent = tpPercent,
+//                        conversionRate = conversionRate,
+//                        invested = invested,
+//                        units = units,
+//                        open = open,
+//                        current = current,
+//                        stopLoss = sl,
+//                        takeProfit = tp,
+//                        profitLoss = pl,
+//                        profitLossPercent = plPercent,
+//                        pipChange = pipChange,
+//                        leverage = leverage,
+//                        value = value,
+//                        fees = fees,
+//                        amountStopLoss = amountSl,
+//                        amountTakeProfit = amountTp,
+//                        stopLossPercent = slPercent,
+//                        takeProfitPercent = tpPercent,
                         date = DateUtils.getDate(position.openDateTime),
                         index = index
                     )

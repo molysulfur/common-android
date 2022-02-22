@@ -7,13 +7,12 @@ import com.awonar.android.shared.di.IoDispatcher
 import com.awonar.android.shared.domain.order.CalculateAmountStopLossAndTakeProfitWithBuyUseCase
 import com.awonar.android.shared.domain.order.CalculateAmountStopLossAndTakeProfitWithSellUseCase
 import com.awonar.android.shared.repos.CurrenciesRepository
-import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
+import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 import com.awonar.app.utils.DateUtils
 import com.molysulfur.library.result.data
 import com.molysulfur.library.result.succeeded
 import com.molysulfur.library.usecase.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
-import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -22,9 +21,9 @@ class ConvertPositionToItemUseCase @Inject constructor(
     private val calculateAmountStopLossAndTakeProfitWithBuyUseCase: CalculateAmountStopLossAndTakeProfitWithBuyUseCase,
     private val calculateAmountStopLossAndTakeProfitWithSellUseCase: CalculateAmountStopLossAndTakeProfitWithSellUseCase,
     @IoDispatcher dispatcher: CoroutineDispatcher,
-) : UseCase<List<Position>, List<OrderPortfolioItem>>(dispatcher) {
-    override suspend fun execute(parameters: List<Position>): MutableList<OrderPortfolioItem> {
-        val itemList = mutableListOf<OrderPortfolioItem>()
+) : UseCase<List<Position>, List<PortfolioItem>>(dispatcher) {
+    override suspend fun execute(parameters: List<Position>): MutableList<PortfolioItem> {
+        val itemList = mutableListOf<PortfolioItem>()
         parameters.forEachIndexed { index, position ->
             val conversionRate =
                 currenciesRepository.getConversionByInstrumentId(position.instrumentId).rateBid
@@ -47,25 +46,25 @@ class ConvertPositionToItemUseCase @Inject constructor(
             val date =
                 if (position.exitOrder != null) "Pending" else DateUtils.getDate(position.openDateTime)
             itemList.add(
-                OrderPortfolioItem.InstrumentPortfolioItem(
+                PortfolioItem.InstrumentPortfolioItem(
                     position = position,
-                    conversionRate = conversionRate,
-                    invested = invested,
-                    units = units,
-                    open = open,
-                    current = current,
-                    stopLoss = sl,
-                    takeProfit = tp,
-                    profitLoss = pl,
-                    profitLossPercent = plPercent,
-                    pipChange = pipChange,
-                    leverage = leverage,
-                    value = value,
-                    fees = fees,
-                    amountStopLoss = amountSl,
-                    amountTakeProfit = amountTp,
-                    stopLossPercent = slPercent,
-                    takeProfitPercent = tpPercent,
+//                    conversionRate = conversionRate,
+//                    invested = invested,
+//                    units = units,
+//                    open = open,
+//                    current = current,
+//                    stopLoss = sl,
+//                    takeProfit = tp,
+//                    profitLoss = pl,
+//                    profitLossPercent = plPercent,
+//                    pipChange = pipChange,
+//                    leverage = leverage,
+//                    value = value,
+//                    fees = fees,
+//                    amountStopLoss = amountSl,
+//                    amountTakeProfit = amountTp,
+//                    stopLossPercent = slPercent,
+//                    takeProfitPercent = tpPercent,
                     date = date,
                     index = index
                 )

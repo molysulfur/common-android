@@ -1,28 +1,24 @@
 package com.awonar.app.ui.portfolio.adapter.holder
 
 import androidx.recyclerview.widget.RecyclerView
-import com.awonar.android.model.market.Quote
-import com.awonar.android.model.portfolio.Position
 import com.awonar.android.shared.steaming.QuoteSteamingManager
 import com.awonar.android.shared.utils.PortfolioUtil
-import com.awonar.app.databinding.AwonarItemInstrumentOrderBinding
-import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
+import com.awonar.app.databinding.AwonarItemPositionBinding
+import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import okhttp3.Dispatcher
-import timber.log.Timber
 
 class InstrumentPortfolioViewHolder constructor(
-    private val binding: AwonarItemInstrumentOrderBinding,
+    private val binding: AwonarItemPositionBinding,
 ) : RecyclerView.ViewHolder(binding.root) {
 
 
-    var positionItem: OrderPortfolioItem.InstrumentPortfolioItem? = null
+    var positionItem: PortfolioItem.InstrumentPortfolioItem? = null
 
     fun bind(
-        item: OrderPortfolioItem.InstrumentPortfolioItem,
+        item: PortfolioItem.InstrumentPortfolioItem,
         columns: List<String>,
         onClick: ((Int, String) -> Unit)?,
     ) {
@@ -51,26 +47,26 @@ class InstrumentPortfolioViewHolder constructor(
                 positionItem?.let { positionItem ->
                     val quote = quotes[positionItem.position.instrument.id]
                     quote?.let {
-                        positionItem.current = if (positionItem.position.isBuy) it.bid else it.ask
+                        positionItem.position.current = if (positionItem.position.isBuy) it.bid else it.ask
                         val pl = PortfolioUtil.getProfitOrLoss(
-                            positionItem.current,
-                            positionItem.open,
-                            positionItem.units,
-                            positionItem.conversionRate,
+                            positionItem.position.current,
+                            positionItem.position.open,
+                            positionItem.position.units,
+                            positionItem.position.conversionRate,
                             positionItem.position.isBuy
                         )
                         val pipChange = PortfolioUtil.pipChange(
-                            positionItem.current,
-                            positionItem.open,
+                            positionItem.position.current,
+                            positionItem.position.open,
                             positionItem.position.isBuy,
                             positionItem.position.instrument.digit
                         )
-                        val value = PortfolioUtil.getValue(pl, positionItem.invested)
-                        val plPercent = PortfolioUtil.profitLossPercent(pl, positionItem.invested)
-                        positionItem.profitLoss = pl
-                        positionItem.pipChange = pipChange
-                        positionItem.value = value
-                        positionItem.profitLossPercent = plPercent
+                        val value = PortfolioUtil.getValue(pl, positionItem.position.invested)
+                        val plPercent = PortfolioUtil.profitLossPercent(pl, positionItem.position.invested)
+                        positionItem.position.profitLoss = pl
+                        positionItem.position.pipChange = pipChange
+                        positionItem.position.value = value
+                        positionItem.position.profitLossPercent = plPercent
                     }
                     binding.item = positionItem
                 }

@@ -9,16 +9,14 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import coil.load
-import com.awonar.android.shared.constrant.BuildConfig
 import com.awonar.app.R
-import com.awonar.app.databinding.AwonarWidgetInstrumentOrderBinding
+import com.awonar.app.databinding.AwonarWidgetPositionBinding
 import com.awonar.app.utils.loadImage
 import com.molysulfur.library.widget.BaseViewGroup
 
-class InstrumentOrderView : BaseViewGroup {
+class PositionView : BaseViewGroup {
 
-    private lateinit var binding: AwonarWidgetInstrumentOrderBinding
+    private lateinit var binding: AwonarWidgetPositionBinding
 
     private var title: String? = null
     private var titleRes: Int = 0
@@ -229,7 +227,7 @@ class InstrumentOrderView : BaseViewGroup {
     }
 
     override fun getLayoutResource(): View {
-        binding = AwonarWidgetInstrumentOrderBinding.inflate(LayoutInflater.from(context))
+        binding = AwonarWidgetPositionBinding.inflate(LayoutInflater.from(context))
         return binding.root
     }
 
@@ -309,7 +307,7 @@ class InstrumentOrderView : BaseViewGroup {
         context: Context,
         attrs: AttributeSet?,
         defStyleAttr: Int,
-        defStyleRes: Int
+        defStyleRes: Int,
     ) : super(context, attrs, defStyleAttr, defStyleRes)
 
     private class SavedState : ChildSavedState {

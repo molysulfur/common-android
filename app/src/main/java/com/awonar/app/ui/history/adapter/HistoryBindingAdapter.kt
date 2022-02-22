@@ -1,7 +1,6 @@
 package com.awonar.app.ui.history.adapter
 
 import androidx.databinding.BindingAdapter
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDirections
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,7 +11,7 @@ import com.awonar.app.ui.history.HistoryInsideViewModel
 import com.awonar.app.ui.history.HistoryViewModel
 import com.awonar.app.utils.ColorChangingUtil
 import com.awonar.app.utils.DateUtils
-import com.awonar.app.widget.InstrumentOrderView
+import com.awonar.app.widget.PositionView
 import timber.log.Timber
 
 @BindingAdapter("setHistoryInsideAdapter", "viewModel")
@@ -100,7 +99,7 @@ fun setHistoryAdapter(
 
 @BindingAdapter("setHistory", "column1", "column2", "column3", "column4")
 fun setHistory(
-    view: InstrumentOrderView,
+    view: PositionView,
     history: HistoryItem.PositionItem?,
     column1: String?,
     column2: String?,
@@ -157,7 +156,7 @@ fun setHistory(
 }
 
 private fun setPositionHistoryItem(
-    view: InstrumentOrderView,
+    view: PositionView,
     history: HistoryItem.PositionItem,
     column1: String,
     column2: String,

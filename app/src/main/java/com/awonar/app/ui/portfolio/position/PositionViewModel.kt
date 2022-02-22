@@ -9,7 +9,7 @@ import com.awonar.app.domain.portfolio.ConvertCopierToItemUseCase
 import com.awonar.app.domain.portfolio.ConvertGroupPositionToItemUseCase
 import com.awonar.app.domain.portfolio.ConvertPositionToCardItemUseCase
 import com.awonar.app.domain.portfolio.ConvertPositionToItemUseCase
-import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
+import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 import com.awonar.app.ui.portfolio.inside.PortFolioInsideCopierFragmentDirections
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,9 +29,9 @@ class PositionViewModel @Inject constructor(
     private val _navigateActions = Channel<NavDirections>(Channel.CONFLATED)
     val navigateActions get() = _navigateActions.receiveAsFlow()
 
-    private val _positionItems: MutableStateFlow<MutableList<OrderPortfolioItem>> =
-        MutableStateFlow(mutableListOf(OrderPortfolioItem.EmptyItem()))
-    val positionItems: StateFlow<MutableList<OrderPortfolioItem>> get() = _positionItems
+    private val _positionItems: MutableStateFlow<MutableList<PortfolioItem>> =
+        MutableStateFlow(mutableListOf(PortfolioItem.EmptyItem()))
+    val positionItems: StateFlow<MutableList<PortfolioItem>> get() = _positionItems
 
     fun convertManual(it: List<Position>) {
         viewModelScope.launch {
@@ -46,7 +46,7 @@ class PositionViewModel @Inject constructor(
                 flowOf(convertPositionGroupPositionToItemUseCase(positions).successOr(listOf())),
                 flowOf(convertCopierToItemUseCase(copies).successOr(listOf()))
             ) { position, copies ->
-                val list = mutableListOf<OrderPortfolioItem>()
+                val list = mutableListOf<PortfolioItem>()
                 list.addAll(position)
                 list.addAll(copies)
                 list
