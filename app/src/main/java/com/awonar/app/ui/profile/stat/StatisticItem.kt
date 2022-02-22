@@ -6,6 +6,8 @@ import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_CHART_PIE
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_DIVIDER
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_LINEAR_COLORS
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_LIST_ITEM
+import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_SECTION
+import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_TITLE
 import com.awonar.app.ui.profile.stat.StatisticType.STATISTIC_TOTAL_TRADE
 import com.awonar.app.widget.StackedRechartWebView
 import com.github.mikephil.charting.data.BarEntry
@@ -14,6 +16,16 @@ import com.github.mikephil.charting.data.PieEntry
 import kotlinx.parcelize.Parcelize
 
 sealed class StatisticItem(val type: Int) : Parcelable {
+
+    @Parcelize
+    data class TitleItem(
+        val text: String,
+    ) : StatisticItem(STATISTIC_TITLE)
+
+    @Parcelize
+    data class SectionItem(
+        val text: String,
+    ) : StatisticItem(STATISTIC_SECTION)
 
     @Parcelize
     data class TotalTradeItem(

@@ -27,8 +27,8 @@ class ProfilePagerAdapter constructor(fragmentManager: FragmentManager, lifecycl
     override fun getItemCount(): Int = ICON_TABS.size
 
     override fun createFragment(position: Int): Fragment = when (position) {
-        0 -> UserInfoFragment.newInstance()
-        1 -> ProfilePrivateFragment()
+        0 -> ProfilePrivateFragment()
+        1 -> UserInfoFragment.newInstance()
         2 -> StatisticProfileFragment.newInstance()
         3 -> ProfilePrivateFragment()
         else -> StatisticProfileFragment.newInstance()

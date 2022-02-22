@@ -122,7 +122,7 @@ class ProfileActivity : BaseActivity() {
         binding.awonarProfileTextUsername.text = user?.username
         binding.awonarProfileTextName.text =
             "${user?.firstName} ${user?.middleName} ${user?.lastName}"
-        binding.awonarProfileTextAbout.text = user?.about
+        binding.awonarProfileTextAbout.text = user?.bio
         binding.awonarProfileButtonEditProfile.visibility =
             if (user?.isMe != true) View.GONE else View.VISIBLE
         binding.awonarProfileGroupOptions.visibility =

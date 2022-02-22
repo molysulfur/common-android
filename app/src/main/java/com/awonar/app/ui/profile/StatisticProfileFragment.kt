@@ -39,7 +39,7 @@ class StatisticProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.supportFragmentManager?.commit {
+        childFragmentManager.commit {
             replace<StatisticGainFragment>(R.id.awonar_profile_statistic_layout_gain)
             replace<StatisticRiskFragment>(R.id.awonar_profile_statistic_layout_risk)
             replace<StatisticMostTradingFragment>(R.id.awonar_profile_statistic_layout_most_trading)

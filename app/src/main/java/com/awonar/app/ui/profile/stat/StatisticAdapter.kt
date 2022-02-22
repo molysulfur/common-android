@@ -37,6 +37,16 @@ class StatisticAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
+            StatisticType.STATISTIC_TITLE -> TitleViewHolder(
+                AwonarItemCenterTitleBinding.inflate(LayoutInflater.from(parent.context),
+                    parent,
+                    false)
+            )
+            StatisticType.STATISTIC_SECTION -> SectionViewHolder(
+                AwonarItemSectionBinding.inflate(LayoutInflater.from(parent.context),
+                    parent,
+                    false)
+            )
             STATISTIC_LINEAR_COLORS -> HorizontalColorsViewHolder(
                 AwonarItemLinearViewBinding.inflate(LayoutInflater.from(parent.context),
                     parent,
@@ -119,6 +129,8 @@ class StatisticAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = itemList[position]
         when (holder) {
+            is SectionViewHolder -> holder.bind(item as StatisticItem.SectionItem)
+            is TitleViewHolder -> holder.bind(item as StatisticItem.TitleItem)
             is HorizontalColorsViewHolder -> holder.bind(item as StatisticItem.LinearColorsItem)
             is TotalTradeViewHolder -> holder.bind(item as StatisticItem.TotalTradeItem)
             is ListItemViewHolder -> holder.bind(item as StatisticItem.ListItem)

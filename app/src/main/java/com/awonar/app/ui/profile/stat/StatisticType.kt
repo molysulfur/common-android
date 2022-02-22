@@ -17,4 +17,6 @@ object StatisticType {
     const val STATISTIC_DIVIDER = 12
     const val STATISTIC_TOTAL_TRADE = 13
     const val STATISTIC_LINEAR_COLORS = 14
+    const val STATISTIC_SECTION = 15
+    const val STATISTIC_TITLE = 16
 }
