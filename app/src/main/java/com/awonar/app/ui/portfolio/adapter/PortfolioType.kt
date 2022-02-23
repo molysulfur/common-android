@@ -15,5 +15,6 @@ object PortfolioType {
     const val ORDER_PORTFOLIO = 10
     const val VIEWALL_BUTTON = 11
     const val SECTION_PORTFOLIO = 12
+    const val BALANCE_PORTFOLIO = 13
 
 }

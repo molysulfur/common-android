@@ -21,6 +21,7 @@ import com.awonar.app.utils.ColorChangingUtil
 import com.awonar.app.widget.CopierPositionCardView
 import com.awonar.app.widget.PositionView
 import com.awonar.app.widget.InstrumentPositionCardView
+import timber.log.Timber
 import kotlin.collections.HashMap
 
 @BindingAdapter("setUserPortfolio", "column1", "column2", "column3", "column4")
@@ -354,207 +355,170 @@ fun setPositionAdapter(
     }
 }
 
-@BindingAdapter("setPositionOrder", "column1", "column2", "column3", "column4")
-fun setItemPositionOrderPortfolio(
+@BindingAdapter("setCopierPosition", "column1", "column2", "column3", "column4")
+fun setCopierPositionItem(
     view: PositionView,
-    item: PortfolioItem?,
+    item: Copier?,
     column1: String?,
     column2: String?,
     column3: String?,
     column4: String?,
 ) {
-    when (item) {
-        is PortfolioItem.InstrumentItem -> item.position.let { position ->
-            view.setTextColumnOne(
-                getPositionValueByColumn(
-                    item,
-                    column1 ?: ""
-                )
+    item?.let {
+        view.setTextColumnOne(
+            getCopierValueByColumn(
+                item,
+                column1 ?: ""
             )
-            view.setTextColumnTwo(
-                getPositionValueByColumn(
-                    item,
-                    column2 ?: ""
-                )
+        )
+        view.setTextColumnTwo(
+            getCopierValueByColumn(
+                item,
+                column2 ?: ""
             )
-            view.setTextColumnThree(
-                getPositionValueByColumn(
-                    item,
-                    column3 ?: ""
-                )
+        )
+        view.setTextColumnThree(
+            getCopierValueByColumn(
+                item,
+                column3 ?: ""
             )
-            view.setTextColumnFour(
-                getPositionValueByColumn(
-                    item,
-                    column4 ?: ""
-                )
+        )
+        view.setTextColumnFour(
+            getCopierValueByColumn(
+                item,
+                column4 ?: ""
             )
-            view.setTextColorColumnOne(
-                getPositionColorColoumn(
-                    item,
-                    column1 ?: ""
-                )
+        )
+        view.setTextColorColumnOne(
+            getCopierColorByColumn(
+                item,
+                column1 ?: ""
             )
-            view.setTextColorColumnTwo(
-                getPositionColorColoumn(
-                    item,
-                    column2 ?: ""
-                )
+        )
+        view.setTextColorColumnTwo(
+            getCopierColorByColumn(
+                item,
+                column2 ?: ""
             )
-            view.setTextColorColumnThree(
-                getPositionColorColoumn(
-                    item,
-                    column3 ?: ""
-                )
+        )
+        view.setTextColorColumnThree(
+            getCopierColorByColumn(
+                item,
+                column3 ?: ""
             )
-            view.setTextColorColumnFour(
-                getPositionColorColoumn(
-                    item,
-                    column4 ?: ""
-                )
+        )
+        view.setTextColorColumnFour(
+            getCopierColorByColumn(
+                item,
+                column4 ?: ""
             )
-        }
-        is PortfolioItem.InstrumentPortfolioItem -> item.position.let { position ->
-            view.setTextColumnOne(
-                getPositionValueByColumn(
-                    item,
-                    column1 ?: ""
-                )
-            )
-            view.setTextColumnTwo(
-                getPositionValueByColumn(
-                    item,
-                    column2 ?: ""
-                )
-            )
-            view.setTextColumnThree(
-                getPositionValueByColumn(
-                    item,
-                    column3 ?: ""
-                )
-            )
-            view.setTextColumnFour(
-                getPositionValueByColumn(
-                    item,
-                    column4 ?: ""
-                )
-            )
-            view.setTextColorColumnOne(
-                getPositionColorColoumn(
-                    item,
-                    column1 ?: ""
-                )
-            )
-            view.setTextColorColumnTwo(
-                getPositionColorColoumn(
-                    item,
-                    column2 ?: ""
-                )
-            )
-            view.setTextColorColumnThree(
-                getPositionColorColoumn(
-                    item,
-                    column3 ?: ""
-                )
-            )
-            view.setTextColorColumnFour(
-                getPositionColorColoumn(
-                    item,
-                    column4 ?: ""
-                )
-            )
-        }
-        is PortfolioItem.CopierPortfolioItem -> item.copier.let { copy ->
-            view.setTextColumnOne(
-                getCopierValueByColumn(
-                    item,
-                    column1 ?: ""
-                )
-            )
-            view.setTextColumnTwo(
-                getCopierValueByColumn(
-                    item,
-                    column2 ?: ""
-                )
-            )
-            view.setTextColumnThree(
-                getCopierValueByColumn(
-                    item,
-                    column3 ?: ""
-                )
-            )
-            view.setTextColumnFour(
-                getCopierValueByColumn(
-                    item,
-                    column4 ?: ""
-                )
-            )
-            view.setTextColorColumnOne(
-                getCopierColorByColumn(
-                    item,
-                    column1 ?: ""
-                )
-            )
-            view.setTextColorColumnTwo(
-                getCopierColorByColumn(
-                    item,
-                    column2 ?: ""
-                )
-            )
-            view.setTextColorColumnThree(
-                getCopierColorByColumn(
-                    item,
-                    column3 ?: ""
-                )
-            )
-            view.setTextColorColumnFour(
-                getCopierColorByColumn(
-                    item,
-                    column4 ?: ""
-                )
-            )
-        }
-        else -> {
-        }
+        )
     }
 }
 
-private fun getCopierColorByColumn(
-    item: PortfolioItem.CopierPortfolioItem,
-    column: String,
-): Int = when {
-    column == "P/L($)" && item.copier.profitLoss < 0 -> R.color.awonar_color_orange
-    column == "P/L($)" && item.copier.profitLoss >= 0 -> R.color.awonar_color_green
-    column == "P/L(%)" && item.copier.profitLossPercent < 0 -> R.color.awonar_color_orange
-    column == "P/L(%)" && item.copier.profitLossPercent >= 0 -> R.color.awonar_color_green
-    else -> 0
+@BindingAdapter("setPosition", "column1", "column2", "column3", "column4")
+fun setPositionItem(
+    view: PositionView,
+    item: Position?,
+    column1: String?,
+    column2: String?,
+    column3: String?,
+    column4: String?,
+) {
+    item?.let {
+        view.setTextColumnOne(
+            getPositionValueByColumn(
+                item,
+                column1 ?: ""
+            )
+        )
+        view.setTextColumnTwo(
+            getPositionValueByColumn(
+                item,
+                column2 ?: ""
+            )
+        )
+        view.setTextColumnThree(
+            getPositionValueByColumn(
+                item,
+                column3 ?: ""
+            )
+        )
+        view.setTextColumnFour(
+            getPositionValueByColumn(
+                item,
+                column4 ?: ""
+            )
+        )
+        view.setTextColorColumnOne(
+            getPositionColorColoumn(
+                item,
+                column1 ?: ""
+            )
+        )
+        view.setTextColorColumnTwo(
+            getPositionColorColoumn(
+                item,
+                column2 ?: ""
+            )
+        )
+        view.setTextColorColumnThree(
+            getPositionColorColoumn(
+                item,
+                column3 ?: ""
+            )
+        )
+        view.setTextColorColumnFour(
+            getPositionColorColoumn(
+                item,
+                column4 ?: ""
+            )
+        )
+    }
 }
 
-private fun getCopierValueByColumn(
-    item: PortfolioItem.CopierPortfolioItem,
+
+private fun getPositionValueByColumn(
+    item: Position,
     column: String,
-): String = when (column) {
-    "Invested" -> "$%.2f".format(item.copier.invested)
-    "P/L($)" -> "$%.2f".format(item.copier.profitLoss)
-    "P/L(%)" -> "%.2f%s".format(item.copier.profitLossPercent, "%")
-    "Value" -> "$%s".format(item.copier.value)
-    "Fee" -> "$%s".format(item.copier.fees)
-    "Net Invest" -> "$%.2f".format(item.copier.netInvested)
-    "CSL" -> "%s".format(item.copier.copyStopLoss)
-    "CSL(%)" -> "%.2f%s".format(item.copier.copyStopLossPercent, "%")
-    else -> ""
+): String {
+    return when (column) {
+        "Invested" -> "$%.2f".format(item.invested)
+        "Invested(%)" -> "%.2f%s".format(item.invested, "%")
+        "Units" -> "%.2f".format(item.units)
+        "Open", "Avg. Open" -> "%s".format(item.open)
+        "Current" -> "%s".format(item.current)
+        "P/L($)" -> "$%.2f".format(item.profitLoss)
+        "P/L(%)" -> "%.2f%s".format(
+            if (item.netProfit != 0f) item.netProfit else item.profitLossPercent,
+            "%")
+        "Pip Change" -> "%s".format(item.pipChange.toInt())
+        "Leverage" -> "%s".format(item.leverage)
+        "Value" -> "$%.2f".format(item.value)
+        "Value(%)" -> "%.2f%s".format(item.value, "%")
+        "Fee" -> "$%.2f".format(item.fees)
+        "Execute at" -> "$%s".format(item.invested)
+        "SL" -> "%s".format(item.stopLoss)
+        "TP" -> "%s".format(item.takeProfit)
+        "SL($)" -> "$%.2f".format(item.amountStopLoss)
+        "TP($)" -> "$%.2f".format(item.amountTakeProfit)
+        "SL(%)" -> "%.2f%s".format(item.stopLossPercent, "%")
+        "TP(%)" -> "%.2f%s".format(item.takeProfitPercent, "%")
+        "Buy/Sell" -> "%s".format(item.type)
+        else -> ""
+    }
 }
 
 private fun getPositionColorColoumn(
-    item: PortfolioItem.InstrumentPortfolioItem,
+    item: Position,
     column: String,
 ): Int = when {
-    column == "P/L($)" && item.position.profitLoss < 0 -> R.color.awonar_color_orange
-    column == "P/L($)" && item.position.profitLoss >= 0 -> R.color.awonar_color_green
-    column == "P/L(%)" && item.position.profitLossPercent < 0 -> R.color.awonar_color_orange
-    column == "P/L(%)" && item.position.profitLossPercent >= 0 -> R.color.awonar_color_green
-    column == "Pip Change" && item.position.pipChange < 0 -> R.color.awonar_color_orange
-    column == "Pip Change" && item.position.pipChange >= 0 -> R.color.awonar_color_green
+    column == "P/L($)" && item.profitLoss < 0 -> R.color.awonar_color_orange
+    column == "P/L($)" && item.profitLoss >= 0 -> R.color.awonar_color_green
+    column == "P/L(%)" && (if (item.netProfit != 0f) item.netProfit else item.profitLossPercent) < 0 -> R.color.awonar_color_orange
+    column == "P/L(%)" && (if (item.netProfit != 0f) item.netProfit else item.profitLossPercent) >= 0 -> R.color.awonar_color_green
+    column == "Pip Change" && item.pipChange < 0 -> R.color.awonar_color_orange
+    column == "Pip Change" && item.pipChange >= 0 -> R.color.awonar_color_green
     else -> 0
 }
 
@@ -571,51 +535,30 @@ private fun getPositionColorColoumn(
     else -> 0
 }
 
-private fun getPositionValueByColumn(
-    item: PortfolioItem.InstrumentPortfolioItem,
-    column: String,
-): String = when (column) {
-    "Invested" -> "$%.2f".format(item.position.invested)
-    "Units" -> "%.2f".format(item.position.units)
-    "Open", "Avg. Open" -> "%s".format(item.position.open)
-    "Current" -> "%s".format(item.position.current)
-    "P/L($)" -> "$%.2f".format(item.position.profitLoss)
-    "P/L(%)" -> "%.2f%s".format(item.position.profitLossPercent, "%")
-    "Pip Change" -> "%s".format(item.position.pipChange.toInt())
-    "Leverage" -> "%s".format(item.position.leverage)
-    "Value" -> "$%.2f".format(item.position.value)
-    "Fee" -> "$%.2f".format(item.position.fees)
-    "Execute at" -> "$%s".format(item.position.invested)
-    "SL" -> "%s".format(item.position.stopLoss)
-    "TP" -> "%s".format(item.position.takeProfit)
-    "SL($)" -> "$%.2f".format(item.position.amountStopLoss)
-    "TP($)" -> "$%.2f".format(item.position.amountTakeProfit)
-    "SL(%)" -> "%.2f%s".format(item.position.stopLossPercent, "%")
-    "TP(%)" -> "%.2f%s".format(item.position.takeProfitPercent, "%")
-    "Buy/Sell" -> "%s".format(item.position.type)
-    else -> ""
-}
-
-private fun getPositionValueByColumn(
-    item: PortfolioItem.InstrumentItem,
+private fun getCopierValueByColumn(
+    item: Copier,
     column: String,
 ): String = when (column) {
     "Invested" -> "$%.2f".format(item.invested)
-    "Units" -> "%.2f".format(item.units)
-    "Open" -> "%s".format(item.open)
-    "Current" -> "%s".format(item.current)
+    "Invested(%)" -> "%.2f%s".format(item.invested, "%")
     "P/L($)" -> "$%.2f".format(item.profitLoss)
-    "P/L(%)" -> "%.2f%s".format(item.profitLossPercent, "%")
-    "Pip Change" -> "%s".format(item.pipChange.toInt())
-    "Leverage" -> "%s".format(item.leverage)
+    "P/L(%)" -> "%.2f%s".format((if (item.netProfit != 0f) item.netProfit else item.profitLossPercent), "%")
     "Value" -> "$%.2f".format(item.value)
-    "Fee" -> "$%.2f".format(item.fees)
-    "Execute at" -> "$%s".format(item.invested)
-    "SL" -> "%s".format(item.stopLoss)
-    "TP" -> "%s".format(item.takeProfit)
-    "SL($)" -> "$%.2f".format(item.amountStopLoss)
-    "TP($)" -> "$%.2f".format(item.amountTakeProfit)
-    "SL(%)" -> "%.2f%s".format(item.stopLossPercent, "%")
-    "TP(%)" -> "%.2f%s".format(item.takeProfitPercent, "%")
+    "Value(%)" -> "%.2f%s".format(item.value, "%")
+    "Fee" -> "$%s".format(item.fees)
+    "Net Invest" -> "$%.2f".format(item.netInvested)
+    "CSL" -> "%s".format(item.copyStopLoss)
+    "CSL(%)" -> "%.2f%s".format(item.copyStopLossPercent, "%")
     else -> ""
+}
+
+private fun getCopierColorByColumn(
+    item: Copier,
+    column: String,
+): Int = when {
+    column == "P/L($)" && item.profitLoss < 0 -> R.color.awonar_color_orange
+    column == "P/L($)" && item.profitLoss >= 0 -> R.color.awonar_color_green
+    column == "P/L(%)" && (if (item.netProfit != 0f) item.netProfit else item.profitLossPercent) < 0 -> R.color.awonar_color_orange
+    column == "P/L(%)" && (if (item.netProfit != 0f) item.netProfit else item.profitLossPercent) >= 0 -> R.color.awonar_color_green
+    else -> 0
 }

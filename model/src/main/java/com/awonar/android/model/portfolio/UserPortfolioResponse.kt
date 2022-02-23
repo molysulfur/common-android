@@ -47,6 +47,7 @@ data class Copier(
     @SerializedName("leverage") var leverage: Float = 0f,
     @SerializedName("current") var current: Float = 0f,
     @SerializedName("netInvested") var netInvested: Float = 0f,
+    @SerializedName("netProfit") var netProfit: Float = 0f,
     @SerializedName("copyStopLoss") var copyStopLoss: Float = 0f,
     @SerializedName("copyStopLossPercent") var copyStopLossPercent: Float = 0f,
 ) : Parcelable
@@ -117,7 +118,7 @@ data class Position(
     @SerializedName("amount") val amount: Float = 0f,
     @SerializedName("exitOrder") val exitOrder: ExitOrder? = null,
     @SerializedName("exposure") val exposure: Float = 0f,
-    @SerializedName("instrument") val instrument: Instrument? = null,
+    @SerializedName("instrument") var instrument: Instrument? = null,
     @SerializedName("openDateTime") val openDateTime: String? = null,
     @SerializedName("openRate") val openRate: Float = 0f,
     @SerializedName("orderNo") val orderNo: String? = null,

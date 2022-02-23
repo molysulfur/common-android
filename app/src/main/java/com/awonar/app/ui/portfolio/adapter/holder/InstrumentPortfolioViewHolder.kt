@@ -7,6 +7,7 @@ import com.awonar.app.databinding.AwonarItemPositionBinding
 import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -14,7 +15,7 @@ class InstrumentPortfolioViewHolder constructor(
     private val binding: AwonarItemPositionBinding,
 ) : RecyclerView.ViewHolder(binding.root) {
 
-
+    val job = CoroutineScope(Dispatchers.Default)
     var positionItem: PortfolioItem.InstrumentPortfolioItem? = null
 
     fun bind(
@@ -23,7 +24,6 @@ class InstrumentPortfolioViewHolder constructor(
         onClick: ((Int, String) -> Unit)?,
     ) {
         this.positionItem = item
-//        setupDataSteaming()
         with(binding.awonarInsturmentOrderItem) {
             val position = item.position
             setImage(position.instrument?.logo ?: "")
@@ -38,11 +38,16 @@ class InstrumentPortfolioViewHolder constructor(
             binding.column3 = columns[2]
             binding.column4 = columns[3]
         }
-        binding.item = item
+        if (item.isRealTime) {
+            setupDataSteaming()
+        } else {
+            job.cancel()
+        }
+        binding.item = item.position
     }
 
     private fun setupDataSteaming() {
-        CoroutineScope(Dispatchers.Default).launch {
+        job.launch {
             QuoteSteamingManager.quotesState.collect { quotes ->
                 positionItem?.let { positionItem ->
                     val quote = quotes[positionItem.position.instrument?.id]
@@ -70,7 +75,7 @@ class InstrumentPortfolioViewHolder constructor(
                         positionItem.position.value = value
                         positionItem.position.profitLossPercent = plPercent
                     }
-                    binding.item = positionItem
+                    binding.item = positionItem.position
                 }
             }
         }

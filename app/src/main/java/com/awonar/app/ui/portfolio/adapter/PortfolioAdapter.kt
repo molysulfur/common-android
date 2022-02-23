@@ -39,6 +39,13 @@ class PortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
+            PortfolioType.BALANCE_PORTFOLIO -> BalanceViewHolder(
+                AwonarItemListBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
             PortfolioType.SECTION_PORTFOLIO -> SectionViewHolder(
                 AwonarItemSectionBinding.inflate(
                     LayoutInflater.from(parent.context),
@@ -68,7 +75,7 @@ class PortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 )
             )
             PortfolioType.COPYTRADE_PORTFOLIO -> CopyTradePortfolioViewHolder(
-                AwonarItemPositionBinding.inflate(
+                AwonarItemCopierPositionBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -138,6 +145,7 @@ class PortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = itemLists[position]
         when (holder) {
+            is BalanceViewHolder -> holder.bind(item as PortfolioItem.BalanceItem)
             is InstrumentPortfolioViewHolder -> holder.bind(
                 item as PortfolioItem.InstrumentPortfolioItem,
                 columns,

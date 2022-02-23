@@ -65,7 +65,9 @@ class PortFolioViewModel @Inject constructor(
             getPositionManualUseCase(username).collect {
                 val data = it.successOr(null)
                 val itemList = mutableListOf<PortfolioItem>()
+                var sumValue = 0f
                 data?.positions?.forEachIndexed { index, position ->
+                    sumValue += position.value
                     itemList.add(PortfolioItem.InstrumentPortfolioItem(
                         position = position,
                         date = null,
@@ -74,12 +76,17 @@ class PortFolioViewModel @Inject constructor(
                     ))
                 }
                 data?.copies?.forEachIndexed { index, copier ->
+                    sumValue += copier.value
                     itemList.add(PortfolioItem.CopierPortfolioItem(
                         copier = copier,
                         conversions = emptyMap(),
                         index = index
                     ))
                 }
+                itemList.add(PortfolioItem.BalanceItem(
+                    title = "Balance",
+                    value = 100f.minus(sumValue)
+                ))
                 _positionList.emit(itemList)
             }
         }

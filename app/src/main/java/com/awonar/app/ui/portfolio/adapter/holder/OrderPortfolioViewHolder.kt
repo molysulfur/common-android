@@ -34,7 +34,7 @@ class OrderPortfolioViewHolder constructor(
             binding.column3 = columns[2]
             binding.column4 = columns[3]
         }
-        binding.item = item
+//        binding.item = item
     }
 
 }

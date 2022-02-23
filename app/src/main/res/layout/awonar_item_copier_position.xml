@@ -21,7 +21,7 @@
 
         <variable
             name="item"
-            type="com.awonar.android.model.portfolio.Position" />
+            type="com.awonar.android.model.portfolio.Copier" />
 
     </data>
 
@@ -31,7 +31,7 @@
         column2="@{column2}"
         column3="@{column3}"
         column4="@{column4}"
-        setPosition="@{item}"
+        setCopierPosition="@{item}"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/awonar_ripple_white"

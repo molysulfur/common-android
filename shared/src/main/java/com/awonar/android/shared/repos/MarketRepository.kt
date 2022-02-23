@@ -21,6 +21,10 @@ open class MarketRepository @Inject constructor(
     private val instrumentDao: InstrumentDao,
 ) {
 
+    fun getInstrumentFromDao(id: Int): Instrument? {
+        return instrumentDao.loadById(id)
+    }
+
     fun getLastPriceWithId(id: Int) = object : DirectNetworkFlow<Int, Quote, List<Quote>>() {
         override fun createCall(): Response<List<Quote>> =
             instrumentService.getLastQuote(listOf(id)).execute()

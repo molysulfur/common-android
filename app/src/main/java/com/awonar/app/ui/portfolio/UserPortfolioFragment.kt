@@ -28,13 +28,15 @@ class UserPortfolioFragment : Fragment() {
     ): View {
         launchAndRepeatWithViewLifecycle {
             userViewModel.userState.collect {
-                viewModel.getManual(it?.username)
+                it?.let {
+                    viewModel.getManual(it.username)
+                }
             }
         }
         binding.column1 = "Buy/Sell"
-        binding.column2 = "Invested"
+        binding.column2 = "Invested(%)"
         binding.column3 = "P/L(%)"
-        binding.column4 = "Value"
+        binding.column4 = "Value(%)"
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
@@ -42,7 +44,6 @@ class UserPortfolioFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getManual()
     }
 
     companion object {

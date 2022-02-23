@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.portfolio.PendingOrder
 import com.awonar.android.model.portfolio.Position
+import com.awonar.app.ui.portfolio.adapter.PortfolioType.BALANCE_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.PortfolioType.BUTTON_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.PortfolioType.COPYTRADE_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.PortfolioType.COPY_POSITION_CARD
@@ -23,6 +24,12 @@ import kotlinx.parcelize.Parcelize
 sealed class PortfolioItem(
     val type: Int,
 ) : Parcelable {
+
+    @Parcelize
+    data class BalanceItem(
+        val title: String?,
+        val value: Float,
+    ) : PortfolioItem(BALANCE_PORTFOLIO)
 
     @Parcelize
     class ViewAllItem(
@@ -62,6 +69,7 @@ sealed class PortfolioItem(
         val position: Position,
         var date: String?,
         val index: Int,
+        val isRealTime: Boolean = false,
     ) : PortfolioItem(INSTRUMENT_PORTFOLIO)
 
     @Parcelize
