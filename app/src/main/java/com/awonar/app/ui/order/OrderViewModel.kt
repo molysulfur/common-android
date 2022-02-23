@@ -120,8 +120,8 @@ class OrderViewModel @Inject constructor(
             viewModelScope.launch {
                 getMyPortFolioUseCase(true).collect {
                     val conversionRate =
-                        getConversionByInstrumentUseCase(position.instrument.id).successOr(1f)
-                    val trading = getTradingDataByInstrumentIdUseCase(position.instrument.id)
+                        getConversionByInstrumentUseCase(position.instrument?.id ?: 0).successOr(1f)
+                    val trading = getTradingDataByInstrumentIdUseCase(position.instrument?.id ?: 0)
                     val nativeAmount = position.exposure.div(position.leverage)
                     val stopLoss = stopLossState.value.copy()
                     val request = ValidateRateStopLossRequest(
@@ -142,7 +142,7 @@ class OrderViewModel @Inject constructor(
                             isBuy = position.isBuy,
                             tradingData = trading.successOr(null)
                         ),
-                        digit = position.instrument.digit
+                        digit = position.instrument?.digit ?: 2
                     )
                     val result = validateRateStopLossUseCase(request)
                     when ((result as Result.Error).exception) {
@@ -152,7 +152,7 @@ class OrderViewModel @Inject constructor(
                                 type = "rate",
                                 current = position.openRate,
                                 unit = position.units,
-                                instrumentId = position.instrument.id,
+                                instrumentId = position.instrument?.id ?: 0,
                                 isBuy = position.isBuy
                             )
                             _stopLossError.emit(result.exception.message ?: "")
@@ -179,28 +179,30 @@ class OrderViewModel @Inject constructor(
                     rate = 1f,
                     isBuy = position.isBuy
                 )
-                val data = ValidateRateTakeProfitRequest(
-                    rateTp = takeProfitState.value.second,
-                    currentPrice = current,
-                    openPrice = position.openRate,
-                    isBuy = position.isBuy,
-                    value = pl.plus(position.amount),
-                    units = position.units,
-                    instrument = position.instrument
-                )
-                val result = validateRateTakeProfitUseCase(data)
-                if (result is Result.Error) {
-                    val message = (result.exception as ValidationException).errorMessage
-                    val rate = (result.exception as ValidationException).value
-                    setTakeProfit(
-                        tp = rate,
-                        type = "rate",
-                        current = position.openRate,
-                        unit = position.units,
-                        instrumentId = position.instrument.id,
-                        isBuy = position.isBuy
+                position.instrument?.let { instrument ->
+                    val data = ValidateRateTakeProfitRequest(
+                        rateTp = takeProfitState.value.second,
+                        currentPrice = current,
+                        openPrice = position.openRate,
+                        isBuy = position.isBuy,
+                        value = pl.plus(position.amount),
+                        units = position.units,
+                        instrument = instrument
                     )
-                    _takeProfitError.emit(message)
+                    val result = validateRateTakeProfitUseCase(data)
+                    if (result is Result.Error) {
+                        val message = (result.exception as ValidationException).errorMessage
+                        val rate = (result.exception as ValidationException).value
+                        setTakeProfit(
+                            tp = rate,
+                            type = "rate",
+                            current = position.openRate,
+                            unit = position.units,
+                            instrumentId = instrument.id,
+                            isBuy = position.isBuy
+                        )
+                        _takeProfitError.emit(message)
+                    }
                 }
             }
         }
@@ -372,7 +374,7 @@ class OrderViewModel @Inject constructor(
     fun validatePartialCloseAmount(position: Position, price: Float) {
         viewModelScope.launch {
             val inputAmount = _amountState.value
-            val rate = getConversionByInstrumentUseCase(position.instrument.id).successOr(0f)
+            val rate = getConversionByInstrumentUseCase(position.instrument?.id ?: 0).successOr(0f)
             val pl = PortfolioUtil.getProfitOrLoss(
                 current = price,
                 openRate = position.openRate,
@@ -387,13 +389,13 @@ class OrderViewModel @Inject constructor(
                     pl = pl,
                     units = position.units,
                     leverage = position.leverage,
-                    id = position.instrument.id
+                    id = position.instrument?.id ?: 0
                 )
             )
 
             if (result is Result.Error) {
                 val exception = result.exception as ValidationException
-                updateAmount(position.instrument.id, exception.value, price)
+                updateAmount(position.instrument?.id ?: 0, exception.value, price)
             }
         }
     }
@@ -402,8 +404,8 @@ class OrderViewModel @Inject constructor(
     fun setDefaultPartialAmount(position: Position, price: Float) {
         viewModelScope.launch {
             val tradingData =
-                getTradingDataByInstrumentIdUseCase(position.instrument.id).successOr(null)
-            val rate = getConversionByInstrumentUseCase(position.instrument.id).successOr(0f)
+                getTradingDataByInstrumentIdUseCase(position.instrument?.id ?: 0).successOr(null)
+            val rate = getConversionByInstrumentUseCase(position.instrument?.id ?: 0).successOr(0f)
             val pl = PortfolioUtil.getProfitOrLoss(
                 price,
                 position.openRate,
@@ -423,18 +425,18 @@ class OrderViewModel @Inject constructor(
                 HasPartialRequest(
                     amount = position.amount,
                     leverage = position.leverage,
-                    id = position.instrument.id
+                    id = position.instrument?.id ?: 0
                 )
             ).successOr(false)
             _hasPartialState.value = hasPartial
             if (hasPartial) {
-                updateAmount(position.instrument.id, defaultAmount, price)
+                updateAmount(position.instrument?.id ?: 0, defaultAmount, price)
             }
         }
     }
 
     suspend fun getProfit(price: Float, position: Position): Float {
-        val rate = getConversionByInstrumentUseCase(position.instrument.id).successOr(0f)
+        val rate = getConversionByInstrumentUseCase(position.instrument?.id ?: 0).successOr(0f)
         return PortfolioUtil.getProfitOrLoss(
             price,
             position.openRate,
@@ -474,7 +476,7 @@ class OrderViewModel @Inject constructor(
                     if (it.succeeded) {
                         _orderSuccessState.send(
                             "$realAmountReduct units of your %s position were closed at %s.".format(
-                                position.instrument.symbol,
+                                position.instrument?.symbol,
                                 current
                             )
                         )
@@ -490,7 +492,7 @@ class OrderViewModel @Inject constructor(
                     if (it.succeeded) {
                         _orderSuccessState.send(
                             "$realAmountReduct units of your %s position were closed at %s.".format(
-                                position.instrument.symbol,
+                                position.instrument?.symbol,
                                 current
                             )
                         )

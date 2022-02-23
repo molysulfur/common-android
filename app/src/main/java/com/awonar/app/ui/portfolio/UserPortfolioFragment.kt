@@ -8,6 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.awonar.app.databinding.AwonarFragmentPortfolioUserBinding
 import com.awonar.app.ui.profile.StatisticProfileFragment
+import com.awonar.app.ui.user.UserViewModel
+import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
+import kotlinx.coroutines.flow.collect
 
 class UserPortfolioFragment : Fragment() {
 
@@ -15,6 +18,7 @@ class UserPortfolioFragment : Fragment() {
         AwonarFragmentPortfolioUserBinding.inflate(layoutInflater)
     }
 
+    private val userViewModel: UserViewModel by activityViewModels()
     private val viewModel: PortFolioViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -22,6 +26,11 @@ class UserPortfolioFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
+        launchAndRepeatWithViewLifecycle {
+            userViewModel.userState.collect {
+                viewModel.getManual(it?.username)
+            }
+        }
         binding.column1 = "Buy/Sell"
         binding.column2 = "Invested"
         binding.column3 = "P/L(%)"

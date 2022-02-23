@@ -19,7 +19,7 @@ class CopyTradePortfolioViewHolder constructor(
         columns: List<String>,
         onClick: ((Int, String) -> Unit)?,
     ) {
-        setupDataSteaming(item)
+//        setupDataSteaming(item)
         if (columns.isNotEmpty()) {
             binding.column1 = columns[0]
             binding.column2 = columns[1]
@@ -56,12 +56,12 @@ class CopyTradePortfolioViewHolder constructor(
                     }
                 }
                 val pl = sumFloatingPL.plus(item.copier.closedPositionsNetProfit)
-                val plPercent = pl.div(item.invested)
+                val plPercent = pl.div(item.copier.invested)
                 val moneyInOut = item.copier.depositSummary.minus(item.copier.withdrawalSummary)
                 val value = item.copier.initialInvestment.plus(moneyInOut).plus(pl)
-                item.profitLoss = pl
-                item.profitLossPercent = plPercent
-                item.value = value
+                item.copier.profitLoss = pl
+                item.copier.profitLossPercent = plPercent
+                item.copier.value = value
                 binding.item = item
             }
         }

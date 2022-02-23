@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class GetPieChartMarketAllocateUseCase @Inject constructor(
     private val portfolioRepository: PortfolioRepository,
-    @IoDispatcher dispatcher: CoroutineDispatcher
+    @IoDispatcher dispatcher: CoroutineDispatcher,
 ) : FlowUseCase<Unit, Map<String, Double>>(dispatcher) {
 
     override fun execute(parameters: Unit): Flow<Result<Map<String, Double>>> = flow {
@@ -21,7 +21,7 @@ class GetPieChartMarketAllocateUseCase @Inject constructor(
             val allocate = HashMap<String, Double>()
             val totalAmount = position?.positions?.sumOf { it.amount.toDouble() } ?: 0.0
             val positionByType: Map<String?, List<Position>> =
-                position?.positions?.groupBy { it.instrument.categories?.get(0) } ?: emptyMap()
+                position?.positions?.groupBy { it.instrument?.categories?.get(0) } ?: emptyMap()
             for ((k, v) in positionByType) {
                 val allocateByType = v.sumOf { it.amount.toDouble() }
                 allocate[k ?: ""] = allocateByType.div(totalAmount).times(100)

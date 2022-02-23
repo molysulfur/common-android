@@ -116,9 +116,9 @@ fun setInstrumentPositionCardView(
     item: PortfolioItem.InstrumentPositionCardItem?,
 ) {
     item?.let {
-        view.setImage(item.position.instrument.logo ?: "")
-        view.setTitle(item.position.instrument.symbol ?: "")
-        view.setSubTitle(item.position.instrument.name ?: "")
+        view.setImage(item.position.instrument?.logo ?: "")
+        view.setTitle(item.position.instrument?.symbol ?: "")
+        view.setSubTitle(item.position.instrument?.name ?: "")
         view.setInvested(item.invested)
         view.setValueInvested(item.value)
         view.setUnit(item.units)
@@ -240,10 +240,10 @@ fun setInstrumentPositionCard(
 ) {
     position?.let {
         view.apply {
-            setImage(it.instrument.logo ?: "")
-            setTitle(it.instrument.symbol ?: "")
-            setSubTitle(it.instrument.name ?: "")
-            setDescrption(it.instrument.industry ?: "")
+            setImage(it.instrument?.logo ?: "")
+            setTitle(it.instrument?.symbol ?: "")
+            setSubTitle(it.instrument?.name ?: "")
+            setDescrption(it.instrument?.industry ?: "")
             setInvested(it.amount)
             setUnit(it.units)
             setAvgOpen(it.openRate)
@@ -523,10 +523,10 @@ private fun getCopierColorByColumn(
     item: PortfolioItem.CopierPortfolioItem,
     column: String,
 ): Int = when {
-    column == "P/L($)" && item.profitLoss < 0 -> R.color.awonar_color_orange
-    column == "P/L($)" && item.profitLoss >= 0 -> R.color.awonar_color_green
-    column == "P/L(%)" && item.profitLossPercent < 0 -> R.color.awonar_color_orange
-    column == "P/L(%)" && item.profitLossPercent >= 0 -> R.color.awonar_color_green
+    column == "P/L($)" && item.copier.profitLoss < 0 -> R.color.awonar_color_orange
+    column == "P/L($)" && item.copier.profitLoss >= 0 -> R.color.awonar_color_green
+    column == "P/L(%)" && item.copier.profitLossPercent < 0 -> R.color.awonar_color_orange
+    column == "P/L(%)" && item.copier.profitLossPercent >= 0 -> R.color.awonar_color_green
     else -> 0
 }
 
@@ -534,14 +534,14 @@ private fun getCopierValueByColumn(
     item: PortfolioItem.CopierPortfolioItem,
     column: String,
 ): String = when (column) {
-    "Invested" -> "$%.2f".format(item.invested)
-    "P/L($)" -> "$%.2f".format(item.profitLoss)
-    "P/L(%)" -> "%.2f%s".format(item.profitLossPercent, "%")
-    "Value" -> "$%s".format(item.value)
-    "Fee" -> "$%s".format(item.fees)
-    "Net Invest" -> "$%.2f".format(item.netInvested)
-    "CSL" -> "%s".format(item.copyStopLoss)
-    "CSL(%)" -> "%.2f%s".format(item.copyStopLossPercent, "%")
+    "Invested" -> "$%.2f".format(item.copier.invested)
+    "P/L($)" -> "$%.2f".format(item.copier.profitLoss)
+    "P/L(%)" -> "%.2f%s".format(item.copier.profitLossPercent, "%")
+    "Value" -> "$%s".format(item.copier.value)
+    "Fee" -> "$%s".format(item.copier.fees)
+    "Net Invest" -> "$%.2f".format(item.copier.netInvested)
+    "CSL" -> "%s".format(item.copier.copyStopLoss)
+    "CSL(%)" -> "%.2f%s".format(item.copier.copyStopLossPercent, "%")
     else -> ""
 }
 
@@ -592,6 +592,7 @@ private fun getPositionValueByColumn(
     "TP($)" -> "$%.2f".format(item.position.amountTakeProfit)
     "SL(%)" -> "%.2f%s".format(item.position.stopLossPercent, "%")
     "TP(%)" -> "%.2f%s".format(item.position.takeProfitPercent, "%")
+    "Buy/Sell" -> "%s".format(item.position.type)
     else -> ""
 }
 

@@ -150,7 +150,7 @@ class PortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             )
             is InstrumentPositionCardViewHolder -> holder.bind(
                 item as PortfolioItem.InstrumentPositionCardItem,
-                quote[item.position.instrument.id],
+                quote[item.position.instrument?.id],
             )
             is CopierPositionViewHolder -> holder.bind(
                 item as PortfolioItem.CopierPositionCardItem,
@@ -214,15 +214,15 @@ class PortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         item: PortfolioItem.CopierPortfolioItem,
         column: String?,
     ): Float = when (column) {
-        "Invested" -> item.invested
-        "P/L($)" -> item.profitLoss
-        "P/L(%)" -> item.profitLossPercent
-        "Value" -> item.value
-        "Fee" -> item.fees
-        "Net Invest" -> item.netInvested
-        "CSL" -> item.copyStopLoss
-        "CSL(%)" -> item.copyStopLossPercent
-        "Avg. Open" -> item.avgOpen
+        "Invested" -> item.copier.invested
+        "P/L($)" -> item.copier.profitLoss
+        "P/L(%)" -> item.copier.profitLossPercent
+        "Value" -> item.copier.value
+        "Fee" -> item.copier.fees
+        "Net Invest" -> item.copier.netInvested
+        "CSL" -> item.copier.copyStopLoss
+        "CSL(%)" -> item.copier.copyStopLossPercent
+        "Avg. Open" -> item.copier.avgOpen
         else -> 0f
     }
 

@@ -22,7 +22,7 @@ class GetPieChartExposureUseCase @Inject constructor(
             val totalExposure: Double = position?.sumOf { it.exposure.toDouble() } ?: 0.0
             val exposure = HashMap<String, Double>()
             val positionByType: Map<String?, List<Position>> =
-                position?.groupBy { it.instrument.categories?.get(0) } ?: emptyMap()
+                position?.groupBy { it.instrument?.categories?.get(0) } ?: emptyMap()
             for ((k, v) in positionByType) {
                 exposure[k ?: ""] =
                     v.sumOf { it.exposure.toDouble() }.div(totalExposure).times(100)

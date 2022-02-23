@@ -121,11 +121,11 @@ class PartialCloseDialog :
 
     private fun setupInfo() {
         position?.let {
-            binding.title = "%s%s".format(if (it.isBuy) "BUY" else "SELL", it.instrument.symbol)
+            binding.title = "%s%s".format(if (it.isBuy) "BUY" else "SELL", it.instrument?.symbol)
             binding.positionId = "#%s".format(it.positionNo)
             binding.amount = "%.2f".format(it.amount)
             binding.units = "%.2f units".format(it.units)
-            ImageUtil.loadImage(binding.awonarPartialCloseImageLogo, it.instrument.logo)
+            ImageUtil.loadImage(binding.awonarPartialCloseImageLogo, it.instrument?.logo)
         }
     }
 
@@ -164,10 +164,10 @@ class PartialCloseDialog :
                     val current = getCurrentPrice()
                     when (binding.awonarPartialCloseButtonGroupType.checkedButtonId) {
                         R.id.awonar_partial_close_button_amount -> {
-                            viewModel.updateAmount(it.instrument.id, number, current)
+                            viewModel.updateAmount(it.instrument?.id ?: 0, number, current)
                         }
                         R.id.awonar_partial_close_button_units -> {
-                            viewModel.updateUnits(it.instrument.id, number, current)
+                            viewModel.updateUnits(it.instrument?.id ?: 0, number, current)
                         }
                     }
 

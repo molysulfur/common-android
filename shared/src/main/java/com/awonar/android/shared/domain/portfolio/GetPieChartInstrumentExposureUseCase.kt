@@ -18,11 +18,11 @@ class GetPieChartInstrumentExposureUseCase @Inject constructor(
 ) : FlowUseCase<String, Map<String, Double>>(dispatcher) {
     override fun execute(parameters: String): Flow<Result<Map<String, Double>>> = flow {
         portfolioRepository.getMyPositions().collect { result ->
-            val position = result.successOr(null)?.filter { it.instrument.categories?.indexOf(parameters) ?: -1 >= 0 }
+            val position = result.successOr(null)?.filter { it.instrument?.categories?.indexOf(parameters) ?: -1 >= 0 }
             val totalExposure: Double = position?.sumOf { it.exposure.toDouble() } ?: 0.0
             val exposure = HashMap<String, Double>()
             val positionByType: Map<String?, List<Position>> =
-                position?.groupBy { it.instrument.symbol } ?: emptyMap()
+                position?.groupBy { it.instrument?.symbol } ?: emptyMap()
             for ((k, v) in positionByType) {
                 exposure[k ?: ""] =
                     v.sumOf { it.exposure.toDouble() }.div(totalExposure).times(100)

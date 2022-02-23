@@ -16,7 +16,7 @@ data class UserPortfolioResponse(
 
 @Parcelize
 data class Copier(
-    @SerializedName("availableAmount") val availableAmount: Float,
+    @SerializedName("availableAmountinvested") val availableAmount: Float,
     @SerializedName("closedPositionsNetProfit") val closedPositionsNetProfit: Float,
     @SerializedName("copyExistingPositions") val copyExistingPositions: Boolean,
     @SerializedName("depositSummary") val depositSummary: Float,
@@ -34,9 +34,21 @@ data class Copier(
     @SerializedName("startedCopyDate") val startedCopyDate: String,
     @SerializedName("stopLossAmount") val stopLossAmount: Float,
     @SerializedName("stopLossPercentage") val stopLossPercentage: Float,
-    @SerializedName("totalFees") val totalFees: Float,
     @SerializedName("withdrawalSummary") val withdrawalSummary: Float,
     @SerializedName("parentUser") val user: UserCopier,
+    @SerializedName("totalFees") var totalFees: Float,
+    @SerializedName("units") var units: Float,
+    @SerializedName("avgOpen") var avgOpen: Float = 0f,
+    @SerializedName("invested") var invested: Float = 0f,
+    @SerializedName("profitLoss") var profitLoss: Float = 0f,
+    @SerializedName("profitLossPercent") var profitLossPercent: Float = 0f,
+    @SerializedName("value") var value: Float = 0f,
+    @SerializedName("fees") var fees: Float = 0f,
+    @SerializedName("leverage") var leverage: Float = 0f,
+    @SerializedName("current") var current: Float = 0f,
+    @SerializedName("netInvested") var netInvested: Float = 0f,
+    @SerializedName("copyStopLoss") var copyStopLoss: Float = 0f,
+    @SerializedName("copyStopLossPercent") var copyStopLossPercent: Float = 0f,
 ) : Parcelable
 
 @Parcelize
@@ -96,15 +108,16 @@ data class OrderPortfolio(
 data class Position(
     @SerializedName("id") val id: String? = null,
     @SerializedName("ip") val ip: String? = null,
-    @SerializedName("isBuy") val isBuy: Boolean,
-    @SerializedName("leverage") val leverage: Int,
-    @SerializedName("instrumentId") val instrumentId: Int,
-    @SerializedName("copyId") val copyId: String,
+    @SerializedName("isBuy") val isBuy: Boolean = false,
+    @SerializedName("type") val type: String? = null,
+    @SerializedName("leverage") val leverage: Int = 0,
+    @SerializedName("instrumentId") val instrumentId: Int = 0,
+    @SerializedName("copyId") val copyId: String? = null,
     @SerializedName("netProfit") val netProfit: Float = 0f,
     @SerializedName("amount") val amount: Float = 0f,
     @SerializedName("exitOrder") val exitOrder: ExitOrder? = null,
     @SerializedName("exposure") val exposure: Float = 0f,
-    @SerializedName("instrument") val instrument: Instrument,
+    @SerializedName("instrument") val instrument: Instrument? = null,
     @SerializedName("openDateTime") val openDateTime: String? = null,
     @SerializedName("openRate") val openRate: Float = 0f,
     @SerializedName("orderNo") val orderNo: String? = null,

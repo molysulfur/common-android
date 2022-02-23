@@ -81,7 +81,7 @@ class ConvertGroupPositionToItemUseCase @Inject constructor(
                     stopLossPercent = slPercent,
                     takeProfitPercent = tpPercent,*/
                     date = date,
-                    index = parameters.indexOfFirst { it.instrument.id == positions[0].instrument.id }
+                    index = parameters.indexOfFirst { it.instrument?.id == positions[0].instrument?.id }
                 )
             )
         }

@@ -23,11 +23,11 @@ class InstrumentPortfolioViewHolder constructor(
         onClick: ((Int, String) -> Unit)?,
     ) {
         this.positionItem = item
-        setupDataSteaming()
+//        setupDataSteaming()
         with(binding.awonarInsturmentOrderItem) {
             val position = item.position
-            setImage(position.instrument.logo ?: "")
-            setTitle(position.instrument.symbol ?: "")
+            setImage(position.instrument?.logo ?: "")
+            setTitle(position.instrument?.symbol ?: "")
             setOnClickListener {
                 onClick?.invoke(item.index, "instrument")
             }
@@ -45,9 +45,10 @@ class InstrumentPortfolioViewHolder constructor(
         CoroutineScope(Dispatchers.Default).launch {
             QuoteSteamingManager.quotesState.collect { quotes ->
                 positionItem?.let { positionItem ->
-                    val quote = quotes[positionItem.position.instrument.id]
+                    val quote = quotes[positionItem.position.instrument?.id]
                     quote?.let {
-                        positionItem.position.current = if (positionItem.position.isBuy) it.bid else it.ask
+                        positionItem.position.current =
+                            if (positionItem.position.isBuy) it.bid else it.ask
                         val pl = PortfolioUtil.getProfitOrLoss(
                             positionItem.position.current,
                             positionItem.position.open,
@@ -59,10 +60,11 @@ class InstrumentPortfolioViewHolder constructor(
                             positionItem.position.current,
                             positionItem.position.open,
                             positionItem.position.isBuy,
-                            positionItem.position.instrument.digit
+                            positionItem.position.instrument?.digit ?: 2
                         )
                         val value = PortfolioUtil.getValue(pl, positionItem.position.invested)
-                        val plPercent = PortfolioUtil.profitLossPercent(pl, positionItem.position.invested)
+                        val plPercent =
+                            PortfolioUtil.profitLossPercent(pl, positionItem.position.invested)
                         positionItem.position.profitLoss = pl
                         positionItem.position.pipChange = pipChange
                         positionItem.position.value = value

@@ -44,7 +44,7 @@ class PositionInsideViewModel @Inject constructor(
         viewModelScope.launch {
             val position: Position? = userPosition?.positions?.get(index)
             val positionList: List<Position> =
-                userPosition?.positions?.filter { it.instrument.id == position?.instrument?.id }
+                userPosition?.positions?.filter { it.instrument?.id == position?.instrument?.id }
                     ?: emptyList()
             if (positionList.isNotEmpty()) {
                 val items = convertPositionToItemUseCase(positionList).successOr(emptyList())
@@ -63,7 +63,8 @@ class PositionInsideViewModel @Inject constructor(
                 val items =
                     convertPositionGroupPositionToItemUseCase(positionList).successOr(emptyList())
                         .toMutableList()
-                items.add(0, PortfolioItem.SectionItem("Start Copy ${DateUtils.getDate(copies.startedCopyDate)}"))
+                items.add(0,
+                    PortfolioItem.SectionItem("Start Copy ${DateUtils.getDate(copies.startedCopyDate)}"))
                 _copiesState.value = copies
                 _positionItems.value = items
             }
@@ -100,7 +101,7 @@ class PositionInsideViewModel @Inject constructor(
                 val position = copies.positions?.get(currentIndex)
                 position?.let { position ->
                     val items =
-                        convertPositionToItemUseCase(copies.positions?.filter { it.instrument.id == position.instrument.id }
+                        convertPositionToItemUseCase(copies.positions?.filter { it.instrument?.id == position.instrument?.id }
                             ?: emptyList()).successOr(
                             emptyList())
                     _positionState.value = position

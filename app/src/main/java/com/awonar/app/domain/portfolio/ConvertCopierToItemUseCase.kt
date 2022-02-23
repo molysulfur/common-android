@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class ConvertCopierToItemUseCase @Inject constructor(
     private val currenciesRepository: CurrenciesRepository,
-    @IoDispatcher dispatcher: CoroutineDispatcher
+    @IoDispatcher dispatcher: CoroutineDispatcher,
 ) : UseCase<List<Copier>, MutableList<PortfolioItem>>(dispatcher) {
     override suspend fun execute(parameters: List<Copier>): MutableList<PortfolioItem> {
         val itemList = mutableListOf<PortfolioItem>()
@@ -36,22 +36,24 @@ class ConvertCopierToItemUseCase @Inject constructor(
             val pl = 0f // cal after get realtime
             val plPercent = 0f// cal after get realtime
             val value = 0f // cal after get realtime
+            with(copier) {
+                this.units = totalUnits.toFloat()
+                this.avgOpen = avgOpen.toFloat()
+                this.invested = invested
+                this.profitLoss = pl
+                this.profitLossPercent = plPercent
+                this.value = value
+                this.fees = fees
+                this.leverage = leverage
+                this.current = current
+                this.netInvested = netInvested
+                this.copyStopLoss = csl
+                this.copyStopLossPercent = cslPercent
+            }
             itemList.add(
                 PortfolioItem.CopierPortfolioItem(
                     copier = copier,
                     conversions = conversions,
-                    units = totalUnits.toFloat(),
-                    avgOpen = avgOpen.toFloat(),
-                    invested = invested,
-                    profitLoss = pl,
-                    profitLossPercent = plPercent,
-                    value = value,
-                    fees = fees,
-                    leverage = leverage,
-                    current = current,
-                    netInvested = netInvested,
-                    copyStopLoss = csl,
-                    copyStopLossPercent = cslPercent,
                     index = index
                 )
             )

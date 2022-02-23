@@ -68,18 +68,6 @@ sealed class PortfolioItem(
     class CopierPortfolioItem(
         val copier: Copier,
         val conversions: Map<Int, Float>,
-        var units: Float,
-        var avgOpen: Float,
-        var invested: Float,
-        var profitLoss: Float,
-        var profitLossPercent: Float,
-        var value: Float,
-        var fees: Float,
-        var leverage: Float,
-        var current: Float,
-        var netInvested: Float,
-        var copyStopLoss: Float,
-        var copyStopLossPercent: Float,
         var index: Int,
     ) : PortfolioItem(COPYTRADE_PORTFOLIO)
 
