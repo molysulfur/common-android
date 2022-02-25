@@ -65,7 +65,7 @@ class ConvertPositionToItemUseCase @Inject constructor(
 //                    amountTakeProfit = amountTp,
 //                    stopLossPercent = slPercent,
 //                    takeProfitPercent = tpPercent,
-                    date = date,
+                    meta = date,
                     index = index
                 )
             )

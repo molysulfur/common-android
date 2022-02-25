@@ -28,6 +28,7 @@ class InstrumentPortfolioViewHolder constructor(
             val position = item.position
             setImage(position.instrument?.logo ?: "")
             setTitle(position.instrument?.symbol ?: "")
+            setDescription(item.meta ?: "")
             setOnClickListener {
                 onClick?.invoke(item.index, "instrument")
             }

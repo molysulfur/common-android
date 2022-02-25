@@ -16,6 +16,19 @@ class PortfolioRepository @Inject constructor(
     private val preference: PortfolioActivedColumnManager,
 ) {
 
+    fun getPositionPublic(request: PublicPositionRequest) =
+        object : DirectNetworkFlow<PublicPositionRequest, PublicPosition?, PublicPosition?>() {
+            override fun createCall(): Response<PublicPosition?> =
+                portfolioService.getPublicPosition(request.username, request.symbol).execute()
+
+            override fun convertToResultType(response: PublicPosition?): PublicPosition? =
+                response
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+        }.asFlow()
+
     fun getPendingOrders() =
         object : DirectNetworkFlow<Unit, List<PendingOrder>, List<PendingOrder>>() {
             override fun createCall(): Response<List<PendingOrder>> =

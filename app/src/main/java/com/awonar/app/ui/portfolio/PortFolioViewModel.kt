@@ -2,6 +2,7 @@ package com.awonar.app.ui.portfolio
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavDirections
 import com.awonar.android.model.market.Quote
 import com.awonar.android.model.portfolio.*
 import com.awonar.android.shared.domain.market.GetConversionByInstrumentUseCase
@@ -16,6 +17,8 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.awonar.app.domain.portfolio.*
+import com.awonar.app.ui.portfolio.user.PublicPortfolioFragmentDirections
+import kotlinx.coroutines.channels.Channel
 import timber.log.Timber
 
 @HiltViewModel
@@ -39,13 +42,20 @@ class PortFolioViewModel @Inject constructor(
     private val getPieChartInstrumentExposureUseCase: GetPieChartInstrumentExposureUseCase,
 ) : ViewModel() {
 
+    private val _portfolioType = MutableStateFlow("market")
+
     private val _profitState = MutableStateFlow(0f)
     val profitState: StateFlow<Float> get() = _profitState
     private val _equityState = MutableStateFlow(0f)
     val equityState: StateFlow<Float> get() = _equityState
+    private val _positionList: MutableStateFlow<MutableList<PortfolioItem>> =
+        MutableStateFlow(mutableListOf(PortfolioItem.EmptyItem()))
+    val positionList: StateFlow<MutableList<PortfolioItem>> get() = _positionList
+    private val _positionState = MutableStateFlow<UserPortfolioResponse?>(null)
+    val positionState: StateFlow<UserPortfolioResponse?> get() = _positionState
 
-    private val _portfolioType = MutableStateFlow("market")
-
+    private val _navigateActions = Channel<NavDirections>(Channel.CONFLATED)
+    val navigateActions get() = _navigateActions.receiveAsFlow()
     val portfolioState: StateFlow<Portfolio?> = flow {
         getMyPortFolioUseCase(true).collect {
             val data = it.successOr(null)
@@ -53,30 +63,30 @@ class PortFolioViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, WhileViewSubscribed, null)
 
-    private val _positionList: MutableStateFlow<MutableList<PortfolioItem>> =
-        MutableStateFlow(mutableListOf(PortfolioItem.EmptyItem()))
-    val positionList: StateFlow<MutableList<PortfolioItem>> get() = _positionList
-
-    private val _positionState = MutableStateFlow<UserPortfolioResponse?>(null)
-    val positionState: StateFlow<UserPortfolioResponse?> get() = _positionState
+    fun navigate(index: Int) {
+        viewModelScope.launch {
+            _navigateActions.send(PublicPortfolioFragmentDirections.publicPortfolioFragmentToInsidePositionPortfolioFragment(
+                index))
+        }
+    }
 
     fun getManual(username: String? = null) {
         viewModelScope.launch {
             getPositionManualUseCase(username).collect {
                 val data = it.successOr(null)
                 val itemList = mutableListOf<PortfolioItem>()
-                var sumValue = 0f
+                var sumInvested = 0f
                 data?.positions?.forEachIndexed { index, position ->
-                    sumValue += position.value
+                    sumInvested += position.invested
                     itemList.add(PortfolioItem.InstrumentPortfolioItem(
                         position = position,
-                        date = null,
+                        meta = null,
                         index = index
 
                     ))
                 }
                 data?.copies?.forEachIndexed { index, copier ->
-                    sumValue += copier.value
+                    sumInvested += copier.invested
                     itemList.add(PortfolioItem.CopierPortfolioItem(
                         copier = copier,
                         conversions = emptyMap(),
@@ -85,7 +95,7 @@ class PortFolioViewModel @Inject constructor(
                 }
                 itemList.add(PortfolioItem.BalanceItem(
                     title = "Balance",
-                    value = 100f.minus(sumValue)
+                    value = 100f.minus(sumInvested)
                 ))
                 _positionList.emit(itemList)
             }
@@ -227,5 +237,17 @@ class PortFolioViewModel @Inject constructor(
                     portfolio.available.plus(portfolio.totalAllocated).plus(plSymbol.plus(plCopy))
             }
         }
+    }
+
+    fun getPositionIndex(currentIndex: Int): Position? {
+        if (currentIndex >= 0 && currentIndex < positionList.value.size) {
+            val item = positionList.value[currentIndex]
+            if (currentIndex > positionList.value.size || currentIndex < positionList.value.size) {
+                if (item is PortfolioItem.InstrumentPortfolioItem) {
+                    return item.position
+                }
+            }
+        }
+        return null
     }
 }

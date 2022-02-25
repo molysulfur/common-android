@@ -5,6 +5,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDirections
 import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.portfolio.Position
+import com.awonar.android.model.portfolio.PublicPosition
+import com.awonar.android.model.portfolio.PublicPositionRequest
+import com.awonar.android.shared.domain.portfolio.GetPositionPublicBySymbolUseCase
 import com.awonar.app.domain.portfolio.ConvertCopierToItemUseCase
 import com.awonar.app.domain.portfolio.ConvertGroupPositionToItemUseCase
 import com.awonar.app.domain.portfolio.ConvertPositionToCardItemUseCase
@@ -20,6 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PositionViewModel @Inject constructor(
+    private val getPositionPublicBySymbolUseCase: GetPositionPublicBySymbolUseCase,
     private val convertPositionToItemUseCase: ConvertPositionToItemUseCase,
     private val convertPositionToCardItemUseCase: ConvertPositionToCardItemUseCase,
     private val convertPositionGroupPositionToItemUseCase: ConvertGroupPositionToItemUseCase,
@@ -28,6 +32,9 @@ class PositionViewModel @Inject constructor(
 
     private val _navigateActions = Channel<NavDirections>(Channel.CONFLATED)
     val navigateActions get() = _navigateActions.receiveAsFlow()
+
+    private val _publicPosition: MutableStateFlow<PublicPosition?> = MutableStateFlow(null)
+    val publicPosition get() = _publicPosition
 
     private val _positionItems: MutableStateFlow<MutableList<PortfolioItem>> =
         MutableStateFlow(mutableListOf(PortfolioItem.EmptyItem()))
@@ -79,6 +86,18 @@ class PositionViewModel @Inject constructor(
             val positionItemResult =
                 convertPositionToCardItemUseCase(positions).successOr(emptyList())
             _positionItems.emit(positionItemResult.toMutableList())
+        }
+    }
+
+    fun getInsidePublic(username: String?, symbol: String?) {
+        viewModelScope.launch {
+            if (username != null && symbol != null) {
+                getPositionPublicBySymbolUseCase(
+                    PublicPositionRequest(username, symbol)
+                ).collect {
+                    _publicPosition.emit(it.successOr(null))
+                }
+            }
         }
     }
 }

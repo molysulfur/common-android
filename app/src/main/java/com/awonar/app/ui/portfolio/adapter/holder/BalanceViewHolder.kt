@@ -9,7 +9,6 @@ import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 class BalanceViewHolder constructor(private val binding: AwonarItemListBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-
     fun bind(item: PortfolioItem.BalanceItem) {
         binding.awonarItemListText.setBackgroundColor(ContextCompat.getColor(binding.root.context,
             R.color.awonar_color_light_gray))

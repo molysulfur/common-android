@@ -24,10 +24,12 @@ import com.awonar.app.widget.InstrumentPositionCardView
 import timber.log.Timber
 import kotlin.collections.HashMap
 
-@BindingAdapter("setUserPortfolio", "column1", "column2", "column3", "column4")
+
+@BindingAdapter("setUserPortfolio", "viewModel", "column1", "column2", "column3", "column4")
 fun setUserPortfolio(
     recycler: RecyclerView,
     itemList: MutableList<PortfolioItem>,
+    viewModel: PortFolioViewModel?,
     column1: String?,
     column2: String?,
     column3: String?,
@@ -35,7 +37,11 @@ fun setUserPortfolio(
 ) {
     if (recycler.adapter == null) {
         with(recycler) {
-            adapter = PortfolioAdapter()
+            adapter = PortfolioAdapter().apply {
+                onClick = { index, type ->
+                    viewModel?.navigate(index)
+                }
+            }
             layoutManager =
                 LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
         }
@@ -505,6 +511,7 @@ private fun getPositionValueByColumn(
         "SL(%)" -> "%.2f%s".format(item.stopLossPercent, "%")
         "TP(%)" -> "%.2f%s".format(item.takeProfitPercent, "%")
         "Buy/Sell" -> "%s".format(item.type)
+        "Amount" -> "%.2f%s".format(item.amount,"%")
         else -> ""
     }
 }
@@ -542,7 +549,8 @@ private fun getCopierValueByColumn(
     "Invested" -> "$%.2f".format(item.invested)
     "Invested(%)" -> "%.2f%s".format(item.invested, "%")
     "P/L($)" -> "$%.2f".format(item.profitLoss)
-    "P/L(%)" -> "%.2f%s".format((if (item.netProfit != 0f) item.netProfit else item.profitLossPercent), "%")
+    "P/L(%)" -> "%.2f%s".format((if (item.netProfit != 0f) item.netProfit else item.profitLossPercent),
+        "%")
     "Value" -> "$%.2f".format(item.value)
     "Value(%)" -> "%.2f%s".format(item.value, "%")
     "Fee" -> "$%s".format(item.fees)

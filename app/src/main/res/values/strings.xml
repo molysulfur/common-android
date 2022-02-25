@@ -79,4 +79,7 @@
     <string name="awonar_text_add_fund">Add Fund</string>
     <string name="awonar_text_update">Update</string>
     <string name="awonar_text_cancel">Cancel</string>
+    <string name="awonar_text_back">Back</string>
+    <string name="awonar_text_prev">Prev</string>
+    <string name="awonar_text_next">Next</string>
 </resources>

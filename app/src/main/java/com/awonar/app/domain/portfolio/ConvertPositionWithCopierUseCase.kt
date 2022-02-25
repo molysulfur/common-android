@@ -64,7 +64,7 @@ class ConvertPositionWithCopierUseCase @Inject constructor(
 //                        amountTakeProfit = amountTp,
 //                        stopLossPercent = slPercent,
 //                        takeProfitPercent = tpPercent,
-                        date = DateUtils.getDate(position.openDateTime),
+                        meta = DateUtils.getDate(position.openDateTime),
                         index = index
                     )
                 )

@@ -67,7 +67,7 @@ sealed class PortfolioItem(
     @Parcelize
     class InstrumentPortfolioItem(
         val position: Position,
-        var date: String?,
+        var meta: String?,
         val index: Int,
         val isRealTime: Boolean = false,
     ) : PortfolioItem(INSTRUMENT_PORTFOLIO)

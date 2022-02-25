@@ -63,24 +63,24 @@ class ConvertGroupPositionToItemUseCase @Inject constructor(
             itemList.add(
                 PortfolioItem.InstrumentPortfolioItem(
                     position = positions[0],
-                 /*   conversionRate = conversionRate,
-                    invested = invested.toFloat(),
-                    units = units.toFloat(),
-                    open = avgOpen.toFloat(),
-                    current = current,
-                    stopLoss = sl,
-                    takeProfit = tp,
-                    profitLoss = pl,
-                    profitLossPercent = plPercent,
-                    pipChange = pipChange,
-                    leverage = leverage.toInt(),
-                    value = value,
-                    fees = fees.toFloat(),
-                    amountStopLoss = amountSl,
-                    amountTakeProfit = amountTp,
-                    stopLossPercent = slPercent,
-                    takeProfitPercent = tpPercent,*/
-                    date = date,
+                    /*   conversionRate = conversionRate,
+                       invested = invested.toFloat(),
+                       units = units.toFloat(),
+                       open = avgOpen.toFloat(),
+                       current = current,
+                       stopLoss = sl,
+                       takeProfit = tp,
+                       profitLoss = pl,
+                       profitLossPercent = plPercent,
+                       pipChange = pipChange,
+                       leverage = leverage.toInt(),
+                       value = value,
+                       fees = fees.toFloat(),
+                       amountStopLoss = amountSl,
+                       amountTakeProfit = amountTp,
+                       stopLossPercent = slPercent,
+                       takeProfitPercent = tpPercent,*/
+                    meta = date,
                     index = parameters.indexOfFirst { it.instrument?.id == positions[0].instrument?.id }
                 )
             )

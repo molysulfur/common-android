@@ -1,4 +1,4 @@
-package com.awonar.app.ui.portfolio
+package com.awonar.app.ui.portfolio.user
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,16 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.awonar.app.databinding.AwonarFragmentPortfolioUserBinding
-import com.awonar.app.ui.profile.StatisticProfileFragment
+import androidx.navigation.fragment.findNavController
+import com.awonar.app.databinding.AwonarFragmentPortfolioPublicBinding
+import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.awonar.app.ui.user.UserViewModel
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 
-class UserPortfolioFragment : Fragment() {
+class PublicPortfolioFragment : Fragment() {
 
-    private val binding: AwonarFragmentPortfolioUserBinding by lazy {
-        AwonarFragmentPortfolioUserBinding.inflate(layoutInflater)
+    private val binding: AwonarFragmentPortfolioPublicBinding by lazy {
+        AwonarFragmentPortfolioPublicBinding.inflate(layoutInflater)
     }
 
     private val userViewModel: UserViewModel by activityViewModels()
@@ -27,10 +28,8 @@ class UserPortfolioFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         launchAndRepeatWithViewLifecycle {
-            userViewModel.userState.collect {
-                it?.let {
-                    viewModel.getManual(it.username)
-                }
+            viewModel.navigateActions.collect {
+                findNavController().navigate(it)
             }
         }
         binding.column1 = "Buy/Sell"
@@ -44,6 +43,8 @@ class UserPortfolioFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.getManual(userViewModel.userState.value?.username)
+
     }
 
     companion object {

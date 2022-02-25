@@ -7,6 +7,7 @@ import com.awonar.android.model.portfolio.Position
 import com.awonar.android.model.portfolio.UserPortfolioResponse
 import com.awonar.app.domain.portfolio.ConvertGroupPositionToItemUseCase
 import com.awonar.app.domain.portfolio.ConvertPositionToItemUseCase
+import com.awonar.app.domain.portfolio.ConvertPublicPositionToItemUseCase
 import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 import com.awonar.app.utils.DateUtils
 import com.molysulfur.library.result.successOr
@@ -23,6 +24,7 @@ import javax.inject.Inject
 class PositionInsideViewModel @Inject constructor(
     private val convertPositionToItemUseCase: ConvertPositionToItemUseCase,
     private val convertPositionGroupPositionToItemUseCase: ConvertGroupPositionToItemUseCase,
+    private val convertPublicPositionToItemUseCase: ConvertPublicPositionToItemUseCase,
 ) : ViewModel() {
 
     private val _editDialog = Channel<Position?>(capacity = Channel.CONFLATED)
@@ -39,6 +41,13 @@ class PositionInsideViewModel @Inject constructor(
     private val _positionItems: MutableStateFlow<MutableList<PortfolioItem>> =
         MutableStateFlow(mutableListOf(PortfolioItem.EmptyItem()))
     val positionItems: StateFlow<MutableList<PortfolioItem>> get() = _positionItems
+
+    fun convertPublicPosition(positions: List<Position>) {
+        viewModelScope.launch {
+            val itemList = convertPublicPositionToItemUseCase(positions).successOr(mutableListOf())
+            _positionItems.emit(itemList)
+        }
+    }
 
     fun convertPosition(userPosition: UserPortfolioResponse?, index: Int) {
         viewModelScope.launch {

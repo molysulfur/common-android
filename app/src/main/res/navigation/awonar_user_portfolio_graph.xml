@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/awonar_user_portfolio_graph"
+    app:startDestination="@id/publicPortfolioFragment">
+
+
+    <fragment
+        android:id="@+id/publicPortfolioFragment"
+        android:name="com.awonar.app.ui.portfolio.user.PublicPortfolioFragment"
+        android:label="PublicPortfolioFragment">
+
+        <action
+            android:id="@+id/publicPortfolioFragment_to_insidePositionPortfolioFragment"
+            app:destination="@+id/insidePositionPortfolioFragment"
+            app:popUpTo="@+id/publicPortfolioFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/insidePositionPortfolioFragment"
+        android:name="com.awonar.app.ui.portfolio.user.InsidePositionPortfolioFragment"
+        android:label="InsidePublicPortfolioFragment">
+
+        <argument
+            android:name="currentIndex"
+            app:argType="integer" />
+    </fragment>
+</navigation>

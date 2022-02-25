@@ -4,13 +4,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.adapter.FragmentViewHolder
 import com.awonar.app.R
-import com.awonar.app.ui.portfolio.UserPortfolioFragment
+import com.awonar.app.ui.portfolio.user.UserPortfolioFragment
 import com.awonar.app.ui.profile.ProfilePrivateFragment
 import com.awonar.app.ui.profile.StatisticProfileFragment
 import com.awonar.app.ui.user.UserInfoFragment
-import timber.log.Timber
 
 class ProfilePagerAdapter constructor(fragmentManager: FragmentManager, lifecycler: Lifecycle) :
     FragmentStateAdapter(fragmentManager, lifecycler) {
