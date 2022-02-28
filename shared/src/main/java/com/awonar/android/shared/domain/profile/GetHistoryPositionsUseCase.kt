@@ -6,6 +6,7 @@ import com.awonar.android.model.user.StatGainResponse
 import com.awonar.android.shared.di.IoDispatcher
 import com.awonar.android.shared.repos.HistoryRepository
 import com.molysulfur.library.result.Result
+import com.molysulfur.library.result.succeeded
 import com.molysulfur.library.result.successOr
 import com.molysulfur.library.usecase.FlowUseCase
 import kotlinx.coroutines.CoroutineDispatcher
@@ -21,8 +22,10 @@ class GetHistoryPositionsUseCase @Inject constructor(
     override fun execute(parameters: HistoryPositionRequest): Flow<Result<List<HistoryPosition>>> =
         flow {
             repository.getHistoryPositions(parameters).collect {
-                val list = it.successOr(emptyList()) ?: emptyList()
-                emit(Result.Success(list))
+                if (it.succeeded) {
+                    val list = it.successOr(emptyList()) ?: emptyList()
+                    emit(Result.Success(list))
+                }
             }
         }
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -56,6 +57,7 @@
                         android:textColor="@color/awonar_color_text_primary" />
 
                     <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/awoanr_portfolio_history_button_calendar"
                         style="@style/Awonar.Button.Icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -90,20 +92,53 @@
                     android:layout_height="wrap_content"
                     android:padding="@dimen/awonar_size_margin_padding_normal"
                     android:text="To"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/awoanr_portfolio_history_text_title_from" />
 
                 <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/appCompatTextView5"
                     style="@style/Awonar.Text.Default.Normal"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/awonar_size_margin_padding_normal"
                     android:text="@{viewModel.to}"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/awoanr_portfolio_history_text_title_to"
                     app:layout_constraintTop_toBottomOf="@+id/awoanr_portfolio_history_text_title_from" />
+
+                <com.awonar.app.widget.VerticalTitleView
+                    android:id="@+id/awoanr_portfolio_history_vertical_text_trades"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/awonar_size_margin_padding_normal"
+                    app:layout_constraintEnd_toStartOf="@+id/awoanr_portfolio_history_vertical_text_profit"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintHorizontal_chainStyle="spread_inside"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awoanr_portfolio_history_text_title_to"
+                    app:verticalTitleView_setSubTitle="Trades" />
+
+                <com.awonar.app.widget.VerticalTitleView
+                    android:id="@+id/awoanr_portfolio_history_vertical_text_profit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/awonar_size_margin_padding_normal"
+                    app:layout_constraintEnd_toStartOf="@+id/awoanr_portfolio_history_vertical_text_pl"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/awoanr_portfolio_history_vertical_text_trades"
+                    app:layout_constraintTop_toBottomOf="@+id/awoanr_portfolio_history_text_title_to"
+                    app:verticalTitleView_setSubTitle="Profitable" />
+
+                <com.awonar.app.widget.VerticalTitleView
+                    android:id="@+id/awoanr_portfolio_history_vertical_text_pl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/awonar_size_margin_padding_normal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/awoanr_portfolio_history_vertical_text_profit"
+                    app:layout_constraintTop_toBottomOf="@+id/awoanr_portfolio_history_text_title_to"
+                    app:verticalTitleView_setSubTitle="P/L(%)" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

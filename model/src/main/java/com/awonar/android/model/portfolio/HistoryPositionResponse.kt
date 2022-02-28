@@ -9,7 +9,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class HistoryPositionResponse(
-    @SerializedName("markets") val markets: List<HistoryPosition>,
+    @SerializedName("markets") val markets: List<HistoryPosition>?,
     @SerializedName("meta") val meta: Meta
 ) : Parcelable
 

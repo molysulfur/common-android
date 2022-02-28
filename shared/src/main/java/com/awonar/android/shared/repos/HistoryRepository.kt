@@ -5,6 +5,7 @@ import com.awonar.android.model.history.*
 import com.awonar.android.model.portfolio.HistoryPosition
 import com.awonar.android.model.portfolio.HistoryPositionRequest
 import com.awonar.android.model.portfolio.HistoryPositionResponse
+import com.awonar.android.model.portfolio.PublicHistoryAggregate
 import com.awonar.android.shared.api.HistoryService
 import com.awonar.android.shared.constrant.Columns.COLUMNS_HISTORY
 import com.awonar.android.shared.constrant.Columns.DEFAULT_COLUMN_HISTORY
@@ -215,8 +216,6 @@ class HistoryRepository @Inject constructor(
             override fun onFetchFailed(errorMessage: String) {
                 println(errorMessage)
             }
-
-
         }.asFlow()
 
     fun getHistoryPositions(request: HistoryPositionRequest) =
@@ -236,12 +235,34 @@ class HistoryRepository @Inject constructor(
                 }
 
             override fun convertToResultType(response: HistoryPositionResponse): List<HistoryPosition> =
-                response.markets
+                response.markets ?: emptyList()
 
             override fun onFetchFailed(errorMessage: String) {
                 println(errorMessage)
             }
 
 
+        }.asFlow()
+
+    fun getHistoryAggregate(request: HistoryPositionRequest) =
+        object : DirectNetworkFlow<Long, PublicHistoryAggregate, PublicHistoryAggregate>() {
+            override fun createCall(): Response<PublicHistoryAggregate> =
+                if (!request.symbol.isNullOrBlank()) {
+                    historyService.getHistoryAggregate(
+                        request.time,
+                        request.symbol ?: ""
+                    ).execute()
+                } else {
+                    historyService.getHistoryAggregate(
+                        request.time
+                    ).execute()
+                }
+
+            override fun convertToResultType(response: PublicHistoryAggregate): PublicHistoryAggregate =
+                response
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
         }.asFlow()
 }

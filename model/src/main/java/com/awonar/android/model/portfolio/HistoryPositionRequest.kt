@@ -5,7 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class HistoryPositionRequest(
-    val page: Int,
-    val time: Long,
+    val page: Int = 0,
+    val time: Long = 0L,
     val symbol: String? = null,
 ) : Parcelable
