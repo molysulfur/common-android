@@ -14,6 +14,7 @@ import com.awonar.app.utils.DateUtils
 import com.awonar.app.widget.PositionView
 import timber.log.Timber
 
+
 @BindingAdapter("setHistoryInsideAdapter", "viewModel")
 fun setHistoryInsideAdapter(
     recycler: RecyclerView,

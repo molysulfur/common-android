@@ -21,9 +21,7 @@ import com.awonar.app.utils.ColorChangingUtil
 import com.awonar.app.widget.CopierPositionCardView
 import com.awonar.app.widget.PositionView
 import com.awonar.app.widget.InstrumentPositionCardView
-import timber.log.Timber
 import kotlin.collections.HashMap
-
 
 @BindingAdapter("setUserPortfolio", "viewModel", "column1", "column2", "column3", "column4")
 fun setUserPortfolio(
@@ -492,7 +490,7 @@ private fun getPositionValueByColumn(
         "Invested" -> "$%.2f".format(item.invested)
         "Invested(%)" -> "%.2f%s".format(item.invested, "%")
         "Units" -> "%.2f".format(item.units)
-        "Open", "Avg. Open" -> "%s".format(item.open)
+        "Open", "Avg. Open" -> "%s".format(if (item.openRate != 0f) item.openRate else item.open)
         "Current" -> "%s".format(item.current)
         "P/L($)" -> "$%.2f".format(item.profitLoss)
         "P/L(%)" -> "%.2f%s".format(
@@ -511,7 +509,7 @@ private fun getPositionValueByColumn(
         "SL(%)" -> "%.2f%s".format(item.stopLossPercent, "%")
         "TP(%)" -> "%.2f%s".format(item.takeProfitPercent, "%")
         "Buy/Sell" -> "%s".format(item.type)
-        "Amount" -> "%.2f%s".format(item.amount,"%")
+        "Amount" -> "%.2f%s".format(item.amount, "%")
         else -> ""
     }
 }

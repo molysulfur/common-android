@@ -2,6 +2,9 @@ package com.awonar.android.shared.repos
 
 import androidx.paging.*
 import com.awonar.android.model.history.*
+import com.awonar.android.model.portfolio.HistoryPosition
+import com.awonar.android.model.portfolio.HistoryPositionRequest
+import com.awonar.android.model.portfolio.HistoryPositionResponse
 import com.awonar.android.shared.api.HistoryService
 import com.awonar.android.shared.constrant.Columns.COLUMNS_HISTORY
 import com.awonar.android.shared.constrant.Columns.DEFAULT_COLUMN_HISTORY
@@ -16,7 +19,7 @@ import javax.inject.Singleton
 @Singleton
 class HistoryRepository @Inject constructor(
     val historyService: HistoryService,
-    private val preference: PortfolioActivedColumnManager
+    private val preference: PortfolioActivedColumnManager,
 ) {
 
     fun filterCopyHistory(request: HistoryRequest) =
@@ -156,7 +159,7 @@ class HistoryRepository @Inject constructor(
 
     fun getCopiesHistory(
         username: String,
-        timestamp: Long
+        timestamp: Long,
     ): Flow<Result<CopiesAggregateResponse?>> =
         object : DirectNetworkFlow<Long, CopiesAggregateResponse?, CopiesAggregateResponse?>() {
             override fun createCall(): Response<CopiesAggregateResponse?> =
@@ -208,6 +211,24 @@ class HistoryRepository @Inject constructor(
                 ).execute()
 
             override fun convertToResultType(response: CopiesHistory): CopiesHistory = response
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+
+
+        }.asFlow()
+
+    fun getHistoryPositions(request: HistoryPositionRequest) =
+        object : DirectNetworkFlow<Long, List<HistoryPosition>, HistoryPositionResponse>() {
+            override fun createCall(): Response<HistoryPositionResponse> =
+                historyService.getHistoryPositions(
+                    startDate = request.time,
+                    page = request.page
+                ).execute()
+
+            override fun convertToResultType(response: HistoryPositionResponse): List<HistoryPosition> =
+                response.markets
 
             override fun onFetchFailed(errorMessage: String) {
                 println(errorMessage)

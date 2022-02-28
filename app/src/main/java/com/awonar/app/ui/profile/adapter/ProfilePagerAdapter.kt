@@ -5,7 +5,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.awonar.app.R
-import com.awonar.app.ui.portfolio.user.UserPortfolioFragment
+import com.awonar.app.ui.profile.user.UserPortfolioFragment
 import com.awonar.app.ui.profile.ProfilePrivateFragment
 import com.awonar.app.ui.profile.StatisticProfileFragment
 import com.awonar.app.ui.user.UserInfoFragment

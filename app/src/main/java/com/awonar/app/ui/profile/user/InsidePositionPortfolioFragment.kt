@@ -1,4 +1,4 @@
-package com.awonar.app.ui.portfolio.user
+package com.awonar.app.ui.profile.user
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,7 +12,6 @@ import com.awonar.android.model.portfolio.PublicPosition
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentInsidePortfolioPublicBinding
 import com.awonar.app.ui.portfolio.PortFolioViewModel
-import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 import com.awonar.app.ui.portfolio.inside.PositionInsideViewModel
 import com.awonar.app.ui.portfolio.position.PositionViewModel
 import com.awonar.app.ui.user.UserViewModel
@@ -112,7 +111,6 @@ class InsidePositionPortfolioFragment : Fragment() {
             binding.awonarInsidePortfolioPublicVerticalTitlePl.setTitle("%.2f%s".format(it.netProfit,
                 "%"))
             binding.awonarInsidePortfolioPublicVerticalTitlePl.setTitleTextColor(ColorChangingUtil.getTextColorChange(
-                requireContext(),
                 it.netProfit))
         }
     }

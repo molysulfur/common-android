@@ -1,16 +1,11 @@
-package com.awonar.app.ui.portfolio.user
+package com.awonar.app.ui.profile.user
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import com.awonar.app.databinding.AwonarFragmentPortfolioUserBinding
-import com.awonar.app.ui.portfolio.PortFolioViewModel
-import com.awonar.app.ui.user.UserViewModel
-import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
-import kotlinx.coroutines.flow.collect
 
 class UserPortfolioFragment : Fragment() {
 

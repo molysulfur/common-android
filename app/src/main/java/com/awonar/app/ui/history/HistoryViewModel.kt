@@ -7,12 +7,15 @@ import androidx.navigation.NavDirections
 import com.awonar.android.model.history.Aggregate
 import com.awonar.android.model.history.History
 import com.awonar.android.model.history.HistoryRequest
+import com.awonar.android.model.portfolio.HistoryPositionRequest
 import com.awonar.android.shared.domain.history.GetAggregateUseCase
 import com.awonar.android.shared.domain.history.GetCashFlowHistoryUseCase
 import com.awonar.android.shared.domain.history.GetHistoryUseCase
 import com.awonar.android.shared.domain.history.GetMarketHistoryUseCase
+import com.awonar.android.shared.domain.profile.GetHistoryPositionsUseCase
 import com.awonar.app.domain.history.ConvertCashFlowToItemUseCase
 import com.awonar.app.domain.history.ConvertHistoryToItemUseCase
+import com.awonar.app.domain.profile.ConvertHistoryPositionToItemUseCase
 import com.awonar.app.ui.history.adapter.HistoryItem
 import com.awonar.app.ui.history.adapter.HistoryType
 import com.molysulfur.library.result.successOr
@@ -31,6 +34,7 @@ class HistoryViewModel @Inject constructor(
     private val convertHistoryToItemUseCase: ConvertHistoryToItemUseCase,
     private val convertCashFlowToItemUseCase: ConvertCashFlowToItemUseCase,
     private val getCashFlowHistoryUseCase: GetCashFlowHistoryUseCase,
+
 
     ) : ViewModel() {
 
@@ -177,4 +181,5 @@ class HistoryViewModel @Inject constructor(
             }
         }
     }
+
 }

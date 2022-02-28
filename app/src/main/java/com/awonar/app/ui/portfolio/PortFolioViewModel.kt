@@ -17,9 +17,8 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.awonar.app.domain.portfolio.*
-import com.awonar.app.ui.portfolio.user.PublicPortfolioFragmentDirections
+import com.awonar.app.ui.profile.user.PublicPortfolioFragmentDirections
 import kotlinx.coroutines.channels.Channel
-import timber.log.Timber
 
 @HiltViewModel
 class PortFolioViewModel @Inject constructor(
@@ -51,6 +50,9 @@ class PortFolioViewModel @Inject constructor(
     private val _positionList: MutableStateFlow<MutableList<PortfolioItem>> =
         MutableStateFlow(mutableListOf(PortfolioItem.EmptyItem()))
     val positionList: StateFlow<MutableList<PortfolioItem>> get() = _positionList
+    private val _historyState: MutableStateFlow<MutableList<PortfolioItem>> =
+        MutableStateFlow(mutableListOf(PortfolioItem.EmptyItem()))
+    val historyState: StateFlow<MutableList<PortfolioItem>> get() = _historyState
     private val _positionState = MutableStateFlow<UserPortfolioResponse?>(null)
     val positionState: StateFlow<UserPortfolioResponse?> get() = _positionState
 
@@ -250,4 +252,5 @@ class PortFolioViewModel @Inject constructor(
         }
         return null
     }
+
 }

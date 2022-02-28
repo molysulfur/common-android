@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.awonar.app.ui.profile.history.HistoryProfileViewModel" />
+
+        <variable
+            name="column1"
+            type="String" />
+
+        <variable
+            name="column2"
+            type="String" />
+
+        <variable
+            name="column3"
+            type="String" />
+
+
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:elevation="0dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/awoanr_portfolio_history_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:elevation="0dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/awoanr_portfolio_history_button_type"
+                        style="@style/Awonar.Button.Default.White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableEnd="@drawable/awonar_ic_dropdown_black"
+                        android:text="History" />
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        style="@style/Awonar.Button.Icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:src="@drawable/awonar_ic_calendar" />
+                </com.google.android.material.appbar.MaterialToolbar>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awoanr_portfolio_history_text_title_from"
+                    style="@style/Awonar.Text.Bold.Normal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/awonar_size_margin_padding_normal"
+                    android:text="From"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awoanr_portfolio_history_toolbar" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    style="@style/Awonar.Text.Default.Normal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/awonar_size_margin_padding_normal"
+                    android:text="@{viewModel.from}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/awoanr_portfolio_history_text_title_from"
+                    app:layout_constraintTop_toBottomOf="@+id/awoanr_portfolio_history_toolbar" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awoanr_portfolio_history_text_title_to"
+                    style="@style/Awonar.Text.Bold.Normal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/awonar_size_margin_padding_normal"
+                    android:text="To"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awoanr_portfolio_history_text_title_from" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    style="@style/Awonar.Text.Default.Normal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/awonar_size_margin_padding_normal"
+                    android:text="@{viewModel.to}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/awoanr_portfolio_history_text_title_to"
+                    app:layout_constraintTop_toBottomOf="@+id/awoanr_portfolio_history_text_title_from" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/awoanr_portfolio_history_layout_columns"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/awonar_color_background"
+                android:orientation="horizontal"
+                android:padding="@dimen/awonar_size_margin_padding_small"
+                android:weightSum="4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@{column1}" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@{column2}" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@{column3}" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.recyclerview.widget.RecyclerView
+                column1="@{column1}"
+                column2="@{column2}"
+                column3="@{column3}"
+                setHistoryPortfolio="@{viewModel.historiesState}"
+                viewModel="@{viewModel}"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@color/awonar_color_surface"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/awoanr_portfolio_history_layout_columns" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>
