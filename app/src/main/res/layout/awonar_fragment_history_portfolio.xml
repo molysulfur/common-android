@@ -48,11 +48,12 @@
 
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/awoanr_portfolio_history_button_type"
-                        style="@style/Awonar.Button.Default.White"
+                        style="@style/Awonar.Button.Link.Large"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:drawableEnd="@drawable/awonar_ic_dropdown_black"
-                        android:text="History" />
+                        android:text="History"
+                        android:textColor="@color/awonar_color_text_primary" />
 
                     <androidx.appcompat.widget.AppCompatImageButton
                         style="@style/Awonar.Button.Icon"

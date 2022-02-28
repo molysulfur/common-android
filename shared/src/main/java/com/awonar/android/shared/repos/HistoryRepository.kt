@@ -222,10 +222,18 @@ class HistoryRepository @Inject constructor(
     fun getHistoryPositions(request: HistoryPositionRequest) =
         object : DirectNetworkFlow<Long, List<HistoryPosition>, HistoryPositionResponse>() {
             override fun createCall(): Response<HistoryPositionResponse> =
-                historyService.getHistoryPositions(
-                    startDate = request.time,
-                    page = request.page
-                ).execute()
+                if (request.symbol.isNullOrBlank()) {
+                    historyService.getHistoryPositions(
+                        startDate = request.time,
+                        page = request.page
+                    ).execute()
+                } else {
+                    historyService.getHistoryPositions(
+                        startDate = request.time,
+                        page = request.page,
+                        symbol = request.symbol ?: ""
+                    ).execute()
+                }
 
             override fun convertToResultType(response: HistoryPositionResponse): List<HistoryPosition> =
                 response.markets

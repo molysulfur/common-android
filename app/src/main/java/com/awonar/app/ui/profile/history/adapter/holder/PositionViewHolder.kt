@@ -9,12 +9,15 @@ class PositionViewHolder constructor(private val binding: AwonarItemPositionBind
 
     fun bind(
         item: HistoryProfileItem.PositionItem,
+        position: Int,
+        onClick: ((Int) -> Unit)?,
     ) {
         with(binding.awonarInsturmentOrderItem) {
             setImage(item.image ?: "")
             setTitle(item.symbol ?: "")
             setDescription(item.meta ?: "")
             setOnClickListener {
+                onClick?.invoke(position)
             }
             setTextColumnTwo("${item.tradeCount}")
             setTextColumnThree("$%.2f".format(item.profit))

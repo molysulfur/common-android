@@ -17,6 +17,15 @@ interface HistoryService {
         @Query("startDate") startDate: Long,
         @Query("limit") limit: Int = 10,
         @Query("page") page: Int,
+        @Query("symbol") symbol: String,
+    ): Call<HistoryPositionResponse>
+
+
+    @GET("v1/history/public/markets/admin")
+    fun getHistoryPositions(
+        @Query("startDate") startDate: Long,
+        @Query("limit") limit: Int = 10,
+        @Query("page") page: Int,
     ): Call<HistoryPositionResponse>
 
     @GET("v1/history/copy/id/{id}")

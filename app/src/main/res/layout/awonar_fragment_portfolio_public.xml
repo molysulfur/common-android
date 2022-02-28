@@ -44,10 +44,12 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/awoanr_portfolio_user_button_type"
-                    style="@style/Awonar.Title"
+                    style="@style/Awonar.Button.Link.Large"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Portfolio" />
+                    android:drawableEnd="@drawable/awonar_ic_dropdown_black"
+                    android:text="Portfolio"
+                    android:textColor="@color/awonar_color_text_primary" />
             </com.google.android.material.appbar.MaterialToolbar>
         </com.google.android.material.appbar.AppBarLayout>
 

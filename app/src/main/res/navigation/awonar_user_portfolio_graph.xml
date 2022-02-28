@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/awonar_user_portfolio_graph"
-    app:startDestination="@id/publicPortfolioFragment">
+    app:startDestination="@+id/publicPortfolioFragment">
 
 
     <fragment
@@ -36,5 +36,28 @@
     <fragment
         android:id="@+id/historyPositionFragment"
         android:name="com.awonar.app.ui.profile.history.HistoryPositionFragment"
-        android:label="HistoryPositionFragment" />
+        android:label="HistoryPositionFragment">
+
+        <action
+            android:id="@+id/historyPositionFragment_to_publicPortfolioFragment"
+            app:destination="@+id/publicPortfolioFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/publicPortfolioFragment"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/historyPositionFragment_to_insideHistoryPositionFragment"
+            app:destination="@+id/insideHistoryPositionFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/publicPortfolioFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/insideHistoryPositionFragment"
+        android:name="com.awonar.app.ui.profile.history.InsideHistoryPositionFragment"
+        android:label="InsideHistoryPositionFragment">
+        <argument
+            android:name="symbol"
+            app:argType="string" />
+    </fragment>
 </navigation>

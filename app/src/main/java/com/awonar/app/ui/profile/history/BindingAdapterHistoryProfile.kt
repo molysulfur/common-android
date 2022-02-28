@@ -21,6 +21,9 @@ fun setHistoryPortfolio(
                 onLoad = {
                     viewModel?.getHistoryPosition()
                 }
+                onClick = { index ->
+                    viewModel?.openInside(index)
+                }
             }
             layoutManager =
                 LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)

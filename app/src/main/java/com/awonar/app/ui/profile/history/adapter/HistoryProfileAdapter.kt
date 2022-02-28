@@ -4,11 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.*
-import com.awonar.android.model.history.History
 import com.awonar.app.databinding.AwonarItemLoadingBinding
-import com.awonar.app.databinding.AwonarItemPiechartBinding
 import com.awonar.app.databinding.AwonarItemPositionBinding
-import com.awonar.app.ui.history.adapter.HistoryItem
 import com.awonar.app.ui.profile.history.adapter.holder.LoadMoreViewHolder
 import com.awonar.app.ui.profile.history.adapter.holder.PositionViewHolder
 
@@ -27,13 +24,13 @@ class HistoryProfileAdapter : RecyclerView.Adapter<ViewHolder>() {
             notifyDataSetChanged()
         }
 
-    var onClick: ((History) -> Unit)? = null
+    var onClick: ((Int) -> Unit)? = null
     var onLoad: ((Int) -> Unit)? = null
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = itemLists[position]
         when (holder) {
-            is PositionViewHolder -> holder.bind(item as HistoryProfileItem.PositionItem)
+            is PositionViewHolder -> holder.bind(item as HistoryProfileItem.PositionItem,position,onClick)
             is LoadMoreViewHolder -> {
                 onLoad?.invoke((item as HistoryProfileItem.LoadMoreItem).page)
             }

@@ -2,6 +2,7 @@ package com.awonar.app.ui.profile.history
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavDirections
 import com.awonar.android.model.portfolio.HistoryPositionRequest
 import com.awonar.android.shared.domain.profile.GetHistoryPositionsUseCase
 import com.awonar.app.domain.profile.ConvertHistoryPositionToItemUseCase
@@ -10,10 +11,10 @@ import com.awonar.app.ui.profile.history.adapter.HistoryProfileItem
 import com.awonar.app.utils.DateUtils
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -24,10 +25,15 @@ class HistoryProfileViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _page = MutableStateFlow(1)
+    private val _symbol = MutableStateFlow("")
     private val _dateType = MutableStateFlow("30D")
+    val dateType get() = _dateType
 
     private val _historiesState = MutableStateFlow<List<HistoryProfileItem>>(emptyList())
     val historiesState: StateFlow<List<HistoryProfileItem>> = _historiesState
+
+    private val _navigateAction = Channel<NavDirections>(Channel.CONFLATED)
+    val navigateAction: Flow<NavDirections> = _navigateAction.receiveAsFlow()
 
     private val _from = MutableStateFlow("")
     val from: StateFlow<String> = _from
@@ -45,8 +51,14 @@ class HistoryProfileViewModel @Inject constructor(
             else -> 0L
         }
         _to.value = DateUtils.getDate(timestamp)
+        val request = if (!_symbol.value.isNullOrBlank()) {
+            HistoryPositionRequest(_page.value, timestamp, _symbol.value)
+        } else {
+            HistoryPositionRequest(_page.value, timestamp)
+        }
+        Timber.e("$request")
         viewModelScope.launch {
-            getHistoryPositionsUseCase(HistoryPositionRequest(_page.value, timestamp)).collect {
+            getHistoryPositionsUseCase(request).collect {
                 val data = it.successOr(emptyList())
                 val itemList =
                     convertHistoryPositionToItemUseCase(it.successOr(emptyList())).successOr(
@@ -61,5 +73,25 @@ class HistoryProfileViewModel @Inject constructor(
 
             }
         }
+    }
+
+    fun openInside(index: Int) {
+        viewModelScope.launch {
+            val item = _historiesState.value[index]
+            Timber.e("$item $index")
+            if (item is HistoryProfileItem.PositionItem) {
+                _navigateAction.send(HistoryPositionFragmentDirections.historyPositionFragmentToInsideHistoryPositionFragment(
+                    item.symbol ?: ""))
+            }
+        }
+    }
+
+    fun setSymbol(symbol: String) {
+        _symbol.value = symbol
+    }
+
+    fun clear() {
+        _page.value = 0
+        _historiesState.value = mutableListOf()
     }
 }
