@@ -10,6 +10,7 @@ import com.awonar.app.databinding.AwonarFragmentPositionChartBinding
 import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
+import kotlinx.coroutines.flow.collect
 
 class PositionChartFragment : Fragment() {
 
@@ -18,7 +19,6 @@ class PositionChartFragment : Fragment() {
     }
 
     private val viewModel: PortFolioViewModel by activityViewModels()
-    private val columns: ColumnsViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,

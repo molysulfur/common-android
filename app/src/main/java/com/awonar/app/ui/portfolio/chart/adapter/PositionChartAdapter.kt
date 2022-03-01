@@ -9,6 +9,7 @@ import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 import com.awonar.app.ui.portfolio.adapter.holder.CopierPositionViewHolder
 import com.awonar.app.ui.portfolio.chart.adapter.PositionChartType.POSITION_CHART_BUTTON
 import com.awonar.app.ui.portfolio.chart.adapter.PositionChartType.POSITION_CHART_LIST
+import com.awonar.app.ui.portfolio.chart.adapter.PositionChartType.POSITION_CHART_LOADING
 import com.awonar.app.ui.portfolio.chart.adapter.PositionChartType.POSITION_CHART_SUBTITLE
 import com.awonar.app.ui.portfolio.chart.adapter.PositionChartType.POSITION_CHART_TITLE
 import com.awonar.app.ui.portfolio.chart.adapter.PositionChartType.POSITION_CHART_VIEW
@@ -33,6 +34,13 @@ class PositionChartAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
+            POSITION_CHART_LOADING -> LoadingViewHolder(
+                AwonarItemLoadingBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
             POSITION_CHART_BUTTON -> ButtonViewHolder(
                 AwonarItemButtonViewmoreBinding.inflate(
                     LayoutInflater.from(parent.context),
@@ -41,7 +49,7 @@ class PositionChartAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 )
             )
             POSITION_CHART_LIST -> ListItemViewHolder(
-                AwonarItemListBinding.inflate(
+                AwonarItemMarkerListItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false

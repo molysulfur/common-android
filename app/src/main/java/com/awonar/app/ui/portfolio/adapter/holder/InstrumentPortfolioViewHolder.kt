@@ -49,7 +49,6 @@ class InstrumentPortfolioViewHolder constructor(
         } else {
             job?.cancel()
         }
-        Timber.e("${item.position}")
         binding.item = item.position
     }
 

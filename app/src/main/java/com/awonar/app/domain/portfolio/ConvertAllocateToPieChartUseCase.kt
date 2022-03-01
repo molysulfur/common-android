@@ -7,6 +7,7 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.molysulfur.library.usecase.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
+import timber.log.Timber
 import javax.inject.Inject
 
 class ConvertAllocateToPieChartUseCase @Inject constructor(
@@ -20,16 +21,18 @@ class ConvertAllocateToPieChartUseCase @Inject constructor(
         itemList.add(PositionChartItem.SubTitleItem("Click on the pie chart or legend item to drill down"))
         val entries = arrayListOf<PieEntry>()
         for ((k, v) in parameters.data) {
+            Timber.e("$k $v")
             entries.add(PieEntry(v.toFloat(), k))
         }
         itemList.add(PositionChartItem.PieChartItem(entries))
         for ((k, v) in parameters.data) {
             itemList.add(
                 PositionChartItem.ListItem(
-                    k, "%.2f".format(v.toFloat()),
-                    colors[index % colors.size]
+                    k, "%.2f%s".format(v.toFloat(), "%"),
+                    colors[index++ % colors.size]
                 )
             )
+
         }
         if (parameters.hasViewAll)
             itemList.add(PositionChartItem.ButtonItem("View All"))

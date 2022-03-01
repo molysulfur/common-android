@@ -7,4 +7,5 @@ object PositionChartType {
     const val POSITION_CHART_VIEW = 2
     const val POSITION_CHART_LIST = 3
     const val POSITION_CHART_BUTTON = 4
+    const val POSITION_CHART_LOADING = 5
 }

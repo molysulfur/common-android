@@ -20,6 +20,7 @@
             android:layout_width="4dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="@+id/awonar_item_marker_list_text"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/awonar_item_marker_list_text" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

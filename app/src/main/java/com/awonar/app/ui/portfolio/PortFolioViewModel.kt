@@ -19,17 +19,17 @@ import javax.inject.Inject
 import com.awonar.app.domain.portfolio.*
 import com.awonar.app.ui.portfolio.chart.adapter.PositionChartItem
 import com.awonar.app.ui.profile.user.PublicPortfolioFragmentDirections
+import com.molysulfur.library.result.Result
 import kotlinx.coroutines.channels.Channel
+import timber.log.Timber
 
 @HiltViewModel
 class PortFolioViewModel @Inject constructor(
     private val getMyPortFolioUseCase: GetMyPortFolioUseCase,
     private var getPositionMarketUseCase: GetPositionMarketUseCase,
     private val getPositionManualUseCase: GetPositionManualUseCase,
-    private val getPositionUseCase: GetPositionUseCase,
     private val getConversionByInstrumentUseCase: GetConversionByInstrumentUseCase,
     private val getPendingOrdersUseCase: GetPendingOrdersUseCase,
-    private var convertPositionToItemUseCase: ConvertPositionToItemUseCase,
     private var convertPositionToCardItemUseCase: ConvertPositionToCardItemUseCase,
     private var convertCopierToCardItemUseCase: ConvertCopierToCardItemUseCase,
     private var convertOrderPositionToItemUseCase: ConvertOrderPositionToItemUseCase,
@@ -43,7 +43,6 @@ class PortFolioViewModel @Inject constructor(
     private val convertManualPositionToItemUseCase: ConvertManualPositionToItemUseCase,
 ) : ViewModel() {
 
-    private val _portfolioType = MutableStateFlow("market")
     private val _chartType = MutableStateFlow("allocate")
 
     private val _profitState = MutableStateFlow(0f)
@@ -54,13 +53,12 @@ class PortFolioViewModel @Inject constructor(
         MutableStateFlow(mutableListOf(PortfolioItem.EmptyItem()))
     val positionList: StateFlow<MutableList<PortfolioItem>> get() = _positionList
     private val _positionChartItems: MutableStateFlow<MutableList<PositionChartItem>> =
-        MutableStateFlow(mutableListOf())
+        MutableStateFlow(mutableListOf(PositionChartItem.LoadingItem()))
     val positionChartItems: StateFlow<MutableList<PositionChartItem>> get() = _positionChartItems
     private val _positionState = MutableStateFlow<UserPortfolioResponse?>(null)
     val positionState: StateFlow<UserPortfolioResponse?> get() = _positionState
 
-    private val _navigateActions = Channel<NavDirections>(Channel.CONFLATED)
-    val navigateActions get() = _navigateActions.receiveAsFlow()
+
     val portfolioState: StateFlow<Portfolio?> = flow {
         getMyPortFolioUseCase(true).collect {
             val data = it.successOr(null)
@@ -68,6 +66,8 @@ class PortFolioViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, WhileViewSubscribed, null)
 
+    private val _navigateActions = Channel<NavDirections>(Channel.CONFLATED)
+    val navigateActions get() = _navigateActions.receiveAsFlow()
     fun navigate(index: Int) {
         viewModelScope.launch {
             _navigateActions.send(PublicPortfolioFragmentDirections.publicPortfolioFragmentToInsidePositionPortfolioFragment(
@@ -90,25 +90,6 @@ class PortFolioViewModel @Inject constructor(
             getPositionMarketUseCase(Unit).collect {
                 val data = it.successOr(null)
                 _positionState.value = data
-            }
-        }
-    }
-
-
-    fun togglePortfolio(type: String) {
-        viewModelScope.launch {
-            _portfolioType.emit(type)
-        }
-    }
-
-    fun getPosition(instrumentId: Int) {
-        viewModelScope.launch {
-            getPositionUseCase(instrumentId).collect {
-                val position = it.successOr(emptyList())
-                _positionList.emit(
-                    convertPositionToItemUseCase(position).successOr(emptyList()).toMutableList()
-                )
-//                _positionState.emit(position)
             }
         }
     }
@@ -158,7 +139,9 @@ class PortFolioViewModel @Inject constructor(
                         type in arrayListOf("stocks", "currencies", "crypto")
                     )
                 ).successOr(emptyList())
+
                 _positionChartItems.emit(items.toMutableList())
+
             }
         }
     }

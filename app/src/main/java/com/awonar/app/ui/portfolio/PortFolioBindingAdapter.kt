@@ -18,6 +18,7 @@ import com.awonar.app.utils.ColorChangingUtil
 import com.awonar.app.widget.CopierPositionCardView
 import com.awonar.app.widget.PositionView
 import com.awonar.app.widget.InstrumentPositionCardView
+import timber.log.Timber
 import kotlin.collections.HashMap
 
 @BindingAdapter("setChartPortfolio", "viewModel")

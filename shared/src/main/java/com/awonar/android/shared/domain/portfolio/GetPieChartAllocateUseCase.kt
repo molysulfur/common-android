@@ -20,42 +20,43 @@ class GetPieChartAllocateUseCase @Inject constructor(
     private val portfolioRepository: PortfolioRepository,
     private val currenciesRepository: CurrenciesRepository,
     private val marketRepository: MarketRepository,
-    @IoDispatcher dispatcher: CoroutineDispatcher
+    @IoDispatcher dispatcher: CoroutineDispatcher,
 ) : FlowUseCase<Unit, Map<String, Double>>(dispatcher) {
 
     override fun execute(parameters: Unit): Flow<Result<Map<String, Double>>> = flow {
-
         portfolioRepository.getUserPortfolio().collect { result ->
-            val position = result.successOr(null)
-            val portfolio = portfolioRepository.getPortFolio().last().successOr(null)
-            val totalAmount: Double =
-                portfolio?.totalAllocated?.plus(portfolio.available)?.toDouble() ?: 0.0
-            val balance: Double = portfolio?.available?.toDouble() ?: 0.0
-            var totalPL = 0f
-            val market: Double = position?.positions?.sumOf { position ->
-                var marketPL = 0f
-                getProfitLoss(position).collect {
-                    marketPL = marketPL.plus(it)
-                }
-                totalPL = totalPL.plus(marketPL)
-                position.amount.toDouble() + marketPL
-            } ?: 0.0
-            val people = position?.copies?.sumOf { copier ->
-                var peoplePL = 0f
-                copier.positions?.forEach { position ->
+            if (result.succeeded) {
+                val position = result.successOr(null)
+                val portfolio = portfolioRepository.getPortFolio().last().successOr(null)
+                val totalAmount: Double =
+                    portfolio?.totalAllocated?.plus(portfolio.available)?.toDouble() ?: 0.0
+                val balance: Double = portfolio?.available?.toDouble() ?: 0.0
+                var totalPL = 0f
+                val market: Double = position?.positions?.sumOf { position ->
+                    var marketPL = 0f
                     getProfitLoss(position).collect {
-                        peoplePL = peoplePL.plus(it)
+                        marketPL = marketPL.plus(it)
                     }
-                }
-                totalPL = totalPL.plus(peoplePL)
-                copier.initialInvestment.plus(copier.depositSummary.minus(copier.withdrawalSummary))
-                    .plus(peoplePL).toDouble()
-            } ?: 0.0
-            val allocate = HashMap<String, Double>()
-            allocate["balance"] = balance.div(totalAmount + totalPL).times(100)
-            allocate["market"] = market.div(totalAmount + totalPL).times(100)
-            allocate["People"] = people.div(totalAmount + totalPL).times(100)
-            emit(Result.Success(allocate))
+                    totalPL = totalPL.plus(marketPL)
+                    position.amount.toDouble() + marketPL
+                } ?: 0.0
+                val people = position?.copies?.sumOf { copier ->
+                    var peoplePL = 0f
+                    copier.positions?.forEach { position ->
+                        getProfitLoss(position).collect {
+                            peoplePL = peoplePL.plus(it)
+                        }
+                    }
+                    totalPL = totalPL.plus(peoplePL)
+                    copier.initialInvestment.plus(copier.depositSummary.minus(copier.withdrawalSummary))
+                        .plus(peoplePL).toDouble()
+                } ?: 0.0
+                val allocate = HashMap<String, Double>()
+                allocate["balance"] = balance.div(totalAmount + totalPL).times(100)
+                allocate["market"] = market.div(totalAmount + totalPL).times(100)
+                allocate["People"] = people.div(totalAmount + totalPL).times(100)
+                emit(Result.Success(allocate))
+            }
         }
     }
 
