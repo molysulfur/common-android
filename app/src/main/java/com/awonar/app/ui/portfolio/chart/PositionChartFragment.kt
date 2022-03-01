@@ -1,4 +1,4 @@
-package com.awonar.app.ui.portfolio.position
+package com.awonar.app.ui.portfolio.chart
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import com.awonar.app.databinding.AwonarFragmentPositionChartBinding
 import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.portfolio.PortFolioViewModel
+import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 
 class PositionChartFragment : Fragment() {
 
@@ -24,6 +25,8 @@ class PositionChartFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        launchAndRepeatWithViewLifecycle {
+        }
         binding.columns = columns
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner

@@ -5,14 +5,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.awonar.android.model.market.Quote
 import com.awonar.app.databinding.*
 import com.awonar.app.ui.portfolio.adapter.holder.*
+import com.awonar.app.ui.portfolio.chart.adapter.holder.*
 
 @SuppressLint("NotifyDataSetChanged")
 class PortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-    var pieChartType: String = "exposure"
 
     var itemLists: MutableList<PortfolioItem> = mutableListOf(PortfolioItem.EmptyItem())
         set(value) {
@@ -90,49 +88,6 @@ class PortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     false
                 )
             )
-            PortfolioType.LIST_ITEM_PORTFOLIO -> ListItemViewHolder(
-                AwonarItemListPiechartBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
-            )
-            PortfolioType.TITLE_CENTER_PORTFOLIO -> TitleViewHolder(
-                AwonarItemCenterTitleBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
-            )
-            PortfolioType.SUBTITLE_CENTER_PORTFOLIO -> SubTitleViewHolder(
-                AwonarItemCenterSubtitleBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
-            )
-            PortfolioType.BUTTON_PORTFOLIO -> PieChartTypeButtonViewHolder(
-                AwonarItemButtonViewmoreBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
-            )
-            PortfolioType.VIEWALL_BUTTON -> ViewAllViewHolder(
-                AwonarItemButtonViewmoreBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
-            )
-            PortfolioType.PIECHART_PORTFOLIO -> PieChartViewHolder(
-                AwonarItemPiechartBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
-            )
-
             else -> throw Exception("View Type is not found with $viewType")
         }
     }
@@ -160,28 +115,28 @@ class PortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is ListItemViewHolder -> holder.bind(
                 item as PortfolioItem.ListItem
             )
-            is TitleViewHolder -> holder.bind(
-                item as PortfolioItem.TitleItem
-            )
-            is SubTitleViewHolder -> holder.bind(
-                item as PortfolioItem.SubTitleItem
-            )
-            is PieChartTypeButtonViewHolder -> holder.bind(
-                item as PortfolioItem.ButtonItem,
-                onButtonClick
-            )
-            is PieChartViewHolder -> holder.bind(
-                item as PortfolioItem.PieChartItem,
-                onPieChartClick
-            )
+//            is TitleViewHolder -> holder.bind(
+//                item as PortfolioItem.TitleItem
+//            )
+//            is SubTitleViewHolder -> holder.bind(
+//                item as PortfolioItem.SubTitleItem
+//            )
+//            is PieChartTypeButtonViewHolder -> holder.bind(
+//                item as PortfolioItem.ButtonItem,
+//                onButtonClick
+//            )
+//            is PieChartViewHolder -> holder.bind(
+//                item as PortfolioItem.PieChartItem,
+//                onPieChartClick
+//            )
             is OrderPortfolioViewHolder -> holder.bind(
                 item as PortfolioItem.InstrumentItem,
                 columns,
             )
-            is ViewAllViewHolder -> holder.bind(
-                item as PortfolioItem.ViewAllItem,
-                onViewAllClick
-            )
+//            is ViewAllViewHolder -> holder.bind(
+//                item as PortfolioItem.ViewAllItem,
+//                onViewAllClick
+//            )
             is SectionViewHolder -> holder.bind(
                 item as PortfolioItem.SectionItem
             )

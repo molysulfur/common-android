@@ -38,12 +38,13 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
                 <com.google.android.material.appbar.MaterialToolbar
                     android:id="@+id/awonar_inside_portfolio_public_toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    app:layout_scrollFlags="scroll|snap"
                     app:menu="@menu/awoanr_menu_next_prev"
                     app:navigationIcon="@drawable/awonar_ic_back"
                     app:title="@string/awonar_text_back" />
@@ -55,6 +56,7 @@
                     android:layout_margin="@dimen/awonar_size_margin_padding_normal"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/awonar_inside_portfolio_public_toolbar"
+                    app:layout_scrollFlags="scroll|snap"
                     app:srcCompat="@drawable/awonar_placeholder_avatar" />
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -67,6 +69,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/awonar_inside_portfolio_public_image_logo"
                     app:layout_constraintTop_toTopOf="@+id/awonar_inside_portfolio_public_image_logo"
+                    app:layout_scrollFlags="scroll|snap"
                     tools:text="@string/awonar_example_name" />
 
 
@@ -78,6 +81,7 @@
                     app:layout_constraintEnd_toEndOf="@+id/awonar_inside_portfolio_public_text_title"
                     app:layout_constraintStart_toStartOf="@+id/awonar_inside_portfolio_public_text_title"
                     app:layout_constraintTop_toBottomOf="@+id/awonar_inside_portfolio_public_text_title"
+                    app:layout_scrollFlags="scroll|snap"
                     tools:text="@string/awonar_example_name" />
 
                 <com.awonar.app.widget.VerticalTitleView
@@ -91,6 +95,7 @@
                     app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintStart_toStartOf="@+id/awonar_inside_portfolio_public_image_logo"
                     app:layout_constraintTop_toBottomOf="@+id/awonar_inside_portfolio_public_image_logo"
+                    app:layout_scrollFlags="scroll|snap"
                     app:verticalTitleView_setSubTitle="@string/awonar_text_invested" />
 
                 <com.awonar.app.widget.VerticalTitleView
@@ -102,6 +107,7 @@
                     app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintStart_toEndOf="@+id/awonar_inside_portfolio_public_vertical_title_invested"
                     app:layout_constraintTop_toTopOf="@+id/awonar_inside_portfolio_public_vertical_title_invested"
+                    app:layout_scrollFlags="scroll|snap"
                     app:verticalTitleView_setSubTitle="AVG. Open" />
 
                 <com.awonar.app.widget.VerticalTitleView
@@ -113,6 +119,7 @@
                     app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintStart_toEndOf="@+id/awonar_inside_portfolio_public_vertical_title_avgopen"
                     app:layout_constraintTop_toTopOf="@+id/awonar_inside_portfolio_public_vertical_title_invested"
+                    app:layout_scrollFlags="scroll|snap"
                     app:verticalTitleView_setSubTitle="P/L" />
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -124,6 +131,7 @@
                     android:orientation="horizontal"
                     android:padding="@dimen/awonar_size_margin_padding_small"
                     android:weightSum="4"
+
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

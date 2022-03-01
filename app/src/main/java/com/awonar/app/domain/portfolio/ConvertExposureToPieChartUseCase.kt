@@ -13,23 +13,23 @@ class ConvertExposureToPieChartUseCase @Inject constructor(
 ) : UseCase<PieChartRequest, List<PortfolioItem>>(dispatcher) {
     override suspend fun execute(parameters: PieChartRequest): List<PortfolioItem> {
         val itemList = mutableListOf<PortfolioItem>()
-        itemList.add(PortfolioItem.TitleItem("Exposure"))
-        itemList.add(PortfolioItem.SubTitleItem("Click on the pie chart or legend item to drill down"))
-        val entries = arrayListOf<PieEntry>()
-        for ((k, v) in parameters.data) {
-            entries.add(PieEntry(v.toFloat(), k))
-        }
-        itemList.add(PortfolioItem.PieChartItem(entries))
-        for ((k, v) in parameters.data) {
-            itemList.add(
-                PortfolioItem.ListItem(
-                    k, v.toFloat()
-                )
-            )
-        }
-        if (parameters.hasViewAll)
-            itemList.add(PortfolioItem.ViewAllItem("View All"))
-        itemList.add(PortfolioItem.ButtonItem("Allocate"))
+//        itemList.add(PortfolioItem.TitleItem("Exposure"))
+//        itemList.add(PortfolioItem.SubTitleItem("Click on the pie chart or legend item to drill down"))
+//        val entries = arrayListOf<PieEntry>()
+//        for ((k, v) in parameters.data) {
+//            entries.add(PieEntry(v.toFloat(), k))
+//        }
+//        itemList.add(PortfolioItem.PieChartItem(entries))
+//        for ((k, v) in parameters.data) {
+//            itemList.add(
+//                PortfolioItem.ListItem(
+//                    k, v.toFloat()
+//                )
+//            )
+//        }
+//        if (parameters.hasViewAll)
+//            itemList.add(PortfolioItem.ViewAllItem("View All"))
+//        itemList.add(PortfolioItem.ButtonItem("Allocate"))
         return itemList
     }
 

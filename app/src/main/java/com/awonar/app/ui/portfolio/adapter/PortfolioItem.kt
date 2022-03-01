@@ -32,31 +32,6 @@ sealed class PortfolioItem(
     ) : PortfolioItem(BALANCE_PORTFOLIO)
 
     @Parcelize
-    class ViewAllItem(
-        val text: String,
-    ) : PortfolioItem(VIEWALL_BUTTON)
-
-    @Parcelize
-    class PieChartItem(
-        val entries: List<PieEntry>,
-    ) : PortfolioItem(PIECHART_PORTFOLIO)
-
-    @Parcelize
-    class ButtonItem(
-        val buttonText: String,
-    ) : PortfolioItem(BUTTON_PORTFOLIO)
-
-    @Parcelize
-    class TitleItem(
-        val title: String,
-    ) : PortfolioItem(TITLE_CENTER_PORTFOLIO)
-
-    @Parcelize
-    class SubTitleItem(
-        val subTitle: String,
-    ) : PortfolioItem(SUBTITLE_CENTER_PORTFOLIO)
-
-    @Parcelize
     class SectionItem(
         val text: String,
     ) : PortfolioItem(SECTION_PORTFOLIO)

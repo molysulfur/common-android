@@ -37,7 +37,7 @@
     </fragment>
     <fragment
         android:id="@+id/positionChartFragment"
-        android:name="com.awonar.app.ui.portfolio.position.PositionChartFragment"
+        android:name="com.awonar.app.ui.portfolio.chart.PositionChartFragment"
         android:label="PositionChartFragment">
 
         <action

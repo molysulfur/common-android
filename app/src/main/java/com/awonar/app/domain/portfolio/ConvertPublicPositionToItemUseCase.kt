@@ -17,7 +17,8 @@ class ConvertPublicPositionToItemUseCase @Inject constructor(
         val itemList = mutableListOf<PortfolioItem>()
         parameters.forEachIndexed { index, position ->
             val conversionRate =
-                currenciesRepository.getConversionByInstrumentId(position.instrumentId).rateBid
+                currenciesRepository.getConversionByInstrumentId(position.instrument?.id
+                    ?: 0).rateBid
             itemList.add(PortfolioItem.InstrumentPortfolioItem(
                 position = position,
                 conversionRate = conversionRate,

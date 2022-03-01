@@ -240,20 +240,20 @@ fun setPositionAdapter(
                 onButtonClick = { text ->
                     when (text.lowercase()) {
                         "allocate" -> {
-                            this.pieChartType = "allocate"
+//                            this.pieChartType = "allocate"
 //                            viewModel.getAllocate()
                         }
                         "exposure" -> {
-                            this.pieChartType = "exposure"
+//                            this.pieChartType = "exposure"
 //                            viewModel.getExposure()
                         }
                     }
                 }
                 onPieChartClick = {
-                    when (this.pieChartType) {
+//                    when (this.pieChartType) {
 //                        "allocate" -> viewModel.getAllocate(it)
 //                        "exposure" -> viewModel.getExposure(it)
-                    }
+//                    }
 
                 }
             }
