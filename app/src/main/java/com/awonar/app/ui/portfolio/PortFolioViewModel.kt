@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.awonar.app.domain.portfolio.*
+import com.awonar.app.ui.portfolio.chart.adapter.PositionChartItem
 import com.awonar.app.ui.profile.user.PublicPortfolioFragmentDirections
 import kotlinx.coroutines.channels.Channel
 
@@ -43,6 +44,7 @@ class PortFolioViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _portfolioType = MutableStateFlow("market")
+    private val _chartType = MutableStateFlow("allocate")
 
     private val _profitState = MutableStateFlow(0f)
     val profitState: StateFlow<Float> get() = _profitState
@@ -51,9 +53,9 @@ class PortFolioViewModel @Inject constructor(
     private val _positionList: MutableStateFlow<MutableList<PortfolioItem>> =
         MutableStateFlow(mutableListOf(PortfolioItem.EmptyItem()))
     val positionList: StateFlow<MutableList<PortfolioItem>> get() = _positionList
-    private val _historyState: MutableStateFlow<MutableList<PortfolioItem>> =
-        MutableStateFlow(mutableListOf(PortfolioItem.EmptyItem()))
-    val historyState: StateFlow<MutableList<PortfolioItem>> get() = _historyState
+    private val _positionChartItems: MutableStateFlow<MutableList<PositionChartItem>> =
+        MutableStateFlow(mutableListOf())
+    val positionChartItems: StateFlow<MutableList<PositionChartItem>> get() = _positionChartItems
     private val _positionState = MutableStateFlow<UserPortfolioResponse?>(null)
     val positionState: StateFlow<UserPortfolioResponse?> get() = _positionState
 
@@ -156,7 +158,7 @@ class PortFolioViewModel @Inject constructor(
                         type in arrayListOf("stocks", "currencies", "crypto")
                     )
                 ).successOr(emptyList())
-                _positionList.emit(items.toMutableList())
+                _positionChartItems.emit(items.toMutableList())
             }
         }
     }
@@ -175,7 +177,7 @@ class PortFolioViewModel @Inject constructor(
                         type in arrayListOf("stocks", "currencies", "crypto")
                     )
                 ).successOr(emptyList())
-                _positionList.emit(items.toMutableList())
+                _positionChartItems.emit(items.toMutableList())
             }
         }
     }
@@ -230,6 +232,17 @@ class PortFolioViewModel @Inject constructor(
             }
         }
         return null
+    }
+
+    fun chartClick(it: String?) {
+        when (_chartType.value) {
+            "allocate" -> getAllocate(it)
+            "exposure" -> getExposure(it)
+        }
+    }
+
+    fun updateChartType(type: String) {
+        _chartType.value = type
     }
 
 }

@@ -26,9 +26,6 @@ class PortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
 
     var onClick: ((Int, String) -> Unit)? = null
-    var onButtonClick: ((String) -> Unit)? = null
-    var onViewAllClick: (() -> Unit)? = null
-    var onPieChartClick: ((String?) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -112,31 +109,10 @@ class PortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is CopierPositionViewHolder -> holder.bind(
                 item as PortfolioItem.CopierPositionCardItem,
             )
-            is ListItemViewHolder -> holder.bind(
-                item as PortfolioItem.ListItem
-            )
-//            is TitleViewHolder -> holder.bind(
-//                item as PortfolioItem.TitleItem
-//            )
-//            is SubTitleViewHolder -> holder.bind(
-//                item as PortfolioItem.SubTitleItem
-//            )
-//            is PieChartTypeButtonViewHolder -> holder.bind(
-//                item as PortfolioItem.ButtonItem,
-//                onButtonClick
-//            )
-//            is PieChartViewHolder -> holder.bind(
-//                item as PortfolioItem.PieChartItem,
-//                onPieChartClick
-//            )
             is OrderPortfolioViewHolder -> holder.bind(
                 item as PortfolioItem.InstrumentItem,
                 columns,
             )
-//            is ViewAllViewHolder -> holder.bind(
-//                item as PortfolioItem.ViewAllItem,
-//                onViewAllClick
-//            )
             is SectionViewHolder -> holder.bind(
                 item as PortfolioItem.SectionItem
             )

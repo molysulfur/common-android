@@ -1,5 +1,6 @@
 package com.awonar.app.ui.columns
 
+import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.awonar.android.shared.domain.history.GetHistoryActivedColumnUseCase
@@ -31,8 +32,11 @@ class ColumnsViewModel @Inject constructor(
     private var getManualColumnListUseCase: GetManualColumnListUseCase,
     private var getMarketColumnListUseCase: GetMarketColumnListUseCase,
     private var getActivedManualColumnUseCase: GetActivedManualColumnUseCase,
-    private var getActivedMarketColumnUseCase: GetActivedMarketColumnUseCase
+    private var getActivedMarketColumnUseCase: GetActivedMarketColumnUseCase,
 ) : ViewModel() {
+
+    private val _visibleState = Channel<Int>(capacity = Channel.CONFLATED)
+    val visibleState: Flow<Int> = _visibleState.receiveAsFlow()
 
     private val _sortColumnState = Channel<Pair<String, Boolean>>(capacity = Channel.CONFLATED)
     val sortColumnState: Flow<Pair<String, Boolean>> = _sortColumnState.receiveAsFlow()
@@ -46,6 +50,16 @@ class ColumnsViewModel @Inject constructor(
     val columnState: StateFlow<List<String>> get() = _columnState
 
     private val _columnType = MutableStateFlow<String?>("market")
+
+    fun visible(isVisible: Boolean) {
+        viewModelScope.launch {
+            if (isVisible) {
+                _visibleState.send(View.VISIBLE)
+            } else {
+                _visibleState.send(View.GONE)
+            }
+        }
+    }
 
     fun setColumnType(type: String) {
         viewModelScope.launch {

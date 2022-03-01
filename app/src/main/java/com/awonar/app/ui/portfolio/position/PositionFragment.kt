@@ -21,6 +21,8 @@ import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.awonar.app.ui.portfolio.chart.PositionChartFragmentDirections
 import com.molysulfur.library.extension.openActivityCompatForResult
+import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
+import kotlinx.coroutines.flow.collect
 
 class PositionFragment : Fragment() {
 
@@ -46,6 +48,11 @@ class PositionFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
+        launchAndRepeatWithViewLifecycle {
+            columnViewModel.visibleState.collect {
+                binding.awonarPortfolioLayoutColumns.visibility = it
+            }
+        }
         binding.columnViewModel = columnViewModel
         binding.market = marketViewModel
         binding.viewModel = viewModel
@@ -76,7 +83,16 @@ class PositionFragment : Fragment() {
                 "chart" -> binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_card_list)
                 "card" -> binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_list_2)
             }
+            visibleColumns()
         }
+    }
+
+    private fun visibleColumns() {
+        when (positionType) {
+            "chart" -> columnViewModel.visible(false)
+            else -> columnViewModel.visible(true)
+        }
+
     }
 
     private fun navigate() {

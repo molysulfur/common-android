@@ -11,12 +11,44 @@ import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.app.R
 import com.awonar.app.ui.portfolio.adapter.PortfolioAdapter
 import com.awonar.app.ui.portfolio.adapter.PortfolioItem
+import com.awonar.app.ui.portfolio.chart.adapter.PositionChartAdapter
+import com.awonar.app.ui.portfolio.chart.adapter.PositionChartItem
 import com.awonar.app.ui.portfolio.position.PositionViewModel
 import com.awonar.app.utils.ColorChangingUtil
 import com.awonar.app.widget.CopierPositionCardView
 import com.awonar.app.widget.PositionView
 import com.awonar.app.widget.InstrumentPositionCardView
 import kotlin.collections.HashMap
+
+@BindingAdapter("setChartPortfolio", "viewModel")
+fun setChartPortfolio(
+    recycler: RecyclerView,
+    items: MutableList<PositionChartItem>,
+    viewModel: PortFolioViewModel,
+) {
+    if (recycler.adapter == null) {
+        with(recycler) {
+            adapter = PositionChartAdapter().apply {
+                onPieClick = {
+                    viewModel.chartClick(it)
+                }
+                onExposure = {
+                    viewModel.updateChartType("exposure")
+                    viewModel.getExposure()
+                }
+                onAllocate = {
+                    viewModel.updateChartType("allocate")
+                    viewModel.getAllocate()
+                }
+            }
+            layoutManager =
+                LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
+        }
+    }
+    (recycler.adapter as PositionChartAdapter).apply {
+        itemLists = items
+    }
+}
 
 @BindingAdapter("setUserPortfolio", "viewModel", "column1", "column2", "column3", "column4")
 fun setUserPortfolio(
@@ -233,28 +265,6 @@ fun setPositionAdapter(
             adapter = PortfolioAdapter().apply {
                 onClick = { it, type ->
                     viewModel.navigateInstrumentInside(it, type)
-                }
-                onViewAllClick = {
-//                    viewModel.togglePortfolio("market")
-                }
-                onButtonClick = { text ->
-                    when (text.lowercase()) {
-                        "allocate" -> {
-//                            this.pieChartType = "allocate"
-//                            viewModel.getAllocate()
-                        }
-                        "exposure" -> {
-//                            this.pieChartType = "exposure"
-//                            viewModel.getExposure()
-                        }
-                    }
-                }
-                onPieChartClick = {
-//                    when (this.pieChartType) {
-//                        "allocate" -> viewModel.getAllocate(it)
-//                        "exposure" -> viewModel.getExposure(it)
-//                    }
-
                 }
             }
         }

@@ -1,15 +1,17 @@
 package com.awonar.app.ui.portfolio.chart.adapter.holder
 
 import androidx.recyclerview.widget.RecyclerView
-import com.awonar.app.databinding.AwonarItemListPiechartBinding
-import com.awonar.app.ui.portfolio.adapter.PortfolioItem
+import com.awonar.app.databinding.AwonarItemListBinding
+import com.awonar.app.ui.portfolio.chart.adapter.PositionChartItem
 
 class ListItemViewHolder constructor(
-    private val binding: AwonarItemListPiechartBinding,
+    private val binding: AwonarItemListBinding,
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: PortfolioItem.ListItem) {
-        binding.label = item.name
-        binding.value = "%.2f%s".format(item.value, "%")
+    fun bind(item: PositionChartItem.ListItem) {
+        with(binding.awonarItemListText) {
+            setTitle(item.title ?: "")
+            setMeta(item.meta ?: "")
+        }
     }
 }
