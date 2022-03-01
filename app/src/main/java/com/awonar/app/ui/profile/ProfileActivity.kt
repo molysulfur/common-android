@@ -36,6 +36,7 @@ class ProfileActivity : BaseActivity() {
     private val portfolioViewModel: PortFolioViewModel by viewModels()
 
     companion object {
+        const val RESULT_CODE = 20000
         const val EXTRA_USERID = "com.awonar.app.ui.profile.extra.userid"
     }
 
@@ -57,7 +58,26 @@ class ProfileActivity : BaseActivity() {
     private fun setupViewPager() {
         with(binding.awonarProfilePagerInfo) {
             adapter = ProfilePagerAdapter(supportFragmentManager, lifecycle)
+
         }
+        binding.awonarProfileTabsMenu.addOnTabSelectedListener(object :
+            TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                if (tab?.position == 3) {
+                    if (userViewModel.userState.value?.isMe == true) {
+                        setResult(RESULT_CODE)
+                        finish()
+                    }
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+
+        })
         TabLayoutMediator(binding.awonarProfileTabsMenu,
             binding.awonarProfilePagerInfo) { tab, position ->
             tab.setIcon(ProfilePagerAdapter.ICON_TABS[position])

@@ -23,7 +23,6 @@ class GetUserProfileUseCase @Inject constructor(
     override fun execute(parameters: UserRequest): Flow<Result<User?>> = flow {
         val owner: User? = preference.get()
         var isMe = true
-        Timber.e("${parameters.userId}, ${owner?.id}")
         val result = if (owner?.id == null || parameters.userId.equals(owner.id)) {
             repository.getUser(UserRequest(needFresh = false))
         } else {

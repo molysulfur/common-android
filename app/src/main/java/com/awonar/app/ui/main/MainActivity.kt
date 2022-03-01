@@ -1,9 +1,12 @@
 package com.awonar.app.ui.main
 
+import android.content.Intent
 import com.awonar.app.R
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -22,17 +25,14 @@ import com.awonar.app.ui.auth.AuthenticationActivity
 import com.awonar.app.ui.profile.ProfileActivity
 import com.awonar.app.ui.user.UserViewModel
 import com.molysulfur.library.activity.BaseActivity
-import com.molysulfur.library.extension.openActivity
 import com.molysulfur.library.extension.openActivityAndClearThisActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import timber.log.Timber
-
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.NavigationUI.onNavDestinationSelected
-import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.utils.ImageUtil
+import com.molysulfur.library.extension.openActivityCompatForResult
 
 
 @AndroidEntryPoint
@@ -49,6 +49,13 @@ class MainActivity : BaseActivity() {
     }
 
     private lateinit var headerBinding: AwonarDrawerHeaderMainBinding
+
+    private val activityResult: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
+            if (activityResult.resultCode == ProfileActivity.RESULT_CODE) {
+                mNavController.navigate(R.id.portFolioFragment)
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -129,7 +136,7 @@ class MainActivity : BaseActivity() {
     private fun updateUser() {
         headerBinding.awonarDrawerHeaderMainTextName.text = user?.username ?: ""
         headerBinding.awonarDrawerHeaderMainConstraintProfile.setOnClickListener {
-            openActivity(ProfileActivity::class.java)
+            openActivityCompatForResult(activityResult, ProfileActivity::class.java, null)
         }
         headerBinding.awonarDrawerHeaderMainButtonDeposit.setOnClickListener {
             findNavController(R.id.awonar_main_drawer_navigation_host_main).navigate(R.id.depositFragment)
