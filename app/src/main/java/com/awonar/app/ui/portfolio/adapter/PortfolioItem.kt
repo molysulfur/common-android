@@ -84,13 +84,6 @@ sealed class PortfolioItem(
     class InstrumentPositionCardItem(
         val position: Position,
         val conversion: Float,
-        var units: Float,
-        var avgOpen: Float,
-        var invested: Float,
-        var profitLoss: Float,
-        var value: Float,
-        var leverage: Float,
-        var current: Float,
     ) : PortfolioItem(INSTRUMENT_POSITION_CARD)
 
     @Parcelize

@@ -150,6 +150,9 @@ data class Position(
     @SerializedName("amountTakeProfit") var amountTakeProfit: Float = 0f,
     @SerializedName("stopLossPercent") var stopLossPercent: Float = 0f,
     @SerializedName("takeProfitPercent") var takeProfitPercent: Float = 0f,
+    @SerializedName("change") var change: Float = 0f,
+    @SerializedName("changePercent") var changePercent: Float = 0f,
+    @SerializedName("status") var status: String? = null,
 ) : Parcelable
 
 

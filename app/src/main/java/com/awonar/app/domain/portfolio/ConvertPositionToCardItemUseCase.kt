@@ -10,25 +10,22 @@ import javax.inject.Inject
 
 class ConvertPositionToCardItemUseCase @Inject constructor(
     private val currenciesRepository: CurrenciesRepository,
-    @IoDispatcher dispatcher: CoroutineDispatcher
+    @IoDispatcher dispatcher: CoroutineDispatcher,
 ) : UseCase<List<Position>, List<PortfolioItem>>(dispatcher) {
     override suspend fun execute(parameters: List<Position>): List<PortfolioItem> {
         val itemList = mutableListOf<PortfolioItem>()
-        parameters.forEach {
+        parameters.forEach { position ->
             val conversion: Float =
-                currenciesRepository.getConversionByInstrumentId(it.instrumentId).rateBid
+                currenciesRepository.getConversionByInstrumentId(position.instrumentId).rateBid
+            with(position) {
+                invested = position.amount
+            }
             itemList.add(
                 PortfolioItem.InstrumentPositionCardItem(
-                    position = it,
+                    position = position,
                     conversion = conversion,
-                    units = it.units,
-                    avgOpen = it.openRate,
-                    invested = it.amount,
-                    profitLoss = 0f,
-                    value = 0f,
-                    leverage = it.leverage.toFloat(),
-                    current = 0f
-                )
+
+                    )
             )
         }
         return itemList
