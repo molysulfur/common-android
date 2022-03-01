@@ -38,35 +38,16 @@ class ConvertPositionToItemUseCase @Inject constructor(
             val amountTp = calculateAmount(position.instrumentId, tp, open, units, position.isBuy)
             val slPercent = amountSl.times(100).div(invested)
             val tpPercent = amountTp.times(100).div(invested)
-            val current = 0f // after get realtime
-            val pl = 0f // cal after get realtime
-            val plPercent = 0f // cal after get realtime
-            val pipChange = 0f // cal after get realtime
-            val value = 0f// cal after get realtime
+            position
             val date =
                 if (position.exitOrder != null) "Pending" else DateUtils.getDate(position.openDateTime)
             itemList.add(
                 PortfolioItem.InstrumentPortfolioItem(
                     position = position,
-//                    conversionRate = conversionRate,
-//                    invested = invested,
-//                    units = units,
-//                    open = open,
-//                    current = current,
-//                    stopLoss = sl,
-//                    takeProfit = tp,
-//                    profitLoss = pl,
-//                    profitLossPercent = plPercent,
-//                    pipChange = pipChange,
-//                    leverage = leverage,
-//                    value = value,
-//                    fees = fees,
-//                    amountStopLoss = amountSl,
-//                    amountTakeProfit = amountTp,
-//                    stopLossPercent = slPercent,
-//                    takeProfitPercent = tpPercent,
+                    conversionRate = conversionRate,
                     meta = date,
-                    index = index
+                    index = index,
+                    isRealTime = true
                 )
             )
         }

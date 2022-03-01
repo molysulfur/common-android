@@ -132,31 +132,6 @@ fun setInstrumentPositionCardView(
     }
 }
 
-
-@BindingAdapter("instrumentPositionCardItem", "quote")
-fun setInsturmentPositionCardWithQuote(
-    view: InstrumentPositionCardView,
-    item: PortfolioItem.InstrumentPositionCardItem?,
-    quote: Quote?,
-) {
-    quote?.let {
-        val current = PortfolioUtil.getCurrent(item?.position?.isBuy == true, it)
-        val profitLoss =
-            PortfolioUtil.getProfitOrLoss(
-                current,
-                item?.position?.openRate ?: 0f,
-                item?.position?.units ?: 0f,
-                item?.conversion ?: 1f,
-                item?.position?.isBuy == true
-            )
-        view.setPrice(current)
-        view.setChange(ConverterQuoteUtil.change(quote.close, quote.previous))
-        view.setChangePercent(ConverterQuoteUtil.percentChange(quote.previous, quote.close))
-        view.setStatusText("${quote.status}")
-        view.setProfitLoss(profitLoss)
-    }
-}
-
 @BindingAdapter("setItemListCard")
 fun setPositionCardAdapter(
     recycler: RecyclerView,

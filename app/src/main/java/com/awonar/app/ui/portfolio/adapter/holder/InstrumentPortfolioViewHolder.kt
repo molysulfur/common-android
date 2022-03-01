@@ -10,12 +10,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class InstrumentPortfolioViewHolder constructor(
     private val binding: AwonarItemPositionBinding,
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    val job = CoroutineScope(Dispatchers.Default)
+    var job: CoroutineScope? = null
     var positionItem: PortfolioItem.InstrumentPortfolioItem? = null
 
     fun bind(
@@ -23,7 +24,11 @@ class InstrumentPortfolioViewHolder constructor(
         columns: List<String>,
         onClick: ((Int, String) -> Unit)?,
     ) {
+        if (item.position.amount > 0) {
+            item.position.invested = item.position.amount
+        }
         this.positionItem = item
+
         with(binding.awonarInsturmentOrderItem) {
             val position = item.position
             setImage(position.instrument?.logo ?: "")
@@ -40,15 +45,17 @@ class InstrumentPortfolioViewHolder constructor(
             binding.column4 = columns[3]
         }
         if (item.isRealTime) {
-            setupDataSteaming()
+            setupJob()
         } else {
-            job.cancel()
+            job?.cancel()
         }
+        Timber.e("${item.position}")
         binding.item = item.position
     }
 
-    private fun setupDataSteaming() {
-        job.launch {
+    private fun setupJob() {
+        job = CoroutineScope(Dispatchers.IO)
+        job?.launch {
             QuoteSteamingManager.quotesState.collect { quotes ->
                 positionItem?.let { positionItem ->
                     val quote = quotes[positionItem.position.instrument?.id]
@@ -59,7 +66,7 @@ class InstrumentPortfolioViewHolder constructor(
                             positionItem.position.current,
                             positionItem.position.open,
                             positionItem.position.units,
-                            positionItem.position.conversionRate,
+                            positionItem.conversionRate,
                             positionItem.position.isBuy
                         )
                         val pipChange = PortfolioUtil.pipChange(

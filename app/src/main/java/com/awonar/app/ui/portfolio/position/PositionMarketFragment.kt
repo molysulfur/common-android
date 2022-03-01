@@ -36,16 +36,6 @@ class PositionMarketFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         launchAndRepeatWithViewLifecycle {
-            QuoteSteamingManager.quotesState.collect { quotes ->
-                val adapter = binding.awonarPositionMarketRecycler.adapter
-                if (adapter != null) {
-                    (adapter as PortfolioAdapter).let {
-                        it.quote = quotes
-                    }
-                }
-            }
-        }
-        launchAndRepeatWithViewLifecycle {
             viewModel.positionState.collect { position ->
                 position?.let {
                     activityViewModel.convertMarket(

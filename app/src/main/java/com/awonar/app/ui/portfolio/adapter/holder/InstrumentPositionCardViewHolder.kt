@@ -8,10 +8,7 @@ import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 class InstrumentPositionCardViewHolder constructor(private val binding: AwonarItemInstrumentPositionBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: PortfolioItem.InstrumentPositionCardItem, quote: Quote?) {
+    fun bind(item: PortfolioItem.InstrumentPositionCardItem) {
         binding.item = item
-        quote?.let {
-            binding.quote = quote
-        }
     }
 }

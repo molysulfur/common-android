@@ -39,6 +39,7 @@ class PortFolioViewModel @Inject constructor(
     private val getPieChartMarketAllocateUseCase: GetPieChartMarketAllocateUseCase,
     private val getPieChartInstrumentAllocateUseCase: GetPieChartInstrumentAllocateUseCase,
     private val getPieChartInstrumentExposureUseCase: GetPieChartInstrumentExposureUseCase,
+    private val convertManualPositionToItemUseCase: ConvertManualPositionToItemUseCase,
 ) : ViewModel() {
 
     private val _portfolioType = MutableStateFlow("market")
@@ -76,29 +77,7 @@ class PortFolioViewModel @Inject constructor(
         viewModelScope.launch {
             getPositionManualUseCase(username).collect {
                 val data = it.successOr(null)
-                val itemList = mutableListOf<PortfolioItem>()
-                var sumInvested = 0f
-                data?.positions?.forEachIndexed { index, position ->
-                    sumInvested += position.invested
-                    itemList.add(PortfolioItem.InstrumentPortfolioItem(
-                        position = position,
-                        meta = null,
-                        index = index
-
-                    ))
-                }
-                data?.copies?.forEachIndexed { index, copier ->
-                    sumInvested += copier.invested
-                    itemList.add(PortfolioItem.CopierPortfolioItem(
-                        copier = copier,
-                        conversions = emptyMap(),
-                        index = index
-                    ))
-                }
-                itemList.add(PortfolioItem.BalanceItem(
-                    title = "Balance",
-                    value = 100f.minus(sumInvested)
-                ))
+                val itemList = convertManualPositionToItemUseCase(data).successOr(mutableListOf())
                 _positionList.emit(itemList)
             }
         }

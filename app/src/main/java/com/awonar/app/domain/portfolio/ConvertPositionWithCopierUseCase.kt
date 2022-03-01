@@ -47,23 +47,7 @@ class ConvertPositionWithCopierUseCase @Inject constructor(
                 itemList.add(
                     PortfolioItem.InstrumentPortfolioItem(
                         position = position,
-//                        conversionRate = conversionRate,
-//                        invested = invested,
-//                        units = units,
-//                        open = open,
-//                        current = current,
-//                        stopLoss = sl,
-//                        takeProfit = tp,
-//                        profitLoss = pl,
-//                        profitLossPercent = plPercent,
-//                        pipChange = pipChange,
-//                        leverage = leverage,
-//                        value = value,
-//                        fees = fees,
-//                        amountStopLoss = amountSl,
-//                        amountTakeProfit = amountTp,
-//                        stopLossPercent = slPercent,
-//                        takeProfitPercent = tpPercent,
+                        conversionRate = conversionRate,
                         meta = DateUtils.getDate(position.openDateTime),
                         index = index
                     )

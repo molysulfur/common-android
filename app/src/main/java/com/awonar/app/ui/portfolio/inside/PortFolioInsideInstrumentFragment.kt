@@ -125,22 +125,12 @@ class PortFolioInsideInstrumentFragment : Fragment() {
                 quote?.let {
                     setupHeader(quote, position, it)
                 }
-                updatePositionItem(quotes)
             }
         }
         activityViewModel.convertPosition(portFolioViewModel.positionState.value, currentIndex)
         setupToolbar()
         setTouchHelper()
         setupListener()
-    }
-
-    private fun updatePositionItem(quotes: MutableMap<Int, Quote>) {
-        val adapter = binding.awonarPortfolioRecyclerContainer.adapter
-        if (adapter != null) {
-            (adapter as PortfolioAdapter).let {
-                it.quote = quotes
-            }
-        }
     }
 
     private suspend fun setupHeader(

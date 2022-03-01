@@ -27,11 +27,6 @@ class PortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             notifyDataSetChanged()
         }
 
-    var quote: MutableMap<Int, Quote> = mutableMapOf()
-        set(value) {
-            field = value
-        }
-
     var onClick: ((Int, String) -> Unit)? = null
     var onButtonClick: ((String) -> Unit)? = null
     var onViewAllClick: (() -> Unit)? = null
@@ -157,8 +152,7 @@ class PortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 onClick
             )
             is InstrumentPositionCardViewHolder -> holder.bind(
-                item as PortfolioItem.InstrumentPositionCardItem,
-                quote[item.position.instrument?.id],
+                item as PortfolioItem.InstrumentPositionCardItem
             )
             is CopierPositionViewHolder -> holder.bind(
                 item as PortfolioItem.CopierPositionCardItem,
