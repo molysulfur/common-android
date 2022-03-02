@@ -114,7 +114,7 @@ class PortFolioViewModel @Inject constructor(
         }
     }
 
-    fun getOrdersPosition() {
+    fun getPendingPosition() {
         viewModelScope.launch {
             getPendingOrdersUseCase(Unit).collect {
                 val data = it.successOr(mutableListOf())

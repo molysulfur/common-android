@@ -14,11 +14,10 @@ import com.awonar.app.ui.history.adapter.holder.CashFlowViewHolder
 import com.awonar.app.ui.history.adapter.holder.DividerViewHolder
 import com.awonar.app.ui.history.adapter.holder.HistoryViewHolder
 import com.awonar.app.ui.history.adapter.holder.LoadMoreViewHolder
-import com.awonar.app.ui.market.MarketViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
-class HistoryAdapter constructor(private val marketViewModel: MarketViewModel? = null) :
+class HistoryAdapter:
     RecyclerView.Adapter<ViewHolder>() {
 
     private val dispatcher = CoroutineScope(Dispatchers.Default)
@@ -69,8 +68,6 @@ class HistoryAdapter constructor(private val marketViewModel: MarketViewModel? =
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         when (viewType) {
             HistoryType.POSITION_HISTORY -> HistoryViewHolder(
-                dispatcher,
-                marketViewModel,
                 AwonarItemHistoryBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -105,7 +102,7 @@ class HistoryAdapter constructor(private val marketViewModel: MarketViewModel? =
 
     class HistoryDiffUtil(
         private val oldItems: List<HistoryItem>?,
-        private val newItems: List<HistoryItem>?
+        private val newItems: List<HistoryItem>?,
     ) : DiffUtil.Callback() {
 
         override fun getOldListSize(): Int = oldItems?.size ?: 0

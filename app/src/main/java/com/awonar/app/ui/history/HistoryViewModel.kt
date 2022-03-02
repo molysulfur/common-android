@@ -34,9 +34,7 @@ class HistoryViewModel @Inject constructor(
     private val convertHistoryToItemUseCase: ConvertHistoryToItemUseCase,
     private val convertCashFlowToItemUseCase: ConvertCashFlowToItemUseCase,
     private val getCashFlowHistoryUseCase: GetCashFlowHistoryUseCase,
-
-
-    ) : ViewModel() {
+) : ViewModel() {
 
     private val _navigationInsideChannel = Channel<NavDirections>(capacity = Channel.CONFLATED)
     val navigationInsideChannel get() = _navigationInsideChannel.receiveAsFlow()

@@ -74,4 +74,9 @@
 
     </fragment>
 
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.awonar.app.ui.history.HistoryFragment"
+        android:label="HistoryFragment" />
+
 </navigation>

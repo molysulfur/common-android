@@ -64,13 +64,6 @@
                 android:layout_height="match_parent"
                 app:layout_scrollFlags="scroll|snap">
 
-                <include
-                    android:id="@+id/awonar_history_include_allocation_header"
-                    layout="@layout/awonar_include_allocation"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/awonar_history_text_section"
                     style="@style/Awonar.Title"

@@ -11,6 +11,7 @@ import com.awonar.android.model.portfolio.Portfolio
 import com.awonar.android.shared.steaming.QuoteSteamingManager
 import com.awonar.app.databinding.AwonarFragmentPortfolioBinding
 import com.awonar.app.dialog.menu.MenuDialog
+import com.awonar.app.dialog.menu.MenuDialogButtonSheet
 import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.order.OrderViewModel
@@ -87,22 +88,4 @@ class PortFolioFragment : Fragment() {
         return binding.root
     }
 
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupDialog()
-    }
-
-    private fun setupDialog() {
-        val menus = arrayListOf(
-            MenuDialog(
-                key = "com.awonar.app.ui.portfolio.sector.history",
-                text = "History"
-            ),
-            MenuDialog(
-                key = "com.awonar.app.ui.portfolio.sector.orders",
-                text = "Orders"
-            )
-        )
-    }
 }

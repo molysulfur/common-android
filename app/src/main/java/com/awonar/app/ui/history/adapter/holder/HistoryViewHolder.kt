@@ -2,6 +2,7 @@ package com.awonar.app.ui.history.adapter.holder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.history.History
+import com.awonar.android.model.portfolio.Position
 import com.awonar.android.shared.di.DefaultDispatcher
 import com.awonar.android.shared.steaming.QuoteSteamingManager
 import com.awonar.app.R
@@ -15,11 +16,11 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class HistoryViewHolder constructor(
-    private val dispatcher: CoroutineScope,
-    private val marketViewModel: MarketViewModel?,
-    private val binding: AwonarItemHistoryBinding,
-) :
-    RecyclerView.ViewHolder(binding.root) {
+    private val binding: AwonarItemHistoryBinding
+) : RecyclerView.ViewHolder(binding.root) {
+
+    private var job: CoroutineScope? = null
+    private var data: HistoryItem.PositionItem? = null
 
     fun bind(
         item: HistoryItem.PositionItem,
@@ -27,16 +28,8 @@ class HistoryViewHolder constructor(
         onClick: ((History) -> Unit)?,
         onShowInsideInstrument: ((String, String?) -> Unit)?,
     ) {
-        dispatcher.launch {
-            QuoteSteamingManager.quotesState.collect { quotes ->
-                val quote = quotes[item.history?.position?.instrument?.id]
-                quote?.let {
-                    item.buy = quote.bid
-                    item.sell = quote.ask
-                }
-                binding.position = item
-            }
-        }
+        data = item
+        setupJob()
         binding.position = item
         setupImageWithTransaction(item)
         if (columns.size >= 4) {
@@ -46,8 +39,6 @@ class HistoryViewHolder constructor(
             binding.column4 = columns[3]
         }
         binding.awonarInsturmentOrderItem.setOnClickListener {
-            Timber.e("$item")
-            Timber.e("${item.detail} ${item.positionType == "market"}")
             when (item.positionType?.lowercase()) {
                 "manual" -> item.history?.let { history ->
                     onClick?.invoke(history)
@@ -68,6 +59,20 @@ class HistoryViewHolder constructor(
                 }
             }
 
+        }
+    }
+
+    private fun setupJob() {
+        job = CoroutineScope(Dispatchers.IO)
+        job?.launch {
+            QuoteSteamingManager.quotesState.collect { quotes ->
+                val quote = quotes[data?.history?.position?.instrument?.id]
+                quote?.let {
+                    data?.buy = quote.bid
+                    data?.sell = quote.ask
+                }
+                binding.position = data
+            }
         }
     }
 
