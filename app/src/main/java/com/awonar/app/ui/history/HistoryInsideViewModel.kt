@@ -30,9 +30,6 @@ class HistoryInsideViewModel @Inject constructor(
     private val convertHistoryToItemUseCase: ConvertHistoryToItemUseCase,
 ) : ViewModel() {
 
-    private val _navigationInsideChannel = Channel<NavDirections>(capacity = Channel.CONFLATED)
-    val navigationInsideChannel get() = _navigationInsideChannel.receiveAsFlow()
-
     private val _argreationHistroyState = MutableStateFlow<MarketHistory?>(null)
     val argreationHistroyState: StateFlow<MarketHistory?> get() = _argreationHistroyState
 
@@ -170,11 +167,4 @@ class HistoryInsideViewModel @Inject constructor(
         }
     }
 
-    fun navgiationTo(direction: NavDirections?) {
-        viewModelScope.launch {
-            direction?.let {
-                _navigationInsideChannel.send(it)
-            }
-        }
-    }
 }

@@ -9,6 +9,10 @@
             type="com.awonar.app.ui.history.HistoryInsideViewModel" />
 
         <variable
+            name="viewModel"
+            type="com.awonar.app.ui.history.HistoryViewModel" />
+
+        <variable
             name="columnsViewModel"
             type="com.awonar.app.ui.columns.ColumnsViewModel" />
 
@@ -183,7 +187,7 @@
                 android:id="@+id/awonar_history_recycler_items"
                 historyColumns="@{columnsViewModel.activedColumnState}"
                 setHistoryInsideAdapter="@{historyViewModel.historiesInsideState}"
-                viewModel="@{historyViewModel}"
+                viewModel="@{viewModel}"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:background="@color/awonar_color_surface"

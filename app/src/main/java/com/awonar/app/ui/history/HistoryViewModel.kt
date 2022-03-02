@@ -75,17 +75,19 @@ class HistoryViewModel @Inject constructor(
 
     fun getHistory() {
         viewModelScope.launch {
-            getHistoryUseCase(HistoryRequest(_timeStamp.value, _page.value)).collect { result ->
-                val data = result.successOr(null)
-                val itemList: MutableList<HistoryItem> =
-                    convertHistoryToItemUseCase(
-                        data?.history?.toMutableList() ?: mutableListOf()
-                    ).successOr(mutableListOf())
-                _page.value = data?.page ?: 0
-                if (_page.value > 0) {
-                    itemList.add(HistoryItem.LoadMoreItem(_page.value))
+            if (_page.value > 0) {
+                getHistoryUseCase(HistoryRequest(_timeStamp.value, _page.value)).collect { result ->
+                    val data = result.successOr(null)
+                    val itemList: MutableList<HistoryItem> =
+                        convertHistoryToItemUseCase(
+                            data?.history?.toMutableList() ?: mutableListOf()
+                        ).successOr(mutableListOf())
+                    _page.value = data?.page ?: 0
+                    if (_page.value > 0) {
+                        itemList.add(HistoryItem.LoadMoreItem(_page.value))
+                    }
+                    addHistory(itemList)
                 }
-                addHistory(itemList)
             }
         }
     }
@@ -113,7 +115,8 @@ class HistoryViewModel @Inject constructor(
 
     private suspend fun addHistory(itemList: MutableList<HistoryItem>) {
         val data =
-            _historiesState.value.filter { it.type != HistoryType.LOADMORE_HISTORY }.toMutableList()
+            _historiesState.value.filter { it.type != HistoryType.LOADMORE_HISTORY }
+                .toMutableList()
         data.addAll(itemList)
         _historiesState.emit(data)
     }

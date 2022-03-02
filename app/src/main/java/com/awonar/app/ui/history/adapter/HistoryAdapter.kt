@@ -14,13 +14,10 @@ import com.awonar.app.ui.history.adapter.holder.CashFlowViewHolder
 import com.awonar.app.ui.history.adapter.holder.DividerViewHolder
 import com.awonar.app.ui.history.adapter.holder.HistoryViewHolder
 import com.awonar.app.ui.history.adapter.holder.LoadMoreViewHolder
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 
 class HistoryAdapter:
     RecyclerView.Adapter<ViewHolder>() {
 
-    private val dispatcher = CoroutineScope(Dispatchers.Default)
 
     var itemLists: MutableList<HistoryItem> = mutableListOf()
         set(value) {

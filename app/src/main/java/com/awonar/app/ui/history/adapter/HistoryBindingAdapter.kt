@@ -18,7 +18,7 @@ import com.awonar.app.widget.PositionView
 fun setHistoryInsideAdapter(
     recycler: RecyclerView,
     history: MutableList<HistoryItem>,
-    viewModel: HistoryInsideViewModel,
+    viewModel: HistoryViewModel,
 ) {
     if (recycler.adapter == null) {
         recycler.apply {

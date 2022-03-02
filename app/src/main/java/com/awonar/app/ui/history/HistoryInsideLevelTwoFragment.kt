@@ -19,7 +19,8 @@ import kotlinx.coroutines.launch
 
 class HistoryInsideLevelTwoFragment : Fragment() {
 
-    private val viewModel: HistoryInsideViewModel by activityViewModels()
+    private val insideViewModel: HistoryInsideViewModel by activityViewModels()
+    private val viewModel: HistoryViewModel by activityViewModels()
     private val columnsViewModel: ColumnsViewModel by activityViewModels()
 
     private val args: HistoryInsideLevelTwoFragmentArgs by navArgs()
@@ -45,7 +46,7 @@ class HistoryInsideLevelTwoFragment : Fragment() {
         }
         launchAndRepeatWithViewLifecycle {
             launch {
-                viewModel.argreationCopiesHistroyState.collect {
+                insideViewModel.argreationCopiesHistroyState.collect {
                     binding.invested = "$%.2f".format(it?.initialInvestment)
                     binding.moneyIn = "$%.2f".format(it?.depositSummary)
                     binding.moneyOut = "$%.2f".format(it?.withdrawalSummary)
@@ -60,7 +61,8 @@ class HistoryInsideLevelTwoFragment : Fragment() {
                 }
             }
         }
-        binding.historyViewModel = viewModel
+        binding.historyViewModel = insideViewModel
+        binding.viewModel = viewModel
         binding.columnsViewModel = columnsViewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
@@ -69,8 +71,8 @@ class HistoryInsideLevelTwoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         args.copy?.let {
-            viewModel.getArgreationWithCopy(it)
-            viewModel.getCopiesHistory(it, filter = "copy")
+            insideViewModel.getArgreationWithCopy(it)
+            insideViewModel.getCopiesHistory(it, filter = "copy")
         }
 
     }
