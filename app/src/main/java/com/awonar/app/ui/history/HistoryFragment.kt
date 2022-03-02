@@ -87,7 +87,6 @@ class HistoryFragment : Fragment() {
     }
 
     private val viewModel: HistoryViewModel by activityViewModels()
-    private val marketViewModel: MarketViewModel by activityViewModels()
     private val columnsViewModel: ColumnsViewModel by activityViewModels()
 
     private val binding: AwonarFragmentHistoryBinding by lazy {
@@ -108,31 +107,8 @@ class HistoryFragment : Fragment() {
     ): View {
         launchAndRepeatWithViewLifecycle {
             launch {
-                viewModel.historiesState.collect {
-                    if (binding.awonarHistoryRecyclerItems.adapter == null) {
-                        binding.awonarHistoryRecyclerItems.apply {
-                            layoutManager = LinearLayoutManager(
-                                requireContext(),
-                                LinearLayoutManager.VERTICAL,
-                                false
-                            )
-                            adapter = HistoryAdapter()
-                        }
-                    }
-                    (binding.awonarHistoryRecyclerItems.adapter as HistoryAdapter).itemLists =
-                        it.toMutableList()
-                }
-            }
-            launch {
-                viewModel.navigationInsideChannel.collect {
-                    findNavController().navigate(it)
-                }
-            }
-            launch {
                 columnsViewModel.activedColumnState.collect {
                     if (it.size >= 4) {
-                        (binding.awonarHistoryRecyclerItems.adapter as? HistoryAdapter)?.columns =
-                            it
                         binding.awonarHistoryIncludeColumn.column1 = it[0]
                         binding.awonarHistoryIncludeColumn.column2 = it[1]
                         binding.awonarHistoryIncludeColumn.column3 = it[2]
@@ -148,10 +124,6 @@ class HistoryFragment : Fragment() {
                         binding.moneyIn = "$%.2f".format(it.totalMoneyIn)
                         binding.moneyOut = "$%.2f".format(it.totalMoneyOut)
                         binding.profitLoss = "$%.2f".format(it.totalNetProfit)
-                        binding.cashFlows = "$%.2f".format(
-                            it.totalMoneyIn.plus(it.totalMoneyOut).minus(it.totalWithdrawalFees)
-                        )
-                        binding.totalFees = "$%.2f".format(it.totalFees)
                         binding.awonarHistoryTextProfitloss.setTextColor(
                             ColorChangingUtil.getTextColorChange(
                                 requireContext(),
@@ -171,9 +143,6 @@ class HistoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         columnsViewModel.setColumnType("history")
-        binding.awonarHistoryCashContainer.setOnClickListener {
-            openActivity(HistoryCashFlowActivity::class.java)
-        }
         binding.awonarHistoryButtonFilter.setOnClickListener {
             if (filterDialog.isAdded) {
                 filterDialog.dismiss()

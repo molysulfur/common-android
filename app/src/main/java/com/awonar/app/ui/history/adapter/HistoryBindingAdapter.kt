@@ -5,21 +5,20 @@ import androidx.navigation.NavDirections
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.app.R
-import com.awonar.app.ui.history.HistoryFragmentDirections
 import com.awonar.app.ui.history.HistoryInsideFragmentDirections
 import com.awonar.app.ui.history.HistoryInsideViewModel
+import com.awonar.app.ui.history.HistoryMainFragmentDirections
 import com.awonar.app.ui.history.HistoryViewModel
 import com.awonar.app.utils.ColorChangingUtil
 import com.awonar.app.utils.DateUtils
 import com.awonar.app.widget.PositionView
-import timber.log.Timber
 
 
 @BindingAdapter("setHistoryInsideAdapter", "viewModel")
 fun setHistoryInsideAdapter(
     recycler: RecyclerView,
     history: MutableList<HistoryItem>,
-    viewModel: HistoryInsideViewModel
+    viewModel: HistoryInsideViewModel,
 ) {
     if (recycler.adapter == null) {
         recycler.apply {
@@ -52,9 +51,8 @@ fun setHistoryInsideAdapter(
 fun setHistoryAdapter(
     recycler: RecyclerView,
     history: MutableList<HistoryItem>,
-    viewModel: HistoryViewModel
+    viewModel: HistoryViewModel,
 ) {
-    Timber.e("$history")
     if (recycler.adapter == null) {
         recycler.apply {
             adapter = HistoryAdapter()
@@ -65,32 +63,33 @@ fun setHistoryAdapter(
     val adapter = recycler.adapter as HistoryAdapter
     if (adapter.onLoad == null) {
         adapter.onLoad = {
-            viewModel.getHistory(page = it)
+            viewModel.getHistory()
         }
     }
     if (adapter.onClick == null) {
         adapter.onClick = { history ->
-            viewModel.navgiationTo(HistoryFragmentDirections.actionHistoryFragmentToHistoryDetailFragment())
+            viewModel.navgiationTo(HistoryMainFragmentDirections.actionHistoryFragmentToHistoryDetailFragment())
             viewModel.addHistoryDetail(history)
         }
     }
     if (adapter.onShowInsideInstrument == null) {
         adapter.onShowInsideInstrument = { id, type ->
-            Timber.e("$id,$type")
             val direction: NavDirections? = when (type) {
-                "market" -> HistoryFragmentDirections.actionHistoryFragmentToHistoryInsideFragment(
+                "market" -> HistoryMainFragmentDirections.actionHistoryFragmentToHistoryInsideFragment(
                     id,
-                    null,
+                    "",
                     viewModel.timeStamp.value
                 )
-                "user" -> HistoryFragmentDirections.actionHistoryFragmentToHistoryInsideFragment(
-                    null,
+                "user" -> HistoryMainFragmentDirections.actionHistoryFragmentToHistoryInsideFragment(
+                    "",
                     id,
                     viewModel.timeStamp.value
                 )
                 else -> null
             }
-            viewModel.navgiationTo(direction)
+            direction?.let {
+                viewModel.navgiationTo(it)
+            }
         }
     }
     if (!recycler.isComputingLayout) {
