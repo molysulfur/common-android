@@ -107,6 +107,7 @@
         <entry key="app/src/main/res/layout/awonar_fragment_personal_step_one.xml" value="0.20260416666666667" />
         <entry key="app/src/main/res/layout/awonar_fragment_personal_step_three.xml" value="0.20260416666666667" />
         <entry key="app/src/main/res/layout/awonar_fragment_personal_step_two.xml" value="0.20260416666666667" />
+        <entry key="app/src/main/res/layout/awonar_fragment_portfile_position_chart.xml" value="0.21504916631038906" />
         <entry key="app/src/main/res/layout/awonar_fragment_portfoilo.xml" value="0.10729166666666666" />
         <entry key="app/src/main/res/layout/awonar_fragment_portfolio.xml" value="0.2791666666666667" />
         <entry key="app/src/main/res/layout/awonar_fragment_portfolio_card_position.xml" value="0.11875" />
@@ -118,7 +119,7 @@
         <entry key="app/src/main/res/layout/awonar_fragment_portfolio_market.xml" value="0.2791666666666667" />
         <entry key="app/src/main/res/layout/awonar_fragment_portfolio_orders.xml" value="0.10052083333333334" />
         <entry key="app/src/main/res/layout/awonar_fragment_portfolio_piechart.xml" value="0.196875" />
-        <entry key="app/src/main/res/layout/awonar_fragment_portfolio_public.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/awonar_fragment_portfolio_public.xml" value="0.44910714285714287" />
         <entry key="app/src/main/res/layout/awonar_fragment_portfolio_user.xml" value="0.12612227447627192" />
         <entry key="app/src/main/res/layout/awonar_fragment_position.xml" value="0.3728813559322034" />
         <entry key="app/src/main/res/layout/awonar_fragment_position_card.xml" value="0.2791666666666667" />
@@ -127,6 +128,7 @@
         <entry key="app/src/main/res/layout/awonar_fragment_position_market.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/awonar_fragment_privacy.xml" value="0.20260416666666667" />
         <entry key="app/src/main/res/layout/awonar_fragment_privacy_menu.xml" value="0.13385416666666666" />
+        <entry key="app/src/main/res/layout/awonar_fragment_profile_position_chart.xml" value="0.15049166310389056" />
         <entry key="app/src/main/res/layout/awonar_fragment_profile_private.xml" value="0.2682291666666667" />
         <entry key="app/src/main/res/layout/awonar_fragment_profile_statistic.xml" value="0.17239583333333333" />
         <entry key="app/src/main/res/layout/awonar_fragment_setting.xml" value="0.21029572836801752" />

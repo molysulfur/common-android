@@ -1,6 +1,10 @@
 package com.awonar.android.shared.repos
 
 import com.awonar.android.model.portfolio.PendingOrder
+import com.awonar.android.model.profile.PublicAllocate
+import com.awonar.android.model.profile.PublicAllocateRequest
+import com.awonar.android.model.profile.PublicExposure
+import com.awonar.android.model.profile.PublicExposureRequest
 import com.awonar.android.model.user.DrawdownResponse
 import com.awonar.android.model.user.StatGainResponse
 import com.awonar.android.model.user.StatRiskResponse
@@ -76,6 +80,35 @@ class ProfileRepository @Inject constructor(
                 service.getStatTrade(uid).execute()
 
             override fun convertToResultType(response: StatTradeResponse?): StatTradeResponse? =
+                response
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+        }.asFlow()
+
+    fun getPublicExposure(parameters: PublicExposureRequest) =
+        object :
+            DirectNetworkFlow<PublicExposureRequest, List<PublicExposure>?, List<PublicExposure>?>() {
+            override fun createCall(): Response<List<PublicExposure>?> =
+                service.getPublicExposure(parameters.username ?: "", parameters.category).execute()
+
+            override fun convertToResultType(response: List<PublicExposure>?): List<PublicExposure>? =
+                response
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+        }.asFlow()
+
+    fun getPublicAllocate(parameters: PublicAllocateRequest) =
+        object :
+            DirectNetworkFlow<PublicAllocateRequest, List<PublicAllocate>?, List<PublicAllocate>?>() {
+            override fun createCall(): Response<List<PublicAllocate>?> =
+                service.getPublicAllocation(parameters.username ?: "", parameters.category)
+                    .execute()
+
+            override fun convertToResultType(response: List<PublicAllocate>?): List<PublicAllocate>? =
                 response
 
             override fun onFetchFailed(errorMessage: String) {

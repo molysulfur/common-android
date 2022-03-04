@@ -1,5 +1,7 @@
 package com.awonar.android.shared.api
 
+import com.awonar.android.model.profile.PublicAllocate
+import com.awonar.android.model.profile.PublicExposure
 import com.awonar.android.model.user.DrawdownResponse
 import com.awonar.android.model.user.StatGainResponse
 import com.awonar.android.model.user.StatRiskResponse
@@ -13,6 +15,18 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ProfileService {
+
+    @GET("v1/portfolios/public/exposure/{username}")
+    fun getPublicExposure(
+        @Path("username") username: String,
+        @Query("category") category: String?,
+    ): Call<List<PublicExposure>?>
+
+    @GET("v1/portfolios/public/allocation/{username}")
+    fun getPublicAllocation(
+        @Path("username") username: String,
+        @Query("allocated") category: String?,
+    ): Call<List<PublicAllocate>?>
 
     @GET("v1/users/stats/trades/{uid}")
     fun getStatTrade(@Path("uid") uid: String): Call<StatTradeResponse?>

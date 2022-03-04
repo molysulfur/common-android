@@ -2,8 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/awonar_user_portfolio_graph"
-    app:startDestination="@+id/publicPortfolioFragment">
-
+    app:startDestination="@+id/profilePositionChartFragment">
 
     <fragment
         android:id="@+id/publicPortfolioFragment"
@@ -60,4 +59,8 @@
             android:name="symbol"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/profilePositionChartFragment"
+        android:name="com.awonar.app.ui.profile.chart.ProfilePositionChartFragment"
+        android:label="ProfilePositionChartFragment" />
 </navigation>

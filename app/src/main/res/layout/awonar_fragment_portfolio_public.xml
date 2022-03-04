@@ -50,6 +50,15 @@
                     android:drawableEnd="@drawable/awonar_ic_dropdown_black"
                     android:text="Portfolio"
                     android:textColor="@color/awonar_color_text_primary" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/awoanr_portfolio_user_button_chart"
+                    style="@style/Awonar.Button.Icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:src="@drawable/awonar_ic_chart" />
+
             </com.google.android.material.appbar.MaterialToolbar>
         </com.google.android.material.appbar.AppBarLayout>
 
