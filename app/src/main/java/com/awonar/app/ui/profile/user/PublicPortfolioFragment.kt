@@ -76,5 +76,8 @@ class PublicPortfolioFragment : Fragment() {
         binding.awoanrPortfolioUserButtonType.setOnClickListener {
             dialog.show(parentFragmentManager, DIALOG_TAG)
         }
+        binding.awoanrPortfolioUserButtonChart.setOnClickListener {
+            findNavController().navigate(PublicPortfolioFragmentDirections.publicPortfolioFragmentToProfilePositionChartFragment())
+        }
     }
 }

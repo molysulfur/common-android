@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/awonar_user_portfolio_graph"
-    app:startDestination="@+id/profilePositionChartFragment">
+    app:startDestination="@+id/publicPortfolioFragment">
 
     <fragment
         android:id="@+id/publicPortfolioFragment"
@@ -17,6 +17,13 @@
         <action
             android:id="@+id/publicPortfolioFragment_to_historyPositionFragment"
             app:destination="@+id/historyPositionFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/publicPortfolioFragment"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/publicPortfolioFragment_to_profilePositionChartFragment"
+            app:destination="@+id/profilePositionChartFragment"
             app:launchSingleTop="true"
             app:popUpTo="@+id/publicPortfolioFragment"
             app:popUpToInclusive="true" />
@@ -62,5 +69,19 @@
     <fragment
         android:id="@+id/profilePositionChartFragment"
         android:name="com.awonar.app.ui.profile.chart.ProfilePositionChartFragment"
-        android:label="ProfilePositionChartFragment" />
+        android:label="ProfilePositionChartFragment">
+
+        <action
+            android:id="@+id/profilePositionChartFragment_to_historyPositionFragment"
+            app:destination="@+id/historyPositionFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/historyPositionFragment"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/profilePositionChartFragment_to_publicPortfolioFragment"
+            app:destination="@+id/publicPortfolioFragment"
+            app:launchSingleTop="true"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

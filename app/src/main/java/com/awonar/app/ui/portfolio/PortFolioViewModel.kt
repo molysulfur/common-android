@@ -68,6 +68,7 @@ class PortFolioViewModel @Inject constructor(
 
     private val _navigateActions = Channel<NavDirections>(Channel.CONFLATED)
     val navigateActions get() = _navigateActions.receiveAsFlow()
+
     fun navigate(index: Int) {
         viewModelScope.launch {
             _navigateActions.send(PublicPortfolioFragmentDirections.publicPortfolioFragmentToInsidePositionPortfolioFragment(
