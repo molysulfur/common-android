@@ -7,6 +7,7 @@ import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.awonar.app.ui.portfolio.chart.adapter.PositionChartAdapter
 import com.awonar.app.ui.portfolio.chart.adapter.PositionChartItem
 import com.awonar.app.ui.user.UserViewModel
+import timber.log.Timber
 
 @BindingAdapter("setProfileChart", "viewModel", "userViewModel")
 fun setChartPortfolio(

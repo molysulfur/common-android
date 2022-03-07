@@ -15,7 +15,7 @@ class ConvertPublicAllocateUseCase @Inject constructor(
     override suspend fun execute(parameters: List<PublicAllocate>): MutableList<PositionChartItem> {
         val itemList = mutableListOf<PositionChartItem>()
         val colors = ColorTemplate.MATERIAL_COLORS.toMutableList()
-        itemList.add(PositionChartItem.TitleItem("Exposure"))
+        itemList.add(PositionChartItem.TitleItem("Allocate"))
         itemList.add(PositionChartItem.SubTitleItem("Click on the pie chart or legend item to drill down"))
         val entries = arrayListOf<PieEntry>()
         parameters.forEach { publicExposure ->

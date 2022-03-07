@@ -83,5 +83,11 @@
             app:destination="@+id/publicPortfolioFragment"
             app:launchSingleTop="true"
             app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/profilePositionChartFragment_to_insidePositionPortfolioFragment"
+            app:destination="@+id/insidePositionPortfolioFragment"
+            app:launchSingleTop="true"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

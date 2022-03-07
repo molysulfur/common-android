@@ -30,8 +30,9 @@ class PieChartViewHolder constructor(private val binding: AwonarItemPiechartBind
                         binding.awonrItemPiechart.tag = (e as? PieEntry)?.label
                         binding.awonrItemPiechart.apply {
                             centerText =
-                                "%.2f %s".format(
+                                "%.2f%s %s".format(
                                     (e as? PieEntry)?.value,
+                                    "%",
                                     (e as? PieEntry)?.label
                                 )
                         }

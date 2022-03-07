@@ -2,6 +2,7 @@ package com.awonar.app.ui.profile.chart
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavDirections
 import com.awonar.android.model.profile.PublicAllocate
 import com.awonar.android.model.profile.PublicAllocateRequest
 import com.awonar.android.model.profile.PublicExposure
@@ -15,9 +16,11 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -33,6 +36,9 @@ class ProfileChartViewModel @Inject constructor(
 ) : ViewModel() {
     private val _type = MutableStateFlow("exposure")
 
+    private val _navigateAction = Channel<String?>(Channel.CONFLATED)
+    val navigateAction get() = _navigateAction.receiveAsFlow()
+
     private val _positionChartItems: MutableStateFlow<MutableList<PositionChartItem>> =
         MutableStateFlow(mutableListOf(PositionChartItem.LoadingItem()))
     val positionChartItems: StateFlow<MutableList<PositionChartItem>> get() = _positionChartItems
@@ -42,9 +48,12 @@ class ProfileChartViewModel @Inject constructor(
     }
 
     fun getInsideChart(user: User?, category: String?) {
-        when (_type.value) {
-            "allocate" -> getAllocate(user, category)
-            "exposure" -> getExposure(user, category)
+        viewModelScope.launch {
+
+            when (_type.value) {
+                "allocate" -> getAllocate(user, category)
+                "exposure" -> getExposure(user, category)
+            }
         }
     }
 
@@ -59,7 +68,7 @@ class ProfileChartViewModel @Inject constructor(
                         convertPublicAllocateLevel2UseCase(data).successOr(mutableListOf())
                     _positionChartItems.value = itemList
                 }
-                else -> getAllocate(value = user)
+                else -> _navigateAction.send(category)
             }
         }
     }
@@ -75,7 +84,7 @@ class ProfileChartViewModel @Inject constructor(
                         convertPublicExposureLevel2UseCase(data).successOr(mutableListOf())
                     _positionChartItems.value = itemList
                 }
-                else -> getExposure(value = user)
+                else -> _navigateAction.send(category)
             }
         }
     }

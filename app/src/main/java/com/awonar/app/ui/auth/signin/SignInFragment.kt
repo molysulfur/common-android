@@ -58,7 +58,7 @@ class SignInFragment : Fragment(), FacebookCallback<LoginResult> {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         setupGoogleSignIn()
         setupFacebookSignIn()
@@ -82,12 +82,8 @@ class SignInFragment : Fragment(), FacebookCallback<LoginResult> {
         launchAndRepeatWithViewLifecycle {
             authViewModel.navigation.collect { email ->
                 if (!email.isNullOrBlank()) {
-                    findNavController().navigate(
-                        R.id.action_signInFragment_to_linkAccountFragment,
-                        bundleOf(
-                            "email" to email
-                        )
-                    )
+                    findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToLinkAccountFragment(
+                        email))
                 }
             }
         }
@@ -112,7 +108,7 @@ class SignInFragment : Fragment(), FacebookCallback<LoginResult> {
         launchAndRepeatWithViewLifecycle {
             authViewModel.goToSignUpState.collect { shouldGo ->
                 if (shouldGo) {
-                    findNavController().navigate(R.id.action_signInFragment_to_signUpFragment)
+                    findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToSignUpFragment())
                 }
             }
         }
@@ -165,7 +161,7 @@ class SignInFragment : Fragment(), FacebookCallback<LoginResult> {
             handleLogInFacebook()
         }
         binding.awonarSigninButtonForgot.setOnClickListener {
-            findNavController().navigate(R.id.action_signInFragment_to_forgotPasswordFragment)
+            findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToForgotPasswordFragment())
         }
 
         binding.awonarSigninButtonGoogle.setOnClickListener {
@@ -179,7 +175,7 @@ class SignInFragment : Fragment(), FacebookCallback<LoginResult> {
             text = SpannableUtil.getDontHaveAccountSpannable(context ?: requireContext(),
                 object : ClickableSpan() {
                     override fun onClick(widget: View) {
-
+                        findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToSignUpFragment())
                     }
 
                     override fun updateDrawState(ds: TextPaint) {

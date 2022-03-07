@@ -11,12 +11,16 @@ import com.awonar.app.databinding.AwonarFragmentProfilePositionChartBinding
 import com.awonar.app.dialog.menu.MenuDialog
 import com.awonar.app.dialog.menu.MenuDialogButtonSheet
 import com.awonar.app.ui.portfolio.PortFolioViewModel
+import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 import com.awonar.app.ui.profile.user.PublicPortfolioFragment
 import com.awonar.app.ui.profile.user.PublicPortfolioFragmentDirections
 import com.awonar.app.ui.profile.user.UserPortfolioFragment
 import com.awonar.app.ui.user.UserViewModel
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.forEach
+import kotlinx.coroutines.flow.toList
+import timber.log.Timber
 
 class ProfilePositionChartFragment : Fragment() {
 
@@ -29,6 +33,7 @@ class ProfilePositionChartFragment : Fragment() {
 
     private val userViewModel: UserViewModel by activityViewModels()
     private val viewModel: ProfileChartViewModel by activityViewModels()
+    private val portfolioViewModel: PortFolioViewModel by activityViewModels()
 
     private val binding: AwonarFragmentProfilePositionChartBinding by lazy {
         AwonarFragmentProfilePositionChartBinding.inflate(layoutInflater)
@@ -41,7 +46,6 @@ class ProfilePositionChartFragment : Fragment() {
                 PORTFOLIO_KEY -> findNavController().navigate(ProfilePositionChartFragmentDirections.profilePositionChartFragmentToPublicPortfolioFragment())
             }
         }
-
     }
 
     private val dialog: MenuDialogButtonSheet by lazy {
@@ -60,6 +64,19 @@ class ProfilePositionChartFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
+        launchAndRepeatWithViewLifecycle {
+            viewModel.navigateAction.collect {
+                val index: Int = portfolioViewModel.positionList.value.indexOfLast { item ->
+                    if (item is PortfolioItem.InstrumentPortfolioItem) {
+                        item.position.instrument?.symbol == it
+                    }
+                    false
+                }
+                Timber.e("$index $it")
+                findNavController().navigate(ProfilePositionChartFragmentDirections.profilePositionChartFragmentToInsidePositionPortfolioFragment(
+                    index))
+            }
+        }
         binding.viewModel = viewModel
         binding.userViewModel = userViewModel
         binding.lifecycleOwner = viewLifecycleOwner
