@@ -1,14 +1,18 @@
 package com.awonar.app.ui.order
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.awonar.android.constrant.MarketOrderType
 import com.awonar.android.exception.AddAmountException
-import com.awonar.android.exception.PositionExposureException
 import com.awonar.android.exception.RefundException
 import com.awonar.android.exception.ValidationException
+import com.awonar.android.model.market.Instrument
+import com.awonar.android.model.market.Quote
 import com.awonar.android.model.order.*
+import com.awonar.android.model.portfolio.Portfolio
 import com.awonar.android.model.portfolio.Position
+import com.awonar.android.model.tradingdata.TradingData
 import com.awonar.android.shared.domain.market.GetConversionByInstrumentUseCase
 import com.awonar.android.shared.domain.order.*
 import com.awonar.android.shared.domain.partialclose.ClosePartialPositionUseCase
@@ -17,6 +21,7 @@ import com.awonar.android.shared.domain.partialclose.RemovePositionUseCase
 import com.awonar.android.shared.domain.partialclose.ValidatePartialCloseAmountUseCase
 import com.awonar.android.shared.domain.portfolio.GetMyPortFolioUseCase
 import com.awonar.android.shared.utils.ConverterOrderUtil
+import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.android.shared.utils.PortfolioUtil
 import com.molysulfur.library.result.Result
 import com.molysulfur.library.result.data
@@ -49,8 +54,24 @@ class OrderViewModel @Inject constructor(
     private val removePositionUseCase: RemovePositionUseCase,
 ) : ViewModel() {
 
+    private val _marketType = MutableStateFlow(MarketOrderType.ENTRY_ORDER)
+    private val _portfolioState = MutableStateFlow<Portfolio?>(null)
+
+    private val _priceState = MutableStateFlow(0f)
+    val priceState get() = _priceState
+    private val _changeState = MutableStateFlow(Pair(0f, 0f))
+    val changeState get() = _changeState
+    private val _marketStatus = MutableStateFlow<String>("")
+    val marketStatus get() = _marketStatus
+    private val _instrument = MutableStateFlow<Instrument?>(null)
+    val instrument get() = _instrument
+    private val _isBuyState = MutableSharedFlow<Boolean?>()
+    val isBuyState get() = _isBuyState.asSharedFlow()
+    private val _tradingData = MutableStateFlow<TradingData?>(null)
+    val tradingData get() = _tradingData
     private val _leverageState = MutableStateFlow(1)
     val leverageState: StateFlow<Int> get() = _leverageState
+
     private val _amountState = MutableStateFlow(Pair(0f, 0f))
     val amountState: StateFlow<Pair<Float, Float>> get() = _amountState
 
@@ -59,8 +80,8 @@ class OrderViewModel @Inject constructor(
     private val _orderSuccessState = Channel<String>(capacity = Channel.CONFLATED)
     val orderSuccessState get() = _orderSuccessState.receiveAsFlow()
 
-    private val _openRate = MutableStateFlow<Float?>(null)
-    val openRate: StateFlow<Float?> get() = _openRate
+    private val _rateState = MutableStateFlow<Float?>(null)
+    val rateState: StateFlow<Float?> get() = _rateState
 
     private val _hasPartialState = MutableStateFlow(false)
     val hasPartialState: StateFlow<Boolean> get() = _hasPartialState
@@ -83,6 +104,51 @@ class OrderViewModel @Inject constructor(
 
     private val _errorState = MutableStateFlow("")
     val errorState: StateFlow<String> get() = _errorState
+
+
+    init {
+        val state = combine(_portfolioState,
+            _instrument,
+            _tradingData) { portfolio, instrument, tradingData ->
+            if (portfolio != null && instrument != null && tradingData != null) {
+                Timber.e("${instrument?.symbol} ${tradingData.defaultLeverage}")
+                /**
+                 * Default Amount
+                 */
+                val leverage = tradingData.defaultLeverage
+                val defaultAmount = portfolio.available.times(0.05f)
+                val defaultUnit = getUnitUseCase(CalAmountUnitRequest(
+                    instrumentId = instrument.id,
+                    leverage = leverage,
+                    price = _priceState.value,
+                    amount = defaultAmount
+                )).successOr(0f)
+                _amountState.emit(Pair(defaultAmount, defaultUnit))
+                /**
+                 * Default Leverage
+                 */
+                _leverageState.emit(leverage)
+            }
+        }
+
+        viewModelScope.launch {
+            state.collect {
+
+            }
+        }
+
+        viewModelScope.launch {
+            getTradingDataByInstrumentIdUseCase(1)
+        }
+        viewModelScope.launch {
+            _portfolioState.collect { portfolio ->
+                portfolio?.let {
+//                    getTradingDataByInstrumentIdUseCase()
+                    val amount = it.available.times(0.05)
+                }
+            }
+        }
+    }
 
     fun setDefaultAmount(instrumentId: Int, available: Float, price: Float) {
         viewModelScope.launch {
@@ -322,17 +388,14 @@ class OrderViewModel @Inject constructor(
         }
     }
 
-    fun updateRate(price: Float, marketType: MarketOrderType) {
-        viewModelScope.launch {
-            if (marketType == MarketOrderType.ENTRY_ORDER || marketType == MarketOrderType.OPEN_ORDER) {
-                _openRate.emit(price)
-            }
-        }
-    }
 
-    fun updateRate(price: Float) {
+    fun updateRate(rate: Float) {
         viewModelScope.launch {
-            _openRate.emit(price)
+            val newRate = when (_marketType.value) {
+                MarketOrderType.ENTRY_ORDER, MarketOrderType.OPEN_ORDER -> priceState.value
+                else -> rate
+            }
+            _rateState.emit(newRate)
         }
     }
 
@@ -502,13 +565,73 @@ class OrderViewModel @Inject constructor(
         }
     }
 
-    fun updateLeverage(leverage: Int, instrumentId: Int, price: Float) {
+    fun updateLeverage(leverage: Int) {
         _leverageState.value = leverage
-        updateAmount(
-            instrumentId = instrumentId,
-            amount = _amountState.value.first,
-            price = price
-        )
+        _instrument.value?.let {
+            updateAmount(
+                instrumentId = it.id,
+                amount = _amountState.value.first,
+                price = _priceState.value
+            )
+        }
+
     }
+
+    fun setPortfolio(portfolio: Portfolio) {
+        _portfolioState.value = portfolio
+    }
+
+    fun setInstrument(instrument: Instrument?) {
+        _instrument.value = instrument
+    }
+
+    fun setIsBuy(isBuy: Boolean?) {
+        viewModelScope.launch {
+            val currentType: Boolean? = isBuy
+            val tradingData =
+                getTradingDataByInstrumentIdUseCase(_instrument.value?.id ?: 0).successOr(null)
+            _tradingData.value = tradingData
+            if (tradingData?.allowSell == false && !tradingData.allowBuy && currentType != null) {
+                _isBuyState.emit(null)
+            } else {
+                _isBuyState.emit(isBuy)
+            }
+        }
+    }
+
+    fun updatePrice(quotes: MutableMap<Int, Quote>) {
+        val quote = quotes[_instrument.value?.id]
+        quote?.let {
+            _marketStatus.value = it.status ?: ""
+            setPrice(quote)
+        }
+    }
+
+    private fun setPrice(quote: Quote) {
+        viewModelScope.launch {
+            val price = ConverterQuoteUtil.getCurrentPrice(quote = quote,
+                leverage = _leverageState.value,
+                isBuy = _isBuyState.asLiveData().value == true)
+            val change = ConverterQuoteUtil.change(price, quote.previous)
+            val percentChange = ConverterQuoteUtil.percentChange(price, quote.previous)
+            _changeState.value = Pair(change, percentChange)
+            _priceState.value = price
+
+        }
+    }
+
+    fun updateMarketType(openOrder: MarketOrderType) {
+        when (openOrder) {
+            MarketOrderType.PENDING_ORDER -> _marketType.value = MarketOrderType.PENDING_ORDER
+            else -> {
+                if (_marketStatus.value == "open") {
+                    _marketType.value = MarketOrderType.OPEN_ORDER
+                } else {
+                    _marketType.value = MarketOrderType.ENTRY_ORDER
+                }
+            }
+        }
+    }
+
 
 }

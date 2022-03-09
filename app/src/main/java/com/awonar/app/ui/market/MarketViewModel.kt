@@ -30,12 +30,9 @@ class MarketViewModel @Inject constructor(
     private val convertRememberToItemUseCase: ConvertRememberToItemUseCase,
     private val convertInstrumentStockToItemUseCase: ConvertInstrumentStockToItemUseCase,
     private val convertInstrumentToItemUseCase: ConvertInstrumentToItemUseCase,
-    private val getTradingDataByInstrumentIdUseCase: GetTradingDataByInstrumentIdUseCase,
     private val getConversionByInstrumentUseCase: GetConversionByInstrumentUseCase,
     private val quoteSteamingManager: QuoteSteamingManager,
 ) : ViewModel() {
-
-    val tradingDataState = MutableSharedFlow<TradingData?>()
 
     private val _conversionRateState = MutableStateFlow(0f)
 
@@ -65,12 +62,6 @@ class MarketViewModel @Inject constructor(
 
     init {
         subscribe()
-    }
-
-    fun getTradingData(intrumentId: Int) {
-        viewModelScope.launch {
-            tradingDataState.emit(getTradingDataByInstrumentIdUseCase(intrumentId).successOr(null))
-        }
     }
 
     fun convertInstrumentToItem() {

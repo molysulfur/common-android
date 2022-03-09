@@ -72,7 +72,6 @@ class ProfilePositionChartFragment : Fragment() {
                     }
                     false
                 }
-                Timber.e("$index $it")
                 findNavController().navigate(ProfilePositionChartFragmentDirections.profilePositionChartFragmentToInsidePositionPortfolioFragment(
                     index))
             }
