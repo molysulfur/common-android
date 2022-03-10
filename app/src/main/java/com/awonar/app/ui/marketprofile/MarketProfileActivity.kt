@@ -3,8 +3,11 @@ package com.awonar.app.ui.marketprofile
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.awonar.android.model.market.Quote
+import com.awonar.android.shared.steaming.QuoteSteamingManager
 import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarActivityMarketProfileBinding
@@ -37,6 +40,8 @@ class MarketProfileActivity : BaseActivity() {
         setContentView(binding.root)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
+        setupViewPager()
+
         binding.awonarMarketProfileToolbarProfile.setNavigationOnClickListener {
             finish()
         }
@@ -47,14 +52,31 @@ class MarketProfileActivity : BaseActivity() {
                 marketViewModel.subscribe(instrumentId)
             }
         }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                QuoteSteamingManager.quotesState.collect { quotes ->
+                    val quote = quotes[instrumentId]
+                    setChangeText(quote)
+                }
+            }
+        }
+    }
+
+    private fun setupViewPager() {
+        with(binding.awonarMarketProfileViewpager) {
+            adapter = MarketProfilePagerAdapter(supportFragmentManager, lifecycle)
+        }
     }
 
     private fun setChangeText(quote: Quote?) {
+        val price = quote?.close ?: 0f
         val change: Float = ConverterQuoteUtil.change(quote?.close ?: 0f, quote?.previous ?: 0f)
         val percent: Float = ConverterQuoteUtil.percentChange(
             oldPrice = quote?.previous ?: 0f,
             newPrice = quote?.close ?: 0f
         )
+        binding.awonarMarketProfileTextPricing.text =
+            "%.${viewModel.instrumentState.value?.digit ?: 2}f".format(price)
         binding.awonarMarketProfileTextChange.setTextColor(
             ColorChangingUtil.getTextColorChange(
                 this@MarketProfileActivity,
