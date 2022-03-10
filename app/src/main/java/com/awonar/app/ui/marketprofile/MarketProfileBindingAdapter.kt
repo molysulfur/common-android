@@ -23,44 +23,10 @@ fun setMarketAbout(
         }
     }
     (recycler.adapter as MarketAboutAdapter).apply {
-        itemList = convertToItem(instrumentInfo)
+        itemList = MarketAboutItem.convertToItem(instrumentInfo)
     }
 }
 
-fun convertToItem(instrumentInfo: InstrumentProfile): MutableList<MarketAboutItem> {
-    val itemList = mutableListOf<MarketAboutItem>()
-    instrumentInfo.shortDescription.takeIf {
-        !it.isNullOrBlank()
-    }?.let {
-        itemList.add(MarketAboutItem.TitleItem("About"))
-        itemList.add(MarketAboutItem.DescriptionItem(it))
-    }
-    instrumentInfo.sector.takeIf {
-        !it.isNullOrBlank()
-    }?.let {
-        itemList.add(MarketAboutItem.TitleItem("Sector"))
-        itemList.add(MarketAboutItem.DescriptionItem(it))
-    }
-    instrumentInfo.industry.takeIf {
-        !it.isNullOrBlank()
-    }?.let {
-        itemList.add(MarketAboutItem.TitleItem("Industry"))
-        itemList.add(MarketAboutItem.DescriptionItem(it))
-    }
-    instrumentInfo.ceo.takeIf {
-        !it.isNullOrBlank()
-    }?.let {
-        itemList.add(MarketAboutItem.TitleItem("CEO"))
-        itemList.add(MarketAboutItem.DescriptionItem(it))
-    }
-    instrumentInfo.employees.takeIf {
-        it > 0
-    }?.let {
-        itemList.add(MarketAboutItem.TitleItem("Employee"))
-        itemList.add(MarketAboutItem.DescriptionItem("$it"))
-    }
-    return itemList
-}
 
 @BindingAdapter("marketProfileAvatar")
 fun setAvatar(image: ImageView, url: String?) {
