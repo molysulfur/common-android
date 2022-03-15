@@ -181,11 +181,13 @@
         <entry key="app/src/main/res/layout/awonar_item_divider.xml" value="0.20729166666666668" />
         <entry key="app/src/main/res/layout/awonar_item_divider_blank.xml" value="0.109375" />
         <entry key="app/src/main/res/layout/awonar_item_empty.xml" value="0.2962962962962963" />
+        <entry key="app/src/main/res/layout/awonar_item_financial_card.xml" value="0.17528858486532706" />
         <entry key="app/src/main/res/layout/awonar_item_folder_watchlist.xml" value="0.15572916666666667" />
         <entry key="app/src/main/res/layout/awonar_item_framelayout.xml" value="0.21232587589700294" />
         <entry key="app/src/main/res/layout/awonar_item_history.xml" value="0.12864583333333332" />
         <entry key="app/src/main/res/layout/awonar_item_horizontal_warpper.xml" value="0.20885416666666667" />
         <entry key="app/src/main/res/layout/awonar_item_icon.xml" value="0.3880208333333333" />
+        <entry key="app/src/main/res/layout/awonar_item_info.xml" value="0.21504916631038906" />
         <entry key="app/src/main/res/layout/awonar_item_input_range.xml" value="0.15416666666666667" />
         <entry key="app/src/main/res/layout/awonar_item_instrument_card.xml" value="0.28541666666666665" />
         <entry key="app/src/main/res/layout/awonar_item_instrument_list.xml" value="0.121875" />
@@ -217,6 +219,7 @@
         <entry key="app/src/main/res/layout/awonar_item_title.xml" value="0.20625" />
         <entry key="app/src/main/res/layout/awonar_item_title_viewmore.xml" value="0.43703703703703706" />
         <entry key="app/src/main/res/layout/awonar_item_total_trade.xml" value="0.3185121846943138" />
+        <entry key="app/src/main/res/layout/awonar_item_viewpager.xml" value="0.17528858486532706" />
         <entry key="app/src/main/res/layout/awonar_item_watchlist_columns.xml" value="0.3880208333333333" />
         <entry key="app/src/main/res/layout/awonar_skeleton_item.xml" value="0.2682291666666667" />
         <entry key="app/src/main/res/layout/awonar_widget_card_view_instrument.xml" value="0.14322916666666666" />
@@ -228,6 +231,7 @@
         <entry key="app/src/main/res/layout/awonar_widget_copies_item.xml" value="0.26875" />
         <entry key="app/src/main/res/layout/awonar_widget_edit_number_picker.xml" value="0.1" />
         <entry key="app/src/main/res/layout/awonar_widget_facebook.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/awonar_widget_financial_card.xml" value="0.42991452991452994" />
         <entry key="app/src/main/res/layout/awonar_widget_folder_watchlist.xml" value="0.15572916666666667" />
         <entry key="app/src/main/res/layout/awonar_widget_fragment_view.xml" value="0.21504916631038906" />
         <entry key="app/src/main/res/layout/awonar_widget_google.xml" value="0.14166666666666666" />
@@ -241,6 +245,7 @@
         <entry key="app/src/main/res/layout/awonar_widget_position.xml" value="0.12612227447627192" />
         <entry key="app/src/main/res/layout/awonar_widget_progress.xml" value="0.5" />
         <entry key="app/src/main/res/layout/awonar_widget_text_divider.xml" value="0.14722222222222223" />
+        <entry key="app/src/main/res/layout/awonar_widget_viewpager.xml" value="0.17528858486532706" />
         <entry key="app/src/main/res/menu/awoanr_menu_next_prev.xml" value="0.12612227447627192" />
         <entry key="app/src/main/res/menu/awonar_main_menu.xml" value="0.11145833333333334" />
         <entry key="app/src/main/res/menu/awonar_menu_actived_column.xml" value="0.14629629629629629" />

@@ -16,6 +16,12 @@ class NetworkModule {
 
     @Singleton
     @Provides
+    fun provideMarketProfileService(client: NetworkClient): MarketProfileService {
+        return MarketProfileService.create(client)
+    }
+
+    @Singleton
+    @Provides
     fun provideProfileService(client: NetworkClient): ProfileService {
         return ProfileService.create(client)
     }

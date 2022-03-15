@@ -127,6 +127,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/awonar_size_margin_padding_small"
+                    android:lines="4"
                     android:text="@{viewModel.instrumentState.shortDescription}"
                     app:layout_constraintEnd_toEndOf="@+id/awonar_profile_title_investors"
                     app:layout_constraintStart_toStartOf="@+id/awonar_market_profile_image_avatar"

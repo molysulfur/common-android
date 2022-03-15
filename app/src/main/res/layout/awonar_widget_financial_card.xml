@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="title"
+            type="String" />
+
+        <variable
+            name="dateString"
+            type="String" />
+
+        <variable
+            name="value"
+            type="String" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/awonar_bg_15_light_gray"
+        android:padding="@dimen/awonar_size_margin_padding_normal">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_financial_card_text_title"
+            style="@style/Awonar.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{title}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/awonar_financial_card_text_title_date"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_financial_card_text_date"
+            style="@style/Awonar.Description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{dateString}"
+            app:layout_constraintBottom_toBottomOf="@+id/awonar_financial_card_text_title"
+            app:layout_constraintEnd_toEndOf="@+id/awonar_financial_card_text_title_date"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/awonar_financial_card_text_title_date"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_financial_card_text_title_date"
+            tools:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_financial_card_text_title_date"
+            style="@style/Awonar.SubTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date"
+            app:layout_constraintBottom_toTopOf="@+id/awonar_financial_card_text_date"
+            app:layout_constraintEnd_toStartOf="@+id/awonar_financial_card_text_title_value"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/awonar_financial_card_text_title"
+            app:layout_constraintTop_toTopOf="@+id/awonar_financial_card_text_title" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_financial_card_text_title_value"
+            style="@style/Awonar.SubTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Value"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/awonar_financial_card_text_title_date"
+            app:layout_constraintTop_toTopOf="@+id/awonar_financial_card_text_title" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_financial_card_text_value"
+            style="@style/Awonar.Description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{value}"
+            app:layout_constraintEnd_toEndOf="@+id/awonar_financial_card_text_title_value"
+            app:layout_constraintHorizontal_bias="0.504"
+            app:layout_constraintStart_toStartOf="@+id/awonar_financial_card_text_title_value"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_financial_card_text_title_date"
+            tools:text="@string/awonar_example_name" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

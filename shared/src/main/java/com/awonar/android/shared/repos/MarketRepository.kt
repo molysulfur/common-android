@@ -21,6 +21,8 @@ open class MarketRepository @Inject constructor(
     private val instrumentDao: InstrumentDao,
 ) {
 
+
+
     fun getInstrumentFromDao(id: Int): Instrument? {
         return instrumentDao.loadById(id)
     }
