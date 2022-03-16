@@ -5,4 +5,5 @@ object FinancialMarketType {
     const val INFO_CARD = 1
     const val TOGGLE_QUATER_TYPE = 3
     const val CATEGORY_PAGER = 4
+    const val BARCHART = 5
 }

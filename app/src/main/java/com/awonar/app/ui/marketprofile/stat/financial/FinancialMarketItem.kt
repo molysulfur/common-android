@@ -1,9 +1,16 @@
 package com.awonar.app.ui.marketprofile.stat.financial
 
 import android.os.Parcelable
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
 import kotlinx.parcelize.Parcelize
 
 sealed class FinancialMarketItem(val type: Int) : Parcelable {
+
+    @Parcelize
+    data class BarChartItem(
+        val entries: List<BarEntryItem>,
+    ) : FinancialMarketItem(FinancialMarketType.BARCHART)
 
     @Parcelize
     data class ButtonGroupItem(
@@ -30,4 +37,9 @@ sealed class FinancialMarketItem(val type: Int) : Parcelable {
         val financialType: String?,
     ) : FinancialMarketItem(FinancialMarketType.CATEGORY_PAGER)
 
+    @Parcelize
+    data class BarEntryItem(
+        val title: String,
+        val entries: List<BarEntry>,
+    ) : Parcelable
 }

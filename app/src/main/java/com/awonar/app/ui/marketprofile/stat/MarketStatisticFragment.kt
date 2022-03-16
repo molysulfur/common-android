@@ -13,6 +13,7 @@ import com.awonar.app.ui.marketprofile.MarketProfileViewModel
 import com.awonar.app.ui.marketprofile.stat.financial.FinancialMarketAdapter
 import com.awonar.app.ui.marketprofile.stat.financial.FinancialMarketItem
 import com.awonar.app.ui.marketprofile.stat.overview.OverviewMarketAdapter
+import com.github.mikephil.charting.data.BarEntry
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 
@@ -76,7 +77,61 @@ class MarketStatisticFragment : Fragment() {
                 ))
                 itemLists.add(FinancialMarketItem.TitleMarketItem("Financial Summary"))
                 itemLists.add(FinancialMarketItem.ButtonGroupItem("annual", "quarter", ""))
-                itemLists.add(FinancialMarketItem.ViewPagerItem("annual"))
+//                itemLists.add(FinancialMarketItem.ViewPagerItem("annual"))
+                /**
+                 * income statistic
+                 */
+                val incomeGrossBarEntries = mutableListOf<BarEntry>()
+                val incomeOperateBarEntries = mutableListOf<BarEntry>()
+                response?.ststistics?.quarter?.forEachIndexed { index, financialQuarter ->
+                    val grossY = if (financialQuarter.grossMargin == "N/A") {
+                        0f
+                    } else {
+                        financialQuarter.grossMargin?.toFloat() ?: 0f
+                    }
+                    val operateY = financialQuarter.operatingMargin
+                    incomeOperateBarEntries.add(BarEntry(index.toFloat(), operateY))
+                    incomeGrossBarEntries.add(BarEntry(index.toFloat(), grossY))
+                }
+                itemLists.add(FinancialMarketItem.BarChartItem(
+                    arrayListOf(
+                        FinancialMarketItem.BarEntryItem(
+                            "Gross Margin",
+                            incomeGrossBarEntries
+                        ),
+                        FinancialMarketItem.BarEntryItem(
+                            "Operating Margin",
+                            incomeOperateBarEntries
+                        ))
+                ))
+                /**
+                 * Balanace Sheet
+                 */
+                val currentRatioEntries = mutableListOf<BarEntry>()
+                response?.ststistics?.quarter?.forEachIndexed { index, financialQuarter ->
+                    currentRatioEntries.add(BarEntry(index.toFloat(),
+                        financialQuarter.currentRatio))
+                }
+                itemLists.add(FinancialMarketItem.BarChartItem(
+                    arrayListOf(FinancialMarketItem.BarEntryItem(
+                        "Current Ratio",
+                        currentRatioEntries
+                    ))))
+                /**
+                 * Cashflow
+                 */
+                val operateCashflow = mutableListOf<BarEntry>()
+                response?.ststistics?.quarter?.forEachIndexed { index, financialQuarter ->
+                    operateCashflow.add(BarEntry(index.toFloat(),
+                        financialQuarter.operatingCashFlow))
+                }
+                itemLists.add(FinancialMarketItem.BarChartItem(
+                    arrayListOf(
+                        FinancialMarketItem.BarEntryItem(
+                            "Operating Cashflow",
+                            operateCashflow
+                        )
+                    )))
                 if (binding.awonarMarketStatisticRecycler.adapter == null) {
                     with(binding.awonarMarketStatisticRecycler) {
                         adapter = concatAdapter

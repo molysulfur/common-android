@@ -201,6 +201,7 @@
         <entry key="app/src/main/res/layout/awonar_item_loading.xml" value="0.30462962962962964" />
         <entry key="app/src/main/res/layout/awonar_item_logo.xml" value="0.15572916666666667" />
         <entry key="app/src/main/res/layout/awonar_item_marker_list_item.xml" value="0.21232587589700294" />
+        <entry key="app/src/main/res/layout/awonar_item_mp_barchart.xml" value="0.15775972637879435" />
         <entry key="app/src/main/res/layout/awonar_item_payment_history.xml" value="0.5" />
         <entry key="app/src/main/res/layout/awonar_item_piechart.xml" value="0.11875" />
         <entry key="app/src/main/res/layout/awonar_item_position.xml" value="0.2715477293790547" />

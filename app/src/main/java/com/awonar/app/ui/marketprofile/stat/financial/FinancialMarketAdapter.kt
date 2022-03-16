@@ -4,14 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.awonar.app.databinding.AwonarItemButtonGroupBinding
-import com.awonar.app.databinding.AwonarItemFinancialCardBinding
-import com.awonar.app.databinding.AwonarItemTitleBinding
-import com.awonar.app.databinding.AwonarItemViewpagerBinding
-import com.awonar.app.ui.marketprofile.stat.financial.holder.ButtonGroupViewHolder
-import com.awonar.app.ui.marketprofile.stat.financial.holder.FinancialCardViewHolder
-import com.awonar.app.ui.marketprofile.stat.financial.holder.TitleViewHolder
-import com.awonar.app.ui.marketprofile.stat.financial.holder.ViewPagerHolder
+import com.awonar.app.databinding.*
+import com.awonar.app.ui.marketprofile.stat.financial.holder.*
 
 class FinancialMarketAdapter constructor(private val fragmentActivity: FragmentActivity) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -42,6 +36,11 @@ class FinancialMarketAdapter constructor(private val fragmentActivity: FragmentA
                     parent,
                     false)
             )
+            FinancialMarketType.BARCHART -> BarChartViewHolder(
+                AwonarItemMpBarchartBinding.inflate(LayoutInflater.from(parent.context),
+                    parent,
+                    false)
+            )
             else -> throw Error("view type is not found!")
         }
 
@@ -53,6 +52,7 @@ class FinancialMarketAdapter constructor(private val fragmentActivity: FragmentA
                 fragmentActivity)
             is FinancialCardViewHolder -> holder.bind(item as FinancialMarketItem.FinancialCardItem)
             is ButtonGroupViewHolder -> holder.bind(item as FinancialMarketItem.ButtonGroupItem)
+            is BarChartViewHolder -> holder.bind(item as FinancialMarketItem.BarChartItem)
         }
     }
 
