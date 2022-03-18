@@ -212,6 +212,7 @@
         <entry key="app/src/main/res/layout/awonar_item_recycler.xml" value="0.17429193899782136" />
         <entry key="app/src/main/res/layout/awonar_item_section.xml" value="0.2682291666666667" />
         <entry key="app/src/main/res/layout/awonar_item_selector.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/awonar_item_selector_list.xml" value="0.5" />
         <entry key="app/src/main/res/layout/awonar_item_selector_with_other_choice.xml" value="0.11354166666666667" />
         <entry key="app/src/main/res/layout/awonar_item_stacked_chart.xml" value="0.15348439504061565" />
         <entry key="app/src/main/res/layout/awonar_item_text.xml" value="0.12612227447627192" />

@@ -7,6 +7,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class CashFlow(
     @SerializedName("netCashFlow") val netCashFlow: Long,
+    @SerializedName("netCashFlowContinuing") val netCashFlowContinuing: Long,
     @SerializedName("netCashFlowFromFinancingActivities") val netCashFlowFromFinancingActivities: Long,
     @SerializedName("netCashFlowFromFinancingActivitiesContinuing") val netCashFlowFromFinancingActivitiesContinuing: Long,
     @SerializedName("netCashFlowFromInvestingActivities") val netCashFlowFromInvestingActivities: Long,

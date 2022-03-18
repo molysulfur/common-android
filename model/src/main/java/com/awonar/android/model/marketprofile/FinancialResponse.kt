@@ -6,10 +6,10 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class FinancialResponse(
-    @SerializedName("ststistics") val ststistics: FinancialStatistic,
+    @SerializedName("statistics") val ststistics: FinancialStatistic,
     @SerializedName("incomeStatement") val incomeStatement: IncomeStatement,
     @SerializedName("cashFlowStatement") val cashFlow: CashFlowStatement,
-    @SerializedName("balanceSheet") val BalanceSheet: BalanceSheetStatement,
+    @SerializedName("balanceSheet") val balanceSheet: BalanceSheetStatement,
 ) : Parcelable
 
 @Parcelize
@@ -46,7 +46,7 @@ data class FinancialQuarter(
     @SerializedName("currentRatio") val currentRatio: Float,
     @SerializedName("operatingCashFlow") val operatingCashFlow: Float,
     @SerializedName("fiscalPeriod") val fiscalPeriod: String?,
-    @SerializedName("fiscalYear") val fiscalYear: String?,
+    @SerializedName("fiscalYear") val fiscalYear: Long,
 ) : Parcelable
 
 @Parcelize

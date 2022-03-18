@@ -8,6 +8,14 @@ import kotlinx.parcelize.Parcelize
 sealed class FinancialMarketItem(val type: Int) : Parcelable {
 
     @Parcelize
+    data class ListSelectorItem(
+        val text: String?,
+        val value: Long,
+        val color: Int,
+        val isSelected: Boolean,
+    ) : FinancialMarketItem(FinancialMarketType.LIST_SELECTOR)
+
+    @Parcelize
     data class BarChartItem(
         val entries: List<BarEntryItem>,
     ) : FinancialMarketItem(FinancialMarketType.BARCHART)
@@ -33,9 +41,10 @@ sealed class FinancialMarketItem(val type: Int) : Parcelable {
     ) : FinancialMarketItem(FinancialMarketType.INFO_CARD)
 
     @Parcelize
-    data class ViewPagerItem(
-        val financialType: String?,
-    ) : FinancialMarketItem(FinancialMarketType.CATEGORY_PAGER)
+    data class TabsItem(
+        val tabs: List<String>,
+        val current: String? = null,
+    ) : FinancialMarketItem(FinancialMarketType.TABS)
 
     @Parcelize
     data class BarEntryItem(

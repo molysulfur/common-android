@@ -7,11 +7,19 @@ import com.awonar.android.model.marketprofile.FinancialResponse
 import com.awonar.android.shared.domain.marketprofile.GetFinancialInfoUseCase
 import com.awonar.android.shared.domain.marketprofile.GetMarketProfileUseCase
 import com.awonar.android.shared.domain.marketprofile.GetOverviewMarketProfileUseCase
+import com.awonar.app.domain.marketprofile.ConvertFinancialBalanceSheetUseCase
+import com.awonar.app.domain.marketprofile.ConvertFinancialCashflowUseCase
+import com.awonar.app.domain.marketprofile.ConvertFinancialIncomeStatementUseCase
+import com.awonar.app.domain.marketprofile.ConvertFinancialStatisticUseCase
+import com.awonar.app.models.marketprofile.ConvertFinancial
+import com.awonar.app.ui.marketprofile.stat.financial.FinancialMarketItem
 import com.awonar.app.ui.marketprofile.stat.overview.OverviewMarketItem
+import com.github.mikephil.charting.data.BarEntry
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,7 +27,20 @@ class MarketProfileViewModel @Inject constructor(
     private val getMarketProfileUseCase: GetMarketProfileUseCase,
     private val getOverviewMarketProfileUseCase: GetOverviewMarketProfileUseCase,
     private val getFinancialInfoUseCase: GetFinancialInfoUseCase,
+    private val convertFinancialStatisticUseCase: ConvertFinancialStatisticUseCase,
+    private val convertFinancialIncomeStatementUseCase: ConvertFinancialIncomeStatementUseCase,
+    private val convertFinancialBalanceSheetUseCase: ConvertFinancialBalanceSheetUseCase,
+    private val convertFinancialCashflowUseCase: ConvertFinancialCashflowUseCase,
 ) : ViewModel() {
+
+    private val _financialCurrentTab = MutableStateFlow("Statistic")
+    private val _barEntry =
+        MutableStateFlow<MutableList<FinancialMarketItem.BarEntryItem>>(mutableListOf())
+
+
+    private val _financialItemList = MutableStateFlow<MutableList<FinancialMarketItem>>(
+        mutableListOf())
+    val financialItemList: StateFlow<MutableList<FinancialMarketItem>> get() = _financialItemList
 
     private val _instrumentState = MutableStateFlow<InstrumentProfile?>(null)
     val instrumentState: StateFlow<InstrumentProfile?> get() = _instrumentState
@@ -63,13 +84,50 @@ class MarketProfileViewModel @Inject constructor(
             }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), mutableListOf())
 
-
     fun getInstrumentProfile(id: Int) {
         viewModelScope.launch {
             getMarketProfileUseCase(id).collect {
                 _instrumentState.value = it.successOr(null)
             }
         }
+    }
+
+    fun setFinancialTabType(it: String) {
+        _financialCurrentTab.value = it
+        convertFinancialToItem()
+    }
+
+    fun convertFinancialToItem() {
+        viewModelScope.launch {
+            Timber.e("${_barEntry.value}")
+            val financial = financalState.value
+            val type = _financialCurrentTab.value
+            val itemLists = when (type) {
+                "Statistic" -> convertFinancialStatisticUseCase(ConvertFinancial(financial,
+                    type)).successOr(mutableListOf())
+                "Income Statement" -> convertFinancialIncomeStatementUseCase(ConvertFinancial(
+                    financial,
+                    null,
+                    _barEntry.value)).successOr(
+                    mutableListOf())
+                "Balance Sheet" -> convertFinancialBalanceSheetUseCase(ConvertFinancial(financial,
+                    null,
+                    _barEntry.value)).successOr(
+                    mutableListOf())
+                "Cashflow" -> convertFinancialCashflowUseCase(ConvertFinancial(financial,
+                    null,
+                    _barEntry.value)).successOr(mutableListOf())
+                else -> mutableListOf()
+            }
+            _financialItemList.value = itemLists
+        }
+    }
+
+    fun setBarEntry(entry: FinancialMarketItem.BarEntryItem) {
+        val entries = _barEntry.value
+        entries.add(entry)
+        _barEntry.value = entries
+        convertFinancialToItem()
     }
 
 
