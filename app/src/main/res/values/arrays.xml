@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="awonar_colors">
+        <item>#ffeb03</item>
+        <item>#82c202</item>
+        <item>#1bac13</item>
+        <item>#fc087e</item>
+        <item>#d10013</item>
+        <item>#fb0213</item>
+        <item>#fd8b01</item>
+        <item>#17a9e6</item>
+        <item>#0b71bc</item>
+        <item>#332387</item>
+        <item>#6f1886</item>
+        <item>#b2045b</item>
+        <item>#d18a5b</item>
+        <item>#8b5c2b</item>
+        <item>#864b17</item>
+        <item>#864b00</item>
+        <item>#FFBB86FC</item>
+        <item>#FF6200EE</item>
+        <item>#FF3700B3</item>
+        <item>#FF03DAC5</item>
+        <item>#FF018786</item>
+        <item>#9E9E9E</item>
+        <item>#1A4C8E</item>
+        <item>#255EAA</item>
+        <item>#255EAA</item>
+        <item>#802BA040</item>
+        <item>#2BAC40</item>
+        <item>#218a32</item>
+
+    </string-array>
+</resources>

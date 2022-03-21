@@ -1,18 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<com.google.android.material.tabs.TabLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:fillViewport="true"
-    android:layout_height="wrap_content">
+    android:id="@+id/awonar_item_viewpager_tabs"
+    android:layout_width="wrap_content"
+    android:layout_height="?attr/actionBarSize"
+    android:elevation="0dp"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:tabIconTint="@color/awonar_selector_tab_primary"
+    app:tabIndicatorColor="@color/awonar_color_primary"
+    app:tabMode="scrollable"
+    app:tabSelectedTextColor="@color/awonar_color_primary">
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/awonar_item_viewpager_tabs"
-        android:layout_width="match_parent"
+    <com.google.android.material.tabs.TabItem
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="Statistic" />
 
-</HorizontalScrollView>
+    <com.google.android.material.tabs.TabItem
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Income Statement" />
+
+    <com.google.android.material.tabs.TabItem
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Balance Sheet" />
+
+
+    <com.google.android.material.tabs.TabItem
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cashflow" />
+
+</com.google.android.material.tabs.TabLayout>
+
 

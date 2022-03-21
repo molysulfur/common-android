@@ -33,6 +33,14 @@ class MarketProfileViewModel @Inject constructor(
     private val convertFinancialCashflowUseCase: ConvertFinancialCashflowUseCase,
 ) : ViewModel() {
 
+    companion object {
+        private val DEFAULT_INCOME_SELECTED = arrayListOf("Net Income/Loss", "Revenues")
+        private val DEFAULT_BALANCE_SELECTED = arrayListOf("Assets", "Liabilities")
+        private val DEFAULT_CASHFLOW_SELECTED = arrayListOf("Net Cash Flow",
+            "Net Cash Flow From Investing Activities",
+            "Net Cash Flow From Operating Activities, Continuing")
+    }
+
     private val _financialCurrentTab = MutableStateFlow("Statistic")
     private val _barEntry =
         MutableStateFlow<MutableList<FinancialMarketItem.BarEntryItem>>(mutableListOf())
@@ -94,28 +102,86 @@ class MarketProfileViewModel @Inject constructor(
 
     fun setFinancialTabType(it: String) {
         _financialCurrentTab.value = it
+        setBarEntryByDefault()
         convertFinancialToItem()
+    }
+
+    private fun setBarEntryByDefault() {
+        val financial = financalState.value
+
+        val barEntries = when (_financialCurrentTab.value) {
+            "Income Statement" -> {
+                arrayListOf(
+                    FinancialMarketItem.BarEntryItem(
+                        title = "Net Income/Loss",
+                        entries = financial?.incomeStatement?.quarter?.map {
+                            BarEntry(it.fiscalYear?.toFloat() ?: 0f, it.netIncomeLoss.toFloat())
+                        } ?: emptyList()
+                    ),
+                    FinancialMarketItem.BarEntryItem(
+                        title = "Revenues",
+                        entries = financial?.incomeStatement?.quarter?.map {
+                            BarEntry(it.fiscalYear?.toFloat() ?: 0f, it.revenues.toFloat())
+                        } ?: emptyList()
+                    )
+                )
+            }
+            "Balance Sheet" -> arrayListOf(
+                FinancialMarketItem.BarEntryItem(
+                    title = "Assets",
+                    entries = financial?.balanceSheet?.quarter?.map {
+                        BarEntry(it.fiscalYear?.toFloat() ?: 0f, it.assets.toFloat())
+                    } ?: emptyList()
+                ),
+                FinancialMarketItem.BarEntryItem(
+                    title = "Liabilities",
+                    entries = financial?.balanceSheet?.quarter?.map {
+                        BarEntry(it.fiscalYear?.toFloat() ?: 0f, it.liabilities.toFloat())
+                    } ?: emptyList()
+                )
+            )
+            "Cashflow" -> arrayListOf(
+                FinancialMarketItem.BarEntryItem(
+                    title = "Net Cash Flow",
+                    entries = financial?.cashFlow?.quarter?.map {
+                        BarEntry(it.fiscalYear?.toFloat() ?: 0f, it.netCashFlow.toFloat())
+                    } ?: emptyList()
+                ),
+                FinancialMarketItem.BarEntryItem(
+                    title = "Net Cash Flow From Investing Activities",
+                    entries = financial?.cashFlow?.quarter?.map {
+                        BarEntry(it.fiscalYear?.toFloat() ?: 0f,
+                            it.netCashFlowFromInvestingActivities.toFloat())
+                    } ?: emptyList()
+                ),
+                FinancialMarketItem.BarEntryItem(
+                    title = "Net Cash Flow From Operating Activities, Continuing",
+                    entries = financial?.cashFlow?.quarter?.map {
+                        BarEntry(it.fiscalYear?.toFloat() ?: 0f,
+                            it.netCashFlowFromOperatingActivitiesContinuing.toFloat())
+                    } ?: emptyList()
+                )
+            )
+            else -> mutableListOf()
+        }
+        _barEntry.value = barEntries
     }
 
     fun convertFinancialToItem() {
         viewModelScope.launch {
-            Timber.e("${_barEntry.value}")
             val financial = financalState.value
             val type = _financialCurrentTab.value
             val itemLists = when (type) {
-                "Statistic" -> convertFinancialStatisticUseCase(ConvertFinancial(financial,
-                    type)).successOr(mutableListOf())
+                "Statistic" -> convertFinancialStatisticUseCase(ConvertFinancial(financial)).successOr(
+                    mutableListOf())
                 "Income Statement" -> convertFinancialIncomeStatementUseCase(ConvertFinancial(
                     financial,
-                    null,
                     _barEntry.value)).successOr(
                     mutableListOf())
                 "Balance Sheet" -> convertFinancialBalanceSheetUseCase(ConvertFinancial(financial,
-                    null,
                     _barEntry.value)).successOr(
                     mutableListOf())
                 "Cashflow" -> convertFinancialCashflowUseCase(ConvertFinancial(financial,
-                    null,
                     _barEntry.value)).successOr(mutableListOf())
                 else -> mutableListOf()
             }

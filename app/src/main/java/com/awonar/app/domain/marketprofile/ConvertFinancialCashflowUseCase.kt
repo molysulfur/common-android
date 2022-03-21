@@ -26,59 +26,52 @@ class ConvertFinancialCashflowUseCase @Inject constructor(
         ))
         itemLists.add(FinancialMarketItem.TitleMarketItem("Financial Summary"))
         itemLists.add(FinancialMarketItem.ButtonGroupItem("annual", "quarter", ""))
-        itemLists.add(FinancialMarketItem.TabsItem(arrayListOf("Statistic",
+        itemLists.add(FinancialMarketItem.TabsItem(3, arrayListOf("Statistic",
             "Income Statement",
             "Balance Sheet",
-            "Cashflow"), parameters.type))
+            "Cashflow")))
+        itemLists.add(FinancialMarketItem.BarChartItem(parameters.defaultSet))
         val incomeInfo = financial?.cashFlow?.quarter?.get(0)
         incomeInfo?.let {
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Net Cash Flow",
                 value = it.netCashFlow,
-                color = 0,
-                isSelected = false
+                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Net Cash Flow" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Net Cash Flow From Financing Activities",
                 value = it.netCashFlowFromFinancingActivities,
-                color = 0,
-                isSelected = false
+                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Net Cash Flow From Financing Activities" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Net Cash Flow From Financing Activities, Continuing",
                 value = it.netCashFlowFromFinancingActivitiesContinuing,
-                color = 0,
-                isSelected = false
+                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Net Cash Flow From Financing Activities, Continuing" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Net Cash Flow From Investing Activities",
                 value = it.netCashFlowFromInvestingActivities,
-                color = 0,
-                isSelected = false
+                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Net Cash Flow From Investing Activities" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Net Cash Flow From Investing Activities, Continuing",
                 value = it.netCashFlowFromInvestingActivitiesContinuing,
-                color = 0,
-                isSelected = false
+                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Net Cash Flow From Investing Activities, Continuing" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Net Cash Flow From Operating Activities",
                 value = it.netCashFlowFromOperatingActivities,
-                color = 0,
-                isSelected = false
+                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Net Cash Flow From Operating Activities" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Net Cash Flow From Operating Activities, Continuing",
                 value = it.netCashFlowFromOperatingActivitiesContinuing,
-                color = 0,
-                isSelected = false
+                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Net Cash Flow From Operating Activities, Continuing" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Net Cash Flow, Continuing",
                 value = it.netCashFlowContinuing,
-                color = 0,
-                isSelected = false
+                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Net Cash Flow, Continuing" }
             ))
 
         }

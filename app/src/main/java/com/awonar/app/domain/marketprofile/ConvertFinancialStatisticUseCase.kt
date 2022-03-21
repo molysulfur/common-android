@@ -27,10 +27,11 @@ class ConvertFinancialStatisticUseCase @Inject constructor(
         ))
         itemLists.add(FinancialMarketItem.TitleMarketItem("Financial Summary"))
         itemLists.add(FinancialMarketItem.ButtonGroupItem("annual", "quarter", ""))
-        itemLists.add(FinancialMarketItem.TabsItem(arrayListOf("Statistic",
+        val menuTabs = arrayListOf("Statistic",
             "Income Statement",
             "Balance Sheet",
-            "Cashflow"),parameters.type))
+            "Cashflow")
+        itemLists.add(FinancialMarketItem.TabsItem(0, menuTabs))
         /**
          * income statistic
          */

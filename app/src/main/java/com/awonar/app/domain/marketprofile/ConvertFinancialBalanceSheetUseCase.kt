@@ -26,83 +26,72 @@ class ConvertFinancialBalanceSheetUseCase @Inject constructor(
         ))
         itemLists.add(FinancialMarketItem.TitleMarketItem("Financial Summary"))
         itemLists.add(FinancialMarketItem.ButtonGroupItem("annual", "quarter", ""))
-        itemLists.add(FinancialMarketItem.TabsItem(arrayListOf("Statistic",
+        itemLists.add(FinancialMarketItem.TabsItem(2, arrayListOf("Statistic",
             "Income Statement",
             "Balance Sheet",
-            "Cashflow"), parameters.type))
+            "Cashflow")))
+        itemLists.add(FinancialMarketItem.BarChartItem(parameters.defaultSet))
         val incomeInfo = financial?.balanceSheet?.quarter?.get(0)
         incomeInfo?.let {
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Assets",
                 value = it.assets,
-                color = 0,
-                isSelected = false
+                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Assets" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Current Assets",
                 value = it.currentAssets,
-                color = 0,
-                isSelected = false
+                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Current Assets" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Current Liabilities",
                 value = it.currentLiabilities,
-                color = 0,
-                isSelected = false
+                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Current Liabilities" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Equity",
                 value = it.equity,
-                color = 0,
-                isSelected = false
+                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Equity" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Equity Attributable To Noncontrolling Interest",
                 value = it.equityAttributableToNoncontrollingInterest,
-                color = 0,
-                isSelected = false
+                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Equity Attributable To Noncontrolling Interest" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Equity Attributable To Parent",
                 value = it.equityAttributableToParent,
-                color = 0,
-                isSelected = false
+                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Equity Attributable To Parent" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Fixed Assets",
                 value = it.fixedAssets,
-                color = 0,
-                isSelected = false
+                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Fixed Assets" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Liabilities",
                 value = it.liabilities,
-                color = 0,
-                isSelected = false
+                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Liabilities" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Liabilities And Equity",
                 value = it.liabilitiesAndEquity,
-                color = 0,
-                isSelected = false
+                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Liabilities And Equity" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Noncurrent Assets",
                 value = it.noncurrentAssets,
-                color = 0,
-                isSelected = false
+                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Noncurrent Assets" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Noncurrent Liabilities",
                 value = it.noncurrentLiabilities,
-                color = 0,
-                isSelected = false
+                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Noncurrent Liabilities" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Other Than Fixed Noncurrent Assets",
                 value = it.otherThanFixedNoncurrentAssets,
-                color = 0,
-                isSelected = false
+                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Other Than Fixed Noncurrent Assets" }
             ))
         }
         return itemLists

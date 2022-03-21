@@ -11,19 +11,9 @@ class MenuTabsViewHolder constructor(private val binding: AwonarItemViewpagerBin
 
     fun bind(item: FinancialMarketItem.TabsItem, onSelected: ((String?) -> Unit)?) {
         with(binding.awonarItemViewpagerTabs) {
-            removeAllTabs()
-            item.tabs.forEach {
-                val tab = binding.awonarItemViewpagerTabs.newTab()
-                tab.text = it
-                tab.contentDescription = it
-                addTab(tab)
-            }
             addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                    Timber.e("${tab?.text}, ${item.current}")
-                    if (tab?.text != item.current && item.current != null) {
-                        onSelected?.invoke(tab?.text.toString())
-                    }
+                    onSelected?.invoke(tab?.text.toString())
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {

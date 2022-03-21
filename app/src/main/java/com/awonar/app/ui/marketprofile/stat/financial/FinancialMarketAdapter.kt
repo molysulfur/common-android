@@ -65,6 +65,7 @@ class FinancialMarketAdapter constructor(private val fragmentActivity: FragmentA
             is ButtonGroupViewHolder -> holder.bind(item as FinancialMarketItem.ButtonGroupItem)
             is BarChartViewHolder -> holder.bind(item as FinancialMarketItem.BarChartItem)
             is SelectorListViewHolder -> holder.bind(item as FinancialMarketItem.ListSelectorItem,
+                position,
                 onItemSelected)
         }
     }

@@ -12,7 +12,6 @@ sealed class FinancialMarketItem(val type: Int) : Parcelable {
         val text: String?,
         val value: Long,
         val color: Int,
-        val isSelected: Boolean,
     ) : FinancialMarketItem(FinancialMarketType.LIST_SELECTOR)
 
     @Parcelize
@@ -42,6 +41,7 @@ sealed class FinancialMarketItem(val type: Int) : Parcelable {
 
     @Parcelize
     data class TabsItem(
+        val index: Int,
         val tabs: List<String>,
         val current: String? = null,
     ) : FinancialMarketItem(FinancialMarketType.TABS)
