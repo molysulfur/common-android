@@ -10,4 +10,8 @@ import kotlinx.parcelize.Parcelize
 data class ConvertFinancial(
     val financial: FinancialResponse?,
     val defaultSet: List<FinancialMarketItem.BarEntryItem> = emptyList(),
+    val current: String?,
+    val fiscal: String?,
+    val quarter: String?,
+    val quarterType: String?,
 ) : Parcelable

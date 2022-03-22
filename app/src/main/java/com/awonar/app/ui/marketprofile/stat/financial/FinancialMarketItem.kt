@@ -14,6 +14,7 @@ sealed class FinancialMarketItem(val type: Int) : Parcelable {
         val color: Int,
     ) : FinancialMarketItem(FinancialMarketType.LIST_SELECTOR)
 
+
     @Parcelize
     data class BarChartItem(
         val entries: List<BarEntryItem>,
@@ -41,9 +42,7 @@ sealed class FinancialMarketItem(val type: Int) : Parcelable {
 
     @Parcelize
     data class TabsItem(
-        val index: Int,
-        val tabs: List<String>,
-        val current: String? = null,
+        val current: String?
     ) : FinancialMarketItem(FinancialMarketType.TABS)
 
     @Parcelize

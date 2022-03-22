@@ -1,10 +1,13 @@
 package com.awonar.app.domain.marketprofile
 
+import com.awonar.android.model.marketprofile.Income
 import com.awonar.android.shared.di.MainDispatcher
 import com.awonar.app.models.marketprofile.ConvertFinancial
 import com.awonar.app.ui.marketprofile.stat.financial.FinancialMarketItem
 import com.molysulfur.library.usecase.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
+import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 class ConvertFinancialIncomeStatementUseCase @Inject constructor(
@@ -25,13 +28,29 @@ class ConvertFinancialIncomeStatementUseCase @Inject constructor(
             "%.2f".format(financial?.ststistics?.dividend?.historical?.get(0)?.dividend)
         ))
         itemLists.add(FinancialMarketItem.TitleMarketItem("Financial Summary"))
-        itemLists.add(FinancialMarketItem.ButtonGroupItem("annual", "quarter", ""))
-        itemLists.add(FinancialMarketItem.TabsItem(1, arrayListOf("Statistic",
-            "Income Statement",
-            "Balance Sheet",
-            "Cashflow")))
+        itemLists.add(FinancialMarketItem.ButtonGroupItem("annual",
+            "quarter",
+            parameters.quarterType))
+        itemLists.add(FinancialMarketItem.TabsItem(parameters.current))
+        itemLists.add(FinancialMarketItem.TitleMarketItem("Income Statement"))
         itemLists.add(FinancialMarketItem.BarChartItem(parameters.defaultSet))
-        val incomeInfo = financial?.incomeStatement?.quarter?.get(0)
+        val incomeInfo = if (parameters.quarterType == "annual") {
+            financial?.incomeStatement?.year?.find { it.fiscalYear == parameters.fiscal }
+        } else {
+            financial?.incomeStatement?.quarter?.find {
+                it.fiscalPeriod == parameters.quarter
+            }
+        }
+
+        convertListItems(incomeInfo, itemLists, parameters)
+        return itemLists
+    }
+
+    private fun convertListItems(
+        incomeInfo: Income?,
+        itemLists: MutableList<FinancialMarketItem>,
+        parameters: ConvertFinancial,
+    ) {
         incomeInfo?.let {
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Benefits Costs and Expenses",
@@ -132,7 +151,6 @@ class ConvertFinancialIncomeStatementUseCase @Inject constructor(
                 color = parameters.defaultSet.indexOfFirst { item -> item.title == "Revenues" }
             ))
         }
-        return itemLists
     }
 
 }

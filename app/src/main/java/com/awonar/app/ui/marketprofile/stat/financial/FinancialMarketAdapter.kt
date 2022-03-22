@@ -22,6 +22,7 @@ class FinancialMarketAdapter constructor(private val fragmentActivity: FragmentA
 
     var onSelected: ((String?) -> Unit)? = null
     var onItemSelected: ((FinancialMarketItem.BarEntryItem) -> Unit)? = null
+    var onToggleButton: ((String?) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
@@ -62,7 +63,8 @@ class FinancialMarketAdapter constructor(private val fragmentActivity: FragmentA
             is TitleViewHolder -> holder.bind(item as FinancialMarketItem.TitleMarketItem)
             is MenuTabsViewHolder -> holder.bind(item as FinancialMarketItem.TabsItem, onSelected)
             is FinancialCardViewHolder -> holder.bind(item as FinancialMarketItem.FinancialCardItem)
-            is ButtonGroupViewHolder -> holder.bind(item as FinancialMarketItem.ButtonGroupItem)
+            is ButtonGroupViewHolder -> holder.bind(item as FinancialMarketItem.ButtonGroupItem,
+                onToggleButton)
             is BarChartViewHolder -> holder.bind(item as FinancialMarketItem.BarChartItem)
             is SelectorListViewHolder -> holder.bind(item as FinancialMarketItem.ListSelectorItem,
                 position,

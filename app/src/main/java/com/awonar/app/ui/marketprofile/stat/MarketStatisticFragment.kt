@@ -28,6 +28,9 @@ class MarketStatisticFragment : Fragment() {
 
     private val financialAdapter: FinancialMarketAdapter by lazy {
         FinancialMarketAdapter(requireActivity()).apply {
+            onToggleButton = {
+                viewModel.setQuater(it)
+            }
             onSelected = { text ->
                 text?.let {
                     viewModel.setFinancialTabType(it)

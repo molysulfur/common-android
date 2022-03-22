@@ -1,5 +1,6 @@
 package com.awonar.app.domain.marketprofile
 
+import com.awonar.android.model.marketprofile.CashFlow
 import com.awonar.android.shared.di.MainDispatcher
 import com.awonar.app.models.marketprofile.ConvertFinancial
 import com.awonar.app.ui.marketprofile.stat.financial.FinancialMarketItem
@@ -25,13 +26,28 @@ class ConvertFinancialCashflowUseCase @Inject constructor(
             "%.2f".format(financial?.ststistics?.dividend?.historical?.get(0)?.dividend)
         ))
         itemLists.add(FinancialMarketItem.TitleMarketItem("Financial Summary"))
-        itemLists.add(FinancialMarketItem.ButtonGroupItem("annual", "quarter", ""))
-        itemLists.add(FinancialMarketItem.TabsItem(3, arrayListOf("Statistic",
-            "Income Statement",
-            "Balance Sheet",
-            "Cashflow")))
+        itemLists.add(FinancialMarketItem.ButtonGroupItem("annual",
+            "quarter",
+            parameters.quarterType))
+        itemLists.add(FinancialMarketItem.TabsItem(parameters.current))
+        itemLists.add(FinancialMarketItem.TitleMarketItem("Cashflow"))
         itemLists.add(FinancialMarketItem.BarChartItem(parameters.defaultSet))
-        val incomeInfo = financial?.cashFlow?.quarter?.get(0)
+        val cashflow = if (parameters.quarterType == "annual") {
+            financial?.cashFlow?.year?.find { it.fiscalYear == parameters.fiscal }
+        } else {
+            financial?.cashFlow?.quarter?.find {
+                it.fiscalPeriod == parameters.quarter
+            }
+        }
+        convertListItems(cashflow, itemLists, parameters)
+        return itemLists
+    }
+
+    private fun convertListItems(
+        incomeInfo: CashFlow?,
+        itemLists: MutableList<FinancialMarketItem>,
+        parameters: ConvertFinancial,
+    ) {
         incomeInfo?.let {
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Net Cash Flow",
@@ -75,7 +91,6 @@ class ConvertFinancialCashflowUseCase @Inject constructor(
             ))
 
         }
-        return itemLists
     }
 
 }

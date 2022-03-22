@@ -211,4 +211,8 @@
         <item name="colorError">@color/awonar_color_orange</item>
     </style>
 
+    <style name="Awonar.Chip" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@color/awonar_selector_chip_primary</item>
+    </style>
+
 </resources>

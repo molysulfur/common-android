@@ -10,6 +10,7 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.molysulfur.library.utils.ColorUtils
+import okhttp3.internal.notifyAll
 
 
 class BarChartViewHolder constructor(private val binding: AwonarItemMpBarchartBinding) :
@@ -22,9 +23,11 @@ class BarChartViewHolder constructor(private val binding: AwonarItemMpBarchartBi
             setDrawGridBackground(false)
             val xAxis: XAxis = xAxis
             xAxis.granularity = 1f
-//            axisRight.isEnabled = false
             axisLeft.isEnabled = false
             xAxis.setCenterAxisLabels(true)
+            /**
+             * set data
+             */
             val sets = mutableListOf<BarDataSet>()
             val colors =
                 binding.root.context.resources.getStringArray(R.array.awonar_colors).toMutableList()
@@ -39,7 +42,6 @@ class BarChartViewHolder constructor(private val binding: AwonarItemMpBarchartBi
             if (item.entries.size > 1) {
                 groupBars(0f, 0.1f, 0f)
             }
-            data.notifyDataChanged()
             notifyDataSetChanged()
             invalidate()
         }

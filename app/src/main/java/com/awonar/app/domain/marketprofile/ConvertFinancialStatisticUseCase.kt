@@ -27,11 +27,7 @@ class ConvertFinancialStatisticUseCase @Inject constructor(
         ))
         itemLists.add(FinancialMarketItem.TitleMarketItem("Financial Summary"))
         itemLists.add(FinancialMarketItem.ButtonGroupItem("annual", "quarter", ""))
-        val menuTabs = arrayListOf("Statistic",
-            "Income Statement",
-            "Balance Sheet",
-            "Cashflow")
-        itemLists.add(FinancialMarketItem.TabsItem(0, menuTabs))
+        itemLists.add(FinancialMarketItem.TabsItem(parameters.current))
         /**
          * income statistic
          */
@@ -47,6 +43,7 @@ class ConvertFinancialStatisticUseCase @Inject constructor(
             incomeOperateBarEntries.add(BarEntry(index.toFloat(), operateY))
             incomeGrossBarEntries.add(BarEntry(index.toFloat(), grossY))
         }
+        itemLists.add(FinancialMarketItem.TitleMarketItem("Income Statement"))
         itemLists.add(FinancialMarketItem.BarChartItem(
             arrayListOf(
                 FinancialMarketItem.BarEntryItem(
@@ -66,6 +63,7 @@ class ConvertFinancialStatisticUseCase @Inject constructor(
             currentRatioEntries.add(BarEntry(index.toFloat(),
                 financialQuarter.currentRatio))
         }
+        itemLists.add(FinancialMarketItem.TitleMarketItem("Balanace Sheet"))
         itemLists.add(FinancialMarketItem.BarChartItem(
             arrayListOf(FinancialMarketItem.BarEntryItem(
                 "Current Ratio",
@@ -79,6 +77,7 @@ class ConvertFinancialStatisticUseCase @Inject constructor(
             operateCashflow.add(BarEntry(index.toFloat(),
                 financialQuarter.operatingCashFlow))
         }
+        itemLists.add(FinancialMarketItem.TitleMarketItem("Cashflow"))
         itemLists.add(FinancialMarketItem.BarChartItem(
             arrayListOf(
                 FinancialMarketItem.BarEntryItem(

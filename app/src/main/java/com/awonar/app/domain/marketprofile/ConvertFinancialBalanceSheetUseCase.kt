@@ -1,5 +1,6 @@
 package com.awonar.app.domain.marketprofile
 
+import com.awonar.android.model.marketprofile.BalanceSheet
 import com.awonar.android.shared.di.MainDispatcher
 import com.awonar.app.models.marketprofile.ConvertFinancial
 import com.awonar.app.ui.marketprofile.stat.financial.FinancialMarketItem
@@ -25,13 +26,29 @@ class ConvertFinancialBalanceSheetUseCase @Inject constructor(
             "%.2f".format(financial?.ststistics?.dividend?.historical?.get(0)?.dividend)
         ))
         itemLists.add(FinancialMarketItem.TitleMarketItem("Financial Summary"))
-        itemLists.add(FinancialMarketItem.ButtonGroupItem("annual", "quarter", ""))
-        itemLists.add(FinancialMarketItem.TabsItem(2, arrayListOf("Statistic",
-            "Income Statement",
-            "Balance Sheet",
-            "Cashflow")))
+        itemLists.add(FinancialMarketItem.ButtonGroupItem("annual",
+            "quarter",
+            parameters.quarterType))
+        itemLists.add(FinancialMarketItem.TabsItem(parameters.current))
+        itemLists.add(FinancialMarketItem.TitleMarketItem("Balance Sheet"))
         itemLists.add(FinancialMarketItem.BarChartItem(parameters.defaultSet))
-        val incomeInfo = financial?.balanceSheet?.quarter?.get(0)
+        val balanceInfo = if (parameters.quarterType == "annual") {
+            financial?.balanceSheet?.year?.find { it.fiscalYear == parameters.fiscal }
+        } else {
+            financial?.balanceSheet?.quarter?.find {
+                it.fiscalPeriod == parameters.quarter
+            }
+        }
+
+        convertListItems(balanceInfo, itemLists, parameters)
+        return itemLists
+    }
+
+    private fun convertListItems(
+        incomeInfo: BalanceSheet?,
+        itemLists: MutableList<FinancialMarketItem>,
+        parameters: ConvertFinancial,
+    ) {
         incomeInfo?.let {
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Assets",
@@ -94,7 +111,6 @@ class ConvertFinancialBalanceSheetUseCase @Inject constructor(
                 color = parameters.defaultSet.indexOfFirst { item -> item.title == "Other Than Fixed Noncurrent Assets" }
             ))
         }
-        return itemLists
     }
 
 }

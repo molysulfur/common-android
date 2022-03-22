@@ -20,6 +20,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,18 +34,14 @@ class MarketProfileViewModel @Inject constructor(
     private val convertFinancialCashflowUseCase: ConvertFinancialCashflowUseCase,
 ) : ViewModel() {
 
-    companion object {
-        private val DEFAULT_INCOME_SELECTED = arrayListOf("Net Income/Loss", "Revenues")
-        private val DEFAULT_BALANCE_SELECTED = arrayListOf("Assets", "Liabilities")
-        private val DEFAULT_CASHFLOW_SELECTED = arrayListOf("Net Cash Flow",
-            "Net Cash Flow From Investing Activities",
-            "Net Cash Flow From Operating Activities, Continuing")
-    }
-
     private val _financialCurrentTab = MutableStateFlow("Statistic")
+    private val _quarter = MutableStateFlow("Q1")
+    private val _fiscal = MutableStateFlow(Calendar.getInstance().apply {
+        add(Calendar.YEAR, -1)
+    }.get(Calendar.YEAR).toString())
+    private val _quarterType = MutableStateFlow<String?>("annual")
     private val _barEntry =
         MutableStateFlow<MutableList<FinancialMarketItem.BarEntryItem>>(mutableListOf())
-
 
     private val _financialItemList = MutableStateFlow<MutableList<FinancialMarketItem>>(
         mutableListOf())
@@ -101,9 +98,11 @@ class MarketProfileViewModel @Inject constructor(
     }
 
     fun setFinancialTabType(it: String) {
-        _financialCurrentTab.value = it
-        setBarEntryByDefault()
-        convertFinancialToItem()
+        if (it != _financialCurrentTab.value) {
+            _financialCurrentTab.value = it
+            setBarEntryByDefault()
+            convertFinancialToItem()
+        }
     }
 
     private fun setBarEntryByDefault() {
@@ -172,17 +171,40 @@ class MarketProfileViewModel @Inject constructor(
             val financial = financalState.value
             val type = _financialCurrentTab.value
             val itemLists = when (type) {
-                "Statistic" -> convertFinancialStatisticUseCase(ConvertFinancial(financial)).successOr(
+                "Statistic" -> convertFinancialStatisticUseCase(ConvertFinancial(
+                    financial = financial,
+                    current = type,
+                    fiscal = _fiscal.value,
+                    quarter = _quarter.value,
+                    quarterType = _quarterType.value
+                )).successOr(
                     mutableListOf())
                 "Income Statement" -> convertFinancialIncomeStatementUseCase(ConvertFinancial(
-                    financial,
-                    _barEntry.value)).successOr(
+                    financial = financial,
+                    defaultSet = _barEntry.value,
+                    current = type,
+                    fiscal = _fiscal.value,
+                    quarter = _quarter.value,
+                    quarterType = _quarterType.value
+                )).successOr(
                     mutableListOf())
-                "Balance Sheet" -> convertFinancialBalanceSheetUseCase(ConvertFinancial(financial,
-                    _barEntry.value)).successOr(
+                "Balance Sheet" -> convertFinancialBalanceSheetUseCase(ConvertFinancial(
+                    financial = financial,
+                    defaultSet = _barEntry.value,
+                    current = type,
+                    fiscal = _fiscal.value,
+                    quarter = _quarter.value,
+                    quarterType = _quarterType.value
+                )).successOr(
                     mutableListOf())
-                "Cashflow" -> convertFinancialCashflowUseCase(ConvertFinancial(financial,
-                    _barEntry.value)).successOr(mutableListOf())
+                "Cashflow" -> convertFinancialCashflowUseCase(ConvertFinancial(
+                    financial = financial,
+                    defaultSet = _barEntry.value,
+                    current = type,
+                    fiscal = _fiscal.value,
+                    quarter = _quarter.value,
+                    quarterType = _quarterType.value
+                )).successOr(mutableListOf())
                 else -> mutableListOf()
             }
             _financialItemList.value = itemLists
@@ -196,5 +218,9 @@ class MarketProfileViewModel @Inject constructor(
         convertFinancialToItem()
     }
 
-
+    fun setQuater(quarter: String?) {
+        _quarterType.value = quarter
+        convertFinancialToItem()
+    }
 }
+
