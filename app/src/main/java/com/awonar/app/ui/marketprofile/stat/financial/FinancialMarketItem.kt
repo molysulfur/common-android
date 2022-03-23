@@ -14,6 +14,13 @@ sealed class FinancialMarketItem(val type: Int) : Parcelable {
         val color: Int,
     ) : FinancialMarketItem(FinancialMarketType.LIST_SELECTOR)
 
+    @Parcelize
+    data class DropdownItem(
+        val text: String?,
+        val default: String?,
+        val selectors: ArrayList<String>,
+    ) : FinancialMarketItem(FinancialMarketType.DROPDOWN)
+
 
     @Parcelize
     data class BarChartItem(
@@ -42,7 +49,7 @@ sealed class FinancialMarketItem(val type: Int) : Parcelable {
 
     @Parcelize
     data class TabsItem(
-        val current: String?
+        val current: String?,
     ) : FinancialMarketItem(FinancialMarketType.TABS)
 
     @Parcelize

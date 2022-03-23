@@ -28,8 +28,11 @@ class MarketStatisticFragment : Fragment() {
 
     private val financialAdapter: FinancialMarketAdapter by lazy {
         FinancialMarketAdapter(requireActivity()).apply {
-            onToggleButton = {
+            onDateSelect = {
                 viewModel.setQuater(it)
+            }
+            onToggleButton = {
+                viewModel.setQuaterType(it)
             }
             onSelected = { text ->
                 text?.let {

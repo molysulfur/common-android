@@ -35,13 +35,23 @@ class ConvertFinancialIncomeStatementUseCase @Inject constructor(
         itemLists.add(FinancialMarketItem.TitleMarketItem("Income Statement"))
         itemLists.add(FinancialMarketItem.BarChartItem(parameters.defaultSet))
         val incomeInfo = if (parameters.quarterType == "annual") {
-            financial?.incomeStatement?.year?.find { it.fiscalYear == parameters.fiscal }
+            val year = Calendar.getInstance().apply {
+                add(Calendar.YEAR, -1)
+            }.get(Calendar.YEAR)
+            itemLists.add(FinancialMarketItem.DropdownItem("Select Year",
+                parameters.fiscal,
+                arrayListOf("$year", "${year.minus(1)}", "${year.minus(2)}", "${year.minus(3)}")))
+            financial?.incomeStatement?.year?.find {
+                it.fiscalYear == parameters.fiscal
+            }
         } else {
+            itemLists.add(FinancialMarketItem.DropdownItem("Select Quarter",
+                parameters.fiscal,
+                arrayListOf("Q1", "Q2", "Q3", "Q4")))
             financial?.incomeStatement?.quarter?.find {
                 it.fiscalPeriod == parameters.quarter
             }
         }
-
         convertListItems(incomeInfo, itemLists, parameters)
         return itemLists
     }

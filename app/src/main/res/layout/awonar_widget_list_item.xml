@@ -36,11 +36,12 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/awoanr_list_item_view_text_title"
             style="@style/Awonar.SubTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
             android:text="@{title}"
             app:layout_constraintBottom_toTopOf="@+id/awoanr_list_item_view_text_subTitle"
+            app:layout_constraintEnd_toStartOf="@+id/awoanr_list_item_view_text_meta"
             app:layout_constraintStart_toEndOf="@+id/awoanr_list_item_view_image_icon_start"
             app:layout_constraintTop_toTopOf="@+id/awoanr_list_item_view_image_icon_start"
             app:layout_constraintVertical_chainStyle="packed"
@@ -48,10 +49,11 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/awoanr_list_item_view_text_subTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@{subTitle}"
             app:layout_constraintBottom_toBottomOf="@+id/awoanr_list_item_view_image_icon_start"
+            app:layout_constraintEnd_toStartOf="@+id/awoanr_list_item_view_text_meta"
             app:layout_constraintStart_toStartOf="@+id/awoanr_list_item_view_text_title"
             app:layout_constraintTop_toBottomOf="@+id/awoanr_list_item_view_text_title"
             tools:text="@string/awonar_example_name" />

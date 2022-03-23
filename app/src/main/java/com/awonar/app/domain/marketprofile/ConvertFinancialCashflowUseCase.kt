@@ -6,6 +6,7 @@ import com.awonar.app.models.marketprofile.ConvertFinancial
 import com.awonar.app.ui.marketprofile.stat.financial.FinancialMarketItem
 import com.molysulfur.library.usecase.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
+import java.util.*
 import javax.inject.Inject
 
 class ConvertFinancialCashflowUseCase @Inject constructor(
@@ -33,8 +34,18 @@ class ConvertFinancialCashflowUseCase @Inject constructor(
         itemLists.add(FinancialMarketItem.TitleMarketItem("Cashflow"))
         itemLists.add(FinancialMarketItem.BarChartItem(parameters.defaultSet))
         val cashflow = if (parameters.quarterType == "annual") {
+            val year = Calendar.getInstance().apply {
+                add(Calendar.YEAR, -1)
+            }.get(Calendar.YEAR)
+            itemLists.add(FinancialMarketItem.DropdownItem("Select Year",
+                parameters.fiscal,
+                arrayListOf("$year", "${year.minus(1)}", "${year.minus(2)}", "${year.minus(3)}")))
+
             financial?.cashFlow?.year?.find { it.fiscalYear == parameters.fiscal }
         } else {
+            itemLists.add(FinancialMarketItem.DropdownItem("Select Quarter",
+                parameters.fiscal,
+                arrayListOf("Q1", "Q2", "Q3", "Q4")))
             financial?.cashFlow?.quarter?.find {
                 it.fiscalPeriod == parameters.quarter
             }

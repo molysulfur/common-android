@@ -166,6 +166,27 @@ class MarketProfileViewModel @Inject constructor(
         _barEntry.value = barEntries
     }
 
+    fun setBarEntry(entry: FinancialMarketItem.BarEntryItem) {
+        val entries = _barEntry.value
+        entries.add(entry)
+        _barEntry.value = entries
+        convertFinancialToItem()
+    }
+
+    fun setQuaterType(quarter: String?) {
+        _quarterType.value = quarter
+        convertFinancialToItem()
+    }
+
+    fun setQuater(quarter: String) {
+        if (_quarterType.value == "annual") {
+            _fiscal.value = quarter
+        } else {
+            _quarter.value = quarter
+        }
+        convertFinancialToItem()
+    }
+
     fun convertFinancialToItem() {
         viewModelScope.launch {
             val financial = financalState.value
@@ -209,18 +230,6 @@ class MarketProfileViewModel @Inject constructor(
             }
             _financialItemList.value = itemLists
         }
-    }
-
-    fun setBarEntry(entry: FinancialMarketItem.BarEntryItem) {
-        val entries = _barEntry.value
-        entries.add(entry)
-        _barEntry.value = entries
-        convertFinancialToItem()
-    }
-
-    fun setQuater(quarter: String?) {
-        _quarterType.value = quarter
-        convertFinancialToItem()
     }
 }
 

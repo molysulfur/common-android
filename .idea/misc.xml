@@ -47,6 +47,7 @@
         <entry key="app/src/main/res/layout/awoanr_fragment_portolio_public.xml" value="0.12612227447627192" />
         <entry key="app/src/main/res/layout/awoanr_fragment_statistic_most_trading.xml" value="0.12612227447627192" />
         <entry key="app/src/main/res/layout/awoanr_fragment_watchlist_recently.xml" value="0.15348439504061565" />
+        <entry key="app/src/main/res/layout/awoanr_item_dropdown.xml" value="0.2129115006412997" />
         <entry key="app/src/main/res/layout/awoanr_item_input_range.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/awonar_activity_about_me.xml" value="0.13697916666666668" />
         <entry key="app/src/main/res/layout/awonar_activity_auth.xml" value="0.21979166666666666" />
@@ -180,6 +181,7 @@
         <entry key="app/src/main/res/layout/awonar_item_description.xml" value="0.20625" />
         <entry key="app/src/main/res/layout/awonar_item_divider.xml" value="0.20729166666666668" />
         <entry key="app/src/main/res/layout/awonar_item_divider_blank.xml" value="0.109375" />
+        <entry key="app/src/main/res/layout/awonar_item_dropdown.xml" value="0.2129115006412997" />
         <entry key="app/src/main/res/layout/awonar_item_empty.xml" value="0.2962962962962963" />
         <entry key="app/src/main/res/layout/awonar_item_financial_card.xml" value="0.17528858486532706" />
         <entry key="app/src/main/res/layout/awonar_item_folder_watchlist.xml" value="0.15572916666666667" />
