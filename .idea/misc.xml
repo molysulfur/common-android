@@ -64,6 +64,7 @@
         <entry key="app/src/main/res/layout/awonar_activity_position_inside.xml" value="0.2791666666666667" />
         <entry key="app/src/main/res/layout/awonar_activity_privacy.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/awonar_activity_profile.xml" value="0.2682291666666667" />
+        <entry key="app/src/main/res/layout/awonar_activity_search.xml" value="0.195382642154767" />
         <entry key="app/src/main/res/layout/awonar_activity_social_trade_filter.xml" value="0.1484375" />
         <entry key="app/src/main/res/layout/awonar_activity_watchlist_add_item.xml" value="0.12239583333333333" />
         <entry key="app/src/main/res/layout/awonar_bottom_sheet_dialog_account_type.xml" value="0.19010416666666666" />
@@ -212,6 +213,8 @@
         <entry key="app/src/main/res/layout/awonar_item_question_radio.xml" value="0.37222222222222223" />
         <entry key="app/src/main/res/layout/awonar_item_question_radio_group.xml" value="0.20625" />
         <entry key="app/src/main/res/layout/awonar_item_recycler.xml" value="0.17429193899782136" />
+        <entry key="app/src/main/res/layout/awonar_item_search_item.xml" value="0.11492122335495829" />
+        <entry key="app/src/main/res/layout/awonar_item_search_view.xml" value="0.195382642154767" />
         <entry key="app/src/main/res/layout/awonar_item_section.xml" value="0.2682291666666667" />
         <entry key="app/src/main/res/layout/awonar_item_selector.xml" value="0.5" />
         <entry key="app/src/main/res/layout/awonar_item_selector_list.xml" value="0.5" />
@@ -248,6 +251,7 @@
         <entry key="app/src/main/res/layout/awonar_widget_list_item.xml" value="0.296875" />
         <entry key="app/src/main/res/layout/awonar_widget_position.xml" value="0.12612227447627192" />
         <entry key="app/src/main/res/layout/awonar_widget_progress.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/awonar_widget_search_item.xml" value="0.195382642154767" />
         <entry key="app/src/main/res/layout/awonar_widget_text_divider.xml" value="0.14722222222222223" />
         <entry key="app/src/main/res/layout/awonar_widget_viewpager.xml" value="0.17528858486532706" />
         <entry key="app/src/main/res/menu/awoanr_menu_next_prev.xml" value="0.12612227447627192" />

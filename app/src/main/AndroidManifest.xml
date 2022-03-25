@@ -55,6 +55,7 @@
         <activity android:name=".ui.socialtrade.filter.SocialTradeFilterActivity" />
         <activity android:name=".ui.watchlist.AddWatchlistFolderActivity" />
         <activity android:name=".ui.watchlist.AddWatchlistItemActivity" />
+        <activity android:name=".ui.search.SearchActivity" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

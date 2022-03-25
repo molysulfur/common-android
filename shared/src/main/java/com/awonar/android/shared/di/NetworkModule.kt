@@ -100,5 +100,11 @@ class NetworkModule {
     fun provideWatchlistService(client: NetworkClient): WatchlistService {
         return WatchlistService.create(client)
     }
+
+    @Singleton
+    @Provides
+    fun provideSearchService(client: NetworkClient): SearchService {
+        return SearchService.create(client)
+    }
 }
 

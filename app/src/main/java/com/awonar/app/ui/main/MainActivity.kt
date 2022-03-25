@@ -31,7 +31,9 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.NavigationUI.onNavDestinationSelected
+import com.awonar.app.ui.search.SearchActivity
 import com.awonar.app.utils.ImageUtil
+import com.molysulfur.library.extension.openActivity
 import com.molysulfur.library.extension.openActivityCompatForResult
 
 
@@ -59,8 +61,9 @@ class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHeaderDrawer()
+        binding.lifecycleOwner = this
         setContentView(binding.root)
+        setHeaderDrawer()
         obsever()
         setupNavigation()
         init()
@@ -158,7 +161,13 @@ class MainActivity : BaseActivity() {
         binding.awonarMainToolbarHeader.setNavigationOnClickListener {
             binding.awonarMainDrawerSidebar.open()
         }
-
+        binding.awonarMainToolbarHeader.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.awonar_toolbar_main_menu_search -> openActivity(SearchActivity::class.java)
+                else -> openActivity(SearchActivity::class.java)
+            }
+            true
+        }
         userViewModel.getUser(needFresh = true)
     }
 
