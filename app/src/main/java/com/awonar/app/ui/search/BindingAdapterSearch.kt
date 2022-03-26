@@ -8,14 +8,18 @@ import com.awonar.app.ui.marketprofile.MarketProfileActivity
 import com.awonar.app.ui.search.adapter.SearchAdapter
 import com.awonar.app.ui.search.adapter.SearchItem
 
-@BindingAdapter("searchResult")
+@BindingAdapter("searchResult","viewModel")
 fun setSearchAdapter(
     recyclerView: RecyclerView,
     itemLists: MutableList<SearchItem>,
+    viewModel: SearchViewModel
 ) {
     if (recyclerView.adapter == null) {
         with(recyclerView) {
             adapter = SearchAdapter().apply {
+                onClear = {
+                    viewModel.clearRecently()
+                }
                 onItemClick = { id, isMarket ->
                     if (isMarket) {
                         val newIntent =

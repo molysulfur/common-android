@@ -17,5 +17,5 @@ sealed class SearchItem(val type: Int) : Parcelable {
         SearchItem(SearchType.ITEM)
 
     @Parcelize
-    data class SectorItem(val text: String) : SearchItem(SearchType.ITEM)
+    data class SectorItem(val text: String, val action: String) : SearchItem(SearchType.SECTOR)
 }

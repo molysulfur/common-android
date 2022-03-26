@@ -52,9 +52,10 @@
         </com.google.android.material.tabs.TabLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+            searchResult="@{viewModel.searchItemList}"
+            viewModel="@{viewModel}"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            searchResult="@{viewModel.searchItemList}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tabLayout2" />
 

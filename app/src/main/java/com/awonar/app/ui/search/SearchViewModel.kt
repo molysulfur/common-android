@@ -3,6 +3,7 @@ package com.awonar.app.ui.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.awonar.android.model.search.SearchRequest
+import com.awonar.android.shared.domain.search.ClearRecentlyUseCase
 import com.awonar.android.shared.domain.search.GetRecentlySearchUseCase
 import com.awonar.android.shared.domain.search.GetSearchUseCase
 import com.awonar.app.ui.search.adapter.SearchItem
@@ -19,6 +20,7 @@ import javax.inject.Inject
 class SearchViewModel @Inject constructor(
     private val getSearchUseCase: GetSearchUseCase,
     private val getRecentlySearchUseCase: GetRecentlySearchUseCase,
+    private val clearRecentlyUseCase: ClearRecentlyUseCase,
 ) : ViewModel() {
 
     private val _filterState = MutableStateFlow("all")
@@ -33,6 +35,7 @@ class SearchViewModel @Inject constructor(
                 getRecentlySearchUseCase(Unit).collect {
                     val data = it.successOr(emptyList())
                     val itemList = mutableListOf<SearchItem>()
+                    itemList.add(SearchItem.SectorItem("Recent", "Clear"))
                     data.filter { result ->
                         if (filter == "all") {
                             true
@@ -72,8 +75,12 @@ class SearchViewModel @Inject constructor(
     }
 
     fun search(keyword: String) {
-//        val request = SearchRequest(keyword, 1, _filterState.value)
         _searchText.value = keyword
+    }
+
+    fun clearRecently() {
+        clearRecentlyUseCase(Unit)
+        _searchItemList.value = mutableListOf(SearchItem.SectorItem("Recent", "Clear"))
     }
 
 }

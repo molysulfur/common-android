@@ -62,4 +62,9 @@
         <attr name="searchItemView_setTitle" format="string" />
         <attr name="searchItemView_setSubTitle" format="string" />
     </declare-styleable>
+
+    <declare-styleable name="SectorView">
+        <attr name="sectorView_setText" format="string" />
+        <attr name="sectorView_setActionText" format="string" />
+    </declare-styleable>
 </resources>

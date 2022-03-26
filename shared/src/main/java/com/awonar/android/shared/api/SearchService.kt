@@ -8,10 +8,14 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface SearchService {
+
+    @DELETE("v1/search")
+    fun clearRecent() : Call<List<Search>>
 
     @GET("v1/search/mobile")
     fun getRecently(): Call<List<Search>>
