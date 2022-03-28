@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -23,7 +24,7 @@ class SearchViewModel @Inject constructor(
     private val clearRecentlyUseCase: ClearRecentlyUseCase,
 ) : ViewModel() {
 
-    private val _filterState = MutableStateFlow("all")
+    private val _filterState = MutableStateFlow("All")
     private val _searchText = MutableStateFlow("")
 
     private val _searchItemList = MutableStateFlow<MutableList<SearchItem>>(mutableListOf())
@@ -37,11 +38,7 @@ class SearchViewModel @Inject constructor(
                     val itemList = mutableListOf<SearchItem>()
                     itemList.add(SearchItem.SectorItem("Recent", "Clear"))
                     data.filter { result ->
-                        if (filter == "all") {
-                            true
-                        } else {
-                            result.type == filter
-                        }
+                        result.type == filter.lowercase() || filter.lowercase() == "all"
                     }.forEach { result ->
                         itemList.add(SearchItem.ListItem(result.data, result.type == "markets"))
                     }
@@ -53,11 +50,13 @@ class SearchViewModel @Inject constructor(
                     1,
                     _filterState.value
                 )).collect {
-//                    val data = it.successOr(null)
-//                    val itemList = mutableListOf<SearchItem>()
+                    val data = it.successOr(null)
+                    val itemList = mutableListOf<SearchItem>()
+                    itemList.add(SearchItem.SectorItem(_filterState.value))
 //                    data?.markets?.forEach { result ->
 //                        itemList.add(SearchItem.ListItem())
 //                    }
+                    _searchItemList.value = itemList
                 }
             }
             return@combine true

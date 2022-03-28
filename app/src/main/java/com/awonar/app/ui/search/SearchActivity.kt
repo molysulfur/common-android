@@ -36,10 +36,10 @@ class SearchActivity : BaseActivity() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         setContentView(binding.root)
-        with(binding.tabLayout2) {
+        with(binding.awonarSearchTabsMenu) {
             addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                    viewModel.filter(tab?.text?.toString()?.lowercase() ?: "")
+                    viewModel.filter(tab?.text?.toString() ?: "All")
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -50,14 +50,14 @@ class SearchActivity : BaseActivity() {
 
             })
         }
-        with(binding.textInputLayout) {
+        with(binding.awonarSearchInputSearch) {
             setOnQueryTextListener(queryListener)
             setOnCloseListener {
                 onBackPressed()
                 true
             }
-            requestFocus()
+            onActionViewExpanded()
+            clearFocus()
         }
-
     }
 }

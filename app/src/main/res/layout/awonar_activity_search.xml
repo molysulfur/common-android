@@ -16,24 +16,25 @@
 
 
         <androidx.appcompat.widget.SearchView
-            android:id="@+id/textInputLayout"
+            android:id="@+id/awonar_search_input_search"
             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+            android:focusable="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:startIconDrawable="@drawable/awonar_ic_back" />
+            app:searchIcon="@drawable/awonar_ic_back" />
 
         <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabLayout2"
+            android:id="@+id/awonar_search_tabs_menu"
             style="@style/Awonar.TabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
+            app:layout_constraintTop_toBottomOf="@+id/awonar_search_input_search">
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
@@ -57,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tabLayout2" />
+            app:layout_constraintTop_toBottomOf="@+id/awonar_search_tabs_menu" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

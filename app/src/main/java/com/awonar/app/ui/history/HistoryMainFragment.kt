@@ -197,10 +197,10 @@ class HistoryMainFragment : Fragment() {
             openActivity(HistoryCashFlowActivity::class.java)
         }
         binding.awonarHistoryButtonFilter.setOnClickListener {
-            if (filterDialog.isAdded) {
-                filterDialog.dismiss()
-            }
-            filterDialog.show(childFragmentManager, MenuDialogButtonSheet.TAG)
+//            if (filterDialog.isAdded) {
+//                filterDialog.dismiss()
+//            }
+//            filterDialog.show(childFragmentManager, MenuDialogButtonSheet.TAG)
         }
         binding.awonarHistoryButtonColumns.setOnClickListener {
             openActivityCompatForResult(
