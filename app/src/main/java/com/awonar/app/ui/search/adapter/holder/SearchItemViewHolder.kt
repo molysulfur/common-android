@@ -25,6 +25,7 @@ class SearchItemViewHolder constructor(private val binding: AwonarItemSearchItem
                 setAvatar(picture ?: "")
                 setSubTitle(description ?: "")
                 setButtonText(description ?: "")
+                isButtonSelected(isFollow)
             }
             when {
                 listItem.isMarket -> {

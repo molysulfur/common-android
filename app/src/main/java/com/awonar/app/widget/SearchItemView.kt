@@ -17,6 +17,8 @@ import com.awonar.app.R
 import com.awonar.app.databinding.AwonarWidgetListItemBinding
 import com.awonar.app.databinding.AwonarWidgetSearchItemBinding
 import com.awonar.app.utils.ImageUtil
+import com.molysulfur.library.extension.readBooleanUsingCompat
+import com.molysulfur.library.extension.writeBooleanUsingCompat
 import com.molysulfur.library.widget.BaseViewGroup
 
 class SearchItemView : BaseViewGroup {
@@ -31,6 +33,7 @@ class SearchItemView : BaseViewGroup {
     private var titleRes: Int = 0
     private var subTitle: String? = null
     private var subTitleRes: Int = 0
+    private var buttonSelected: Boolean = false
 
     var onButtonClick: (() -> Unit)? = null
 
@@ -43,6 +46,16 @@ class SearchItemView : BaseViewGroup {
         updateTitle()
         updateSubTitle()
         updateButtonText()
+        updateButtonSelected()
+    }
+
+    fun isButtonSelected(isSelected: Boolean) {
+        buttonSelected = isSelected
+        updateButtonSelected()
+    }
+
+    private fun updateButtonSelected() {
+        binding.awoanrSearchItemViewButton.isSelected = buttonSelected
     }
 
     fun setAvatar(avatar: String) {
@@ -182,6 +195,7 @@ class SearchItemView : BaseViewGroup {
         ss?.avatarRes = avatarRes
         ss?.buttonText = buttonText
         ss?.buttonTextRes = buttonTextRes
+        ss?.buttonSelected = buttonSelected
         return ss
     }
 
@@ -195,10 +209,12 @@ class SearchItemView : BaseViewGroup {
         avatarRes = ss.avatarRes
         buttonText = ss.buttonText
         buttonTextRes = ss.buttonTextRes
+        buttonSelected = ss.buttonSelected
         updateTitle()
         updateAvatar()
         updateSubTitle()
         updateButtonText()
+        updateButtonSelected()
     }
 
     private class SavedState : ChildSavedState {
@@ -211,6 +227,7 @@ class SearchItemView : BaseViewGroup {
         var subTitleRes: Int = 0
         var buttonText: String? = null
         var buttonTextRes: Int = 0
+        var buttonSelected: Boolean = false
 
         constructor(superState: Parcelable) : super(superState)
 
@@ -223,6 +240,7 @@ class SearchItemView : BaseViewGroup {
             avatarRes = parcel.readInt()
             buttonText = parcel.readString()
             buttonTextRes = parcel.readInt()
+            buttonSelected = parcel.readBooleanUsingCompat()
         }
 
         override fun writeToParcel(out: Parcel, flags: Int) {
@@ -235,6 +253,7 @@ class SearchItemView : BaseViewGroup {
             out.writeInt(avatarRes)
             out.writeString(buttonText)
             out.writeInt(buttonTextRes)
+            out.writeBooleanUsingCompat(buttonSelected)
         }
 
         companion object {
