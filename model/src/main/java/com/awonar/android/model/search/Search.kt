@@ -20,6 +20,6 @@ data class SearchData(
     @SerializedName("title") val title: String?,
     @SerializedName("description") val description: String?,
     @SerializedName("picture") val picture: String?,
-    @SerializedName("isFollow") val isFollow: Boolean,
+    @SerializedName("isFollow") var isFollow: Boolean = false,
 ) : Parcelable
 

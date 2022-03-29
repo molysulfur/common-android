@@ -52,10 +52,30 @@ class SearchViewModel @Inject constructor(
                 )).collect {
                     val data = it.successOr(null)
                     val itemList = mutableListOf<SearchItem>()
-                    itemList.add(SearchItem.SectorItem(_filterState.value))
-//                    data?.markets?.forEach { result ->
-//                        itemList.add(SearchItem.ListItem())
-//                    }
+                    if (filter.lowercase() == "all") {
+                        itemList.add(SearchItem.SectorItem("Markets"))
+                        data?.markets?.forEach { result ->
+                            itemList.add(SearchItem.ListItem(result.data, true))
+                        }
+                        itemList.add(SearchItem.SectorItem("People"))
+                        data?.people?.forEach { result ->
+                            itemList.add(SearchItem.ListItem(result.data, false))
+                        }
+                    } else {
+                        itemList.add(SearchItem.SectorItem(filter))
+                        if (filter.lowercase() == "markets") {
+                            data?.markets?.forEach { result ->
+                                itemList.add(SearchItem.ListItem(result.data,
+                                    true))
+                            }
+                        }
+                        if (filter.lowercase() == "people") {
+                            data?.people?.forEach { result ->
+                                itemList.add(SearchItem.ListItem(result.data,
+                                    false))
+                            }
+                        }
+                    }
                     _searchItemList.value = itemList
                 }
             }

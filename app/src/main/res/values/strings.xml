@@ -82,4 +82,11 @@
     <string name="awonar_text_back">Back</string>
     <string name="awonar_text_prev">Prev</string>
     <string name="awonar_text_next">Next</string>
+    <string name="awonar_text_1d">1D</string>
+    <string name="awonar_text_1m">1M</string>
+    <string name="awonar_text_3m">3M</string>
+    <string name="awonar_text_6m">6M</string>
+    <string name="awonar_text_1y">1Y</string>
+    <string name="awonar_text_3y">3Y</string>
+    <string name="awonar_text_max">Max</string>
 </resources>

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -8,24 +10,31 @@
             type="com.awonar.app.ui.search.SearchViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/awonar_search_image_back"
+            style="@style/Awonar.Button.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/awonar_ic_back" />
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/awonar_search_input_search"
             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:focusable="true"
+            app:layout_constraintBottom_toBottomOf="@+id/awonar_search_image_back"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:searchIcon="@drawable/awonar_ic_back" />
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/awonar_search_image_back"
+            app:layout_constraintTop_toTopOf="@+id/awonar_search_image_back" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/awonar_search_tabs_menu"

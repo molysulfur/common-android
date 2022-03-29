@@ -14,9 +14,8 @@ class FinancialMarketAdapter constructor(private val fragmentActivity: FragmentA
 
     var itemList = mutableListOf<FinancialMarketItem>()
         set(value) {
-            val old = field
             field = value
-            DiffUtil.calculateDiff(FinancialDiffCallback(old, value)).dispatchUpdatesTo(this)
+           notifyDataSetChanged()
         }
 
 

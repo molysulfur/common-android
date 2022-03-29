@@ -192,7 +192,7 @@
                     app:layout_constraintTop_toTopOf="@+id/awonar_profile_button_copy" />
 
                 <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/tabLayout"
+                    android:id="@+id/awonar_market_profile_tabs"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/awonar_size_margin_padding_large"

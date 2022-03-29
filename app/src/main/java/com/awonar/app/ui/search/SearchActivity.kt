@@ -59,5 +59,8 @@ class SearchActivity : BaseActivity() {
             onActionViewExpanded()
             clearFocus()
         }
+        with(binding.awonarSearchImageBack){
+            setOnClickListener { onBackPressed() }
+        }
     }
 }

@@ -11,9 +11,7 @@ import com.awonar.android.model.privacy.PersonalAddressRequest
 import com.awonar.android.model.privacy.PersonalCardIdRequest
 import com.awonar.android.model.privacy.PersonalProfileRequest
 import com.awonar.android.model.tradingactivity.TradingActivityRequest
-import com.awonar.android.model.user.PersonalInfoResponse
-import com.awonar.android.model.user.UpdateAboutMeRequest
-import com.awonar.android.model.user.UserResponse
+import com.awonar.android.model.user.*
 import com.awonar.android.shared.constrant.BuildConfig
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -21,6 +19,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
 interface UserService {
+
+    @POST("v1/follow/{uid}")
+    fun isFollow(@Path("uid") userId: String?, @Body isUser: IsFollowUser): Call<FollowResponse?>
 
 
     @GET("v1/questionnaires/user")

@@ -12,7 +12,9 @@ import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarActivityMarketProfileBinding
 import com.awonar.app.ui.market.MarketViewModel
+import com.awonar.app.ui.profile.adapter.ProfilePagerAdapter
 import com.awonar.app.utils.ColorChangingUtil
+import com.google.android.material.tabs.TabLayoutMediator
 import com.molysulfur.library.activity.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -66,6 +68,10 @@ class MarketProfileActivity : BaseActivity() {
         with(binding.awonarMarketProfileViewpager) {
             adapter = MarketProfilePagerAdapter(supportFragmentManager, lifecycle)
         }
+        TabLayoutMediator(binding.awonarMarketProfileTabs,
+            binding.awonarMarketProfileViewpager) { tab, position ->
+            tab.setIcon(MarketProfilePagerAdapter.ICON_TABS[position])
+        }.attach()
     }
 
     private fun setChangeText(quote: Quote?) {
