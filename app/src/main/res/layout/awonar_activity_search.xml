@@ -19,7 +19,6 @@
             style="@style/Awonar.Button.Icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/awonar_ic_back" />
