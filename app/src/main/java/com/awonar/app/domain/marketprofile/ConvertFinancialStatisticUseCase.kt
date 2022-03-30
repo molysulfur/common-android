@@ -14,20 +14,7 @@ class ConvertFinancialStatisticUseCase @Inject constructor(
     override suspend fun execute(parameters: ConvertFinancial): MutableList<FinancialMarketItem> {
         val itemLists = mutableListOf<FinancialMarketItem>()
         val financial = parameters.financial
-        itemLists.add(FinancialMarketItem.FinancialCardItem(
-            "Split Event",
-            financial?.ststistics?.split?.historical?.get(0)?.date,
-            "%s:%s".format(financial?.ststistics?.split?.historical?.get(0)?.denominator,
-                financial?.ststistics?.split?.historical?.get(0)?.numerator)
-        ))
-        itemLists.add(FinancialMarketItem.FinancialCardItem(
-            "Divided",
-            financial?.ststistics?.dividend?.historical?.get(0)?.date,
-            "%.2f".format(financial?.ststistics?.dividend?.historical?.get(0)?.dividend)
-        ))
-        itemLists.add(FinancialMarketItem.TitleMarketItem("Financial Summary"))
-        itemLists.add(FinancialMarketItem.ButtonGroupItem("annual", "quarter", ""))
-        itemLists.add(FinancialMarketItem.TabsItem(parameters.current))
+
         /**
          * income statistic
          */
@@ -47,10 +34,12 @@ class ConvertFinancialStatisticUseCase @Inject constructor(
         itemLists.add(FinancialMarketItem.BarChartItem(
             arrayListOf(
                 FinancialMarketItem.BarEntryItem(
+                    "grossMargin",
                     "Gross Margin",
                     incomeGrossBarEntries
                 ),
                 FinancialMarketItem.BarEntryItem(
+                    "operatingMargin",
                     "Operating Margin",
                     incomeOperateBarEntries
                 ))
@@ -66,6 +55,7 @@ class ConvertFinancialStatisticUseCase @Inject constructor(
         itemLists.add(FinancialMarketItem.TitleMarketItem("Balanace Sheet"))
         itemLists.add(FinancialMarketItem.BarChartItem(
             arrayListOf(FinancialMarketItem.BarEntryItem(
+                "currentRatio",
                 "Current Ratio",
                 currentRatioEntries
             ))))
@@ -81,6 +71,7 @@ class ConvertFinancialStatisticUseCase @Inject constructor(
         itemLists.add(FinancialMarketItem.BarChartItem(
             arrayListOf(
                 FinancialMarketItem.BarEntryItem(
+                    "operatingCashFlow",
                     "Operating Cashflow",
                     operateCashflow
                 )

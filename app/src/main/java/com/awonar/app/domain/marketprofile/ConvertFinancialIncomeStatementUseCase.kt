@@ -1,12 +1,10 @@
 package com.awonar.app.domain.marketprofile
 
-import com.awonar.android.model.marketprofile.Income
 import com.awonar.android.shared.di.MainDispatcher
 import com.awonar.app.models.marketprofile.ConvertFinancial
 import com.awonar.app.ui.marketprofile.stat.financial.FinancialMarketItem
 import com.molysulfur.library.usecase.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -16,22 +14,6 @@ class ConvertFinancialIncomeStatementUseCase @Inject constructor(
     override suspend fun execute(parameters: ConvertFinancial): MutableList<FinancialMarketItem> {
         val itemLists = mutableListOf<FinancialMarketItem>()
         val financial = parameters.financial
-        itemLists.add(FinancialMarketItem.FinancialCardItem(
-            "Split Event",
-            financial?.ststistics?.split?.historical?.get(0)?.date,
-            "%s:%s".format(financial?.ststistics?.split?.historical?.get(0)?.denominator,
-                financial?.ststistics?.split?.historical?.get(0)?.numerator)
-        ))
-        itemLists.add(FinancialMarketItem.FinancialCardItem(
-            "Divided",
-            financial?.ststistics?.dividend?.historical?.get(0)?.date,
-            "%.2f".format(financial?.ststistics?.dividend?.historical?.get(0)?.dividend)
-        ))
-        itemLists.add(FinancialMarketItem.TitleMarketItem("Financial Summary"))
-        itemLists.add(FinancialMarketItem.ButtonGroupItem("annual",
-            "quarter",
-            parameters.quarterType))
-        itemLists.add(FinancialMarketItem.TabsItem(parameters.current))
         itemLists.add(FinancialMarketItem.TitleMarketItem("Income Statement"))
         itemLists.add(FinancialMarketItem.BarChartItem(parameters.defaultSet))
         val incomeInfo = if (parameters.quarterType == "annual") {
@@ -42,14 +24,14 @@ class ConvertFinancialIncomeStatementUseCase @Inject constructor(
                 parameters.fiscal,
                 arrayListOf("$year", "${year.minus(1)}", "${year.minus(2)}", "${year.minus(3)}")))
             financial?.incomeStatement?.year?.find {
-                it.fiscalYear == parameters.fiscal
+                it["fiscalYear"] == parameters.fiscal
             }
         } else {
             itemLists.add(FinancialMarketItem.DropdownItem("Select Quarter",
                 parameters.fiscal,
                 arrayListOf("Q1", "Q2", "Q3", "Q4")))
             financial?.incomeStatement?.quarter?.find {
-                it.fiscalPeriod == parameters.quarter
+                it["fiscalPeriod"] == parameters.quarter
             }
         }
         convertListItems(incomeInfo, itemLists, parameters)
@@ -57,108 +39,128 @@ class ConvertFinancialIncomeStatementUseCase @Inject constructor(
     }
 
     private fun convertListItems(
-        incomeInfo: Income?,
+        incomeInfo: Map<String, String?>?,
         itemLists: MutableList<FinancialMarketItem>,
         parameters: ConvertFinancial,
     ) {
         incomeInfo?.let {
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Benefits Costs and Expenses",
-                value = it.benefitsCostsExpenses,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Benefits Costs and Expenses" }
+                key = "benefitsCostsExpenses",
+                value = it["benefitsCostsExpenses"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "benefitsCostsExpenses" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Cost Of Revenue",
-                value = it.costOfRevenue,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Cost Of Revenue" }
+                key = "costOfRevenue",
+                value = it["costOfRevenue"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "costOfRevenue" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Costs And Expenses",
-                value = it.costsAndExpenses,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Costs And Expenses" }
+                key = "costsAndExpenses",
+                value = it["costsAndExpenses"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "costsAndExpenses" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Gross Profit",
-                value = it.grossProfit,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Gross Profit" }
+                key = "grossProfit",
+                value = it["grossProfit"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "grossProfit" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Income Tax Expense/Benefit",
-                value = it.incomeTaxExpenseBenefit,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Income Tax Expense/Benefit" }
+                key = "incomeTaxExpenseBenefit",
+                value = it["incomeTaxExpenseBenefit"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "incomeTaxExpenseBenefit" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Income Tax Expense/Benefit, Deferred",
-                value = it.incomeTaxExpenseBenefitDeferred,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Income Tax Expense/Benefit, Deferred" }
+                key = "incomeTaxExpenseBenefitDeferred",
+                value = it["incomeTaxExpenseBenefitDeferred"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "incomeTaxExpenseBenefitDeferred" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Income/Loss From Continuing Operations After Tax",
-                value = it.incomeLossFromContinuingOperationsAfterTax,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Income/Loss From Continuing Operations After Tax" }
+                key = "incomeLossFromContinuingOperationsAfterTax",
+                value = it["incomeLossFromContinuingOperationsAfterTax"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "incomeLossFromContinuingOperationsAfterTax" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Income/Loss From Continuing Operations Before Tax",
-                value = it.incomeLossFromContinuingOperationsBeforeTax,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Income/Loss From Continuing Operations Before Tax" }
+                key = "incomeLossFromContinuingOperationsBeforeTax",
+                value = it["incomeLossFromContinuingOperationsBeforeTax"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "incomeLossFromContinuingOperationsBeforeTax" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Interest Expense, Operating",
-                value = it.interestExpenseOperating,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Interest Expense, Operating" }
+                key = "interestExpenseOperating",
+                value = it["interestExpenseOperating"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "interestExpenseOperating" }
 
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Net Income/Loss",
-                value = it.netIncomeLoss,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Net Income/Loss" }
+                key = "netIncomeLoss",
+                value = it["netIncomeLoss"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "netIncomeLoss" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Net Income/Loss Attributable To Noncontrolling Interest",
-                value = it.netIncomeLossAttributableToNoncontrollingInterest,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Net Income/Loss Attributable To Noncontrolling Interest" }
+                key = "netIncomeLossAttributableToNoncontrollingInterest",
+                value = it["netIncomeLossAttributableToNoncontrollingInterest"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "netIncomeLossAttributableToNoncontrollingInterest" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Net Income/Loss Attributable To Parent",
-                value = it.netIncomeLossAttributableToParent,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Net Income/Loss Attributable To Parent" }
+                key = "netIncomeLossAttributableToParent",
+                value = it["netIncomeLossAttributableToParent"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "netIncomeLossAttributableToParent" }
 
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Net Income/Loss Available To Common Stockholders, Basic",
-                value = it.netIncomeLossAvailableToCommonStockholdersBasic,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Net Income/Loss Available To Common Stockholders, Basic" }
+                key = "netIncomeLossAvailableToCommonStockholdersBasic",
+                value = it["netIncomeLossAvailableToCommonStockholdersBasic"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "netIncomeLossAvailableToCommonStockholdersBasic" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Nonoperating Income/Loss",
-                value = it.nonoperatingIncomeLoss,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Nonoperating Income/Loss" }
+                key = "nonoperatingIncomeLoss",
+                value = it["nonoperatingIncomeLoss"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "nonoperatingIncomeLoss" }
 
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Operating Expenses",
-                value = it.operatingExpenses,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Operating Expenses" }
+                key = "operatingExpenses",
+                value = it["operatingExpenses"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "operatingExpenses" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Operating Income/Loss",
-                value = it.operatingIncomeLoss,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Operating Income/Loss" }
+                key = "operatingIncomeLoss",
+                value = it["operatingIncomeLoss"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "operatingIncomeLoss" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Participating Securities, Distributed And Undistributed Earnings/Loss, Basic",
-                value = it.participatingSecuritiesDistributedAndUndistributedEarningsLossBasic,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Participating Securities, Distributed And Undistributed Earnings/Loss, Basic" }
+                key = "participatingSecuritiesDistributedAndUndistributedEarningsLossBasic",
+                value = it["participatingSecuritiesDistributedAndUndistributedEarningsLossBasic"]?.toLong()
+                    ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "participatingSecuritiesDistributedAndUndistributedEarningsLossBasic" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Preferred Stock Dividends And Other Adjustments",
-                value = it.preferredStockDividendsAndOtherAdjustments,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Preferred Stock Dividends And Other Adjustments" }
+                key = "preferredStockDividendsAndOtherAdjustments",
+                value = it["preferredStockDividendsAndOtherAdjustments"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "preferredStockDividendsAndOtherAdjustments" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Revenues",
-                value = it.revenues,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Revenues" }
+                key = "revenues",
+                value = it["revenues"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "revenues" }
             ))
         }
     }

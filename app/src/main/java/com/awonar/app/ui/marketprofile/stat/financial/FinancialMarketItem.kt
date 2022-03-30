@@ -9,6 +9,7 @@ sealed class FinancialMarketItem(val type: Int) : Parcelable {
 
     @Parcelize
     data class ListSelectorItem(
+        val key: String?,
         val text: String?,
         val value: Long,
         val color: Int,
@@ -31,7 +32,6 @@ sealed class FinancialMarketItem(val type: Int) : Parcelable {
     data class ButtonGroupItem(
         val button1: String?,
         val button2: String?,
-        val default: String?,
     ) : FinancialMarketItem(FinancialMarketType.TOGGLE_QUATER_TYPE)
 
     @Parcelize
@@ -48,12 +48,11 @@ sealed class FinancialMarketItem(val type: Int) : Parcelable {
     ) : FinancialMarketItem(FinancialMarketType.INFO_CARD)
 
     @Parcelize
-    data class TabsItem(
-        val current: String?,
-    ) : FinancialMarketItem(FinancialMarketType.TABS)
+    class TabsItem : FinancialMarketItem(FinancialMarketType.TABS)
 
     @Parcelize
     data class BarEntryItem(
+        val key: String,
         val title: String,
         val entries: List<BarEntry>,
     ) : Parcelable

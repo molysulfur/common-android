@@ -12,13 +12,6 @@ class MenuTabsViewHolder constructor(private val binding: AwonarItemViewpagerBin
 
     fun bind(item: FinancialMarketItem.TabsItem, onSelected: ((String?) -> Unit)?) {
         with(binding.awonarItemViewpagerTabs) {
-            check(when (item.current) {
-                "Statistic" -> R.id.awonar_item_chip_stat
-                "Income Statement" -> R.id.awonar_item_chip_income
-                "Balance Sheet" -> R.id.awonar_item_chip_balance
-                "Cashflow" -> R.id.awonar_item_chip_cashflow
-                else -> R.id.awonar_item_chip_stat
-            })
             setOnCheckedChangeListener { group, checkedId ->
                 val checkText = when (checkedId) {
                     R.id.awonar_item_chip_stat -> "Statistic"

@@ -15,24 +15,17 @@ class FinancialMarketAdapter constructor(private val fragmentActivity: FragmentA
     var itemList = mutableListOf<FinancialMarketItem>()
         set(value) {
             field = value
-           notifyDataSetChanged()
+            notifyDataSetChanged()
         }
 
 
-    var onSelected: ((String?) -> Unit)? = null
-    var onItemSelected: ((FinancialMarketItem.BarEntryItem) -> Unit)? = null
-    var onToggleButton: ((String?) -> Unit)? = null
+    var onItemSelected: ((String) -> Unit)? = null
     var onDateSelect: ((String) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
             FinancialMarketType.TITLE -> TitleViewHolder(
                 AwonarItemTitleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            )
-            FinancialMarketType.INFO_CARD -> FinancialCardViewHolder(
-                AwonarItemFinancialCardBinding.inflate(LayoutInflater.from(parent.context),
-                    parent,
-                    false)
             )
             FinancialMarketType.TOGGLE_QUATER_TYPE -> ButtonGroupViewHolder(
                 AwonarItemButtonGroupBinding.inflate(LayoutInflater.from(parent.context),
@@ -65,16 +58,11 @@ class FinancialMarketAdapter constructor(private val fragmentActivity: FragmentA
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = itemList[position]
         when (holder) {
+            is TitleViewHolder -> holder.bind(item as FinancialMarketItem.TitleMarketItem)
             is SelectorDropdownViewHolder -> holder.bind(item as FinancialMarketItem.DropdownItem,
                 onDateSelect)
-            is TitleViewHolder -> holder.bind(item as FinancialMarketItem.TitleMarketItem)
-            is MenuTabsViewHolder -> holder.bind(item as FinancialMarketItem.TabsItem, onSelected)
-            is FinancialCardViewHolder -> holder.bind(item as FinancialMarketItem.FinancialCardItem)
-            is ButtonGroupViewHolder -> holder.bind(item as FinancialMarketItem.ButtonGroupItem,
-                onToggleButton)
             is BarChartViewHolder -> holder.bind(item as FinancialMarketItem.BarChartItem)
             is SelectorListViewHolder -> holder.bind(item as FinancialMarketItem.ListSelectorItem,
-                position,
                 onItemSelected)
         }
     }
@@ -83,22 +71,5 @@ class FinancialMarketAdapter constructor(private val fragmentActivity: FragmentA
 
     override fun getItemViewType(position: Int): Int = itemList[position].type
 
-    class FinancialDiffCallback(
-        private val oldItems: MutableList<FinancialMarketItem>?,
-        private val newItems: MutableList<FinancialMarketItem>?,
-    ) : DiffUtil.Callback() {
-
-        override fun getOldListSize(): Int = oldItems?.size ?: 0
-
-        override fun getNewListSize(): Int = newItems?.size ?: 0
-
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldItems?.get(oldItemPosition) === newItems?.get(newItemPosition)
-        }
-
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldItems?.get(oldItemPosition) == newItems?.get(newItemPosition)
-        }
-    }
 
 }

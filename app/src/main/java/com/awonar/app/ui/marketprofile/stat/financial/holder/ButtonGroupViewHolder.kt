@@ -14,12 +14,12 @@ class ButtonGroupViewHolder constructor(private val binding: AwonarItemButtonGro
     ) {
         binding.button1 = marketItem.button1
         binding.button2 = marketItem.button2
-        val id = if (marketItem.default == marketItem.button2) {
-            R.id.awonar_item_button_group_button_second
-        } else {
-            R.id.awonar_item_button_group_button_first
-        }
-        binding.awonarItemButtonGroupContainer.check(id)
+//        val id = if (marketItem.default == marketItem.button2) {
+//            R.id.awonar_item_button_group_button_second
+//        } else {
+//            R.id.awonar_item_button_group_button_first
+//        }
+//        binding.awonarItemButtonGroupContainer.check(id)
         binding.awonarItemButtonGroupContainer.addOnButtonCheckedListener { group, checkedId, isChecked ->
             if (isChecked) {
                 when (checkedId) {

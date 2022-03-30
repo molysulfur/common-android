@@ -1,6 +1,5 @@
 package com.awonar.app.domain.marketprofile
 
-import com.awonar.android.model.marketprofile.CashFlow
 import com.awonar.android.shared.di.MainDispatcher
 import com.awonar.app.models.marketprofile.ConvertFinancial
 import com.awonar.app.ui.marketprofile.stat.financial.FinancialMarketItem
@@ -15,22 +14,6 @@ class ConvertFinancialCashflowUseCase @Inject constructor(
     override suspend fun execute(parameters: ConvertFinancial): MutableList<FinancialMarketItem> {
         val itemLists = mutableListOf<FinancialMarketItem>()
         val financial = parameters.financial
-        itemLists.add(FinancialMarketItem.FinancialCardItem(
-            "Split Event",
-            financial?.ststistics?.split?.historical?.get(0)?.date,
-            "%s:%s".format(financial?.ststistics?.split?.historical?.get(0)?.denominator,
-                financial?.ststistics?.split?.historical?.get(0)?.numerator)
-        ))
-        itemLists.add(FinancialMarketItem.FinancialCardItem(
-            "Divided",
-            financial?.ststistics?.dividend?.historical?.get(0)?.date,
-            "%.2f".format(financial?.ststistics?.dividend?.historical?.get(0)?.dividend)
-        ))
-        itemLists.add(FinancialMarketItem.TitleMarketItem("Financial Summary"))
-        itemLists.add(FinancialMarketItem.ButtonGroupItem("annual",
-            "quarter",
-            parameters.quarterType))
-        itemLists.add(FinancialMarketItem.TabsItem(parameters.current))
         itemLists.add(FinancialMarketItem.TitleMarketItem("Cashflow"))
         itemLists.add(FinancialMarketItem.BarChartItem(parameters.defaultSet))
         val cashflow = if (parameters.quarterType == "annual") {
@@ -41,13 +24,13 @@ class ConvertFinancialCashflowUseCase @Inject constructor(
                 parameters.fiscal,
                 arrayListOf("$year", "${year.minus(1)}", "${year.minus(2)}", "${year.minus(3)}")))
 
-            financial?.cashFlow?.year?.find { it.fiscalYear == parameters.fiscal }
+            financial?.cashFlow?.year?.find { it["fiscalYear"] == parameters.fiscal }
         } else {
             itemLists.add(FinancialMarketItem.DropdownItem("Select Quarter",
                 parameters.fiscal,
                 arrayListOf("Q1", "Q2", "Q3", "Q4")))
             financial?.cashFlow?.quarter?.find {
-                it.fiscalPeriod == parameters.quarter
+                it["fiscalPeriod"] == parameters.quarter
             }
         }
         convertListItems(cashflow, itemLists, parameters)
@@ -55,50 +38,58 @@ class ConvertFinancialCashflowUseCase @Inject constructor(
     }
 
     private fun convertListItems(
-        incomeInfo: CashFlow?,
+        incomeInfo: Map<String, String?>?,
         itemLists: MutableList<FinancialMarketItem>,
         parameters: ConvertFinancial,
     ) {
         incomeInfo?.let {
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Net Cash Flow",
-                value = it.netCashFlow,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Net Cash Flow" }
+                key = "netCashFlow",
+                value = it["netCashFlow"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "netCashFlow" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Net Cash Flow From Financing Activities",
-                value = it.netCashFlowFromFinancingActivities,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Net Cash Flow From Financing Activities" }
+                key = "netCashFlowFromFinancingActivities",
+                value = it["netCashFlowFromFinancingActivities"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "netCashFlowFromFinancingActivities" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Net Cash Flow From Financing Activities, Continuing",
-                value = it.netCashFlowFromFinancingActivitiesContinuing,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Net Cash Flow From Financing Activities, Continuing" }
+                key = "netCashFlowFromFinancingActivitiesContinuing",
+                value = it["netCashFlowFromFinancingActivitiesContinuing"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "netCashFlowFromFinancingActivitiesContinuing" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Net Cash Flow From Investing Activities",
-                value = it.netCashFlowFromInvestingActivities,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Net Cash Flow From Investing Activities" }
+                key = "netCashFlowFromInvestingActivities",
+                value = it["netCashFlowFromInvestingActivities"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "netCashFlowFromInvestingActivities" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Net Cash Flow From Investing Activities, Continuing",
-                value = it.netCashFlowFromInvestingActivitiesContinuing,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Net Cash Flow From Investing Activities, Continuing" }
+                key = "netCashFlowFromInvestingActivitiesContinuing",
+                value = it["netCashFlowFromInvestingActivitiesContinuing"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "netCashFlowFromInvestingActivitiesContinuing" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Net Cash Flow From Operating Activities",
-                value = it.netCashFlowFromOperatingActivities,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Net Cash Flow From Operating Activities" }
+                key = "netCashFlowFromOperatingActivities",
+                value = it["netCashFlowFromOperatingActivities"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "netCashFlowFromOperatingActivities" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Net Cash Flow From Operating Activities, Continuing",
-                value = it.netCashFlowFromOperatingActivitiesContinuing,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Net Cash Flow From Operating Activities, Continuing" }
+                key = "netCashFlowFromOperatingActivitiesContinuing",
+                value = it["netCashFlowFromOperatingActivitiesContinuing"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "netCashFlowFromOperatingActivitiesContinuing" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Net Cash Flow, Continuing",
-                value = it.netCashFlowContinuing,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Net Cash Flow, Continuing" }
+                key = "netCashFlowContinuing",
+                value = it["netCashFlowContinuing"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "netCashFlowContinuing" }
             ))
 
         }

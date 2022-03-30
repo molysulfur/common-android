@@ -14,21 +14,21 @@ data class FinancialResponse(
 
 @Parcelize
 data class BalanceSheetStatement(
-    @SerializedName("quarter") val quarter: List<BalanceSheet>,
-    @SerializedName("year") val year: List<BalanceSheet>,
+    @SerializedName("quarter") val quarter: List<Map<String, String?>>,
+    @SerializedName("year") val year: List<Map<String, String?>>,
 ) : Parcelable
 
 
 @Parcelize
 data class CashFlowStatement(
-    @SerializedName("quarter") val quarter: List<CashFlow>,
-    @SerializedName("year") val year: List<CashFlow>,
+    @SerializedName("quarter") val quarter: List<Map<String, String?>>,
+    @SerializedName("year") val year: List<Map<String, String?>>,
 ) : Parcelable
 
 @Parcelize
 data class IncomeStatement(
-    @SerializedName("quarter") val quarter: List<Income>,
-    @SerializedName("year") val year: List<Income>,
+    @SerializedName("quarter") val quarter: List<Map<String, String?>>,
+    @SerializedName("year") val year: List<Map<String, String?>>,
 ) : Parcelable
 
 @Parcelize

@@ -9,8 +9,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/awonar_market_statistic_recycler"
             android:layout_width="match_parent"
-            android:background="@color/awonar_color_surface"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:background="@color/awonar_color_surface" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

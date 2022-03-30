@@ -38,11 +38,11 @@ class BarChartViewHolder constructor(private val binding: AwonarItemMpBarchartBi
             }
             val barData = BarData(sets.toList())
             barData.barWidth = 0.2f
+            xAxis.axisMinimum = 0f
             data = barData
             if (item.entries.size > 1) {
                 groupBars(0f, 0.1f, 0f)
             }
-            notifyDataSetChanged()
             invalidate()
         }
     }

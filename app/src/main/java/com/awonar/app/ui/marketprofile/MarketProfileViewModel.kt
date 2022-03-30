@@ -7,10 +7,7 @@ import com.awonar.android.model.marketprofile.FinancialResponse
 import com.awonar.android.shared.domain.marketprofile.GetFinancialInfoUseCase
 import com.awonar.android.shared.domain.marketprofile.GetMarketProfileUseCase
 import com.awonar.android.shared.domain.marketprofile.GetOverviewMarketProfileUseCase
-import com.awonar.app.domain.marketprofile.ConvertFinancialBalanceSheetUseCase
-import com.awonar.app.domain.marketprofile.ConvertFinancialCashflowUseCase
-import com.awonar.app.domain.marketprofile.ConvertFinancialIncomeStatementUseCase
-import com.awonar.app.domain.marketprofile.ConvertFinancialStatisticUseCase
+import com.awonar.app.domain.marketprofile.*
 import com.awonar.app.models.marketprofile.ConvertFinancial
 import com.awonar.app.ui.marketprofile.stat.financial.FinancialMarketItem
 import com.awonar.app.ui.marketprofile.stat.overview.OverviewMarketItem
@@ -28,11 +25,13 @@ class MarketProfileViewModel @Inject constructor(
     private val getMarketProfileUseCase: GetMarketProfileUseCase,
     private val getOverviewMarketProfileUseCase: GetOverviewMarketProfileUseCase,
     private val getFinancialInfoUseCase: GetFinancialInfoUseCase,
+    private val convertFinancialToCardItemUseCase: ConvertFinancialToCardItemUseCase,
     private val convertFinancialStatisticUseCase: ConvertFinancialStatisticUseCase,
     private val convertFinancialIncomeStatementUseCase: ConvertFinancialIncomeStatementUseCase,
     private val convertFinancialBalanceSheetUseCase: ConvertFinancialBalanceSheetUseCase,
     private val convertFinancialCashflowUseCase: ConvertFinancialCashflowUseCase,
 ) : ViewModel() {
+    private val financalState: MutableStateFlow<FinancialResponse?> = MutableStateFlow(null)
 
     private val _financialCurrentTab = MutableStateFlow("Statistic")
     private val _quarter = MutableStateFlow("Q1")
@@ -43,6 +42,8 @@ class MarketProfileViewModel @Inject constructor(
     private val _barEntry =
         MutableStateFlow<MutableList<FinancialMarketItem.BarEntryItem>>(mutableListOf())
 
+    private val _cardItemList = MutableStateFlow(mutableListOf<FinancialMarketItem>())
+    val cardItemList get() = _cardItemList
     private val _financialItemList = MutableStateFlow<MutableList<FinancialMarketItem>>(
         mutableListOf())
     val financialItemList: StateFlow<MutableList<FinancialMarketItem>> get() = _financialItemList
@@ -50,12 +51,27 @@ class MarketProfileViewModel @Inject constructor(
     private val _instrumentState = MutableStateFlow<InstrumentProfile?>(null)
     val instrumentState: StateFlow<InstrumentProfile?> get() = _instrumentState
 
-    val financalState: StateFlow<FinancialResponse?> =
-        _instrumentState.transformLatest { instrument ->
-            getFinancialInfoUseCase(instrument?.id ?: 0).collect {
-                emit(it.successOr(null))
+
+    init {
+        viewModelScope.launch {
+            _instrumentState.collectLatest { instrument ->
+                getFinancialInfoUseCase(instrument?.id ?: 0).collect {
+                    financalState.emit(it.successOr(null))
+                }
             }
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
+        }
+
+        viewModelScope.launch {
+            financalState.collect { financial ->
+                if (financial != null) {
+                    val cardList =
+                        convertFinancialToCardItemUseCase(financial).successOr(mutableListOf())
+                    _cardItemList.value = cardList
+                    convertFinancialToItem()
+                }
+            }
+        }
+    }
 
     val overviewMarketState: StateFlow<MutableList<OverviewMarketItem>> =
         _instrumentState.transformLatest { instrument ->
@@ -107,57 +123,63 @@ class MarketProfileViewModel @Inject constructor(
 
     private fun setBarEntryByDefault() {
         val financial = financalState.value
-
         val barEntries = when (_financialCurrentTab.value) {
             "Income Statement" -> {
                 arrayListOf(
                     FinancialMarketItem.BarEntryItem(
+                        key = "netIncomeLoss",
                         title = "Net Income/Loss",
                         entries = financial?.incomeStatement?.quarter?.map {
-                            BarEntry(it.fiscalYear?.toFloat() ?: 0f, it.netIncomeLoss.toFloat())
+                            BarEntry(0f, it["netIncomeLoss"]?.toFloat() ?: 0f)
                         } ?: emptyList()
                     ),
                     FinancialMarketItem.BarEntryItem(
+                        key = "revenues",
                         title = "Revenues",
                         entries = financial?.incomeStatement?.quarter?.map {
-                            BarEntry(it.fiscalYear?.toFloat() ?: 0f, it.revenues.toFloat())
+                            BarEntry(0f, it["revenues"]?.toFloat() ?: 0f)
                         } ?: emptyList()
                     )
                 )
             }
             "Balance Sheet" -> arrayListOf(
                 FinancialMarketItem.BarEntryItem(
+                    key = "assets",
                     title = "Assets",
                     entries = financial?.balanceSheet?.quarter?.map {
-                        BarEntry(it.fiscalYear?.toFloat() ?: 0f, it.assets.toFloat())
+                        BarEntry(0f, it["assets"]?.toFloat() ?: 0f)
                     } ?: emptyList()
                 ),
                 FinancialMarketItem.BarEntryItem(
+                    key = "liabilities",
                     title = "Liabilities",
                     entries = financial?.balanceSheet?.quarter?.map {
-                        BarEntry(it.fiscalYear?.toFloat() ?: 0f, it.liabilities.toFloat())
+                        BarEntry(0f, it["liabilities"]?.toFloat() ?: 0f)
                     } ?: emptyList()
                 )
             )
             "Cashflow" -> arrayListOf(
                 FinancialMarketItem.BarEntryItem(
+                    key = "netCashFlow",
                     title = "Net Cash Flow",
                     entries = financial?.cashFlow?.quarter?.map {
-                        BarEntry(it.fiscalYear?.toFloat() ?: 0f, it.netCashFlow.toFloat())
+                        BarEntry(0f, it["netCashFlow"]?.toFloat() ?: 0f)
                     } ?: emptyList()
                 ),
                 FinancialMarketItem.BarEntryItem(
+                    key = "netCashFlowFromInvestingActivities",
                     title = "Net Cash Flow From Investing Activities",
                     entries = financial?.cashFlow?.quarter?.map {
-                        BarEntry(it.fiscalYear?.toFloat() ?: 0f,
-                            it.netCashFlowFromInvestingActivities.toFloat())
+                        BarEntry(0f, it["netCashFlowFromInvestingActivities"]?.toFloat() ?: 0f)
+
                     } ?: emptyList()
                 ),
                 FinancialMarketItem.BarEntryItem(
+                    key = "netCashFlowFromOperatingActivitiesContinuing",
                     title = "Net Cash Flow From Operating Activities, Continuing",
                     entries = financial?.cashFlow?.quarter?.map {
-                        BarEntry(it.fiscalYear?.toFloat() ?: 0f,
-                            it.netCashFlowFromOperatingActivitiesContinuing.toFloat())
+                        BarEntry(0f,
+                            it["netCashFlowFromOperatingActivitiesContinuing"]?.toFloat() ?: 0f)
                     } ?: emptyList()
                 )
             )
@@ -166,10 +188,23 @@ class MarketProfileViewModel @Inject constructor(
         _barEntry.value = barEntries
     }
 
-    fun setBarEntry(entry: FinancialMarketItem.BarEntryItem) {
-        val entries = _barEntry.value
-        entries.add(entry)
-        _barEntry.value = entries
+    fun setBarEntry(key: String) {
+        val barEntries = _barEntry.value
+        val entries: List<BarEntry>? = financalState.value?.incomeStatement?.year?.map {
+            BarEntry(barEntries.size.toFloat(), it[key]?.toFloat() ?: 0f)
+        }
+        val existEntry = barEntries.find { it.key == key }
+        if (existEntry == null) {
+            barEntries.add(FinancialMarketItem.BarEntryItem(
+                key = key,
+                title = key,
+                entries = entries ?: emptyList()
+            ))
+            _barEntry.value = barEntries
+        } else {
+            val newEntry = barEntries.filter { it.key != key }
+            _barEntry.value = newEntry.toMutableList()
+        }
         convertFinancialToItem()
     }
 
@@ -187,28 +222,32 @@ class MarketProfileViewModel @Inject constructor(
         convertFinancialToItem()
     }
 
-    fun convertFinancialToItem() {
+    private fun convertFinancialToItem() {
         viewModelScope.launch {
             val financial = financalState.value
             val type = _financialCurrentTab.value
-            val itemLists = when (type) {
-                "Statistic" -> convertFinancialStatisticUseCase(ConvertFinancial(
-                    financial = financial,
-                    current = type,
-                    fiscal = _fiscal.value,
-                    quarter = _quarter.value,
-                    quarterType = _quarterType.value
-                )).successOr(
-                    mutableListOf())
-                "Income Statement" -> convertFinancialIncomeStatementUseCase(ConvertFinancial(
-                    financial = financial,
-                    defaultSet = _barEntry.value,
-                    current = type,
-                    fiscal = _fiscal.value,
-                    quarter = _quarter.value,
-                    quarterType = _quarterType.value
-                )).successOr(
-                    mutableListOf())
+            val itemList: MutableList<FinancialMarketItem> = when (type) {
+                "Statistic" -> {
+                    convertFinancialStatisticUseCase(ConvertFinancial(
+                        financial = financial,
+                        current = type,
+                        fiscal = _fiscal.value,
+                        quarter = _quarter.value,
+                        quarterType = _quarterType.value
+                    )).successOr(
+                        mutableListOf())
+                }
+                "Income Statement" -> {
+                    convertFinancialIncomeStatementUseCase(ConvertFinancial(
+                        financial = financial,
+                        defaultSet = _barEntry.value,
+                        current = type,
+                        fiscal = _fiscal.value,
+                        quarter = _quarter.value,
+                        quarterType = _quarterType.value
+                    )).successOr(
+                        mutableListOf())
+                }
                 "Balance Sheet" -> convertFinancialBalanceSheetUseCase(ConvertFinancial(
                     financial = financial,
                     defaultSet = _barEntry.value,
@@ -228,7 +267,7 @@ class MarketProfileViewModel @Inject constructor(
                 )).successOr(mutableListOf())
                 else -> mutableListOf()
             }
-            _financialItemList.value = itemLists
+            _financialItemList.value = itemList
         }
     }
 }

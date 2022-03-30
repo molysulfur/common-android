@@ -10,13 +10,10 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.awonar.app.databinding.AwonarFragmentMarketStatisticBinding
 import com.awonar.app.ui.marketprofile.MarketProfileViewModel
-import com.awonar.app.ui.marketprofile.stat.financial.FinancialMarketAdapter
-import com.awonar.app.ui.marketprofile.stat.financial.FinancialMarketItem
+import com.awonar.app.ui.marketprofile.stat.financial.*
 import com.awonar.app.ui.marketprofile.stat.overview.OverviewMarketAdapter
-import com.github.mikephil.charting.data.BarEntry
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
-import timber.log.Timber
 
 class MarketStatisticFragment : Fragment() {
 
@@ -26,11 +23,17 @@ class MarketStatisticFragment : Fragment() {
         OverviewMarketAdapter()
     }
 
-    private val financialAdapter: FinancialMarketAdapter by lazy {
-        FinancialMarketAdapter(requireActivity()).apply {
-            onDateSelect = {
-                viewModel.setQuater(it)
-            }
+    private val financialCardAdapter: FinancialCardAdapter by lazy {
+        FinancialCardAdapter()
+    }
+
+    private val financialHeaderAdapter: FinancialHeaderAdapter by lazy {
+        val itemLists = mutableListOf<FinancialMarketItem>()
+        itemLists.add(FinancialMarketItem.TitleMarketItem("Financial Summary"))
+        itemLists.add(FinancialMarketItem.ButtonGroupItem("annual",
+            "quarter"))
+        itemLists.add(FinancialMarketItem.TabsItem())
+        FinancialHeaderAdapter().apply {
             onToggleButton = {
                 viewModel.setQuaterType(it)
             }
@@ -39,8 +42,17 @@ class MarketStatisticFragment : Fragment() {
                     viewModel.setFinancialTabType(it)
                 }
             }
-            onItemSelected = { entry ->
-                viewModel.setBarEntry(entry)
+            itemList = itemLists
+        }
+    }
+
+    private val financialAdapter: FinancialMarketAdapter by lazy {
+        FinancialMarketAdapter(requireActivity()).apply {
+            onDateSelect = {
+                viewModel.setQuater(it)
+            }
+            onItemSelected = { key ->
+                viewModel.setBarEntry(key)
             }
         }
     }
@@ -48,7 +60,11 @@ class MarketStatisticFragment : Fragment() {
     private val concatAdapter: ConcatAdapter by lazy {
         val config = ConcatAdapter.Config.Builder().apply {
         }.build()
-        ConcatAdapter(config, overviewMarketAdapter, financialAdapter)
+        ConcatAdapter(config,
+            overviewMarketAdapter,
+            financialCardAdapter,
+            financialHeaderAdapter,
+            financialAdapter)
     }
 
     private val binding: AwonarFragmentMarketStatisticBinding by lazy {
@@ -59,7 +75,24 @@ class MarketStatisticFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
+
+        launchAndRepeatWithViewLifecycle {
+            viewModel.cardItemList.collect { itemLists ->
+                if (binding.awonarMarketStatisticRecycler.adapter == null) {
+                    with(binding.awonarMarketStatisticRecycler) {
+                        adapter = concatAdapter
+                        layoutManager =
+                            LinearLayoutManager(requireContext(),
+                                LinearLayoutManager.VERTICAL,
+                                false)
+                    }
+                }
+                with(financialCardAdapter) {
+                    itemList = itemLists
+                }
+            }
+        }
         launchAndRepeatWithViewLifecycle {
             viewModel.financialItemList.collect { itemLists ->
                 if (binding.awonarMarketStatisticRecycler.adapter == null) {
@@ -89,13 +122,6 @@ class MarketStatisticFragment : Fragment() {
                 }
                 with(overviewMarketAdapter) {
                     itemList = itemLists
-                }
-            }
-        }
-        launchAndRepeatWithViewLifecycle {
-            viewModel.financalState.collect { response ->
-                if (response != null) {
-                    viewModel.convertFinancialToItem()
                 }
             }
         }

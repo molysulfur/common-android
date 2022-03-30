@@ -1,6 +1,5 @@
 package com.awonar.app.domain.marketprofile
 
-import com.awonar.android.model.marketprofile.BalanceSheet
 import com.awonar.android.shared.di.MainDispatcher
 import com.awonar.app.models.marketprofile.ConvertFinancial
 import com.awonar.app.ui.marketprofile.stat.financial.FinancialMarketItem
@@ -15,22 +14,7 @@ class ConvertFinancialBalanceSheetUseCase @Inject constructor(
     override suspend fun execute(parameters: ConvertFinancial): MutableList<FinancialMarketItem> {
         val itemLists = mutableListOf<FinancialMarketItem>()
         val financial = parameters.financial
-        itemLists.add(FinancialMarketItem.FinancialCardItem(
-            "Split Event",
-            financial?.ststistics?.split?.historical?.get(0)?.date,
-            "%s:%s".format(financial?.ststistics?.split?.historical?.get(0)?.denominator,
-                financial?.ststistics?.split?.historical?.get(0)?.numerator)
-        ))
-        itemLists.add(FinancialMarketItem.FinancialCardItem(
-            "Divided",
-            financial?.ststistics?.dividend?.historical?.get(0)?.date,
-            "%.2f".format(financial?.ststistics?.dividend?.historical?.get(0)?.dividend)
-        ))
-        itemLists.add(FinancialMarketItem.TitleMarketItem("Financial Summary"))
-        itemLists.add(FinancialMarketItem.ButtonGroupItem("annual",
-            "quarter",
-            parameters.quarterType))
-        itemLists.add(FinancialMarketItem.TabsItem(parameters.current))
+
         itemLists.add(FinancialMarketItem.TitleMarketItem("Balance Sheet"))
         itemLists.add(FinancialMarketItem.BarChartItem(parameters.defaultSet))
         val balanceInfo = if (parameters.quarterType == "annual") {
@@ -40,13 +24,13 @@ class ConvertFinancialBalanceSheetUseCase @Inject constructor(
             itemLists.add(FinancialMarketItem.DropdownItem("Select Year",
                 parameters.fiscal,
                 arrayListOf("$year", "${year.minus(1)}", "${year.minus(2)}", "${year.minus(3)}")))
-            financial?.balanceSheet?.year?.find { it.fiscalYear == parameters.fiscal }
+            financial?.balanceSheet?.year?.find { it["fiscalYear"] == parameters.fiscal }
         } else {
             itemLists.add(FinancialMarketItem.DropdownItem("Select Quarter",
                 parameters.fiscal,
                 arrayListOf("Q1", "Q2", "Q3", "Q4")))
             financial?.balanceSheet?.quarter?.find {
-                it.fiscalPeriod == parameters.quarter
+                it["fiscalPeriod"] == parameters.quarter
             }
         }
 
@@ -55,70 +39,82 @@ class ConvertFinancialBalanceSheetUseCase @Inject constructor(
     }
 
     private fun convertListItems(
-        incomeInfo: BalanceSheet?,
+        incomeInfo: Map<String, String?>?,
         itemLists: MutableList<FinancialMarketItem>,
         parameters: ConvertFinancial,
     ) {
         incomeInfo?.let {
             itemLists.add(FinancialMarketItem.ListSelectorItem(
+                key = "assets",
                 text = "Assets",
-                value = it.assets,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Assets" }
+                value = it["assets"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "assets" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Current Assets",
-                value = it.currentAssets,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Current Assets" }
+                key = "currentAssets",
+                value = it["currentAssets"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "currentAssets" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Current Liabilities",
-                value = it.currentLiabilities,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Current Liabilities" }
+                key = "currentLiabilities",
+                value = it["currentLiabilities"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "currentLiabilities" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Equity",
-                value = it.equity,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Equity" }
+                key = "equity",
+                value = it["equity"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "equity" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Equity Attributable To Noncontrolling Interest",
-                value = it.equityAttributableToNoncontrollingInterest,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Equity Attributable To Noncontrolling Interest" }
+                key = "equityAttributableToNoncontrollingInterest",
+                value = it["equityAttributableToNoncontrollingInterest"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "equityAttributableToNoncontrollingInterest" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Equity Attributable To Parent",
-                value = it.equityAttributableToParent,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Equity Attributable To Parent" }
+                key = "equityAttributableToParent",
+                value = it["equityAttributableToParent"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "equityAttributableToParent" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Fixed Assets",
-                value = it.fixedAssets,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Fixed Assets" }
+                key = "fixedAssets",
+                value = it["fixedAssets"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "fixedAssets" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Liabilities",
-                value = it.liabilities,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Liabilities" }
+                key = "liabilities",
+                value = it["liabilities"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "liabilities" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Liabilities And Equity",
-                value = it.liabilitiesAndEquity,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Liabilities And Equity" }
+                key = "liabilitiesAndEquity",
+                value = it["liabilitiesAndEquity"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "liabilitiesAndEquity" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Noncurrent Assets",
-                value = it.noncurrentAssets,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Noncurrent Assets" }
+                key = "noncurrentAssets",
+                value = it["noncurrentAssets"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "noncurrentAssets" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Noncurrent Liabilities",
-                value = it.noncurrentLiabilities,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Noncurrent Liabilities" }
+                key = "noncurrentLiabilities",
+                value = it["noncurrentLiabilities"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "noncurrentLiabilities" }
             ))
             itemLists.add(FinancialMarketItem.ListSelectorItem(
                 text = "Other Than Fixed Noncurrent Assets",
-                value = it.otherThanFixedNoncurrentAssets,
-                color = parameters.defaultSet.indexOfFirst { item -> item.title == "Other Than Fixed Noncurrent Assets" }
+                key = "otherThanFixedNoncurrentAssets",
+                value = it["otherThanFixedNoncurrentAssets"]?.toLong() ?: 0L,
+                color = parameters.defaultSet.indexOfFirst { item -> item.key == "otherThanFixedNoncurrentAssets" }
             ))
         }
     }

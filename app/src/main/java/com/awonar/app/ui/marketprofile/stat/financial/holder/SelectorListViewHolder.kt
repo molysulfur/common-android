@@ -19,8 +19,7 @@ class SelectorListViewHolder constructor(private val binding: AwonarItemSelector
 
     fun bind(
         item: FinancialMarketItem.ListSelectorItem,
-        position: Int,
-        onSelect: ((FinancialMarketItem.BarEntryItem) -> Unit)?,
+        onSelect: ((String) -> Unit)?,
     ) {
         val colors =
             binding.root.context.resources.getStringArray(R.array.awonar_colors).toMutableList()
@@ -40,10 +39,7 @@ class SelectorListViewHolder constructor(private val binding: AwonarItemSelector
             }
             setMeta("%s".format(meta))
             setOnClickListener {
-                onSelect?.invoke(FinancialMarketItem.BarEntryItem(
-                    title = item.text ?: "",
-                    entries = arrayListOf(BarEntry(0f, item.value.toFloat()))
-                ))
+                onSelect?.invoke(item.key ?: "")
             }
         }
         with(binding.awonarSelectorListViewSelect) {

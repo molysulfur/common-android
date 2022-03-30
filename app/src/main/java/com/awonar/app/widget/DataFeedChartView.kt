@@ -1,6 +1,7 @@
 package com.awonar.app.widget
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Build
 import android.os.Parcelable
 import android.util.AttributeSet
@@ -9,7 +10,9 @@ import android.view.View
 import androidx.annotation.RequiresApi
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarWidgetDatafeedChartBinding
+import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import com.molysulfur.library.widget.BaseViewGroup
 
 class DataFeedChartView : BaseViewGroup {
@@ -39,9 +42,19 @@ class DataFeedChartView : BaseViewGroup {
     }
 
 
-    fun setData() {
+    fun setData(label: String, entries: List<Entry>) {
+        val set1 = LineDataSet(entries, label)
+        with(set1) {
+            lineWidth = 1.75f
+            circleRadius = 5f
+            circleHoleRadius = 2.5f
+            color = Color.WHITE
+            highLightColor = Color.WHITE
+            setCircleColor(Color.WHITE)
+            setDrawValues(false)
+        };
         with(binding.awonarDatafeedChart) {
-            data = LineData()
+            data = LineData(set1)
         }
     }
 
