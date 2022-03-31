@@ -44,6 +44,8 @@ class MarketProfileViewModel @Inject constructor(
 
     private val _cardItemList = MutableStateFlow(mutableListOf<FinancialMarketItem>())
     val cardItemList get() = _cardItemList
+    private val _dropdownList = MutableStateFlow(mutableListOf<FinancialMarketItem>())
+    val dropdownList get() = _dropdownList
     private val _financialItemList = MutableStateFlow<MutableList<FinancialMarketItem>>(
         mutableListOf())
     val financialItemList: StateFlow<MutableList<FinancialMarketItem>> get() = _financialItemList
@@ -69,6 +71,28 @@ class MarketProfileViewModel @Inject constructor(
                     _cardItemList.value = cardList
                     convertFinancialToItem()
                 }
+            }
+        }
+
+        viewModelScope.launch {
+            _quarterType.collect { type ->
+                val fiscal = _fiscal.value
+                val quarter = _quarter.value
+                val itemLists = mutableListOf<FinancialMarketItem>()
+                if (type == "annual") {
+                    val year = fiscal.toInt()
+                    itemLists.add(FinancialMarketItem.DropdownItem("Select Year",
+                        fiscal,
+                        arrayListOf("$year",
+                            "${year.minus(1)}",
+                            "${year.minus(2)}",
+                            "${year.minus(3)}")))
+                } else {
+                    itemLists.add(FinancialMarketItem.DropdownItem("Select Quarter",
+                        quarter,
+                        arrayListOf("Q1", "Q2", "Q3", "Q4")))
+                }
+                _dropdownList.value = itemLists
             }
         }
     }

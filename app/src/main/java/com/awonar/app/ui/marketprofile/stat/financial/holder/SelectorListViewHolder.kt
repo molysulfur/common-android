@@ -43,7 +43,6 @@ class SelectorListViewHolder constructor(private val binding: AwonarItemSelector
             }
         }
         with(binding.awonarSelectorListViewSelect) {
-
             removeAllViews()
             if (item.color >= 0) {
                 val view = RectangleView(binding.root.context, colors[item.color])

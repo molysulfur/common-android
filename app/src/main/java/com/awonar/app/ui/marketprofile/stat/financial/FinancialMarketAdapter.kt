@@ -20,7 +20,6 @@ class FinancialMarketAdapter constructor(private val fragmentActivity: FragmentA
 
 
     var onItemSelected: ((String) -> Unit)? = null
-    var onDateSelect: ((String) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
@@ -47,11 +46,7 @@ class FinancialMarketAdapter constructor(private val fragmentActivity: FragmentA
                     parent,
                     false)
             )
-            FinancialMarketType.DROPDOWN -> SelectorDropdownViewHolder(
-                AwonarItemDropdownBinding.inflate(LayoutInflater.from(parent.context),
-                    parent,
-                    false)
-            )
+
             else -> throw Error("view type is not found!")
         }
 
@@ -59,8 +54,6 @@ class FinancialMarketAdapter constructor(private val fragmentActivity: FragmentA
         val item = itemList[position]
         when (holder) {
             is TitleViewHolder -> holder.bind(item as FinancialMarketItem.TitleMarketItem)
-            is SelectorDropdownViewHolder -> holder.bind(item as FinancialMarketItem.DropdownItem,
-                onDateSelect)
             is BarChartViewHolder -> holder.bind(item as FinancialMarketItem.BarChartItem)
             is SelectorListViewHolder -> holder.bind(item as FinancialMarketItem.ListSelectorItem,
                 onItemSelected)

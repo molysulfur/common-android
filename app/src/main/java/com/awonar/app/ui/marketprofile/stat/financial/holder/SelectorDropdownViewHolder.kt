@@ -17,7 +17,9 @@ class SelectorDropdownViewHolder constructor(private val binding: AwonarItemDrop
         val adapter = ArrayAdapter(binding.root.context, R.layout.awonar_item_text, item.selectors)
         with(binding.awonarDropdownInputItem) {
             (editText as? AutoCompleteTextView)?.apply {
-                setText(item.selectors[0])
+                if (text.isNullOrBlank()) {
+                    setText(item.selectors[0])
+                }
                 setAdapter(adapter)
                 doAfterTextChanged {
                     val text = it.toString()

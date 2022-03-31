@@ -14,6 +14,7 @@ import com.awonar.app.ui.marketprofile.stat.financial.*
 import com.awonar.app.ui.marketprofile.stat.overview.OverviewMarketAdapter
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
+import timber.log.Timber
 
 class MarketStatisticFragment : Fragment() {
 
@@ -27,6 +28,21 @@ class MarketStatisticFragment : Fragment() {
         FinancialCardAdapter()
     }
 
+    private val financialDropdownAdapter: FinancialDropDownAdapter by lazy {
+        FinancialDropDownAdapter().apply {
+            onDateSelect = {
+                viewModel.setQuater(it)
+            }
+        }
+    }
+
+    private val financialAdapter: FinancialMarketAdapter by lazy {
+        FinancialMarketAdapter(requireActivity()).apply {
+            onItemSelected = { key ->
+                viewModel.setBarEntry(key)
+            }
+        }
+    }
     private val financialHeaderAdapter: FinancialHeaderAdapter by lazy {
         val itemLists = mutableListOf<FinancialMarketItem>()
         itemLists.add(FinancialMarketItem.TitleMarketItem("Financial Summary"))
@@ -42,18 +58,8 @@ class MarketStatisticFragment : Fragment() {
                     viewModel.setFinancialTabType(it)
                 }
             }
-            itemList = itemLists
-        }
-    }
 
-    private val financialAdapter: FinancialMarketAdapter by lazy {
-        FinancialMarketAdapter(requireActivity()).apply {
-            onDateSelect = {
-                viewModel.setQuater(it)
-            }
-            onItemSelected = { key ->
-                viewModel.setBarEntry(key)
-            }
+            itemList = itemLists
         }
     }
 
@@ -64,6 +70,7 @@ class MarketStatisticFragment : Fragment() {
             overviewMarketAdapter,
             financialCardAdapter,
             financialHeaderAdapter,
+            financialDropdownAdapter,
             financialAdapter)
     }
 
@@ -76,7 +83,22 @@ class MarketStatisticFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-
+        launchAndRepeatWithViewLifecycle {
+            viewModel.dropdownList.collect { itemLists ->
+                if (binding.awonarMarketStatisticRecycler.adapter == null) {
+                    with(binding.awonarMarketStatisticRecycler) {
+                        adapter = concatAdapter
+                        layoutManager =
+                            LinearLayoutManager(requireContext(),
+                                LinearLayoutManager.VERTICAL,
+                                false)
+                    }
+                }
+                with(financialDropdownAdapter) {
+                    itemList = itemLists
+                }
+            }
+        }
         launchAndRepeatWithViewLifecycle {
             viewModel.cardItemList.collect { itemLists ->
                 if (binding.awonarMarketStatisticRecycler.adapter == null) {
