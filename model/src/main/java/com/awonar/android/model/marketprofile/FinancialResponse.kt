@@ -7,28 +7,9 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class FinancialResponse(
     @SerializedName("statistics") val ststistics: FinancialStatistic,
-    @SerializedName("incomeStatement") val incomeStatement: IncomeStatement,
-    @SerializedName("cashFlowStatement") val cashFlow: CashFlowStatement,
-    @SerializedName("balanceSheet") val balanceSheet: BalanceSheetStatement,
-) : Parcelable
-
-@Parcelize
-data class BalanceSheetStatement(
-    @SerializedName("quarter") val quarter: List<Map<String, String?>>,
-    @SerializedName("year") val year: List<Map<String, String?>>,
-) : Parcelable
-
-
-@Parcelize
-data class CashFlowStatement(
-    @SerializedName("quarter") val quarter: List<Map<String, String?>>,
-    @SerializedName("year") val year: List<Map<String, String?>>,
-) : Parcelable
-
-@Parcelize
-data class IncomeStatement(
-    @SerializedName("quarter") val quarter: List<Map<String, String?>>,
-    @SerializedName("year") val year: List<Map<String, String?>>,
+    @SerializedName("incomeStatement") val incomeStatement: Map<String, List<Map<String, String?>>>,
+    @SerializedName("cashFlowStatement") val cashFlow: Map<String, List<Map<String, String?>>>,
+    @SerializedName("balanceSheet") val balanceSheet: Map<String, List<Map<String, String?>>>,
 ) : Parcelable
 
 @Parcelize

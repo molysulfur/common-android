@@ -24,12 +24,12 @@ class ConvertFinancialBalanceSheetUseCase @Inject constructor(
             itemLists.add(FinancialMarketItem.DropdownItem("Select Year",
                 parameters.fiscal,
                 arrayListOf("$year", "${year.minus(1)}", "${year.minus(2)}", "${year.minus(3)}")))
-            financial?.balanceSheet?.year?.find { it["fiscalYear"] == parameters.fiscal }
+            financial?.balanceSheet?.get("year")?.find { it["fiscalYear"] == parameters.fiscal }
         } else {
             itemLists.add(FinancialMarketItem.DropdownItem("Select Quarter",
                 parameters.fiscal,
                 arrayListOf("Q1", "Q2", "Q3", "Q4")))
-            financial?.balanceSheet?.quarter?.find {
+            financial?.balanceSheet?.get("quarter")?.find {
                 it["fiscalPeriod"] == parameters.quarter
             }
         }
