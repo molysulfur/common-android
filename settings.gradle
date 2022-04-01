@@ -5,6 +5,7 @@ myModuleList.with {
     add(new Module(name: ":model", path: "./model"))
     add(new Module(name: ":shared", path: "./shared"))
     add(new Module(name: ":camerax", path: "./camerax"))
+    add(new Module(name: ":chartiq", path: "./ChartIQ-Android-SDK-main"))
 }
 
 myModuleList.forEach {
