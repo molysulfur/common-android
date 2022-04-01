@@ -96,7 +96,6 @@ class TradeButton : BaseViewGroup {
         if (anim == null) {
             anim = AlphaAnimation(0.2f, 1f)
             anim?.duration = 500
-            anim?.isFillEnabled = true
             anim?.fillBefore = true
             anim?.setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationStart(animation: Animation?) {
