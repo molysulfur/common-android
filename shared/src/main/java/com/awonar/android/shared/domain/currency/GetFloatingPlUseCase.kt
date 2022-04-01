@@ -16,14 +16,14 @@ class GetFloatingPlUseCase @Inject constructor(
     override suspend fun execute(parameters: List<Position>): Float {
         val sumPL = 0f
         parameters.forEach { position ->
-            val quote = QuoteSteamingManager.quotesState.value[position.instrument.id]
+            val quote = QuoteSteamingManager.quotesState.value[position.instrument?.id]
             quote?.let {
                 val current = if (position.isBuy) it.bid else it.ask
                 val pl = PortfolioUtil.getProfitOrLoss(
                     current,
                     position.openRate,
                     position.units,
-                    repository.getConversionByInstrumentId(position.instrument.id).rateBid,
+                    repository.getConversionByInstrumentId(position.instrument?.id?:0).rateBid,
                     position.isBuy
                 )
                 sumPL.plus(pl)

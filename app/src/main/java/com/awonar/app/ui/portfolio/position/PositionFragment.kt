@@ -16,15 +16,25 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentPositionBinding
+import com.awonar.app.dialog.menu.MenuDialog
+import com.awonar.app.dialog.menu.MenuDialogButtonSheet
 import com.awonar.app.ui.columns.ColumnsActivedActivity
 import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.portfolio.PortFolioViewModel
+import com.awonar.app.ui.portfolio.chart.PositionChartFragmentDirections
 import com.molysulfur.library.extension.openActivityCompatForResult
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 
 class PositionFragment : Fragment() {
+
+    companion object {
+        private const val SECTION_DIALOG = "com.awonar.app.ui.portfolio.position.dialog.section"
+        private const val KEY_DIALOG_HISTORY =
+            "com.awonar.app.ui.portfolio.position.dialog.key_history"
+        private const val KEY_DIALOG_ORDER = "com.awonar.app.ui.portfolio.position.dialog.key_order"
+    }
 
     private var positionType: String = "market"
 
@@ -43,11 +53,43 @@ class PositionFragment : Fragment() {
             }
         }
 
+    private val listenerDialog = object : MenuDialogButtonSheet.MenuDialogButtonSheetListener {
+        override fun onMenuClick(menu: MenuDialog) {
+            when (menu.key) {
+                KEY_DIALOG_HISTORY -> findNavController().navigate(PositionFragmentDirections.actionPositionFragmentToHistoryFragment())
+                KEY_DIALOG_ORDER -> {}
+            }
+        }
+
+    }
+
+    private val titleDialog: MenuDialogButtonSheet by lazy {
+        val menus = arrayListOf(
+            MenuDialog(
+                key = KEY_DIALOG_HISTORY,
+                text = "History"
+            ),
+            MenuDialog(
+                key = KEY_DIALOG_ORDER,
+                text = "Orders"
+            )
+        )
+        MenuDialogButtonSheet.Builder()
+            .setMenus(menus)
+            .setListener(listenerDialog)
+            .build()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
+        launchAndRepeatWithViewLifecycle {
+            columnViewModel.visibleState.collect {
+                binding.awonarPortfolioLayoutColumns.visibility = it
+            }
+        }
         binding.columnViewModel = columnViewModel
         binding.market = marketViewModel
         binding.viewModel = viewModel
@@ -58,6 +100,9 @@ class PositionFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         columnViewModel.setColumnType(positionType)
+        binding.awonarPortfolioTextTitleSection.setOnClickListener {
+            titleDialog.show(parentFragmentManager, SECTION_DIALOG)
+        }
         binding.awonarPortfolioImageIconSetting.setOnClickListener {
             openActivityCompatForResult(activityResult,
                 ColumnsActivedActivity::class.java,
@@ -78,7 +123,16 @@ class PositionFragment : Fragment() {
                 "chart" -> binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_card_list)
                 "card" -> binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_list_2)
             }
+            visibleColumns()
         }
+    }
+
+    private fun visibleColumns() {
+        when (positionType) {
+            "chart" -> columnViewModel.visible(false)
+            else -> columnViewModel.visible(true)
+        }
+
     }
 
     private fun navigate() {

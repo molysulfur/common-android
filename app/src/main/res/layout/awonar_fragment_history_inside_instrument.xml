@@ -11,9 +11,12 @@
             type="com.awonar.app.ui.history.HistoryInsideViewModel" />
 
         <variable
+            name="history"
+            type="com.awonar.app.ui.history.HistoryViewModel" />
+
+        <variable
             name="columnsViewModel"
             type="com.awonar.app.ui.columns.ColumnsViewModel" />
-
 
         <variable
             name="totalFees"
@@ -145,7 +148,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 historyColumns="@{columnsViewModel.activedColumnState}"
                 setHistoryInsideAdapter="@{viewModel.historiesInsideState}"
-                viewModel="@{viewModel}"
+                viewModel="@{history}"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 app:layout_constraintBottom_toTopOf="@+id/awonar_history_inside_total_fee_container"

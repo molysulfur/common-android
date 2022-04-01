@@ -3,23 +3,24 @@ package com.awonar.app.ui.portfolio.adapter.holder
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.shared.steaming.QuoteSteamingManager
 import com.awonar.android.shared.utils.PortfolioUtil
-import com.awonar.app.databinding.AwonarItemInstrumentOrderBinding
-import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
+import com.awonar.app.databinding.AwonarItemCopierPositionBinding
+import com.awonar.app.databinding.AwonarItemPositionBinding
+import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class CopyTradePortfolioViewHolder constructor(
-    private val binding: AwonarItemInstrumentOrderBinding,
+    private val binding: AwonarItemCopierPositionBinding,
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(
-        item: OrderPortfolioItem.CopierPortfolioItem,
+        item: PortfolioItem.CopierPortfolioItem,
         columns: List<String>,
         onClick: ((Int, String) -> Unit)?,
     ) {
-        setupDataSteaming(item)
+//        setupDataSteaming(item)
         if (columns.isNotEmpty()) {
             binding.column1 = columns[0]
             binding.column2 = columns[1]
@@ -34,10 +35,10 @@ class CopyTradePortfolioViewHolder constructor(
                 onClick?.invoke(item.index, "copies")
             }
         }
-        binding.item = item
+        binding.item = item.copier
     }
 
-    private fun setupDataSteaming(item: OrderPortfolioItem.CopierPortfolioItem) {
+    private fun setupDataSteaming(item: PortfolioItem.CopierPortfolioItem) {
         CoroutineScope(Dispatchers.IO).launch {
             QuoteSteamingManager.quotesState.collect { quotes ->
                 val sumFloatingPL = 0f
@@ -56,13 +57,13 @@ class CopyTradePortfolioViewHolder constructor(
                     }
                 }
                 val pl = sumFloatingPL.plus(item.copier.closedPositionsNetProfit)
-                val plPercent = pl.div(item.invested)
+                val plPercent = pl.div(item.copier.invested)
                 val moneyInOut = item.copier.depositSummary.minus(item.copier.withdrawalSummary)
                 val value = item.copier.initialInvestment.plus(moneyInOut).plus(pl)
-                item.profitLoss = pl
-                item.profitLossPercent = plPercent
-                item.value = value
-                binding.item = item
+                item.copier.profitLoss = pl
+                item.copier.profitLossPercent = plPercent
+                item.copier.value = value
+//                binding.item = item
             }
         }
     }

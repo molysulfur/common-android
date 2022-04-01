@@ -9,7 +9,7 @@ import com.awonar.app.databinding.*
 import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.market.holder.*
 
-class InstrumentListAdapter constructor(private val viewModel: MarketViewModel?) :
+class InstrumentListAdapter :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var itemList: List<InstrumentItem> = emptyList()
@@ -60,8 +60,7 @@ class InstrumentListAdapter constructor(private val viewModel: MarketViewModel?)
                     LayoutInflater.from(parent.context),
                     parent,
                     false
-                ),
-                viewModel
+                )
             )
             InstrumentType.INSTRUMENT_LOADING_TYPE -> InstrumentLoadingViewHolder(
                 AwonarItemListBinding.inflate(

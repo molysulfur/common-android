@@ -13,6 +13,8 @@
             android:layout_width="@dimen/awonar_size_avatar"
             android:layout_height="@dimen/awonar_size_avatar"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/awonar_instrument_item_text_title"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/awonar_placeholder_avatar" />
@@ -27,6 +29,8 @@
             android:lines="1"
             app:layout_constraintBottom_toTopOf="@+id/awonar_instrument_item_text_change"
             app:layout_constraintEnd_toStartOf="@+id/awonar_instrument_item_text_bid"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_weight="2"
             app:layout_constraintStart_toEndOf="@+id/awonar_instrument_item_image_logo"
             app:layout_constraintTop_toTopOf="@+id/awonar_instrument_item_image_logo"
             app:layout_constraintVertical_chainStyle="packed"
@@ -46,30 +50,36 @@
             app:layout_constraintTop_toBottomOf="@+id/awonar_instrument_item_text_title"
             tools:text="@string/awonar_example_name" />
 
-        <androidx.appcompat.widget.AppCompatButton
+        <com.awonar.app.widget.TradeButton
             android:id="@+id/awonar_instrument_item_text_bid"
-            style="@style/Awonar.Button.Default.Small.Gray"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/awonar_size_margin_padding_extra_large"
-            android:minHeight="0dp"
-            android:padding="@dimen/awonar_size_margin_padding_small"
+            android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+            android:maxWidth="0dp"
+            android:maxHeight="0dp"
+            android:padding="@dimen/awonar_size_margin_padding_extra_extra_small"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/awonar_instrument_item_text_ask"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_weight="2"
+            app:layout_constraintStart_toEndOf="@+id/awonar_instrument_item_text_title"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="131.88" />
+            tools:text="1.000000" />
 
-        <androidx.appcompat.widget.AppCompatButton
+        <com.awonar.app.widget.TradeButton
             android:id="@+id/awonar_instrument_item_text_ask"
-            style="@style/Awonar.Button.Default.Small.Gray"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:minHeight="0dp"
-            android:padding="@dimen/awonar_size_margin_padding_small"
+            android:maxWidth="0dp"
+            android:maxHeight="0dp"
+            android:padding="@dimen/awonar_size_margin_padding_extra_extra_small"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_weight="2"
+            app:layout_constraintStart_toEndOf="@+id/awonar_instrument_item_text_bid"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="131.88" />
+            tools:text="1.000000" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

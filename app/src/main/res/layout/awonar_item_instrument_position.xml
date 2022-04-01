@@ -5,17 +5,13 @@
 
         <variable
             name="item"
-            type="com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem.InstrumentPositionCardItem" />
+            type="com.awonar.app.ui.portfolio.adapter.PortfolioItem.InstrumentPositionCardItem" />
 
-        <variable
-            name="quote"
-            type="com.awonar.android.model.market.Quote" />
     </data>
 
     <com.awonar.app.widget.InstrumentPositionCardView xmlns:android="http://schemas.android.com/apk/res/android"
         initInstrumentPositionCard="@{item}"
-        instrumentPositionCardItem="@{item}"
-        quote="@{quote}"
+        android:id="@+id/awonar_item_instrument_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

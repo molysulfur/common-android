@@ -3,13 +3,18 @@ package com.awonar.app.ui.marketprofile
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.awonar.android.model.market.Quote
+import com.awonar.android.shared.steaming.QuoteSteamingManager
 import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarActivityMarketProfileBinding
 import com.awonar.app.ui.market.MarketViewModel
+import com.awonar.app.ui.profile.adapter.ProfilePagerAdapter
 import com.awonar.app.utils.ColorChangingUtil
+import com.google.android.material.tabs.TabLayoutMediator
 import com.molysulfur.library.activity.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -35,9 +40,10 @@ class MarketProfileActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        observe()
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
+        setupViewPager()
+
         binding.awonarMarketProfileToolbarProfile.setNavigationOnClickListener {
             finish()
         }
@@ -48,28 +54,35 @@ class MarketProfileActivity : BaseActivity() {
                 marketViewModel.subscribe(instrumentId)
             }
         }
-    }
-
-    private fun observe() {
         lifecycleScope.launch {
-            launch {
-                marketViewModel.quoteSteamingState.collect { quotes ->
-                    val quote = quotes.findLast { quote ->
-                        quote.id == instrumentId
-                    }
-                    binding.awonarMarketProfileTextPricing.text = "${quote?.close ?: 0f}"
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                QuoteSteamingManager.quotesState.collect { quotes ->
+                    val quote = quotes[instrumentId]
                     setChangeText(quote)
                 }
             }
         }
     }
 
+    private fun setupViewPager() {
+        with(binding.awonarMarketProfileViewpager) {
+            adapter = MarketProfilePagerAdapter(supportFragmentManager, lifecycle)
+        }
+        TabLayoutMediator(binding.awonarMarketProfileTabs,
+            binding.awonarMarketProfileViewpager) { tab, position ->
+            tab.setIcon(MarketProfilePagerAdapter.ICON_TABS[position])
+        }.attach()
+    }
+
     private fun setChangeText(quote: Quote?) {
+        val price = quote?.close ?: 0f
         val change: Float = ConverterQuoteUtil.change(quote?.close ?: 0f, quote?.previous ?: 0f)
         val percent: Float = ConverterQuoteUtil.percentChange(
             oldPrice = quote?.previous ?: 0f,
             newPrice = quote?.close ?: 0f
         )
+        binding.awonarMarketProfileTextPricing.text =
+            "%.${viewModel.instrumentState.value?.digit ?: 2}f".format(price)
         binding.awonarMarketProfileTextChange.setTextColor(
             ColorChangingUtil.getTextColorChange(
                 this@MarketProfileActivity,

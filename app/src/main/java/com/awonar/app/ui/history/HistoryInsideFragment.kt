@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.collect
 class HistoryInsideFragment : Fragment() {
 
     private val viewModel: HistoryInsideViewModel by activityViewModels()
+    private val historyViewModel: HistoryViewModel by activityViewModels()
     private val columnsViewModel: ColumnsViewModel by activityViewModels()
 
     private val args: HistoryInsideFragmentArgs by navArgs()
@@ -30,13 +31,8 @@ class HistoryInsideFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
-        launchAndRepeatWithViewLifecycle {
-            viewModel.navigationInsideChannel.collect {
-                findNavController().navigate(it)
-            }
-        }
         launchAndRepeatWithViewLifecycle {
             columnsViewModel.activedColumnState.collect {
                 if (it.size >= 4) {
@@ -59,6 +55,7 @@ class HistoryInsideFragment : Fragment() {
             }
         }
         binding.viewModel = viewModel
+        binding.history = historyViewModel
         binding.columnsViewModel = columnsViewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
@@ -107,6 +104,7 @@ class HistoryInsideFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        columnsViewModel.setColumnType("history")
         viewModel.timeStamp.value = args.timestamp
         args.symbol?.let {
             viewModel.getArgreation(it)

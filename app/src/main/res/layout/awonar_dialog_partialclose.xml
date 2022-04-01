@@ -40,6 +40,7 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
+        android:background="@color/awonar_color_surface"
         android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout

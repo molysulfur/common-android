@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="title"
+            type="String" />
+
+        <variable
+            name="subTitle"
+            type="String" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+            android:background="@drawable/awonar_ripple_border_gray"
+            android:padding="@dimen/awonar_size_margin_padding_normal">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/appCompatTextView3"
+                style="@style/Awonar.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{title}"
+                app:layout_constraintBottom_toTopOf="@+id/appCompatTextView4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="@string/awonar_example_name" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/appCompatTextView4"
+                style="@style/Awonar.Description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/awonar_size_margin_padding_small"
+                android:text="@{subTitle}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.497"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView3"
+                tools:text="@string/awonar_example_name" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+</layout>

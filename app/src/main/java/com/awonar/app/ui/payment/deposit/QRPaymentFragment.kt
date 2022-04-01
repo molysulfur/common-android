@@ -35,7 +35,7 @@ class QRPaymentFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         launchAndRepeatWithViewLifecycle {
             viewModel.navigationActions.collect {
@@ -104,7 +104,7 @@ class QRPaymentFragment : Fragment() {
     private fun setAdapter(it: PaymentSetting?) {
         val adapter = ArrayAdapter(
             requireContext(),
-            R.layout.awonar_item_list,
+            R.layout.awonar_item_text_view,
             it?.allowDepositCurrencies ?: emptyList()
         )
         (binding.awonarDepositQrPaymentInputCurrency.editText as? AutoCompleteTextView)?.apply {

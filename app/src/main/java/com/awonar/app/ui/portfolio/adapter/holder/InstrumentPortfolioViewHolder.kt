@@ -1,37 +1,39 @@
 package com.awonar.app.ui.portfolio.adapter.holder
 
 import androidx.recyclerview.widget.RecyclerView
-import com.awonar.android.model.market.Quote
-import com.awonar.android.model.portfolio.Position
 import com.awonar.android.shared.steaming.QuoteSteamingManager
 import com.awonar.android.shared.utils.PortfolioUtil
-import com.awonar.app.databinding.AwonarItemInstrumentOrderBinding
-import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
+import com.awonar.app.databinding.AwonarItemPositionBinding
+import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import okhttp3.Dispatcher
 import timber.log.Timber
 
 class InstrumentPortfolioViewHolder constructor(
-    private val binding: AwonarItemInstrumentOrderBinding,
+    private val binding: AwonarItemPositionBinding,
 ) : RecyclerView.ViewHolder(binding.root) {
 
-
-    var positionItem: OrderPortfolioItem.InstrumentPortfolioItem? = null
+    var job: CoroutineScope? = null
+    var positionItem: PortfolioItem.InstrumentPortfolioItem? = null
 
     fun bind(
-        item: OrderPortfolioItem.InstrumentPortfolioItem,
+        item: PortfolioItem.InstrumentPortfolioItem,
         columns: List<String>,
         onClick: ((Int, String) -> Unit)?,
     ) {
+        if (item.position.amount > 0) {
+            item.position.invested = item.position.amount
+        }
         this.positionItem = item
-        setupDataSteaming()
+
         with(binding.awonarInsturmentOrderItem) {
             val position = item.position
-            setImage(position.instrument.logo ?: "")
-            setTitle(position.instrument.symbol ?: "")
+            setImage(position.instrument?.logo ?: "")
+            setTitle(position.instrument?.symbol ?: "")
+            setDescription(item.meta ?: "")
             setOnClickListener {
                 onClick?.invoke(item.index, "instrument")
             }
@@ -42,38 +44,45 @@ class InstrumentPortfolioViewHolder constructor(
             binding.column3 = columns[2]
             binding.column4 = columns[3]
         }
-        binding.item = item
+        if (item.isRealTime) {
+            setupJob()
+        } else {
+            job?.cancel()
+        }
+        binding.item = item.position
     }
 
-    private fun setupDataSteaming() {
-        CoroutineScope(Dispatchers.Default).launch {
+    private fun setupJob() {
+        job = CoroutineScope(Dispatchers.IO)
+        job?.launch {
             QuoteSteamingManager.quotesState.collect { quotes ->
                 positionItem?.let { positionItem ->
-                    val quote = quotes[positionItem.position.instrument.id]
-                    Timber.e("${positionItem.position.instrument.symbol} ${positionItem.position.instrument.id} ${quote?.bid}")
+                    val quote = quotes[positionItem.position.instrument?.id]
                     quote?.let {
-                        positionItem.current = if (positionItem.position.isBuy) it.bid else it.ask
+                        positionItem.position.current =
+                            if (positionItem.position.isBuy) it.bid else it.ask
                         val pl = PortfolioUtil.getProfitOrLoss(
-                            positionItem.current,
-                            positionItem.open,
-                            positionItem.units,
+                            positionItem.position.current,
+                            positionItem.position.open,
+                            positionItem.position.units,
                             positionItem.conversionRate,
                             positionItem.position.isBuy
                         )
                         val pipChange = PortfolioUtil.pipChange(
-                            positionItem.current,
-                            positionItem.open,
+                            positionItem.position.current,
+                            positionItem.position.open,
                             positionItem.position.isBuy,
-                            positionItem.position.instrument.digit
+                            positionItem.position.instrument?.digit ?: 2
                         )
-                        val value = PortfolioUtil.getValue(pl, positionItem.invested)
-                        val plPercent = PortfolioUtil.profitLossPercent(pl, positionItem.invested)
-                        positionItem.profitLoss = pl
-                        positionItem.pipChange = pipChange
-                        positionItem.value = value
-                        positionItem.profitLossPercent = plPercent
+                        val value = PortfolioUtil.getValue(pl, positionItem.position.invested)
+                        val plPercent =
+                            PortfolioUtil.profitLossPercent(pl, positionItem.position.invested)
+                        positionItem.position.profitLoss = pl
+                        positionItem.position.pipChange = pipChange
+                        positionItem.position.value = value
+                        positionItem.position.profitLossPercent = plPercent
                     }
-                    binding.item = positionItem
+                    binding.item = positionItem.position
                 }
             }
         }

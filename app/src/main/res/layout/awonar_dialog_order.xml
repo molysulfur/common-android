@@ -6,10 +6,6 @@
     <data>
 
         <variable
-            name="digit"
-            type="Integer" />
-
-        <variable
             name="viewModel"
             type="com.awonar.app.ui.order.OrderViewModel" />
 
@@ -56,8 +52,8 @@
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/awonar_dialog_order_image_icon_close"
                 style="@style/Awonar.Button.Icon"
-                android:layout_width="@dimen/awonar_size_icon"
-                android:layout_height="@dimen/awonar_size_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_margin="@dimen/awonar_size_margin_padding_normal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -65,6 +61,7 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/awonar_dialog_order_image_avatar"
+                setImage="@{viewModel.instrument.logo}"
                 android:layout_width="@dimen/awonar_size_avatar"
                 android:layout_height="@dimen/awonar_size_avatar"
                 android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
@@ -79,6 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
+                android:text="@{viewModel.instrument.symbol}"
                 app:layout_constraintStart_toEndOf="@+id/awonar_dialog_order_image_avatar"
                 app:layout_constraintTop_toTopOf="@+id/awonar_dialog_order_image_avatar"
                 tools:text="@string/awonar_example_name" />
@@ -86,6 +84,8 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/awonar_dialog_order_text_price"
                 style="@style/Awonar.Title"
+                currentPrice="@{viewModel.priceState}"
+                digit="@{viewModel.instrument.digit}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/awonar_size_margin_padding_small"
@@ -96,6 +96,8 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/awonar_dialog_order_text_change"
                 style="@style/Awonar.Description"
+                currentChange="@{viewModel.changeState}"
+                digit="@{viewModel.instrument.digit}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
@@ -109,6 +111,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/awonar_size_margin_padding_small"
+                android:text="@{viewModel.instrument.industry}"
                 app:layout_constraintStart_toStartOf="@+id/awonar_dialog_order_text_price"
                 app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_order_text_price"
                 tools:text="@string/awonar_example_name" />
@@ -122,6 +125,7 @@
                 android:drawableStart="@drawable/awonar_ic_time"
                 android:drawablePadding="@dimen/awonar_size_margin_padding_normal"
                 android:gravity="center"
+                android:text="@{viewModel.marketStatus}"
                 app:layout_constraintBottom_toBottomOf="@+id/awonar_dialog_order_text_description"
                 app:layout_constraintStart_toEndOf="@+id/awonar_dialog_order_text_description"
                 app:layout_constraintTop_toTopOf="@+id/awonar_dialog_order_text_description"

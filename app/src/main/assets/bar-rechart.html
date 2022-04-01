@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='UTF-8'>
+    <meta name="viewport" content="initial-scale=1.0 maximum-scale=1.0 user-scalable=no">
+    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+    <script src='https://unpkg.com/babel-standalone@6.26.0/babel.js'></script>
+    <script src="https://unpkg.com/prop-types/prop-types.min.js"></script>
+    <script src="https://unpkg.com/recharts/umd/Recharts.js"></script>
+
+    <style>
+        html {
+            height: 100%;
+            font-family: "Inter", "Open Sans", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            height: 100%;
+        }
+
+        .container {
+            height: 100%;
+            width: 100%;
+        }
+
+    </style>
+    <script async src='/cdn-cgi/bm/cv/669835187/api.js'></script>
+</head>
+
+<body>
+<div class="container" id='root'></div>
+<script type='text/babel'>
+        const BarChart = Recharts.BarChart
+        const Bar = Recharts.Bar
+        const XAxis = Recharts.XAxis
+        const YAxis = Recharts.YAxis
+        const Tooltip = Recharts.Tooltip
+        const Legend = Recharts.Legend
+        const Cell = Recharts.Cell
+        const rawData = [
+            { name: 'a', uv: 400 },
+            { name: 'b', uv: 5435 },
+            { name: 'c', uv: -245 },
+            { name: 'd', uv: -63 },
+        ];
+
+        const rawEmpty = [
+            { label: "January", value: 0 },
+            { label: "February", value: 0 },
+            { label: "March", value: 0 },
+            { label: "April", value: 0 },
+            { label: "May", value: 0 },
+            { label: "June", value: 0 },
+            { label: "July", value: 0 },
+            { label: "August", value: 0 },
+            { label: "September", value: 0 },
+            { label: "October", value: 0 },
+            { label: "November", value: 0 },
+            { label: "December", value: 0 }
+        ];
+
+        const ResponsiveContainer = Recharts.ResponsiveContainer
+
+        function chartAlready(){
+            WEBVIEW_JS.chartAlready()
+        }
+
+        const App = () => {
+            const [data, setData] = React.useState(rawEmpty)
+            const [max, setMax] = React.useState(100)
+            React.useEffect(() => {
+                configureWebKit()
+            }, [])
+
+            function configureWebKit() {
+                if (window != undefined) {
+                    window.setData = (data) => {
+                        setData(JSON.parse(data))
+                    }
+                    chartAlready()
+                }
+            }
+
+            return (
+                <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                        data={data}
+                        stackOffset="sign"
+                    >
+                        <XAxis dataKey="label"
+                            stroke="#8884d8"
+                            axisLine={false}
+                            tickLine={false}
+                            tick={false}
+                            hide={true}
+                        />
+                        <YAxis
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ color: '#80808073' }}
+                            domain={[-max, max]}
+                            hide={true}
+                        />
+                        <Tooltip wrapperStyle={{ width: 100, backgroundColor: '#ccc' }} />
+                        <defs>
+                            <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                                <stop
+                                    offset="50%"
+                                    stopColor="rgba(0, 128, 0, 0.3)"
+                                    stopOpacity={0.2}
+                                />
+                                <stop
+                                    offset="50%"
+                                    stopColor="rgba(255, 0, 0, 0.3)"
+                                    stopOpacity={0.2}
+                                />
+                            </linearGradient>
+                        </defs>
+                        <Bar
+                            dataKey="value"
+                            background={{
+                                fill: 'url(#colorValue)',
+                            }}
+                        >
+                            {data.map((entry) => (
+                                <Cell
+                                    key={entry.label + "ggr"}
+                                    fill={entry.value < 0 ? 'red' : "#2BAC40"}
+                                />
+                            ))}
+                        </Bar>
+                    </BarChart>
+                </ResponsiveContainer>
+            )
+        }
+
+        ReactDOM.render(<App />, document.querySelector('#root'));
+
+
+
+
+</script>
+<script type="text/javascript">
+    (function(){window['__CF$cv$params']={r:'6dab92e2ec0937d6',m:'GTheQxG1sS9JnkdFOSUF40NK8uxdkEla15joHRbKJRg-1644393729-0-AbKW/lpGnGbsjW+KkARvEgJc9MlchoaQPh6gRvlc/gWjVuTeYeDjfKUK5hud4CUAxNq6q3YHaOmP1xHwgPw6GMVmdi+VvIobLj74YZQZ9PthCZL8bfdXXY894Yq2acN1q19VuksGf2/FAo+qPi1lNU6TObr/Flcz/yYAaCKecksu6Hi1uz+SNWsJmG6IjMP2ZZv3IDh9+C3cmzUzGJJEAu4=',s:[0x3680163e46,0x04292a1908],}})();
+
+
+
+</script>
+</body>
+
+</html>

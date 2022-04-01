@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="totalFees"
+            type="String" />
+
+        <variable
+            name="cashFlows"
+            type="String" />
+
+        <variable
+            name="viewModel"
+            type="com.awonar.app.ui.portfolio.PortFolioViewModel" />
+
+        <variable
+            name="historyViewModel"
+            type="com.awonar.app.ui.history.HistoryViewModel" />
+
+        <variable
+            name="columnsViewModel"
+            type="com.awonar.app.ui.columns.ColumnsViewModel" />
+
+        <variable
+            name="startValue"
+            type="String" />
+
+        <variable
+            name="endValue"
+            type="String" />
+
+        <variable
+            name="moneyIn"
+            type="String" />
+
+        <variable
+            name="moneyOut"
+            type="String" />
+
+        <variable
+            name="profitLoss"
+            type="String" />
+
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/awonar_color_background">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:elevation="0dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_scrollFlags="scroll|snap">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_history_text_section"
+                    style="@style/Awonar.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+                    android:drawableEnd="@drawable/awonar_ic_dropdown_white"
+                    android:drawableTint="@color/black"
+                    android:text="@string/awonar_title_history"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/awonar_history_button_filter"
+                    style="@style/Awonar.Button.Icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+                    android:src="@drawable/awonar_ic_calendar"
+                    android:tint="@color/awonar_color_primary"
+                    app:layout_constraintBottom_toBottomOf="@+id/awonar_history_button_columns"
+                    app:layout_constraintEnd_toStartOf="@+id/awonar_history_button_columns"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_history_button_columns"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/awonar_history_button_columns"
+                    style="@style/Awonar.Button.Icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+                    android:src="@drawable/awonar_ic_setting"
+                    android:tint="@color/awonar_color_primary"
+                    app:layout_constraintBottom_toBottomOf="@+id/awonar_history_text_section"
+                    app:layout_constraintEnd_toStartOf="@+id/awonar_history_button_type"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_history_text_section" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/awonar_history_button_type"
+                    style="@style/Awonar.Button.Icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+                    android:src="@drawable/awonar_ic_list"
+                    android:tint="@color/awonar_color_primary"
+                    app:layout_constraintBottom_toBottomOf="@+id/awonar_history_text_section"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_history_text_section" />
+
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_history_text_start_value"
+                    style="@style/Awonar.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+                    android:text="@{startValue}"
+                    app:layout_constraintEnd_toStartOf="@+id/awonar_history_text_end_value"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintHorizontal_chainStyle="spread_inside"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_history_text_section" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_history_text_start_value_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Start Value"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_history_text_start_value"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_history_text_start_value" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_history_text_end_value"
+                    style="@style/Awonar.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+                    android:text="@{endValue}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/awonar_history_text_start_value"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_history_text_section" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_history_text_end_value_title"
+                    style="@style/Awonar.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="End Value"
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_history_text_end_value"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_history_text_end_value" />
+
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_history_text_money_in_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/awonar_size_margin_padding_normal"
+                    android:text="Money In"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_history_text_money_in"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_history_text_money_in" />
+
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_history_text_money_in"
+                    style="@style/Awonar.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+                    android:text="@{moneyIn}"
+                    app:layout_constraintEnd_toStartOf="@+id/awonar_history_text_money_out"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintHorizontal_chainStyle="spread_inside"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_history_text_start_value_title"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_history_text_start_value_title" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_history_text_money_out"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{moneyOut}"
+                    app:layout_constraintEnd_toStartOf="@+id/awonar_history_text_profitloss"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/awonar_history_text_money_in"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_history_text_money_in" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_history_text_profitloss"
+                    style="@style/Awonar.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{profitLoss}"
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_history_text_end_value_title"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/awonar_history_text_money_out"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_history_text_money_in" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_history_text_money_out_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/awonar_size_margin_padding_normal"
+                    android:text="Money Out"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_history_text_money_out"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_history_text_money_out"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_history_text_money_out" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_history_text_profitloss_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/awonar_size_margin_padding_normal"
+                    android:text="P/L ($)"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_history_text_profitloss"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_history_text_profitloss" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+            <include
+                android:id="@+id/awonar_history_include_column"
+                layout="@layout/awonar_include_column"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/awonar_history_recycler_items"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@color/awonar_color_surface"
+                app:layout_constraintBottom_toTopOf="@+id/awonar_history_cash_container"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_history_include_column" />
+
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/awonar_history_cash_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/awonar_size_margin_padding_extra_extra_small"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="@dimen/awonar_size_margin_padding_normal"
+                app:layout_constraintBottom_toTopOf="@+id/awonar_history_total_fee_container">
+
+                <TextView
+                    style="@style/Awonar.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Net Cashflows" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="@{cashFlows}" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/awonar_history_total_fee_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="@dimen/awonar_size_margin_padding_normal"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <TextView
+                    style="@style/Awonar.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Total Fees" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="@{totalFees}" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

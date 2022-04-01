@@ -7,12 +7,15 @@ import androidx.navigation.NavDirections
 import com.awonar.android.model.history.Aggregate
 import com.awonar.android.model.history.History
 import com.awonar.android.model.history.HistoryRequest
+import com.awonar.android.model.portfolio.HistoryPositionRequest
 import com.awonar.android.shared.domain.history.GetAggregateUseCase
 import com.awonar.android.shared.domain.history.GetCashFlowHistoryUseCase
 import com.awonar.android.shared.domain.history.GetHistoryUseCase
 import com.awonar.android.shared.domain.history.GetMarketHistoryUseCase
+import com.awonar.android.shared.domain.profile.GetHistoryPositionsUseCase
 import com.awonar.app.domain.history.ConvertCashFlowToItemUseCase
 import com.awonar.app.domain.history.ConvertHistoryToItemUseCase
+import com.awonar.app.domain.profile.ConvertHistoryPositionToItemUseCase
 import com.awonar.app.ui.history.adapter.HistoryItem
 import com.awonar.app.ui.history.adapter.HistoryType
 import com.molysulfur.library.result.successOr
@@ -31,11 +34,12 @@ class HistoryViewModel @Inject constructor(
     private val convertHistoryToItemUseCase: ConvertHistoryToItemUseCase,
     private val convertCashFlowToItemUseCase: ConvertCashFlowToItemUseCase,
     private val getCashFlowHistoryUseCase: GetCashFlowHistoryUseCase,
+) : ViewModel() {
 
-    ) : ViewModel() {
+    private var _page = MutableStateFlow(1)
 
-    private val _navigationInsideChannel = Channel<NavDirections>(capacity = Channel.CONFLATED)
-    val navigationInsideChannel get() = _navigationInsideChannel.receiveAsFlow()
+    private val _navigateAction = Channel<NavDirections>(capacity = Channel.CONFLATED)
+    val navigateAction get() = _navigateAction.receiveAsFlow()
 
     private val _aggregateState = MutableStateFlow<Aggregate?>(null)
     val aggregateState: StateFlow<Aggregate?> = _aggregateState
@@ -69,19 +73,21 @@ class HistoryViewModel @Inject constructor(
         }
     }
 
-    fun getHistory(page: Int = 1) {
+    fun getHistory() {
         viewModelScope.launch {
-            getHistoryUseCase(HistoryRequest(_timeStamp.value, page)).collect { result ->
-                val data = result.successOr(null)
-                val itemList: MutableList<HistoryItem> =
-                    convertHistoryToItemUseCase(
-                        data?.history?.toMutableList() ?: mutableListOf()
-                    ).successOr(mutableListOf())
-                val newPage = data?.page ?: 0
-                if (newPage > 0) {
-                    itemList.add(HistoryItem.LoadMoreItem(newPage))
+            if (_page.value > 0) {
+                getHistoryUseCase(HistoryRequest(_timeStamp.value, _page.value)).collect { result ->
+                    val data = result.successOr(null)
+                    val itemList: MutableList<HistoryItem> =
+                        convertHistoryToItemUseCase(
+                            data?.history?.toMutableList() ?: mutableListOf()
+                        ).successOr(mutableListOf())
+                    _page.value = data?.page ?: 0
+                    if (_page.value > 0) {
+                        itemList.add(HistoryItem.LoadMoreItem(_page.value))
+                    }
+                    addHistory(itemList)
                 }
-                addHistory(itemList)
             }
         }
     }
@@ -90,14 +96,17 @@ class HistoryViewModel @Inject constructor(
         viewModelScope.launch {
             _historiesState.emit(emptyList())
             _timeStamp.emit(timestamp)
-            getHistoryUseCase(HistoryRequest(_timeStamp.value)).collect { result ->
+            getHistoryUseCase(HistoryRequest(
+                timestamp = _timeStamp.value,
+                page = _page.value
+            )).collect { result ->
                 val data = result.successOr(null)
                 val itemList = convertHistoryToItemUseCase(
                     data?.history?.toMutableList() ?: mutableListOf()
                 ).successOr(mutableListOf())
-                val page = data?.page ?: 0
-                if (page > 0) {
-                    itemList.add(HistoryItem.LoadMoreItem(page))
+                _page.value = data?.page ?: 0
+                if (_page.value > 0) {
+                    itemList.add(HistoryItem.LoadMoreItem(_page.value))
                 }
                 _historiesState.emit(itemList)
             }
@@ -106,7 +115,8 @@ class HistoryViewModel @Inject constructor(
 
     private suspend fun addHistory(itemList: MutableList<HistoryItem>) {
         val data =
-            _historiesState.value.filter { it.type != HistoryType.LOADMORE_HISTORY }.toMutableList()
+            _historiesState.value.filter { it.type != HistoryType.LOADMORE_HISTORY }
+                .toMutableList()
         data.addAll(itemList)
         _historiesState.emit(data)
     }
@@ -170,11 +180,11 @@ class HistoryViewModel @Inject constructor(
         }
     }
 
-    fun navgiationTo(direction: NavDirections?) {
+    fun navgiationTo(direction: NavDirections) {
         viewModelScope.launch {
-            direction?.let {
-                _navigationInsideChannel.send(it)
-            }
+            _navigateAction.send(direction)
+
         }
     }
+
 }

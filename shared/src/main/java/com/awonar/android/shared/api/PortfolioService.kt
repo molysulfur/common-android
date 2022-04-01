@@ -6,14 +6,25 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface PortfolioService {
+
+    @GET("v1/positions/public/{username}")
+    fun getPublicPosition(
+        @Path("username") username: String,
+        @Query("symbol") symbol: String,
+    ): Call<PublicPosition?>
+
+    @GET("v1/positions/public/markets/{username}")
+    fun getUserPositionManual(@Path("username") username: String): Call<UserPortfolioResponse>
 
     @GET("v1/pending-orders")
     fun getPendingOrders(): Call<List<PendingOrder>>
 
     @GET("v1/users/info")
-    fun getUserPortFolio(): Call<UserPortfolioResponse>
+    fun getMyPositionManual(): Call<UserPortfolioResponse>
 
     @GET("v1/positions")
     fun getMyPositions(): Call<List<Position>>

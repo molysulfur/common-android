@@ -52,6 +52,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/awonar_portfolio_text_title_available"
                     style="@style/Awonar.Text.Default.Normal"
+                    setAvaliable="@{viewModel.portfolioState.available}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
@@ -63,6 +64,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/awonar_portfolio_text_title_total_allocate"
                     style="@style/Awonar.Text.Default.Normal"
+                    setAllocate="@{viewModel.portfolioState.totalAllocated}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
@@ -73,9 +75,9 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/awonar_portfolio_text_title_equity"
                     style="@style/Awonar.Text.Default.Normal"
+                    setEquity="@{+viewModel.equityState}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Equity"
                     app:layout_constraintEnd_toEndOf="@+id/awonar_portfolio_text_title_profit"
                     app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_text_title_total_allocate"
                     tools:text="@string/awonar_example_name" />
@@ -83,10 +85,10 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/awonar_portfolio_text_title_profit"
                     style="@style/Awonar.Text.Default.Normal"
+                    setProfit="@{+viewModel.profitState}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
-                    android:text="Profit"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_text_title_available"
                     tools:text="@string/awonar_example_name" />

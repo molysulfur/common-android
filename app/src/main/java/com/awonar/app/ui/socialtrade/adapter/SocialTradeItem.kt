@@ -1,8 +1,6 @@
 package com.awonar.app.ui.socialtrade.adapter
 
 import android.os.Parcelable
-import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
-import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType
 import kotlinx.parcelize.Parcelize
 
 sealed class SocialTradeItem(

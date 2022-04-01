@@ -2,6 +2,10 @@ package com.awonar.android.shared.repos
 
 import androidx.paging.*
 import com.awonar.android.model.history.*
+import com.awonar.android.model.portfolio.HistoryPosition
+import com.awonar.android.model.portfolio.HistoryPositionRequest
+import com.awonar.android.model.portfolio.HistoryPositionResponse
+import com.awonar.android.model.portfolio.PublicHistoryAggregate
 import com.awonar.android.shared.api.HistoryService
 import com.awonar.android.shared.constrant.Columns.COLUMNS_HISTORY
 import com.awonar.android.shared.constrant.Columns.DEFAULT_COLUMN_HISTORY
@@ -16,7 +20,7 @@ import javax.inject.Singleton
 @Singleton
 class HistoryRepository @Inject constructor(
     val historyService: HistoryService,
-    private val preference: PortfolioActivedColumnManager
+    private val preference: PortfolioActivedColumnManager,
 ) {
 
     fun filterCopyHistory(request: HistoryRequest) =
@@ -156,7 +160,7 @@ class HistoryRepository @Inject constructor(
 
     fun getCopiesHistory(
         username: String,
-        timestamp: Long
+        timestamp: Long,
     ): Flow<Result<CopiesAggregateResponse?>> =
         object : DirectNetworkFlow<Long, CopiesAggregateResponse?, CopiesAggregateResponse?>() {
             override fun createCall(): Response<CopiesAggregateResponse?> =
@@ -212,7 +216,53 @@ class HistoryRepository @Inject constructor(
             override fun onFetchFailed(errorMessage: String) {
                 println(errorMessage)
             }
+        }.asFlow()
+
+    fun getHistoryPositions(request: HistoryPositionRequest) =
+        object : DirectNetworkFlow<Long, List<HistoryPosition>, HistoryPositionResponse>() {
+            override fun createCall(): Response<HistoryPositionResponse> =
+                if (request.symbol.isNullOrBlank()) {
+                    historyService.getHistoryPositions(
+                        startDate = request.time,
+                        page = request.page
+                    ).execute()
+                } else {
+                    historyService.getHistoryPositions(
+                        startDate = request.time,
+                        page = request.page,
+                        symbol = request.symbol ?: ""
+                    ).execute()
+                }
+
+            override fun convertToResultType(response: HistoryPositionResponse): List<HistoryPosition> =
+                response.markets ?: emptyList()
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
 
 
+        }.asFlow()
+
+    fun getHistoryAggregate(request: HistoryPositionRequest) =
+        object : DirectNetworkFlow<Long, PublicHistoryAggregate, PublicHistoryAggregate>() {
+            override fun createCall(): Response<PublicHistoryAggregate> =
+                if (!request.symbol.isNullOrBlank()) {
+                    historyService.getHistoryAggregate(
+                        request.time,
+                        request.symbol ?: ""
+                    ).execute()
+                } else {
+                    historyService.getHistoryAggregate(
+                        request.time
+                    ).execute()
+                }
+
+            override fun convertToResultType(response: PublicHistoryAggregate): PublicHistoryAggregate =
+                response
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
         }.asFlow()
 }

@@ -2,7 +2,6 @@ package com.awonar.app.ui.history.adapter
 
 import android.os.Parcelable
 import com.awonar.android.model.history.History
-import com.awonar.android.model.portfolio.Position
 import com.awonar.android.model.user.Master
 import com.awonar.app.ui.history.adapter.HistoryType.CASHFLOW_HISTORY
 import com.awonar.app.ui.history.adapter.HistoryType.DIVIDER_HISTORY
@@ -27,7 +26,7 @@ sealed class HistoryItem(
         val fee: Float,
         val netWithdraw: Float,
         val rate: Float,
-        val localAmount: Float
+        val localAmount: Float,
     ) : HistoryItem(CASHFLOW_HISTORY)
 
     @Parcelize
@@ -45,12 +44,12 @@ sealed class HistoryItem(
         val history: History? = null,
         val positionType: String? = null,
         var buy: Float = 0f,
-        var sell: Float = 0f
+        var sell: Float = 0f,
     ) : HistoryItem(POSITION_HISTORY)
 
     @Parcelize
     data class LoadMoreItem(
-        val page: Int
+        val page: Int,
     ) : HistoryItem(LOADMORE_HISTORY)
 
     @Parcelize

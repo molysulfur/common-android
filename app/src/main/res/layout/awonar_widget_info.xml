@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="title"
+            type="String" />
+
+        <variable
+            name="description"
+            type="String" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/awonar_size_margin_padding_normal">
+
+        <TextView
+            android:id="@+id/awonar_info_text_title"
+            style="@style/Awonar.Text.Default"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{title}"
+            android:textColor="@color/awonar_color_gray"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/awonar_info_text_description"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/awonar_example_name" />
+
+        <TextView
+            android:id="@+id/awonar_info_text_description"
+            style="@style/Awonar.Text.Default.Normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{description}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/awonar_example_name" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

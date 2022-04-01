@@ -13,12 +13,12 @@
     </data>
 
     <androidx.appcompat.widget.AppCompatButton xmlns:android="http://schemas.android.com/apk/res/android"
-        style="@style/Awonar.Button.Link"
         android:id="@+id/awonar_button_item_button_list"
+        style="@style/Awonar.Button.Link"
         setAlertIcon="@{isAlert}"
+        android:gravity="start"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="left|center"
         android:padding="@dimen/awonar_size_margin_padding_normal"
         android:text="@{text}"
         android:textColor="@color/awonar_color_text_primary"

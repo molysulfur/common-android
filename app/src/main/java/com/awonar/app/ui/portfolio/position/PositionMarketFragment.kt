@@ -7,21 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.awonar.android.model.portfolio.Position
 import com.awonar.android.shared.steaming.QuoteSteamingManager
 import com.awonar.app.databinding.AwonarFragmentPositionMarketBinding
 import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.awonar.app.ui.portfolio.adapter.IPortfolioListItemTouchHelperCallback
-import com.awonar.app.ui.portfolio.adapter.OrderPortfolioAdapter
-import com.awonar.app.ui.portfolio.adapter.OrderPortfolioType
+import com.awonar.app.ui.portfolio.adapter.PortfolioAdapter
+import com.awonar.app.ui.portfolio.adapter.PortfolioType
 import com.awonar.app.ui.portfolio.adapter.PortfolioListItemTouchHelperCallback
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
-import timber.log.Timber
 
 class PositionMarketFragment : Fragment() {
 
@@ -38,16 +35,6 @@ class PositionMarketFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        launchAndRepeatWithViewLifecycle {
-            QuoteSteamingManager.quotesState.collect { quotes ->
-                val adapter = binding.awonarPositionMarketRecycler.adapter
-                if (adapter != null) {
-                    (adapter as OrderPortfolioAdapter).let {
-                        it.quote = quotes
-                    }
-                }
-            }
-        }
         launchAndRepeatWithViewLifecycle {
             viewModel.positionState.collect { position ->
                 position?.let {
@@ -79,7 +66,7 @@ class PositionMarketFragment : Fragment() {
 
                 override fun onClose(position: Int) {
                     when (activityViewModel.positionItems.value[position].type) {
-                        OrderPortfolioType.INSTRUMENT_PORTFOLIO -> activityViewModel.navigateInstrumentInside(
+                        PortfolioType.INSTRUMENT_PORTFOLIO -> activityViewModel.navigateInstrumentInside(
                             position,
                             "instrument")
                     }

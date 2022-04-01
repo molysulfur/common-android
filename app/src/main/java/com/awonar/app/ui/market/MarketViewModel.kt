@@ -30,15 +30,11 @@ class MarketViewModel @Inject constructor(
     private val convertRememberToItemUseCase: ConvertRememberToItemUseCase,
     private val convertInstrumentStockToItemUseCase: ConvertInstrumentStockToItemUseCase,
     private val convertInstrumentToItemUseCase: ConvertInstrumentToItemUseCase,
-    private val getTradingDataByInstrumentIdUseCase: GetTradingDataByInstrumentIdUseCase,
     private val getConversionByInstrumentUseCase: GetConversionByInstrumentUseCase,
     private val quoteSteamingManager: QuoteSteamingManager,
 ) : ViewModel() {
 
-    val tradingDataState = MutableSharedFlow<TradingData?>()
-
     private val _conversionRateState = MutableStateFlow(0f)
-    val conversionRateState: StateFlow<Float> get() = _conversionRateState
 
     private val _conversionRateListState = MutableStateFlow<HashMap<Int, Float>>(hashMapOf())
     val conversionRateListState: StateFlow<HashMap<Int, Float>> get() = _conversionRateListState
@@ -46,7 +42,8 @@ class MarketViewModel @Inject constructor(
     private val _viewMoreState = Channel<MarketViewMoreArg?>(capacity = Channel.CONFLATED)
     val viewMoreState = _viewMoreState.receiveAsFlow()
 
-    private val _quoteSteamingState = MutableStateFlow<Array<Quote>>(emptyArray())
+    private val _quoteSteamingState
+    = MutableStateFlow<Array<Quote>>(emptyArray())
     val quoteSteamingState: StateFlow<Array<Quote>> get() = _quoteSteamingState
 
     private val _marketTabState =
@@ -58,31 +55,13 @@ class MarketViewModel @Inject constructor(
         MutableStateFlow<List<InstrumentItem>>(arrayListOf(InstrumentItem.LoadingItem()))
     val instrumentItem: StateFlow<List<InstrumentItem>> get() = _instrumentItem
 
-    val instruments: StateFlow<List<Instrument>> = getInstrumentListUseCase(Unit).map {
+    val instruments: StateFlow<List<Instrument>> = getInstrumentListUseCase(false).map {
         val list = it.successOr(emptyList()) ?: emptyList()
         list
     }.stateIn(viewModelScope, WhileViewSubscribed, emptyList())
 
-    private val listener = object : QuoteSteamingListener {
-        override fun marketStatusCallback(event: String, data: Any) {
-        }
-
-        override fun marketQuoteCallback(event: String, data: Array<Quote>) {
-//            _quoteSteamingState.value = data.map {
-//                HashMap(it.id, it)
-//            }
-        }
-    }
-
     init {
-        quoteSteamingManager.setListener(listener)
         subscribe()
-    }
-
-    fun getTradingData(intrumentId: Int) {
-        viewModelScope.launch {
-            tradingDataState.emit(getTradingDataByInstrumentIdUseCase(intrumentId).successOr(null))
-        }
     }
 
     fun convertInstrumentToItem() {
@@ -102,7 +81,7 @@ class MarketViewModel @Inject constructor(
     fun convertInstrumentCryptoToItem() {
         viewModelScope.launch {
             val instrumentList =
-                instruments.value.filter { it.categories?.contains("crypto") == true }
+                instruments.value.filter { it.categories.contains("crypto") }
             _instrumentItem.value =
                 convertInstrumentToItemUseCase(instrumentList).data ?: arrayListOf()
         }
@@ -111,7 +90,7 @@ class MarketViewModel @Inject constructor(
     fun convertInstrumentCurrenciesToItem() {
         viewModelScope.launch {
             val instrumentList =
-                instruments.value.filter { it.categories?.contains("currencies") == true }
+                instruments.value.filter { it.categories.contains("currencies") }
             _instrumentItem.value =
                 convertInstrumentToItemUseCase(instrumentList).data ?: arrayListOf()
         }
@@ -119,7 +98,7 @@ class MarketViewModel @Inject constructor(
 
     fun convertInstrumentETFsToItem() {
         viewModelScope.launch {
-            val instrumentList = instruments.value.filter { it.categories?.contains("etf") == true }
+            val instrumentList = instruments.value.filter { it.categories.contains("etf") }
             _instrumentItem.value =
                 convertInstrumentToItemUseCase(instrumentList).data ?: arrayListOf()
         }
@@ -145,7 +124,6 @@ class MarketViewModel @Inject constructor(
             QuoteSteamingEvent.subscribe,
             "$id"
         )
-        quoteSteamingManager.setListener(listener)
     }
 
     fun subscribe() {
@@ -163,7 +141,6 @@ class MarketViewModel @Inject constructor(
                 )
             }
         }
-        quoteSteamingManager.setListener(listener)
     }
 
     fun unsubscribe() {

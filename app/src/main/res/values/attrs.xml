@@ -55,4 +55,16 @@
         <attr name="listItemView_setSubTitle" format="string" />
         <attr name="listItemView_setMeta" format="string" />
     </declare-styleable>
+
+    <declare-styleable name="SearchItemView">
+        <attr name="searchItemView_setStartIcon" format="reference" />
+        <attr name="searchItemView_setTextButton" format="string" />
+        <attr name="searchItemView_setTitle" format="string" />
+        <attr name="searchItemView_setSubTitle" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="SectorView">
+        <attr name="sectorView_setText" format="string" />
+        <attr name="sectorView_setActionText" format="string" />
+    </declare-styleable>
 </resources>

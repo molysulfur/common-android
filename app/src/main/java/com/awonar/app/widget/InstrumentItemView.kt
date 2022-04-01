@@ -35,25 +35,16 @@ class InstrumentItemView : BaseViewGroup {
     private var change: Float = 0f
     private var percentChange: Float = 0f
     private var digit: Int = 4
-    private var askUp: Boolean = true
-    private var bidUp: Boolean = true
 
     private lateinit var binding: AwonarWidgetInstrumentItemViewBinding
 
     var onOpenOrder: ((Boolean) -> Unit)? = null
 
-    private val anim: Animation = AlphaAnimation(0.5f, 1.0f)
-
-    init {
-        anim.duration = 1000
-        anim.startOffset = 10
-    }
-
     override fun setup() {
-        binding.awonarInstrumentItemTextBid.setOnClickListener {
+        binding.awonarInstrumentItemTextBid.onClick = {
             onOpenOrder?.invoke(false)
         }
-        binding.awonarInstrumentItemTextAsk.setOnClickListener {
+        binding.awonarInstrumentItemTextAsk.onClick = {
             onOpenOrder?.invoke(true)
         }
         updateImage()
@@ -79,7 +70,7 @@ class InstrumentItemView : BaseViewGroup {
     }
 
     private fun updateAsk() {
-        binding.awonarInstrumentItemTextAsk.text = "$ask"
+        binding.awonarInstrumentItemTextAsk.setNumber(ask)
     }
 
     fun setBid(bid: Float) {
@@ -88,70 +79,7 @@ class InstrumentItemView : BaseViewGroup {
     }
 
     private fun updateBid() {
-        binding.awonarInstrumentItemTextBid.text = "$bid"
-    }
-
-    fun startAnimationBid(newBid: Float) {
-        if (newBid != bid) {
-            val isUp = bid <= newBid
-            if (isUp != bidUp) {
-                bidUp = isUp
-                blinkColor(binding.awonarInstrumentItemTextBid, bidUp)
-            }
-        }
-    }
-
-    fun startAnimationAsk(newAsk: Float) {
-        if (newAsk != ask) {
-            val isUp = ask <= newAsk
-            if (isUp != askUp) {
-                askUp = isUp
-                blinkColor(binding.awonarInstrumentItemTextAsk, askUp)
-            }
-        }
-    }
-
-    private fun blinkColor(view: View, isUp: Boolean) {
-        anim.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation?) {
-                when (isUp) {
-                    true -> (view as Button).apply {
-                        setTextColor(ContextCompat.getColor(context, R.color.white))
-                        background =
-                            ContextCompat.getDrawable(
-                                context,
-                                R.drawable.awonar_ripple_green
-                            )
-                    }
-                    false -> (view as Button).apply {
-                        setTextColor(ContextCompat.getColor(context, R.color.white))
-                        background =
-                            ContextCompat.getDrawable(
-                                context,
-                                R.drawable.awonar_ripple_orange
-                            )
-                    }
-                }
-            }
-
-            override fun onAnimationEnd(animation: Animation?) {
-                (view as Button).setTextColor(
-                    ContextCompat.getColor(
-                        context,
-                        R.color.awonar_color_text_primary
-                    )
-                )
-                view.background = ContextCompat.getDrawable(
-                    context,
-                    R.drawable.awonar_ripple_light_gray
-                )
-            }
-
-            override fun onAnimationRepeat(animation: Animation?) {
-            }
-
-        })
-        view.startAnimation(anim)
+        binding.awonarInstrumentItemTextBid.setNumber(bid)
     }
 
     private fun updateImage() {
@@ -234,8 +162,6 @@ class InstrumentItemView : BaseViewGroup {
         ss?.change = change
         ss?.percentChange = percentChange
         ss?.digit = digit
-        ss?.bidUp = bidUp
-        ss?.askUp = askUp
         return ss
     }
 
@@ -250,8 +176,6 @@ class InstrumentItemView : BaseViewGroup {
         bid = ss.bid
         change = ss.change
         percentChange = ss.percentChange
-        bidUp = ss.bidUp
-        askUp = ss.askUp
         updateImage()
         updateAsk()
         updateBid()
@@ -270,8 +194,6 @@ class InstrumentItemView : BaseViewGroup {
         var change: Float = 0f
         var percentChange: Float = 0f
         var digit: Int = 4
-        var askUp: Boolean = true
-        var bidUp: Boolean = true
 
         constructor(superState: Parcelable) : super(superState)
 
@@ -285,9 +207,6 @@ class InstrumentItemView : BaseViewGroup {
             change = parcel.readFloat()
             percentChange = parcel.readFloat()
             digit = parcel.readInt()
-            askUp = parcel.readBooleanUsingCompat()
-            bidUp = parcel.readBooleanUsingCompat()
-
         }
 
         override fun writeToParcel(out: Parcel, flags: Int) {
@@ -301,8 +220,6 @@ class InstrumentItemView : BaseViewGroup {
             out.writeFloat(change)
             out.writeFloat(percentChange)
             out.writeInt(digit)
-            out.writeBooleanUsingCompat(askUp)
-            out.writeBooleanUsingCompat(bidUp)
         }
 
         companion object {
@@ -339,6 +256,6 @@ class InstrumentItemView : BaseViewGroup {
         context: Context,
         attrs: AttributeSet?,
         defStyleAttr: Int,
-        defStyleRes: Int
+        defStyleRes: Int,
     ) : super(context, attrs, defStyleAttr, defStyleRes)
 }

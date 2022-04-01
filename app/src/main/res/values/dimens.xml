@@ -24,4 +24,5 @@
     <dimen name="awonar_radius_size_small">5dp</dimen>
 
     <dimen name="awonar_elevation_normal">4dp</dimen>
+    <dimen name="awonar_size_chart_height">200dp</dimen>
 </resources>

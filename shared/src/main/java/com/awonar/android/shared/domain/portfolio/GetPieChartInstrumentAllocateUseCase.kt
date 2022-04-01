@@ -20,13 +20,13 @@ class GetPieChartInstrumentAllocateUseCase @Inject constructor(
         portfolioRepository.getUserPortfolio().collect { result ->
             val position = result.successOr(null)
             val positionWithCategory =
-                position?.positions?.filter { it.instrument.categories?.indexOf(parameters) ?: -1 >= 0 }
+                position?.positions?.filter { it.instrument?.categories?.indexOf(parameters) ?: -1 >= 0 }
             val allocate = HashMap<String, Double>()
             val totalAmount =
                 positionWithCategory
                     ?.sumOf { it.amount.toDouble() } ?: 0.0
             val positionByType: Map<String?, List<Position>> =
-                positionWithCategory?.groupBy { it.instrument.symbol } ?: emptyMap()
+                positionWithCategory?.groupBy { it.instrument?.symbol } ?: emptyMap()
             for ((k, v) in positionByType) {
                 val allocateByType = v.sumOf { it.amount.toDouble() }
                 allocate[k ?: ""] = allocateByType.div(totalAmount).times(100)

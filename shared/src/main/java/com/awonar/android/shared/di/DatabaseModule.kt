@@ -3,7 +3,9 @@ package com.awonar.android.shared.di
 import android.app.Application
 import com.awonar.android.shared.db.room.AppDatabase
 import com.awonar.android.shared.db.room.conversionrate.ConversionRateDao
+import com.awonar.android.shared.db.room.instrument.InstrumentDao
 import com.awonar.android.shared.db.room.trading.TradingDataDao
+import com.awonar.android.shared.db.room.watchlist.WatchlistFolderDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,5 +33,14 @@ class DatabaseModule {
         return appDatabase.conversionDao()
     }
 
+    @Provides
+    fun provideWatchlistFolderDao(appDatabase: AppDatabase): WatchlistFolderDao {
+        return appDatabase.watchlistFolderDao()
+    }
+
+    @Provides
+    fun provideInstrumentDao(appDatabase: AppDatabase): InstrumentDao {
+        return appDatabase.instrumentDao()
+    }
 
 }

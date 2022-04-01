@@ -4,18 +4,17 @@ import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.portfolio.Position
 import com.awonar.android.shared.di.IoDispatcher
 import com.awonar.android.shared.repos.CurrenciesRepository
-import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
+import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 import com.molysulfur.library.usecase.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
-import timber.log.Timber
 import javax.inject.Inject
 
 class ConvertCopierToItemUseCase @Inject constructor(
     private val currenciesRepository: CurrenciesRepository,
-    @IoDispatcher dispatcher: CoroutineDispatcher
-) : UseCase<List<Copier>, MutableList<OrderPortfolioItem>>(dispatcher) {
-    override suspend fun execute(parameters: List<Copier>): MutableList<OrderPortfolioItem> {
-        val itemList = mutableListOf<OrderPortfolioItem>()
+    @IoDispatcher dispatcher: CoroutineDispatcher,
+) : UseCase<List<Copier>, MutableList<PortfolioItem>>(dispatcher) {
+    override suspend fun execute(parameters: List<Copier>): MutableList<PortfolioItem> {
+        val itemList = mutableListOf<PortfolioItem>()
         parameters.forEachIndexed { index, copier ->
             val conversions = HashMap<Int, Float>()
             copier.positions?.forEach { position ->
@@ -37,22 +36,24 @@ class ConvertCopierToItemUseCase @Inject constructor(
             val pl = 0f // cal after get realtime
             val plPercent = 0f// cal after get realtime
             val value = 0f // cal after get realtime
+            with(copier) {
+                this.units = totalUnits.toFloat()
+                this.avgOpen = avgOpen.toFloat()
+                this.invested = invested
+                this.profitLoss = pl
+                this.profitLossPercent = plPercent
+                this.value = value
+                this.fees = fees
+                this.leverage = leverage
+                this.current = current
+                this.netInvested = netInvested
+                this.copyStopLoss = csl
+                this.copyStopLossPercent = cslPercent
+            }
             itemList.add(
-                OrderPortfolioItem.CopierPortfolioItem(
+                PortfolioItem.CopierPortfolioItem(
                     copier = copier,
                     conversions = conversions,
-                    units = totalUnits.toFloat(),
-                    avgOpen = avgOpen.toFloat(),
-                    invested = invested,
-                    profitLoss = pl,
-                    profitLossPercent = plPercent,
-                    value = value,
-                    fees = fees,
-                    leverage = leverage,
-                    current = current,
-                    netInvested = netInvested,
-                    copyStopLoss = csl,
-                    copyStopLossPercent = cslPercent,
                     index = index
                 )
             )

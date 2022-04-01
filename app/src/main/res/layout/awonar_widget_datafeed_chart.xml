@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/awonar_datafeed_button_group_timeframe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <Button
+                android:id="@+id/awonar_datafeed_button_1d"
+                style="@style/Awonar.Button.Toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp"
+                android:text="@string/awonar_text_1d" />
+
+            <Button
+                android:id="@+id/awonar_datafeed_button_1m"
+                style="@style/Awonar.Button.Toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/awonar_text_1m" />
+
+            <Button
+                android:id="@+id/awonar_datafeed_button_3m"
+                style="@style/Awonar.Button.Toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/awonar_text_3m" />
+
+            <Button
+                android:id="@+id/awonar_datafeed_button_6m"
+                style="@style/Awonar.Button.Toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/awonar_text_6m" />
+
+            <Button
+                android:id="@+id/awonar_datafeed_button_1y"
+                style="@style/Awonar.Button.Toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/awonar_text_1y" />
+
+            <Button
+                android:id="@+id/awonar_datafeed_button_3y"
+                style="@style/Awonar.Button.Toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/awonar_text_3y" />
+
+            <Button
+                android:id="@+id/awonar_datafeed_button_max"
+                style="@style/Awonar.Button.Toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/awonar_text_max" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/awonar_datafeed_chart"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_datafeed_button_group_timeframe"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

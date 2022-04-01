@@ -4,13 +4,18 @@
     android:id="@+id/awonar_profile_graph"
     app:startDestination="@id/userInfoFragment">
 
-
     <fragment
         android:id="@+id/profilePrivateFragment"
         android:name="com.awonar.app.ui.profile.ProfilePrivateFragment"
         android:label="ProfilePrivateFragment" />
+
     <fragment
         android:id="@+id/userInfoFragment"
         android:name="com.awonar.app.ui.user.UserInfoFragment"
         android:label="UserInfoFragment" />
+    <fragment
+        android:id="@+id/statisticProfileFragment"
+        android:name="com.awonar.app.ui.profile.StatisticProfileFragment"
+        android:label="StatisticProfileFragment" />
+
 </navigation>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="column1"
+            type="String" />
+
+        <variable
+            name="column2"
+            type="String" />
+
+        <variable
+            name="column3"
+            type="String" />
+
+        <variable
+            name="column4"
+            type="String" />
+
+        <variable
+            name="item"
+            type="com.awonar.android.model.portfolio.Copier" />
+
+    </data>
+
+    <com.awonar.app.widget.PositionView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/awonar_insturment_order_item"
+        column1="@{column1}"
+        column2="@{column2}"
+        column3="@{column3}"
+        column4="@{column4}"
+        setCopierPosition="@{item}"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/awonar_ripple_white"
+        android:padding="@dimen/awonar_size_margin_padding_normal" />
+
+</layout>

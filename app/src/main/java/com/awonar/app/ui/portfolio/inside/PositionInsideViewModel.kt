@@ -7,7 +7,8 @@ import com.awonar.android.model.portfolio.Position
 import com.awonar.android.model.portfolio.UserPortfolioResponse
 import com.awonar.app.domain.portfolio.ConvertGroupPositionToItemUseCase
 import com.awonar.app.domain.portfolio.ConvertPositionToItemUseCase
-import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
+import com.awonar.app.domain.portfolio.ConvertPublicPositionToItemUseCase
+import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 import com.awonar.app.utils.DateUtils
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,13 +18,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class PositionInsideViewModel @Inject constructor(
     private val convertPositionToItemUseCase: ConvertPositionToItemUseCase,
     private val convertPositionGroupPositionToItemUseCase: ConvertGroupPositionToItemUseCase,
+    private val convertPublicPositionToItemUseCase: ConvertPublicPositionToItemUseCase,
 ) : ViewModel() {
 
     private val _editDialog = Channel<Position?>(capacity = Channel.CONFLATED)
@@ -37,15 +38,22 @@ class PositionInsideViewModel @Inject constructor(
     private val _copiesState: MutableStateFlow<Copier?> = MutableStateFlow(null)
     val copiesState: StateFlow<Copier?> get() = _copiesState
 
-    private val _positionItems: MutableStateFlow<MutableList<OrderPortfolioItem>> =
-        MutableStateFlow(mutableListOf(OrderPortfolioItem.EmptyItem()))
-    val positionItems: StateFlow<MutableList<OrderPortfolioItem>> get() = _positionItems
+    private val _positionItems: MutableStateFlow<MutableList<PortfolioItem>> =
+        MutableStateFlow(mutableListOf(PortfolioItem.EmptyItem()))
+    val positionItems: StateFlow<MutableList<PortfolioItem>> get() = _positionItems
+
+    fun convertPublicPosition(positions: List<Position>) {
+        viewModelScope.launch {
+            val itemList = convertPublicPositionToItemUseCase(positions).successOr(mutableListOf())
+            _positionItems.emit(itemList)
+        }
+    }
 
     fun convertPosition(userPosition: UserPortfolioResponse?, index: Int) {
         viewModelScope.launch {
             val position: Position? = userPosition?.positions?.get(index)
             val positionList: List<Position> =
-                userPosition?.positions?.filter { it.instrument.id == position?.instrument?.id }
+                userPosition?.positions?.filter { it.instrument?.id == position?.instrument?.id }
                     ?: emptyList()
             if (positionList.isNotEmpty()) {
                 val items = convertPositionToItemUseCase(positionList).successOr(emptyList())
@@ -64,7 +72,8 @@ class PositionInsideViewModel @Inject constructor(
                 val items =
                     convertPositionGroupPositionToItemUseCase(positionList).successOr(emptyList())
                         .toMutableList()
-                items.add(0, OrderPortfolioItem.SectionItem("Start Copy ${DateUtils.getDate(copies.startedCopyDate)}"))
+                items.add(0,
+                    PortfolioItem.SectionItem("Start Copy ${DateUtils.getDate(copies.startedCopyDate)}"))
                 _copiesState.value = copies
                 _positionItems.value = items
             }
@@ -75,7 +84,7 @@ class PositionInsideViewModel @Inject constructor(
         viewModelScope.launch {
             val item = _positionItems.value[position]
             when (item) {
-                is OrderPortfolioItem.InstrumentPortfolioItem -> {
+                is PortfolioItem.InstrumentPortfolioItem -> {
                     _closeDialog.send(item.position)
                 }
                 else -> {}
@@ -87,7 +96,7 @@ class PositionInsideViewModel @Inject constructor(
         viewModelScope.launch {
             val item = _positionItems.value[position]
             when (item) {
-                is OrderPortfolioItem.InstrumentPortfolioItem -> {
+                is PortfolioItem.InstrumentPortfolioItem -> {
                     _editDialog.send(item.position)
                 }
                 else -> {}
@@ -101,7 +110,7 @@ class PositionInsideViewModel @Inject constructor(
                 val position = copies.positions?.get(currentIndex)
                 position?.let { position ->
                     val items =
-                        convertPositionToItemUseCase(copies.positions?.filter { it.instrument.id == position.instrument.id }
+                        convertPositionToItemUseCase(copies.positions?.filter { it.instrument?.id == position.instrument?.id }
                             ?: emptyList()).successOr(
                             emptyList())
                     _positionState.value = position

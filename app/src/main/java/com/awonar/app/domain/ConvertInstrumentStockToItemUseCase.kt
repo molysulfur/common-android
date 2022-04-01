@@ -18,16 +18,13 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
 
     override suspend fun execute(parameters: List<Instrument>): List<InstrumentItem> {
         val itemList = arrayListOf<InstrumentItem>()
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Financial Service"))
-        itemList.add(InstrumentItem.BlankItem())
         takeInstrumentWithCategory(
             instruments = parameters,
             category = "financial-services"
         ).forEachIndexed { index, instrument ->
             addInstrument(itemList, index, instrument)
         }
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(
             InstrumentItem.InstrumentViewMoreItem(
                 MarketViewMoreArg(
@@ -37,16 +34,13 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             )
         )
 
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Healthcare"))
-        itemList.add(InstrumentItem.BlankItem())
         takeInstrumentWithCategory(
             instruments = parameters,
             category = "healthcare"
         ).forEachIndexed { index, instrument ->
             addInstrument(itemList, index, instrument)
         }
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(
             InstrumentItem.InstrumentViewMoreItem(
                 MarketViewMoreArg(
@@ -56,16 +50,13 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             )
         )
 
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Technology"))
-        itemList.add(InstrumentItem.BlankItem())
         takeInstrumentWithCategory(
             instruments = parameters,
             category = "technology"
         ).forEachIndexed { index, instrument ->
             addInstrument(itemList, index, instrument)
         }
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(
             InstrumentItem.InstrumentViewMoreItem(
                 MarketViewMoreArg(
@@ -75,16 +66,13 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             )
         )
 
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Industrials"))
-        itemList.add(InstrumentItem.BlankItem())
         takeInstrumentWithCategory(
             instruments = parameters,
             category = "industrials"
         ).forEachIndexed { index, instrument ->
             addInstrument(itemList, index, instrument)
         }
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(
             InstrumentItem.InstrumentViewMoreItem(
                 MarketViewMoreArg(
@@ -94,16 +82,13 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             )
         )
 
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Consumer Cyclical"))
-        itemList.add(InstrumentItem.BlankItem())
         takeInstrumentWithCategory(
             instruments = parameters,
             category = "consumer-cyclical"
         ).forEachIndexed { index, instrument ->
             addInstrument(itemList, index, instrument)
         }
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(
             InstrumentItem.InstrumentViewMoreItem(
                 MarketViewMoreArg(
@@ -113,16 +98,13 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             )
         )
 
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Real Estate"))
-        itemList.add(InstrumentItem.BlankItem())
         takeInstrumentWithCategory(
             instruments = parameters,
             category = "real-estate"
         ).forEachIndexed { index, instrument ->
             addInstrument(itemList, index, instrument)
         }
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(
             InstrumentItem.InstrumentViewMoreItem(
                 MarketViewMoreArg(
@@ -132,28 +114,22 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             )
         )
 
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Energy"))
-        itemList.add(InstrumentItem.BlankItem())
         takeInstrumentWithCategory(
             instruments = parameters,
             category = "energy"
         ).forEachIndexed { index, instrument ->
             addInstrument(itemList, index, instrument)
         }
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.InstrumentViewMoreItem(MarketViewMoreArg("energy", "sector")))
 
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Basic Materials"))
-        itemList.add(InstrumentItem.BlankItem())
         takeInstrumentWithCategory(
             instruments = parameters,
             category = "basic-materials"
         ).forEachIndexed { index, instrument ->
             addInstrument(itemList, index, instrument)
         }
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(
             InstrumentItem.InstrumentViewMoreItem(
                 MarketViewMoreArg(
@@ -163,16 +139,13 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             )
         )
 
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Consumer Defensive"))
-        itemList.add(InstrumentItem.BlankItem())
         takeInstrumentWithCategory(
             instruments = parameters,
             category = "consumer-defensive"
         ).forEachIndexed { index, instrument ->
             addInstrument(itemList, index, instrument)
         }
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(
             InstrumentItem.InstrumentViewMoreItem(
                 MarketViewMoreArg(
@@ -182,16 +155,13 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             )
         )
 
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Unility"))
-        itemList.add(InstrumentItem.BlankItem())
         takeInstrumentWithCategory(
             instruments = parameters,
             category = "utilities"
         ).forEachIndexed { index, instrument ->
             addInstrument(itemList, index, instrument)
         }
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(
             InstrumentItem.InstrumentViewMoreItem(
                 MarketViewMoreArg(
@@ -201,16 +171,13 @@ class ConvertInstrumentStockToItemUseCase @Inject constructor(
             )
         )
 
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(InstrumentItem.TitleItem("Communication Services"))
-        itemList.add(InstrumentItem.BlankItem())
         takeInstrumentWithCategory(
             instruments = parameters,
             category = "communication-services"
         ).forEachIndexed { index, instrument ->
             addInstrument(itemList, index, instrument)
         }
-        itemList.add(InstrumentItem.BlankItem())
         itemList.add(
             InstrumentItem.InstrumentViewMoreItem(
                 MarketViewMoreArg(

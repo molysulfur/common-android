@@ -16,6 +16,18 @@ class NetworkModule {
 
     @Singleton
     @Provides
+    fun provideMarketProfileService(client: NetworkClient): MarketProfileService {
+        return MarketProfileService.create(client)
+    }
+
+    @Singleton
+    @Provides
+    fun provideProfileService(client: NetworkClient): ProfileService {
+        return ProfileService.create(client)
+    }
+
+    @Singleton
+    @Provides
     fun provideAccessTokenManager(app: Application) = AccessTokenManager(hawk = HawkUtil(app))
 
     @Singleton
@@ -82,4 +94,17 @@ class NetworkModule {
     fun provideSocialTradeService(client: NetworkClient): SocialTradeService {
         return SocialTradeService.create(client)
     }
+
+    @Singleton
+    @Provides
+    fun provideWatchlistService(client: NetworkClient): WatchlistService {
+        return WatchlistService.create(client)
+    }
+
+    @Singleton
+    @Provides
+    fun provideSearchService(client: NetworkClient): SearchService {
+        return SearchService.create(client)
+    }
 }
+

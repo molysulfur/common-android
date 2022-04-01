@@ -11,6 +11,7 @@ import com.awonar.android.model.portfolio.Portfolio
 import com.awonar.android.shared.steaming.QuoteSteamingManager
 import com.awonar.app.databinding.AwonarFragmentPortfolioBinding
 import com.awonar.app.dialog.menu.MenuDialog
+import com.awonar.app.dialog.menu.MenuDialogButtonSheet
 import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.order.OrderViewModel
@@ -35,7 +36,6 @@ class PortFolioFragment : Fragment() {
     private val columnsViewModel: ColumnsViewModel by activityViewModels()
     private val orderViewModel: OrderViewModel by activityViewModels()
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -50,9 +50,7 @@ class PortFolioFragment : Fragment() {
         launchAndRepeatWithViewLifecycle {
             launch {
                 QuoteSteamingManager.quotesState.collect { quotes ->
-                    portfolio?.let {
-                        portViewModel.sumTotalProfitAndEquity(it, quotes)
-                    }
+                    portViewModel.sumTotalProfitAndEquity(quotes)
                 }
             }
             launch {
@@ -78,30 +76,8 @@ class PortFolioFragment : Fragment() {
                 }
             }
             launch {
-                portViewModel.profitState.collect {
-                    binding.awonarPortfolioTextTitleProfit.setTextColor(ColorChangingUtil.getTextColorChange(
-                        requireContext(),
-                        it))
-                    binding.awonarPortfolioTextTitleProfit.text =
-                        "Profit : \$%.2f".format(it)
-                }
-            }
-            launch {
-                portViewModel.equityState.collect {
-                    binding.awonarPortfolioTextTitleEquity.setTextColor(ColorChangingUtil.getTextColorChange(
-                        requireContext(),
-                        it))
-                    binding.awonarPortfolioTextTitleEquity.text =
-                        "Equity : \$%.2f".format(it)
-                }
-            }
-            launch {
                 portViewModel.portfolioState.collect {
                     portfolio = it
-                    binding.awonarPortfolioTextTitleAvailable.text =
-                        "Available : \$%.2f".format(portfolio?.available ?: 0f)
-                    binding.awonarPortfolioTextTitleTotalAllocate.text =
-                        "Allocate : \$%.2f".format(portfolio?.totalAllocated ?: 0f)
                 }
             }
         }
@@ -112,22 +88,4 @@ class PortFolioFragment : Fragment() {
         return binding.root
     }
 
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupDialog()
-    }
-
-    private fun setupDialog() {
-        val menus = arrayListOf(
-            MenuDialog(
-                key = "com.awonar.app.ui.portfolio.sector.history",
-                text = "History"
-            ),
-            MenuDialog(
-                key = "com.awonar.app.ui.portfolio.sector.orders",
-                text = "Orders"
-            )
-        )
-    }
 }

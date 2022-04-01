@@ -5,11 +5,14 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDirections
 import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.portfolio.Position
+import com.awonar.android.model.portfolio.PublicPosition
+import com.awonar.android.model.portfolio.PublicPositionRequest
+import com.awonar.android.shared.domain.portfolio.GetPositionPublicBySymbolUseCase
 import com.awonar.app.domain.portfolio.ConvertCopierToItemUseCase
 import com.awonar.app.domain.portfolio.ConvertGroupPositionToItemUseCase
 import com.awonar.app.domain.portfolio.ConvertPositionToCardItemUseCase
 import com.awonar.app.domain.portfolio.ConvertPositionToItemUseCase
-import com.awonar.app.ui.portfolio.adapter.OrderPortfolioItem
+import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 import com.awonar.app.ui.portfolio.inside.PortFolioInsideCopierFragmentDirections
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PositionViewModel @Inject constructor(
+    private val getPositionPublicBySymbolUseCase: GetPositionPublicBySymbolUseCase,
     private val convertPositionToItemUseCase: ConvertPositionToItemUseCase,
     private val convertPositionToCardItemUseCase: ConvertPositionToCardItemUseCase,
     private val convertPositionGroupPositionToItemUseCase: ConvertGroupPositionToItemUseCase,
@@ -29,9 +33,12 @@ class PositionViewModel @Inject constructor(
     private val _navigateActions = Channel<NavDirections>(Channel.CONFLATED)
     val navigateActions get() = _navigateActions.receiveAsFlow()
 
-    private val _positionItems: MutableStateFlow<MutableList<OrderPortfolioItem>> =
-        MutableStateFlow(mutableListOf(OrderPortfolioItem.EmptyItem()))
-    val positionItems: StateFlow<MutableList<OrderPortfolioItem>> get() = _positionItems
+    private val _publicPosition: MutableStateFlow<PublicPosition?> = MutableStateFlow(null)
+    val publicPosition get() = _publicPosition
+
+    private val _positionItems: MutableStateFlow<MutableList<PortfolioItem>> =
+        MutableStateFlow(mutableListOf(PortfolioItem.EmptyItem()))
+    val positionItems: StateFlow<MutableList<PortfolioItem>> get() = _positionItems
 
     fun convertManual(it: List<Position>) {
         viewModelScope.launch {
@@ -46,7 +53,7 @@ class PositionViewModel @Inject constructor(
                 flowOf(convertPositionGroupPositionToItemUseCase(positions).successOr(listOf())),
                 flowOf(convertCopierToItemUseCase(copies).successOr(listOf()))
             ) { position, copies ->
-                val list = mutableListOf<OrderPortfolioItem>()
+                val list = mutableListOf<PortfolioItem>()
                 list.addAll(position)
                 list.addAll(copies)
                 list
@@ -79,6 +86,18 @@ class PositionViewModel @Inject constructor(
             val positionItemResult =
                 convertPositionToCardItemUseCase(positions).successOr(emptyList())
             _positionItems.emit(positionItemResult.toMutableList())
+        }
+    }
+
+    fun getInsidePublic(username: String?, symbol: String?) {
+        viewModelScope.launch {
+            if (username != null && symbol != null) {
+                getPositionPublicBySymbolUseCase(
+                    PublicPositionRequest(username, symbol)
+                ).collect {
+                    _publicPosition.emit(it.successOr(null))
+                }
+            }
         }
     }
 }

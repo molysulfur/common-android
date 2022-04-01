@@ -36,22 +36,24 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/awoanr_list_item_view_text_title"
             style="@style/Awonar.SubTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/awonar_size_margin_padding_small"
+            android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
             android:text="@{title}"
             app:layout_constraintBottom_toTopOf="@+id/awoanr_list_item_view_text_subTitle"
+            app:layout_constraintEnd_toStartOf="@+id/awoanr_list_item_view_text_meta"
             app:layout_constraintStart_toEndOf="@+id/awoanr_list_item_view_image_icon_start"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/awoanr_list_item_view_image_icon_start"
             app:layout_constraintVertical_chainStyle="packed"
             tools:text="@string/awonar_example_name" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/awoanr_list_item_view_text_subTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@{subTitle}"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/awoanr_list_item_view_image_icon_start"
+            app:layout_constraintEnd_toStartOf="@+id/awoanr_list_item_view_text_meta"
             app:layout_constraintStart_toStartOf="@+id/awoanr_list_item_view_text_title"
             app:layout_constraintTop_toBottomOf="@+id/awoanr_list_item_view_text_title"
             tools:text="@string/awonar_example_name" />
@@ -71,9 +73,10 @@
             android:id="@+id/awoanr_list_item_view_image_icon_end"
             android:layout_width="@dimen/awonar_size_icon"
             android:layout_height="@dimen/awonar_size_icon"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+            app:layout_constraintBottom_toBottomOf="@+id/awoanr_list_item_view_image_icon_start"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/awoanr_list_item_view_image_icon_start"
             tools:src="@drawable/awonar_placeholder_avatar" />
 
 

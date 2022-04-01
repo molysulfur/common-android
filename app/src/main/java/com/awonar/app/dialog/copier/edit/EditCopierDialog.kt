@@ -17,6 +17,7 @@ import com.awonar.app.utils.ImageUtil
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class EditCopierDialog :
     InteractorDialog<EditCopierMapper, EditCopierListener, DialogViewModel>() {
@@ -52,16 +53,16 @@ class EditCopierDialog :
             viewModel.stopLoss.collect { stopLoss ->
                 binding.stopLossDescription =
                     "Stop copying if copy value drops below : $%.2f".format(stopLoss.first)
-                when (binding.awonarDialogEditCopierToggleStoploss.checkedButtonId) {
+                when (binding.awonarDialogEditCopierToggleStopcopy.checkedButtonId) {
                     R.id.awonar_dialog_edit_copier_toggle_amount -> {
-                        binding.awonarDialogEditCopierNumberpickerStoploss.setHelp(viewModel.stopLossError.value.first)
-                        binding.awonarDialogEditCopierNumberpickerStoploss.setPrefix("$")
-                        binding.awonarDialogEditCopierNumberpickerStoploss.setNumber(stopLoss.first)
+                        binding.awonarDialogEditCopierNumberpickerStopcopy.setHelp(viewModel.stopLossError.value.first)
+                        binding.awonarDialogEditCopierNumberpickerStopcopy.setPrefix("$")
+                        binding.awonarDialogEditCopierNumberpickerStopcopy.setNumber(stopLoss.first)
                     }
                     R.id.awonar_dialog_edit_copier_toggle_ratio -> {
-                        binding.awonarDialogEditCopierNumberpickerStoploss.setHelp(viewModel.stopLossError.value.second)
-                        binding.awonarDialogEditCopierNumberpickerStoploss.setPrefix("")
-                        binding.awonarDialogEditCopierNumberpickerStoploss.setNumber(stopLoss.second)
+                        binding.awonarDialogEditCopierNumberpickerStopcopy.setHelp(viewModel.stopLossError.value.second)
+                        binding.awonarDialogEditCopierNumberpickerStopcopy.setPrefix("")
+                        binding.awonarDialogEditCopierNumberpickerStopcopy.setNumber(stopLoss.second)
                     }
                 }
             }
@@ -88,10 +89,10 @@ class EditCopierDialog :
         binding.awonarDialogEditCopierCheckboxOpenTrade.setOnCheckedChangeListener { buttonView, isChecked ->
             viewModel.updateIsCopyExist(isChecked)
         }
-        binding.awonarDialogEditCopierNumberpickerStoploss.doAfterFocusChange =
+        binding.awonarDialogEditCopierNumberpickerStopcopy.doAfterFocusChange =
             { number, hasFocus ->
                 if (!hasFocus) {
-                    when (binding.awonarDialogEditCopierToggleStoploss.checkedButtonId) {
+                    when (binding.awonarDialogEditCopierToggleStopcopy.checkedButtonId) {
                         R.id.awonar_dialog_edit_copier_toggle_amount -> {
                             viewModel.updateStopLoss(number)
                         }
@@ -101,18 +102,20 @@ class EditCopierDialog :
                     }
                 }
             }
-        binding.awonarDialogEditCopierToggleStoploss.addOnButtonCheckedListener { group, checkedId, isChecked ->
-            when (binding.awonarDialogEditCopierToggleStoploss.checkedButtonId) {
-                R.id.awonar_dialog_edit_copier_toggle_amount -> {
-                    binding.awonarDialogEditCopierNumberpickerStoploss.setHelp(viewModel.stopLossError.value.first)
-                    binding.awonarDialogEditCopierNumberpickerStoploss.setPrefix("$")
-                    binding.awonarDialogEditCopierNumberpickerStoploss.setNumber(viewModel.stopLoss.value.first)
-                }
-                R.id.awonar_dialog_edit_copier_toggle_ratio -> {
-                    binding.awonarDialogEditCopierNumberpickerStoploss.setHelp(viewModel.stopLossError.value.second)
-                    binding.awonarDialogEditCopierNumberpickerStoploss.setPrefix("")
-                    binding.awonarDialogEditCopierNumberpickerStoploss.setNumber(viewModel.stopLoss.value.second.times(
-                        100f))
+        binding.awonarDialogEditCopierToggleStopcopy.addOnButtonCheckedListener { group, checkedId, isChecked ->
+            if (isChecked) {
+                when (checkedId) {
+                    R.id.awonar_dialog_edit_copier_toggle_amount -> {
+                        binding.awonarDialogEditCopierNumberpickerStopcopy.setPrefix("$")
+                        binding.awonarDialogEditCopierNumberpickerStopcopy.setHelp(viewModel.stopLossError.value.first)
+                        binding.awonarDialogEditCopierNumberpickerStopcopy.setNumber(viewModel.stopLoss.value.first)
+                    }
+                    R.id.awonar_dialog_edit_copier_toggle_ratio -> {
+                        binding.awonarDialogEditCopierNumberpickerStopcopy.setPrefix("")
+                        binding.awonarDialogEditCopierNumberpickerStopcopy.setHelp(viewModel.stopLossError.value.second)
+                        binding.awonarDialogEditCopierNumberpickerStopcopy.setNumber(viewModel.stopLoss.value.second.times(
+                            100f))
+                    }
                 }
             }
         }

@@ -8,14 +8,18 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.findNavController
 import coil.transform.CircleCropTransformation
 import com.awonar.android.model.user.User
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarActivityProfileBinding
 import com.awonar.app.dialog.copier.CopierDialog
 import com.awonar.app.ui.portfolio.PortFolioViewModel
+import com.awonar.app.ui.profile.adapter.ProfilePagerAdapter
 import com.awonar.app.ui.user.UserViewModel
 import com.awonar.app.utils.ImageUtil
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.molysulfur.library.activity.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -32,6 +36,7 @@ class ProfileActivity : BaseActivity() {
     private val portfolioViewModel: PortFolioViewModel by viewModels()
 
     companion object {
+        const val RESULT_CODE = 20000
         const val EXTRA_USERID = "com.awonar.app.ui.profile.extra.userid"
     }
 
@@ -45,8 +50,38 @@ class ProfileActivity : BaseActivity() {
         intent.extras?.apply {
             userId = getString(EXTRA_USERID)
         }
+        setupViewPager()
         observer()
         init()
+    }
+
+    private fun setupViewPager() {
+        with(binding.awonarProfilePagerInfo) {
+            adapter = ProfilePagerAdapter(supportFragmentManager, lifecycle)
+
+        }
+        binding.awonarProfileTabsMenu.addOnTabSelectedListener(object :
+            TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                if (tab?.position == 3) {
+                    if (userViewModel.userState.value?.isMe == true) {
+                        setResult(RESULT_CODE)
+                        finish()
+                    }
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+
+        })
+        TabLayoutMediator(binding.awonarProfileTabsMenu,
+            binding.awonarProfilePagerInfo) { tab, position ->
+            tab.setIcon(ProfilePagerAdapter.ICON_TABS[position])
+        }.attach()
     }
 
     private fun observer() {
@@ -65,7 +100,6 @@ class ProfileActivity : BaseActivity() {
                             binding.awonarProfileButtonCopy.background = ContextCompat.getDrawable(
                                 baseContext,
                                 R.drawable.awonar_ripple_green)
-
                         }
                     }
                 }
@@ -108,7 +142,7 @@ class ProfileActivity : BaseActivity() {
         binding.awonarProfileTextUsername.text = user?.username
         binding.awonarProfileTextName.text =
             "${user?.firstName} ${user?.middleName} ${user?.lastName}"
-        binding.awonarProfileTextAbout.text = user?.about
+        binding.awonarProfileTextAbout.text = user?.bio
         binding.awonarProfileButtonEditProfile.visibility =
             if (user?.isMe != true) View.GONE else View.VISIBLE
         binding.awonarProfileGroupOptions.visibility =

@@ -5,7 +5,6 @@ myModuleList.with {
     add(new Module(name: ":model", path: "./model"))
     add(new Module(name: ":shared", path: "./shared"))
     add(new Module(name: ":camerax", path: "./camerax"))
-
 }
 
 myModuleList.forEach {
@@ -28,4 +27,3 @@ class Module {
     String name
     String path
 }
-

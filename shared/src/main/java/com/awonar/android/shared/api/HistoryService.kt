@@ -1,6 +1,8 @@
 package com.awonar.android.shared.api
 
 import com.awonar.android.model.history.*
+import com.awonar.android.model.portfolio.HistoryPositionResponse
+import com.awonar.android.model.portfolio.PublicHistoryAggregate
 import com.awonar.android.shared.constrant.BuildConfig
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -10,6 +12,33 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface HistoryService {
+
+    @GET("v1/history/public/aggregate/admin")
+    fun getHistoryAggregate(
+        @Query("startDate") startDate: Long,
+    ): Call<PublicHistoryAggregate>
+
+    @GET("v1/history/public/aggregate/admin")
+    fun getHistoryAggregate(
+        @Query("startDate") startDate: Long,
+        @Query("symbol") symbol: String,
+    ): Call<PublicHistoryAggregate>
+
+    @GET("v1/history/public/markets/admin")
+    fun getHistoryPositions(
+        @Query("startDate") startDate: Long,
+        @Query("limit") limit: Int = 10,
+        @Query("page") page: Int,
+        @Query("symbol") symbol: String,
+    ): Call<HistoryPositionResponse>
+
+
+    @GET("v1/history/public/markets/admin")
+    fun getHistoryPositions(
+        @Query("startDate") startDate: Long,
+        @Query("limit") limit: Int = 10,
+        @Query("page") page: Int,
+    ): Call<HistoryPositionResponse>
 
     @GET("v1/history/copy/id/{id}")
     fun getAggregateWithCopy(@Path("id") id: String): Call<CopiesHistory>

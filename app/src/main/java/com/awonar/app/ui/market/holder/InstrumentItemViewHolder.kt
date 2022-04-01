@@ -1,65 +1,46 @@
 package com.awonar.app.ui.market.holder
 
-import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.market.Instrument
+import com.awonar.android.shared.steaming.QuoteSteamingManager
 import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.app.databinding.AwonarItemInstrumentListBinding
-import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.market.adapter.InstrumentItem
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class InstrumentItemViewHolder constructor(
     private val binding: AwonarItemInstrumentListBinding,
-    val viewModel: MarketViewModel?
 ) : RecyclerView.ViewHolder(binding.root) {
-    private var item: InstrumentItem.InstrumentListItem? = null
 
-    init {
-        viewModel?.viewModelScope?.launch {
-            viewModel.quoteSteamingState.collect { quotes ->
-                val quote = quotes.findLast { quote ->
-                    quote.id == item?.instrument?.id
-                }
-                quote?.run {
-                    binding.awonarInstrumentItemList.setChange(
-                        ConverterQuoteUtil.change(close, previous)
-                    )
-                    // Validate Bid for anim
-                    bid.let {
-                        if (it != item?.bid) {
-                            item?.bid = it
-                            binding.awonarInstrumentItemList.startAnimationBid(item?.bid ?: 0f)
-                        }
-                        binding.awonarInstrumentItemList.setBid(item?.bid ?: 0f)
-                    }
-                    // Validate Ask for anim
-                    ask.let {
-                        if (it != item?.ask) {
-                            item?.ask = it
-                            binding.awonarInstrumentItemList.startAnimationAsk(item?.ask ?: 0f)
-                        }
-                        binding.awonarInstrumentItemList.setAsk(item?.ask ?: 0f)
-                    }
-                    val percent: Float = ConverterQuoteUtil.percentChange(
-                        oldPrice = previous,
-                        newPrice = close
-                    )
-                    binding.awonarInstrumentItemList.setPercentChange(percent)
-                }
-            }
-        }
-    }
+    private var instrumentId: Int = 0
 
     fun bind(
         item: InstrumentItem.InstrumentListItem,
         onInstrumentClick: ((Int) -> Unit)?,
-        onOpenOrder: ((Instrument, Boolean) -> Unit)?
+        onOpenOrder: ((Instrument, Boolean) -> Unit)?,
     ) {
-        this.item = item
-        viewModel?.subscribe(item.instrument.id)
+        this.instrumentId = item.instrument.id
+        CoroutineScope(Dispatchers.Main).launch {
+            QuoteSteamingManager.quotesState.collect { quotes ->
+                val quote = quotes[instrumentId]
+                quote?.let {
+                    binding.awonarInstrumentItemList.setAsk(quote.ask)
+                    binding.awonarInstrumentItemList.setBid(quote.bid)
+                    binding.awonarInstrumentItemList.setChange(ConverterQuoteUtil.change(
+                        quote.close,
+                        quote.previous
+                    ))
+                    binding.awonarInstrumentItemList.setPercentChange(ConverterQuoteUtil.percentChange(
+                        quote.previous,
+                        quote.close
+                    ))
+                    binding.awonarInstrumentItemList.setPercentChange(quote.close)
+                }
+            }
+        }
         binding.awonarInstrumentItemList.onOpenOrder = {
             onOpenOrder?.invoke(item.instrument, it)
         }

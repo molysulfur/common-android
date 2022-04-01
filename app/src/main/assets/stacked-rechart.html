@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='UTF-8'>
+    <meta name="viewport" content="initial-scale=1.0 maximum-scale=1.0 user-scalable=no">
+    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+    <script src='https://unpkg.com/babel-standalone@6.26.0/babel.js'></script>
+    <script src="https://unpkg.com/prop-types/prop-types.min.js"></script>
+    <script src="https://unpkg.com/recharts/umd/Recharts.js"></script>
+
+    <style>
+        html {
+            height: 100%;
+            font-family: "Inter", "Open Sans", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            height: 100%;
+        }
+
+        .container {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+<script async src='/cdn-cgi/bm/cv/669835187/api.js'></script></head>
+
+<body>
+    <div class="container" id='root'></div>
+    <script type='text/babel'>
+
+        const BarChart = Recharts.BarChart
+        const Bar = Recharts.Bar
+        const XAxis = Recharts.XAxis
+        const YAxis = Recharts.YAxis
+        const Tooltip = Recharts.Tooltip
+        const Legend = Recharts.Legend
+        const Cell = Recharts.Cell
+        const Line = Recharts.Line
+        const ComposedChart = Recharts.ComposedChart
+        const Scatter = Recharts.Scatter
+        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+
+        const rawEmpty = months.map(m => ({ avg: 0, max: 0, label: m }))
+
+         function chartAlready(){
+            WEBVIEW_JS.chartAlready()
+        }
+
+        const ResponsiveContainer = Recharts.ResponsiveContainer
+
+        const App = () => {
+            const [data, setData] = React.useState(rawEmpty)
+
+            React.useEffect(() => {
+                configureWebKit()
+            }, [])
+
+            function configureWebKit() {
+                if (window != undefined) {
+                   window.setData = (data) => {
+                        setData(JSON.parse(data))
+                    }
+                    chartAlready()
+                }
+
+            }
+
+            const getPath = (x, y, width, height) => {
+                return `M ${x},${y} h ${width} v ${height} h ${-width} Z`;
+            };
+
+
+            const CustomBar = (props) => {
+                const { fill, x, y, width, height, ex } = props;
+                console.log(ex);
+                return (
+
+                    <g>
+                        <path d={getPath(x, y, width, 1)} fill={fill}></path>
+
+                    </g>
+                );
+            };
+
+            const CustomTooltip = ({ active, payload, label }) => {
+                if (active && payload && payload.length) {
+                    return (
+                        <div style={styles.tooltip}>
+                            <span style={{ fontSize: 12, display: 'flex', alginItems: 'center', justifyContent: 'center' }}>{`${label} ${payload[0].payload.year} `}</span>
+                            <div style={styles.center}>
+                                <div style={{
+                                    padding: 8
+                                }}>
+                                    <RiskBox risk={payload[0].payload.avg} />
+                                    <div style={{ fontWeight: 'bold', fontSize: 8, color: "gray" }}>{` AVG.RISK `}</div>
+                                </div>
+                                <div style={{ backgroundColor: 'gray', width: 2, marginLeft: 8, marginRight: 8 }}></div>
+                                <div style={{ padding: 8 }}>
+                                    <RiskBox risk={payload[0].payload.max} />
+                                    <div style={{ fontWeight: 'bold', fontSize: 8, color: "gray" }}>{` MAX RISK `}</div>
+                                </div>
+                            </div>
+
+                        </div >
+                    );
+                }
+                return null;
+            };
+
+            const getRiskColor = (risk) => {
+                switch (parseInt(risk)) {
+                    case 1:
+                        return '#2FAC41'
+                    case 2:
+                        return "#66B54F"
+                    case 3:
+                        return "#90BC5A"
+                    case 4:
+                        return "#B7C264"
+                    case 5:
+                        return "#E0C86E"
+                    case 6:
+                        return "#E9B767"
+                    case 7:
+                        return "#E69E5B"
+                    case 8:
+                        return "#E2854E"
+                    case 9:
+                        return "#DF6D42"
+                    case 10:
+                        return "#D84B32"
+                    default:
+                        return "#D84B32"
+                }
+            }
+            const RiskBox = ({ risk = 1 }) => {
+                const color = risk === 0 ? "black" : getRiskColor(risk)
+                return (
+                    <div style={{
+
+                        border: `2px solid ${color}`,
+                        borderRadius: 8,
+                        marginLeft: 'auto',
+                        marginRight: 'auto',
+                        marginBottom: 8,
+                        width: 32,
+                        height: 32,
+                        lineHeight: 0,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alginItems: 'center',
+                        position: 'relative',
+                        color: `${color}`,
+
+                        backgroundColor: 'white'
+                    }}>
+                        <div style={{ margin: 'auto' }}>{`${risk}`}</div>
+
+                    </div>
+                )
+
+            }
+            // <span>{` AVG.RISK |  MAX RISK:${payload[0].payload.max}`}</span>
+
+            const styles = {
+                riskContent: {
+
+                },
+                center: {
+                    display: 'flex', alginItems: 'center', justifyContent: 'center',
+                    textAlign: 'center'
+                },
+                tooltip: {
+
+                    WebkitBoxShadow: "0px 0px 2px 2px rgba(0,0,0,0.10)",
+                    MozBoxShadow: "0px 0px 2px 2px rgba(0,0,0,0.10)",
+                    boxShadow: "0px 0px 2px 2px rgba(0,0,0,0.10)",
+                    backgroundColor: 'white', borderRadius: 8, padding: 4
+
+                }
+
+            };
+
+            return (
+                <ResponsiveContainer width="100%" height="100%">
+                    <ComposedChart
+                        data={data}
+                    >
+
+                        <XAxis dataKey="label" axisLine={false}
+                            tickLine={false}
+                            xAxisId={0} hide={true} tick={{ color: '#80808073' }} domain={[0, 'dataMax + 100']} />
+                        <XAxis dataKey="label" axisLine={false}
+                            tickLine={false}
+                            xAxisId={1} hide={true} tick={{ color: '#80808073' }} domain={[0, 'dataMax + 100']} />
+                        <YAxis hide={true} />
+                        <Tooltip content={<CustomTooltip />} />
+
+                        <Bar dataKey="avg" xAxisId={1} fill="#2BAC40" background={{ fill: '#eee' }} />
+                        <Bar dataKey="max" xAxisId={0} shape={<CustomBar fill="#00000" ex="ex" />} />
+                    </ComposedChart>
+                </ResponsiveContainer>
+            )
+        }
+
+        ReactDOM.render(<App />, document.querySelector('#root'));
+    </script>
+<script type="text/javascript">(function(){window['__CF$cv$params']={r:'6db3c32d9ed6271d',m:'ijvIaLVqCJyhUzD8jDAdLywA0nR.mKHY6Ln4Ity8sI0-1644479593-0-AdJ6g4llkbvX231zHk1KwWDmdfjeq5YZVHzTgnJZ3z//76y0kX7ezgF09Rqo+ndOSEDCdhtMyx+eYJPuGdX9aFnLs03n2tHz/u9aEMpAar46zYyPLR8LaKhenncLqZ+Q7zwcEw+/DXlzXL/MOQKUr8oZ1fovJBCE2PqIWJ01HhPmpWKxsXIw4c3dJKYUzzavk718aD7EMZAqk9cytPztJEY=',s:[0x1805fdd0a3,0xbf0154ccdb],}})();</script></body>
+
+</html>

@@ -29,8 +29,22 @@ import kotlinx.coroutines.flow.flow
 
 class UserRepository @Inject constructor(
     private val userService: UserService,
-    private val preference: UserPreferenceManager
+    private val preference: UserPreferenceManager,
 ) {
+
+    fun isFollowing(userId: String, isUser: Boolean) =
+        object : DirectNetworkFlow<Unit, Boolean, FollowResponse?>() {
+            override fun createCall(): Response<FollowResponse?> =
+                userService.isFollow(userId, IsFollowUser(isUser)).execute()
+
+            override fun convertToResultType(response: FollowResponse?): Boolean =
+                response?.isFollow == true
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+
+        }.asFlow()
 
     fun getExperience() =
         object : DirectNetworkFlow<Unit, ExperienceResponse?, ExperienceResponse?>() {

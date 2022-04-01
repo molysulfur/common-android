@@ -32,7 +32,7 @@ class RecommendedMarketFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         setUpAdapter()
         binding.viewModel = viewModel
@@ -73,8 +73,8 @@ class RecommendedMarketFragment : Fragment() {
     private fun setUpAdapter() {
         val recyclerView = binding.awonarMarketRecyclerInstrument
         if (recyclerView.adapter == null) {
-            horizontalAdapter = InstrumentHorizontalAdapter(viewModel)
-            instrumentAdapter = InstrumentListAdapter(viewModel)
+            horizontalAdapter = InstrumentHorizontalAdapter()
+            instrumentAdapter = InstrumentListAdapter()
             horizontalAdapter.onInstrumentClick = {
                 val newIntent = Intent(recyclerView.context, MarketProfileActivity::class.java)
                 newIntent.putExtra(MarketProfileActivity.INSTRUMENT_EXTRA, it)

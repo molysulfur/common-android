@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.awonar.app.ui.portfolio.inside.PositionInsideViewModel" />
+
+        <variable
+            name="column1"
+            type="String" />
+
+        <variable
+            name="column2"
+            type="String" />
+
+        <variable
+            name="column3"
+            type="String" />
+
+        <variable
+            name="column4"
+            type="String" />
+
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:elevation="0dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/awonar_inside_portfolio_public_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_scrollFlags="scroll|snap"
+                    app:menu="@menu/awoanr_menu_next_prev"
+                    app:navigationIcon="@drawable/awonar_ic_back"
+                    app:title="@string/awonar_text_back" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/awonar_inside_portfolio_public_image_logo"
+                    android:layout_width="@dimen/awonar_size_avatar"
+                    android:layout_height="@dimen/awonar_size_avatar"
+                    android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_inside_portfolio_public_toolbar"
+                    app:layout_scrollFlags="scroll|snap"
+                    app:srcCompat="@drawable/awonar_placeholder_avatar" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_inside_portfolio_public_text_title"
+                    style="@style/Awonar.Title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
+                    android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/awonar_inside_portfolio_public_image_logo"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_inside_portfolio_public_image_logo"
+                    app:layout_scrollFlags="scroll|snap"
+                    tools:text="@string/awonar_example_name" />
+
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_inside_portfolio_public_text_subtitle"
+                    style="@style/Awonar.SubTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_inside_portfolio_public_text_title"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_inside_portfolio_public_text_title"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_inside_portfolio_public_text_title"
+                    app:layout_scrollFlags="scroll|snap"
+                    tools:text="@string/awonar_example_name" />
+
+                <com.awonar.app.widget.VerticalTitleView
+                    android:id="@+id/awonar_inside_portfolio_public_vertical_title_invested"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+                    app:layout_constraintEnd_toStartOf="@+id/awonar_inside_portfolio_public_vertical_title_avgopen"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintHorizontal_chainStyle="spread_inside"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_inside_portfolio_public_image_logo"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_inside_portfolio_public_image_logo"
+                    app:layout_scrollFlags="scroll|snap"
+                    app:verticalTitleView_setSubTitle="@string/awonar_text_invested" />
+
+                <com.awonar.app.widget.VerticalTitleView
+                    android:id="@+id/awonar_inside_portfolio_public_vertical_title_avgopen"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@+id/awonar_inside_portfolio_public_vertical_title_pl"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toEndOf="@+id/awonar_inside_portfolio_public_vertical_title_invested"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_inside_portfolio_public_vertical_title_invested"
+                    app:layout_scrollFlags="scroll|snap"
+                    app:verticalTitleView_setSubTitle="AVG. Open" />
+
+                <com.awonar.app.widget.VerticalTitleView
+                    android:id="@+id/awonar_inside_portfolio_public_vertical_title_pl"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_inside_portfolio_public_text_subtitle"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toEndOf="@+id/awonar_inside_portfolio_public_vertical_title_avgopen"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_inside_portfolio_public_vertical_title_invested"
+                    app:layout_scrollFlags="scroll|snap"
+                    app:verticalTitleView_setSubTitle="P/L" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/awonar_inside_portfolio_public_layout_columns"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+                    android:background="@color/awonar_color_background"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/awonar_size_margin_padding_small"
+                    android:weightSum="4"
+
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_inside_portfolio_public_vertical_title_invested">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@{column1}" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@{column2}" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@{column3}" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@{column4}" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            column1="@{column1}"
+            column2="@{column2}"
+            column3="@{column3}"
+            column4="@{column4}"
+            setUserPortfolio="@{viewModel.positionItems}"
+            viewModel="@{null}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

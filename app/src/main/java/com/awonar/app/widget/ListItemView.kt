@@ -1,6 +1,10 @@
 package com.awonar.app.widget
 
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Rect
 import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
@@ -8,6 +12,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarWidgetListItemBinding
 import com.awonar.app.utils.ImageUtil
@@ -27,7 +32,6 @@ class ListItemView : BaseViewGroup {
     private var subTitleRes: Int = 0
     private var meta: String? = null
     private var metaRes: Int = 0
-
 
     override fun setup() {
         updateStartIcon()

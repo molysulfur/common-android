@@ -24,7 +24,7 @@ interface InstrumentService {
     fun getInstrument(@Path("instrumentId") instrumentId: Int): Call<InstrumentProfile?>
 
     @GET("v1/instruments/slim/filter")
-    fun getInstruments(): Call<InstrumentResponse>
+    fun getInstruments(@Query("active") active: Boolean = true): Call<InstrumentResponse>
 
 
     companion object {

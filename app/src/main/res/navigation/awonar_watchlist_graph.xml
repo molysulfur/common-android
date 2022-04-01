@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/awonar_watchlist_graph"
+    app:startDestination="@+id/watchlistDefaultFragment">
+
+    <fragment
+        android:id="@+id/watchlistFolderFragment"
+        android:name="com.awonar.app.ui.watchlist.WatchlistFolderFragment"
+        android:label="WatchlistFolderFragment">
+
+        <action
+            android:id="@+id/watchlistFolderFragment_to_watchlistDeleteFragment"
+            app:destination="@+id/watchlistDeleteFragment" />
+
+        <action
+            android:id="@+id/watchlistFolderFragment_to_watchlistListFragment"
+            app:destination="@+id/watchlistListFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addWatchlistFolderFragment"
+        android:name="com.awonar.app.ui.watchlist.AddWatchlistFolderActivity"
+        android:label="AddWatchlistFolderFragment">
+
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/watchlistListFragment"
+        android:name="com.awonar.app.ui.watchlist.WatchlistListFragment"
+        android:label="WatchlistListFragment">
+
+        <argument
+            android:name="watchlistId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/watchlistRecentlyFragment"
+        android:name="com.awonar.app.ui.watchlist.WatchlistRecentlyFragment"
+        android:label="WatchlistRecentlyFragment" />
+    <fragment
+        android:id="@+id/watchlistDefaultFragment"
+        android:name="com.awonar.app.ui.watchlist.WatchlistDefaultFragment"
+        android:label="WatchlistDefaultFragment" />
+</navigation>

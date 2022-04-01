@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.awonar.app.ui.watchlist.WatchlistViewModel" />
+    </data>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/awonar_watchlist_folder_recycler_folders"
+            setFolderAdapter="@{viewModel.folders}"
+            viewModel="@{viewModel}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/awonar_color_background"
+            tools:listitem="@layout/awonar_item_folder_watchlist" />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/awonar_watchlist_folder_progress_loading"
+            visibleProgress="@{viewModel.progress}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            app:indicatorColor="@color/awonar_color_primary" />
+
+    </FrameLayout>
+
+
+</layout>

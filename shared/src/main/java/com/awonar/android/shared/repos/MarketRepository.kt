@@ -6,6 +6,7 @@ import com.awonar.android.model.market.InstrumentResponse
 import com.awonar.android.model.market.Quote
 import com.awonar.android.shared.api.InstrumentService
 import com.awonar.android.model.tradingdata.TradingData
+import com.awonar.android.shared.db.room.instrument.InstrumentDao
 import com.awonar.android.shared.db.room.trading.TradingDataDao
 import com.molysulfur.library.network.DirectNetworkFlow
 import com.molysulfur.library.network.NetworkFlow
@@ -16,8 +17,15 @@ import javax.inject.Inject
 
 open class MarketRepository @Inject constructor(
     private val instrumentService: InstrumentService,
-    private val tradingDataDao: TradingDataDao
+    private val tradingDataDao: TradingDataDao,
+    private val instrumentDao: InstrumentDao,
 ) {
+
+
+
+    fun getInstrumentFromDao(id: Int): Instrument? {
+        return instrumentDao.loadById(id)
+    }
 
     fun getLastPriceWithId(id: Int) = object : DirectNetworkFlow<Int, Quote, List<Quote>>() {
         override fun createCall(): Response<List<Quote>> =
@@ -73,8 +81,8 @@ open class MarketRepository @Inject constructor(
 
         }.asFlow()
 
-    fun getInstrumentList() =
-        object : DirectNetworkFlow<Boolean, List<Instrument>, InstrumentResponse>() {
+    fun getInstrumentList(needFresh: Boolean = true) =
+        object : NetworkFlow<Boolean, List<Instrument>, InstrumentResponse>() {
 
             override fun createCall(): Response<InstrumentResponse> {
                 return instrumentService.getInstruments().execute()
@@ -86,6 +94,18 @@ open class MarketRepository @Inject constructor(
 
             override fun onFetchFailed(errorMessage: String) {
                 println(errorMessage)
+            }
+
+            override fun shouldFresh(data: List<Instrument>?): Boolean = data == null || needFresh
+
+
+            override fun loadFromDb(): Flow<List<Instrument>> = flow {
+                emit(instrumentDao.getAll())
+            }
+
+
+            override fun saveToDb(data: List<Instrument>) {
+                instrumentDao.insertAll(data)
             }
 
         }.asFlow()

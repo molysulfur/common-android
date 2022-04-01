@@ -1,9 +1,12 @@
 package com.awonar.app.ui.order
 
+import android.annotation.SuppressLint
+import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.databinding.BindingAdapter
 import com.awonar.android.constrant.MarketOrderType
 import com.awonar.android.model.order.Price
+import com.awonar.app.utils.ColorChangingUtil
 import com.awonar.app.widget.NumberPickerCollapsibleView
 import com.awonar.app.widget.NumberPickerEditText
 import timber.log.Timber
@@ -33,7 +36,7 @@ fun setVisibleRateHint(view: NumberPickerEditText, type: MarketOrderType) {
 fun setNumberPickerCollapsibleView(
     view: NumberPickerCollapsibleView,
     stopLoss: Price?,
-    digit: Int
+    digit: Int,
 ) {
     when (stopLoss?.type) {
         "amount" -> {
@@ -48,6 +51,27 @@ fun setNumberPickerCollapsibleView(
             view.setDescription("%.${digit}f".format(stopLoss.unit))
 //            view.setNumber(stopLoss.unit)
         }
+    }
+}
+
+@BindingAdapter("currentChange", "digit")
+fun setCurrentChange(view: TextView, change: Pair<Float, Float>, digit: Int) {
+    with(view) {
+        text = "$%.${digit}f (%.2f%s)".format(change.first, change.second, "%")
+        setTextColor(
+            ColorChangingUtil.getTextColorChange(
+                view.context,
+                change.first
+            )
+        )
+    }
+}
+
+@SuppressLint("SetTextI18n")
+@BindingAdapter("currentPrice", "digit")
+fun setCurrentPrice(view: TextView, price: Float, digit: Int) {
+    with(view) {
+        text = "%.${digit}f".format(price)
     }
 }
 

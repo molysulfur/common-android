@@ -5,46 +5,114 @@
 
     <data>
 
+        <variable
+            name="portViewModel"
+            type="com.awonar.app.ui.portfolio.PortFolioViewModel" />
 
+        <variable
+            name="sector"
+            type="String" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".FriendsNamesFragment">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/textview_first"
-            android:layout_width="wrap_content"
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/button_first"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Names go here"
-            tools:visibility="visible" />
+            app:elevation="0dp">
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Awonar.EditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="94dp"
-            app:layout_constraintBottom_toTopOf="@+id/button_first"
-            app:layout_constraintEnd_toEndOf="@+id/button_first"
-            app:layout_constraintStart_toStartOf="@+id/button_first">
-
-            <com.google.android.material.textfield.TextInputEditText
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="snap|scroll">
 
-        <Button
-            android:id="@+id/button_first"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_watchlist_text_title_available"
+                    style="@style/Awonar.Text.Default.Normal"
+                    setAvaliable="@{portViewModel.portfolioState.available}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
+                    android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="@string/awonar_example_name" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_watchlist_text_title_total_allocate"
+                    style="@style/Awonar.Text.Default.Normal"
+                    setAllocate="@{portViewModel.portfolioState.totalAllocated}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_watchlist_text_title_available"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_watchlist_text_title_available"
+                    tools:text="@string/awonar_example_name" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_watchlist_text_title_equity"
+                    style="@style/Awonar.Text.Default.Normal"
+                    setEquity="@{portViewModel.equityState}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_watchlist_text_title_profit"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_watchlist_text_title_total_allocate"
+                    tools:text="@string/awonar_example_name" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_watchlist_text_title_profit"
+                    style="@style/Awonar.Text.Default.Normal"
+                    setProfit="@{portViewModel.profitState}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+                    android:text="Profit"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_watchlist_text_title_available"
+                    tools:text="@string/awonar_example_name" />
+
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/awonar_watchlist_button_sector"
+                    style="@style/Awonar.Button.Link"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+                    android:drawableEnd="@drawable/awonar_ic_expand"
+                    android:drawableTint="@color/awonar_color_primary"
+                    android:text="@{sector}"
+                    android:textSize="@dimen/awonar_size_text_large"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_watchlist_text_title_total_allocate" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/awonar_watchlist_button_setting"
+                    style="@style/Awonar.Button.Icon"
+                    android:layout_width="@dimen/awonar_size_icon"
+                    android:layout_height="@dimen/awonar_size_icon"
+                    android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+                    android:src="@drawable/awonar_ic_setting"
+                    app:layout_constraintBottom_toBottomOf="@+id/awonar_watchlist_button_sector"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_watchlist_button_sector" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/awonar_watchlist_fragment_host"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:defaultNavHost="true"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textview_first" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintTop_toBottomOf="@+id/tabLayout"
+            app:navGraph="@navigation/awonar_watchlist_graph" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 </layout>

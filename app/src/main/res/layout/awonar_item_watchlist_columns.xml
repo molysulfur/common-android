@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="column1"
+            type="String" />
+
+        <variable
+            name="column2"
+            type="String" />
+
+        <variable
+            name="column3"
+            type="String" />
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/awonar_color_light_gray"
+        android:padding="@dimen/awonar_size_margin_padding_small">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@{column1}"
+            tools:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="@{column2}"
+            tools:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="@{column3}"
+            tools:text="@string/awonar_example_name" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

@@ -3,4 +3,4 @@
     android:id="@+id/awonar_item_copies_item_holder"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/awonar_ripple_tranparent" />
+    android:background="@drawable/awonar_ripple_white" />

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/awonar_user_portfolio_graph"
+    app:startDestination="@+id/publicPortfolioFragment">
+
+    <fragment
+        android:id="@+id/publicPortfolioFragment"
+        android:name="com.awonar.app.ui.profile.user.PublicPortfolioFragment"
+        android:label="PublicPortfolioFragment">
+
+        <action
+            android:id="@+id/publicPortfolioFragment_to_insidePositionPortfolioFragment"
+            app:destination="@+id/insidePositionPortfolioFragment"
+            app:popUpTo="@+id/publicPortfolioFragment" />
+
+        <action
+            android:id="@+id/publicPortfolioFragment_to_historyPositionFragment"
+            app:destination="@+id/historyPositionFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/publicPortfolioFragment"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/publicPortfolioFragment_to_profilePositionChartFragment"
+            app:destination="@+id/profilePositionChartFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/publicPortfolioFragment"
+            app:popUpToInclusive="true" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/insidePositionPortfolioFragment"
+        android:name="com.awonar.app.ui.profile.user.InsidePositionPortfolioFragment"
+        android:label="InsidePublicPortfolioFragment">
+
+        <argument
+            android:name="currentIndex"
+            app:argType="integer" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/historyPositionFragment"
+        android:name="com.awonar.app.ui.profile.history.HistoryPositionFragment"
+        android:label="HistoryPositionFragment">
+
+        <action
+            android:id="@+id/historyPositionFragment_to_publicPortfolioFragment"
+            app:destination="@+id/publicPortfolioFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/publicPortfolioFragment"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/historyPositionFragment_to_insideHistoryPositionFragment"
+            app:destination="@+id/insideHistoryPositionFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/publicPortfolioFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/insideHistoryPositionFragment"
+        android:name="com.awonar.app.ui.profile.history.InsideHistoryPositionFragment"
+        android:label="InsideHistoryPositionFragment">
+        <argument
+            android:name="symbol"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/profilePositionChartFragment"
+        android:name="com.awonar.app.ui.profile.chart.ProfilePositionChartFragment"
+        android:label="ProfilePositionChartFragment">
+
+        <action
+            android:id="@+id/profilePositionChartFragment_to_historyPositionFragment"
+            app:destination="@+id/historyPositionFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/historyPositionFragment"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/profilePositionChartFragment_to_publicPortfolioFragment"
+            app:destination="@+id/publicPortfolioFragment"
+            app:launchSingleTop="true"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/profilePositionChartFragment_to_insidePositionPortfolioFragment"
+            app:destination="@+id/insidePositionPortfolioFragment"
+            app:launchSingleTop="true"
+            app:popUpToInclusive="true" />
+    </fragment>
+</navigation>

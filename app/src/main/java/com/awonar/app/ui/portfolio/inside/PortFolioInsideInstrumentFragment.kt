@@ -20,14 +20,13 @@ import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentPortfolioInsideInstrumentBinding
 import com.awonar.app.ui.columns.ColumnsViewModel
-import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.order.OrderDialog
 import com.awonar.app.ui.order.OrderViewModel
 import com.awonar.app.ui.order.edit.OrderEditDialog
 import com.awonar.app.ui.order.partialclose.PartialCloseDialog
 import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.awonar.app.ui.portfolio.adapter.IPortfolioListItemTouchHelperCallback
-import com.awonar.app.ui.portfolio.adapter.OrderPortfolioAdapter
+import com.awonar.app.ui.portfolio.adapter.PortfolioAdapter
 import com.awonar.app.ui.portfolio.adapter.PortfolioListItemTouchHelperCallback
 import com.google.android.material.snackbar.Snackbar
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
@@ -38,7 +37,6 @@ class PortFolioInsideInstrumentFragment : Fragment() {
 
     private val portFolioViewModel: PortFolioViewModel by activityViewModels()
     private val activityViewModel: PositionInsideViewModel by activityViewModels()
-    private val marketViewModel: MarketViewModel by activityViewModels()
     private val columnsViewModel: ColumnsViewModel by activityViewModels()
     private val orderViewModel: OrderViewModel by activityViewModels()
 
@@ -127,22 +125,12 @@ class PortFolioInsideInstrumentFragment : Fragment() {
                 quote?.let {
                     setupHeader(quote, position, it)
                 }
-                updatePositionItem(quotes)
             }
         }
         activityViewModel.convertPosition(portFolioViewModel.positionState.value, currentIndex)
         setupToolbar()
         setTouchHelper()
         setupListener()
-    }
-
-    private fun updatePositionItem(quotes: MutableMap<Int, Quote>) {
-        val adapter = binding.awonarPortfolioRecyclerContainer.adapter
-        if (adapter != null) {
-            (adapter as OrderPortfolioAdapter).let {
-                it.quote = quotes
-            }
-        }
     }
 
     private suspend fun setupHeader(
