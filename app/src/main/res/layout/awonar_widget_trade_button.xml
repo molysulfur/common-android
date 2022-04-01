@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="text"
+            type="String" />
+    </data>
+
+    <Button xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/awonar_widget_trade_button"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textSize="@dimen/awonar_size_text_small"
+        android:text="@{text}"
+        android:textColor="@color/black" />
+</layout>
