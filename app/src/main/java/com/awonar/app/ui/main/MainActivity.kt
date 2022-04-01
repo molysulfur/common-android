@@ -32,8 +32,10 @@ import kotlinx.coroutines.launch
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.NavigationUI.onNavDestinationSelected
 import com.awonar.app.ui.search.SearchActivity
+import com.awonar.app.ui.trading.TradingActivity
 import com.awonar.app.utils.ImageUtil
 import com.molysulfur.library.extension.openActivity
+import com.molysulfur.library.extension.openActivityAndClearAllActivity
 import com.molysulfur.library.extension.openActivityCompatForResult
 
 
@@ -85,11 +87,19 @@ class MainActivity : BaseActivity() {
     private fun navigationDrawer(menuItem: MenuItem): Boolean {
         menuItem.isChecked = true
         binding.awonarMainDrawerSidebar.close()
-        return if (menuItem.itemId == R.id.awonar_menu_drawer_main_logout) {
-            authViewModel.signOut()
-            true
-        } else {
-            onNavDestinationSelected(menuItem, mNavController)
+        return when (menuItem.itemId) {
+            R.id.awonar_menu_drawer_main_logout -> {
+                authViewModel.signOut()
+                false
+            }
+            R.id.awonar_menu_drawer_main_trading -> {
+                openActivity(TradingActivity::class.java)
+                false
+            }
+            else -> {
+                onNavDestinationSelected(menuItem, mNavController)
+                true
+            }
         }
     }
 
@@ -118,7 +128,7 @@ class MainActivity : BaseActivity() {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 authViewModel.signOutState.collect {
                     if (it != null) {
-                        openActivityAndClearThisActivity(AuthenticationActivity::class.java)
+                        openActivityAndClearAllActivity(AuthenticationActivity::class.java)
                     }
                 }
             }

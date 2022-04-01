@@ -68,6 +68,7 @@
         <entry key="app/src/main/res/layout/awonar_activity_profile.xml" value="0.2682291666666667" />
         <entry key="app/src/main/res/layout/awonar_activity_search.xml" value="0.195382642154767" />
         <entry key="app/src/main/res/layout/awonar_activity_social_trade_filter.xml" value="0.1484375" />
+        <entry key="app/src/main/res/layout/awonar_activity_trading.xml" value="0.1" />
         <entry key="app/src/main/res/layout/awonar_activity_watchlist_add_item.xml" value="0.12239583333333333" />
         <entry key="app/src/main/res/layout/awonar_bottom_sheet_dialog_account_type.xml" value="0.19010416666666666" />
         <entry key="app/src/main/res/layout/awonar_dialog_add_copier.xml" value="0.17135416666666667" />
@@ -151,6 +152,7 @@
         <entry key="app/src/main/res/layout/awonar_fragment_statistic_gain.xml" value="0.29842446709916587" />
         <entry key="app/src/main/res/layout/awonar_fragment_statistic_most_trading.xml" value="0.12612227447627192" />
         <entry key="app/src/main/res/layout/awonar_fragment_statistic_risk.xml" value="0.3185121846943138" />
+        <entry key="app/src/main/res/layout/awonar_fragment_trading.xml" value="0.17870884993587002" />
         <entry key="app/src/main/res/layout/awonar_fragment_trading_activity.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/awonar_fragment_user_info.xml" value="0.3248898678414097" />
         <entry key="app/src/main/res/layout/awonar_fragment_watchlist.xml" value="0.15572916666666667" />
@@ -267,6 +269,7 @@
         <entry key="app/src/main/res/menu/awonar_menu_drawer_main.xml" value="0.3880208333333333" />
         <entry key="app/src/main/res/menu/awonar_menu_inside_position.xml" value="0.11875" />
         <entry key="app/src/main/res/menu/awonar_menu_toobar_main.xml" value="0.3880208333333333" />
+        <entry key="app/src/main/res/menu/awonar_menu_trading.xml" value="0.1" />
         <entry key="app/src/main/res/menu/awonar_toobar_main_menu.xml" value="0.25555555555555554" />
         <entry key="app/src/main/res/xml/standalone_chip.xml" value="0.11354166666666667" />
         <entry key="camerax/src/main/res/drawable/ic_gallery.xml" value="0.2722222222222222" />
