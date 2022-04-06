@@ -1,7 +1,6 @@
 package com.awonar.app.ui.order
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.awonar.android.constrant.MarketOrderType
 import com.awonar.android.exception.AddAmountException
@@ -52,21 +51,23 @@ class OrderViewModel @Inject constructor(
     private val closePositionUseCase: ClosePositionUseCase,
     private val closePartialPositionUseCase: ClosePartialPositionUseCase,
     private val removePositionUseCase: RemovePositionUseCase,
+    private val validateExposureUseCase: ValidateExposureUseCase,
 ) : ViewModel() {
 
+    private val _isBuyState = MutableStateFlow<Boolean?>(null)
     private val _marketType = MutableStateFlow(MarketOrderType.ENTRY_ORDER)
     private val _portfolioState = MutableStateFlow<Portfolio?>(null)
+    private val _exposureState = MutableStateFlow<Float>(0f)
+    private val _takeProfitState = MutableStateFlow(Pair(0f, 0f))
 
     private val _priceState = MutableStateFlow(0f)
     val priceState get() = _priceState
     private val _changeState = MutableStateFlow(Pair(0f, 0f))
     val changeState get() = _changeState
-    private val _marketStatus = MutableStateFlow<String>("")
+    private val _marketStatus = MutableStateFlow("")
     val marketStatus get() = _marketStatus
     private val _instrument = MutableStateFlow<Instrument?>(null)
     val instrument get() = _instrument
-    private val _isBuyState = MutableSharedFlow<Boolean?>()
-    val isBuyState get() = _isBuyState.asSharedFlow()
     private val _tradingData = MutableStateFlow<TradingData?>(null)
     val tradingData get() = _tradingData
     private val _leverageState = MutableStateFlow(1)
@@ -92,8 +93,8 @@ class OrderViewModel @Inject constructor(
      */
     private val _typeChangeState = MutableSharedFlow<Pair<Float, Float>>()
     val typeChangeState: SharedFlow<Pair<Float, Float>> get() = _typeChangeState
-    private val _takeProfitState = MutableStateFlow(Pair(0f, 0f))
-    val takeProfitState: StateFlow<Pair<Float, Float>> get() = _takeProfitState
+    private val _takeProfit = MutableStateFlow(Pair(0f, 0f))
+    val takeProfit: StateFlow<Pair<Float, Float>> get() = _takeProfit
     private val _takeProfitError = MutableStateFlow("")
     val takeProfitError: StateFlow<String> get() = _takeProfitError
 
@@ -104,14 +105,86 @@ class OrderViewModel @Inject constructor(
 
     private val _errorState = MutableStateFlow("")
     val errorState: StateFlow<String> get() = _errorState
-
+    private val _amountError = MutableStateFlow("")
+    val amountError: StateFlow<String> get() = _amountError
 
     init {
-        val state = combine(_portfolioState,
+        viewModelScope.launch {
+            _takeProfitState.collect {
+                val isBuy = _isBuyState.value == true
+                if (_tradingData.value != null) {
+                    val result = validateRateTakeProfitUseCase(ValidateRateTakeProfitRequest(
+                        rateTp = it.second,
+                        currentPrice = priceState.value,
+                        openPrice = rateState.value ?: 0f,
+                        units = amountState.value.second,
+                        isBuy = isBuy,
+                        conversionRate = getConversionByInstrumentUseCase(_instrument.value?.id
+                            ?: 0).successOr(0f),
+                        amount = _amountState.value.first,
+                        maxTakeProfitPercentage = _tradingData.value?.maxTakeProfitPercentage ?: 0f,
+                        digit = _instrument.value?.digit ?: 0
+                    ))
+                    if (result is Result.Success) {
+                        _takeProfit.value = it
+                    }
+                    if (result is Result.Error) {
+                        setRateTp((result.exception as ValidationException).value)
+                    }
+                }
+
+            }
+        }
+        viewModelScope.launch {
+            _stopLossState.collect {
+                val isBuy = _isBuyState.value == true
+                val leverage = _leverageState.value
+                if (_tradingData.value != null) {
+                    val result = validateRateStopLossUseCase(ValidateRateStopLossRequest(
+                        amountSl = it.first,
+                        rateSl = it.second,
+                        amount = _amountState.value.first,
+                        currentPrice = _priceState.value,
+                        openPrice = _rateState.value ?: 0f,
+                        exposure = _exposureState.value,
+                        units = _amountState.value.second,
+                        leverage = leverage,
+                        isBuy = isBuy,
+                        available = _portfolioState.value?.available ?: 0f,
+                        conversionRate = getConversionByInstrumentUseCase(_instrument.value?.id
+                            ?: 0).successOr(0f),
+                        digit = _instrument.value?.digit ?: 0,
+                        maxStopLoss = ConverterOrderUtil.getMaxAmountSl(
+                            native = _stopLossState.value.first,
+                            leverage = leverage,
+                            isBuy = isBuy,
+                            tradingData = tradingData.value
+                        )
+                    ))
+                    if (result is Result.Error) {
+                        _stopLossError.value = result.exception.message ?: ""
+                    }
+                }
+
+            }
+        }
+        viewModelScope.launch {
+            _leverageState.collect { leverage ->
+                val result = validateExposureUseCase(ExposureRequest(
+                    instrumentId = _instrument.value?.id ?: 0,
+                    amount = _amountState.value.first,
+                    leverage = leverage
+                ))
+                _exposureState.value = _amountState.value.first.times(leverage)
+                if (result is Result.Error) {
+                    _amountError.value = result.exception.message ?: ""
+                }
+            }
+        }
+        val initState = combine(_portfolioState,
             _instrument,
             _tradingData) { portfolio, instrument, tradingData ->
             if (portfolio != null && instrument != null && tradingData != null) {
-                Timber.e("${instrument?.symbol} ${tradingData.defaultLeverage}")
                 /**
                  * Default Amount
                  */
@@ -128,41 +201,35 @@ class OrderViewModel @Inject constructor(
                  * Default Leverage
                  */
                 _leverageState.emit(leverage)
+                /**
+                 * Default SL, TP
+                 */
+                val defaultStopLoss: Pair<Float, Float> = ConverterOrderUtil.getDefaultStopLoss(
+                    amount = defaultAmount,
+                    defaultStopLossPercentage = tradingData.defaultStopLossPercentage,
+                    conversionRate = getConversionByInstrumentUseCase(instrument.id).successOr(0f),
+                    units = defaultUnit,
+                    price = _priceState.value
+                )
+                val defaultTakeProfit: Pair<Float, Float> = ConverterOrderUtil.getDefaultTakeProfit(
+                    amount = defaultAmount,
+                    defaultTakeProfitPercentage = tradingData.defaultTakeProfitPercentage,
+                    conversionRate = getConversionByInstrumentUseCase(instrument.id).successOr(0f),
+                    units = defaultUnit,
+                    price = _priceState.value
+                )
+                _stopLossState.value = defaultStopLoss
+                _takeProfitState.value = defaultTakeProfit
             }
         }
 
         viewModelScope.launch {
-            state.collect {
+            initState.collect {
 
             }
         }
-
         viewModelScope.launch {
             getTradingDataByInstrumentIdUseCase(1)
-        }
-        viewModelScope.launch {
-            _portfolioState.collect { portfolio ->
-                portfolio?.let {
-//                    getTradingDataByInstrumentIdUseCase()
-                    val amount = it.available.times(0.05)
-                }
-            }
-        }
-    }
-
-    fun setDefaultAmount(instrumentId: Int, available: Float, price: Float) {
-        viewModelScope.launch {
-            val amount: Float = available.times(0.05f)
-            val leverage: Int = leverageState.value
-            val unitAmount: Float = getUnitUseCase(
-                CalAmountUnitRequest(
-                    instrumentId = instrumentId,
-                    leverage = leverage,
-                    price = price,
-                    amount = amount
-                )
-            ).successOr(0f)
-            _amountState.value = Pair(amount, unitAmount)
         }
     }
 
@@ -235,87 +302,33 @@ class OrderViewModel @Inject constructor(
         }
     }
 
-    fun validateTakeProfit(position: Position, current: Float) {
-        if (current > 0) {
-            viewModelScope.launch {
-                val pl = PortfolioUtil.getProfitOrLoss(
-                    current = current,
-                    openRate = position.openRate,
-                    unit = position.units,
-                    rate = 1f,
-                    isBuy = position.isBuy
-                )
-                position.instrument?.let { instrument ->
-                    val data = ValidateRateTakeProfitRequest(
-                        rateTp = takeProfitState.value.second,
-                        currentPrice = current,
-                        openPrice = position.openRate,
-                        isBuy = position.isBuy,
-                        value = pl.plus(position.amount),
-                        units = position.units,
-                        instrument = instrument
-                    )
-                    val result = validateRateTakeProfitUseCase(data)
-                    if (result is Result.Error) {
-                        val message = (result.exception as ValidationException).errorMessage
-                        val rate = (result.exception as ValidationException).value
-                        setTakeProfit(
-                            tp = rate,
-                            type = "rate",
-                            current = position.openRate,
-                            unit = position.units,
-                            instrumentId = instrument.id,
-                            isBuy = position.isBuy
-                        )
-                        _takeProfitError.emit(message)
-                    }
-                }
-            }
+    fun setAmountTp(
+        amount: Float,
+    ) {
+        viewModelScope.launch {
+            val conversionRate =
+                getConversionByInstrumentUseCase(_instrument.value?.id ?: 0).successOr(0f)
+
+            val tpRate = ConverterOrderUtil.convertAmountToRate(
+                amount = amount,
+                conversionRate = conversionRate,
+                units = _amountState.value.second,
+                rate = rateState.value ?: 0f,
+                isBuy = _isBuyState.value == true
+            )
+            _takeProfitState.value = Pair(amount, tpRate)
         }
     }
 
-    fun setTakeProfit(
-        tp: Float,
-        type: String? = null,
-        current: Float,
-        unit: Float,
-        instrumentId: Int,
-        isBuy: Boolean,
+    fun setRateTp(
+        rate: Float,
     ) {
         viewModelScope.launch {
-            val state: Pair<Float, Float> = _takeProfitState.value.copy()
-
-            /**
-             * first = rate
-             * second = amount
-             */
-            var first = state.first
-            var second = state.second
-            val newTpSl = when (type) {
-                "rate" -> {
-                    second = tp
-                    val request = TpSlRequest(
-                        tpsl = Pair(first, second),
-                        openRate = current,
-                        unit = unit,
-                        instrumentId = instrumentId,
-                        isBuy = isBuy
-                    )
-                    calculateAmountTpSlUseCase(request).successOr(Pair(first, second))
-                }
-                else -> {
-                    first = tp
-                    val request = TpSlRequest(
-                        tpsl = Pair(first, second),
-                        openRate = current,
-                        unit = unit,
-                        instrumentId = instrumentId,
-                        isBuy = isBuy
-                    )
-                    calculateRateTpSlUseCase(request).successOr(Pair(first, second))
-                }
-            }
-            _takeProfitState.emit(newTpSl)
+            val conversionRate =
+                getConversionByInstrumentUseCase(_instrument.value?.id ?: 0).successOr(0f)
+            val tpAmount = (rateState.value ?: 0f).minus(rate).times(_amountState.value.second)
+                .div(conversionRate)
+            _takeProfitState.value = Pair(tpAmount, rate)
         }
     }
 
@@ -370,7 +383,7 @@ class OrderViewModel @Inject constructor(
         viewModelScope.launch {
             Timber.e("$id")
             id?.let {
-                val tp = takeProfitState.value.second
+                val tp = _takeProfitState.value.second
                 val sl = stopLossState.value.second
                 updateOrderUseCase(
                     UpdateOrderRequest(
@@ -567,14 +580,6 @@ class OrderViewModel @Inject constructor(
 
     fun updateLeverage(leverage: Int) {
         _leverageState.value = leverage
-        _instrument.value?.let {
-            updateAmount(
-                instrumentId = it.id,
-                amount = _amountState.value.first,
-                price = _priceState.value
-            )
-        }
-
     }
 
     fun setPortfolio(portfolio: Portfolio) {
@@ -611,7 +616,7 @@ class OrderViewModel @Inject constructor(
         viewModelScope.launch {
             val price = ConverterQuoteUtil.getCurrentPrice(quote = quote,
                 leverage = _leverageState.value,
-                isBuy = _isBuyState.asLiveData().value == true)
+                isBuy = _isBuyState.value == true)
             val change = ConverterQuoteUtil.change(price, quote.previous)
             val percentChange = ConverterQuoteUtil.percentChange(price, quote.previous)
             _changeState.value = Pair(change, percentChange)

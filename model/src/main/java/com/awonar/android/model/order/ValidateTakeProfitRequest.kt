@@ -6,13 +6,15 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ValidateRateTakeProfitRequest(
+    val amount: Float,
     val rateTp: Float,
     val currentPrice: Float,
     val openPrice: Float,
-    val value: Float,
     val units: Float,
     val isBuy: Boolean = false,
-    val instrument: Instrument
+    val conversionRate: Float,
+    val maxTakeProfitPercentage : Float,
+    val digit: Int
 ) : Parcelable
 
 @Parcelize

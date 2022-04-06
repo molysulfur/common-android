@@ -118,7 +118,7 @@ class NumberPickerCollapsibleView : BaseViewGroup {
         when (isLeft) {
             true -> {
                 binding.awonarNumberpickerCollapsibleInputNumber.setNumber(number.first)
-                setDescription("%.2f".format(number.first))
+                setDescription("%.2f".format(number.second))
                 binding.awonarNumberpickerCollapsibleInputNumber.setPrefix(prefix)
             }
             else -> {

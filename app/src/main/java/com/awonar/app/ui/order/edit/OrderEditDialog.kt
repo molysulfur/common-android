@@ -79,13 +79,8 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
             }
         }
         launchAndRepeatWithViewLifecycle {
-            orderViewModel.takeProfitState.collect {
-                position?.let {
-                    orderViewModel.validateTakeProfit(
-                        position = it,
-                        current = price
-                    )
-                }
+            orderViewModel.takeProfit.collect {
+                Timber.e("$it")
                 binding.awonarOrderEditTextNumberpickerTp.setNumber(it)
             }
         }
@@ -170,14 +165,14 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
     }
 
     private fun setupTakeProfit() {
-        orderViewModel.setTakeProfit(
-            tp = position?.takeProfitRate ?: 0f,
-            type = "rate",
-            current = position?.openRate ?: 0f,
-            unit = position?.units ?: 0f,
-            instrumentId = position?.instrument?.id ?: 1,
-            isBuy = position?.isBuy == true
-        )
+//        orderViewModel.setTakeProfit(
+//            tp = position?.takeProfitRate ?: 0f,
+//            type = "rate",
+//            current = position?.openRate ?: 0f,
+//            unit = position?.units ?: 0f,
+//            instrumentId = position?.instrument?.id ?: 1,
+//            isBuy = position?.isBuy == true
+//        )
     }
 
     private fun setupListener() {
@@ -185,13 +180,13 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
             if (isLeft) {
                 binding.awonarOrderEditTextNumberpickerTp.setDescription(
                     "$%.2f".format(
-                        orderViewModel.takeProfitState.value.first
+                        orderViewModel.takeProfit.value.first
                     )
                 )
             } else {
                 binding.awonarOrderEditTextNumberpickerTp.setDescription(
                     "%s".format(
-                        orderViewModel.takeProfitState.value.second
+                        orderViewModel.takeProfit.value.second
                     )
                 )
             }
@@ -217,14 +212,14 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
             } else {
                 "rate"
             }
-            orderViewModel.setTakeProfit(
-                tp = if (isLeft) number.first else number.second,
-                type = type,
-                current = position?.openRate ?: 0f,
-                unit = position?.units ?: 0f,
-                instrumentId = position?.instrument?.id ?: 1,
-                isBuy = position?.isBuy == true
-            )
+//            orderViewModel.setTakeProfit(
+//                tp = if (isLeft) number.first else number.second,
+//                type = type,
+//                current = position?.openRate ?: 0f,
+//                unit = position?.units ?: 0f,
+//                instrumentId = position?.instrument?.id ?: 1,
+//                isBuy = position?.isBuy == true
+//            )
         }
         binding.awonarOrderEditTextNumberpickerSl.doAfterFocusChange = { number, isLeft ->
             val type = if (isLeft) {
