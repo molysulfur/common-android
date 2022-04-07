@@ -76,16 +76,16 @@ class OrderViewModel @Inject constructor(
     private val _amountState = MutableStateFlow(Pair(0f, 0f))
     val amountState: StateFlow<Pair<Float, Float>> get() = _amountState
 
-    private val _openOrderState = Channel<String>(capacity = Channel.CONFLATED)
-    val openOrderState get() = _openOrderState.receiveAsFlow()
-    private val _orderSuccessState = Channel<String>(capacity = Channel.CONFLATED)
-    val orderSuccessState get() = _orderSuccessState.receiveAsFlow()
-
     private val _rateState = MutableStateFlow<Float?>(null)
     val rateState: StateFlow<Float?> get() = _rateState
 
     private val _hasPartialState = MutableStateFlow(false)
     val hasPartialState: StateFlow<Boolean> get() = _hasPartialState
+
+    private val _openOrderState = Channel<String>(capacity = Channel.CONFLATED)
+    val openOrderState get() = _openOrderState.receiveAsFlow()
+    private val _orderSuccessState = Channel<String>(capacity = Channel.CONFLATED)
+    val orderSuccessState get() = _orderSuccessState.receiveAsFlow()
 
     /**
      * first = amount
@@ -132,7 +132,6 @@ class OrderViewModel @Inject constructor(
                         setRateTp((result.exception as ValidationException).value)
                     }
                 }
-
             }
         }
         viewModelScope.launch {
@@ -161,8 +160,13 @@ class OrderViewModel @Inject constructor(
                             tradingData = tradingData.value
                         )
                     ))
+                    if (result is Result.Success) {
+                        _stopLossState.value = it
+                    }
                     if (result is Result.Error) {
-                        _stopLossError.value = result.exception.message ?: ""
+                        if (result.exception is ValidationException) {
+                            setRateSl((result.exception as ValidationException).value)
+                        }
                     }
                 }
 
@@ -204,21 +208,24 @@ class OrderViewModel @Inject constructor(
                 /**
                  * Default SL, TP
                  */
-                val defaultStopLoss: Pair<Float, Float> = ConverterOrderUtil.getDefaultStopLoss(
-                    amount = defaultAmount,
-                    defaultStopLossPercentage = tradingData.defaultStopLossPercentage,
-                    conversionRate = getConversionByInstrumentUseCase(instrument.id).successOr(0f),
+                val conversionRate = getConversionByInstrumentUseCase(instrument.id).successOr(0f)
+                val percent = tradingData.defaultStopLossPercentage.minus(0.5f).div(100)
+                val rateStopLoss = (_rateState.value ?: _priceState.value).times(percent)
+                val amountStopLoss = ConverterOrderUtil.convertRateToAmount(
+                    rate = rateStopLoss,
+                    conversionRate = conversionRate,
                     units = defaultUnit,
-                    price = _priceState.value
+                    openRate = _priceState.value,
+                    isBuy = _isBuyState.value == true
                 )
                 val defaultTakeProfit: Pair<Float, Float> = ConverterOrderUtil.getDefaultTakeProfit(
                     amount = defaultAmount,
                     defaultTakeProfitPercentage = tradingData.defaultTakeProfitPercentage,
-                    conversionRate = getConversionByInstrumentUseCase(instrument.id).successOr(0f),
+                    conversionRate = conversionRate,
                     units = defaultUnit,
                     price = _priceState.value
                 )
-                _stopLossState.value = defaultStopLoss
+                _stopLossState.value = Pair(-amountStopLoss, rateStopLoss)
                 _takeProfitState.value = defaultTakeProfit
             }
         }
@@ -308,12 +315,11 @@ class OrderViewModel @Inject constructor(
         viewModelScope.launch {
             val conversionRate =
                 getConversionByInstrumentUseCase(_instrument.value?.id ?: 0).successOr(0f)
-
             val tpRate = ConverterOrderUtil.convertAmountToRate(
                 amount = amount,
                 conversionRate = conversionRate,
                 units = _amountState.value.second,
-                rate = rateState.value ?: 0f,
+                openRate = rateState.value ?: 0f,
                 isBuy = _isBuyState.value == true
             )
             _takeProfitState.value = Pair(amount, tpRate)
@@ -321,17 +327,55 @@ class OrderViewModel @Inject constructor(
     }
 
     fun setRateTp(
-        rate: Float,
+        tpRate: Float,
     ) {
         viewModelScope.launch {
             val conversionRate =
                 getConversionByInstrumentUseCase(_instrument.value?.id ?: 0).successOr(0f)
-            val tpAmount = (rateState.value ?: 0f).minus(rate).times(_amountState.value.second)
-                .div(conversionRate)
-            _takeProfitState.value = Pair(tpAmount, rate)
+            val tpAmount = ConverterOrderUtil.convertRateToAmount(
+                rate = tpRate,
+                conversionRate = conversionRate,
+                units = _amountState.value.second,
+                openRate = rateState.value ?: 0f,
+                isBuy = _isBuyState.value == true
+            )
+            _takeProfitState.value = Pair(tpAmount, tpRate)
         }
     }
 
+    fun setAmountSl(
+        amount: Float,
+    ) {
+        viewModelScope.launch {
+            val conversionRate =
+                getConversionByInstrumentUseCase(_instrument.value?.id ?: 0).successOr(0f)
+            val slRate = ConverterOrderUtil.convertAmountToRate(
+                amount = amount,
+                conversionRate = conversionRate,
+                units = _amountState.value.second,
+                openRate = rateState.value ?: 0f,
+                isBuy = _isBuyState.value == true
+            )
+            _takeProfitState.value = Pair(amount, slRate)
+        }
+    }
+
+    fun setRateSl(
+        slRate: Float,
+    ) {
+        viewModelScope.launch {
+            val conversionRate =
+                getConversionByInstrumentUseCase(_instrument.value?.id ?: 0).successOr(0f)
+            val slAmount = ConverterOrderUtil.convertRateToAmount(
+                rate = slRate,
+                conversionRate = conversionRate,
+                units = _amountState.value.second,
+                openRate = rateState.value ?: 0f,
+                isBuy = _isBuyState.value == true
+            )
+            _takeProfitState.value = Pair(slAmount, slRate)
+        }
+    }
 
     fun setStopLoss(
         sl: Float,
@@ -381,7 +425,6 @@ class OrderViewModel @Inject constructor(
 
     fun edit(id: String?) {
         viewModelScope.launch {
-            Timber.e("$id")
             id?.let {
                 val tp = _takeProfitState.value.second
                 val sl = stopLossState.value.second

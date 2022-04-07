@@ -212,6 +212,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             when (isBuy) {
                 true -> check(R.id.awonar_dialog_order_button_type_buy)
                 false -> check(R.id.awonar_dialog_order_button_type_sell)
+                else -> {}
             }
         }
         setupRateInput()
@@ -287,21 +288,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         }
     }
 
-    private fun getDefaultTpAndSl() {
-//        instrument?.let { instrument ->
-//            orderActivityViewModel.getDefaultStopLoss(
-//                instrumentId = instrument.id,
-//                price = price,
-//                orderType = isBuy
-//            )
-//            orderActivityViewModel.getDefaultTakeProfit(
-//                instrumentId = instrument.id,
-//                price = price,
-//                orderType = isBuy
-//            )
-//        }
-    }
-
     private fun getOvernight() {
 //        instrument?.let { instrument ->
 //            orderActivityViewModel.getOvernightFeeDaliy(
@@ -330,31 +316,19 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
 
     private fun initStopLoss() {
         binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setDescriptionColor(R.color.awonar_color_orange)
-//        binding.awonarDialogOrderViewNumberpickerCollapsibleSl.onTypeChange = { type ->
-//            orderActivityViewModel.updateStopLossType(type)
-//        }
         binding.awonarDialogOrderViewNumberpickerCollapsibleSl.doAfterFocusChange =
-            { number, hasFocus ->
-//                if (!hasFocus)
-//                    instrument?.let {
-//                        orderActivityViewModel.updateStopLoss(
-//                            (-number),
-//                            orderType ?: "buy",
-//                            it.id,
-//                            price
-//                        )
-//                    }
-
+            { number, isLeft ->
+                if (isLeft) {
+                    orderViewModel.setAmountSl(number.first)
+                } else {
+                    orderViewModel.setRateSl(number.second)
+                }
             }
     }
 
 
     private fun setupLeverageAdapter() {
         binding.awonarDialogOrderToggleOrderType.addOnButtonCheckedListener { _, checkedId, _ ->
-//            when (checkedId) {
-//                R.id.awonar_dialog_order_button_type_buy -> isBuy = true
-//                R.id.awonar_dialog_order_button_type_sell -> isBuy = false
-//            }
             getOvernight()
         }
         binding.awonarDialogOrderCollapseLeverage.setTitle(getString(R.string.awonar_text_leverage))

@@ -1,6 +1,7 @@
 package com.awonar.android.shared.utils
 
 import com.awonar.android.model.tradingdata.TradingData
+import timber.log.Timber
 import java.lang.Error
 
 object ConverterOrderUtil {
@@ -9,25 +10,32 @@ object ConverterOrderUtil {
         amount: Float,
         conversionRate: Float,
         units: Float,
-        rate: Float,
+        openRate: Float,
         isBuy: Boolean,
     ): Float {
         return when (isBuy) {
             true -> {
                 (amount.times(conversionRate)
-                    .div(units)).plus(rate)
+                    .div(units)).plus(openRate)
             }
             else -> {
-                -(rate.minus(amount.times(conversionRate)
+                -(openRate.minus(amount.times(conversionRate)
                     .div(units)))
             }
         }
     }
 
     fun convertRateToAmount(
-
-    ) {
-
+        rate: Float,
+        conversionRate: Float,
+        units: Float,
+        openRate: Float,
+        isBuy: Boolean,
+    ): Float {
+        return when (isBuy) {
+            true -> rate.minus(openRate).times(units).div(conversionRate)
+            else -> openRate.minus(rate).times(units).div(conversionRate)
+        }
     }
 
     fun getDefaultTakeProfit(
@@ -41,19 +49,6 @@ object ConverterOrderUtil {
         val amountTp = amount.times(percent)
         val rateTp = amountTp.times(conversionRate).div(units).plus(price)
         return Pair(amountTp, rateTp)
-    }
-
-    fun getDefaultStopLoss(
-        amount: Float,
-        defaultStopLossPercentage: Float,
-        conversionRate: Float,
-        units: Float,
-        price: Float,
-    ): Pair<Float, Float> {
-        val percent = (defaultStopLossPercentage.minus(0.5f).div(100))
-        val amountSL = amount.times(percent)
-        val rateSL = amountSL.times(conversionRate).div(units).plus(price)
-        return Pair(-amountSL, rateSL)
     }
 
     fun getExposure(

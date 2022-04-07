@@ -36,7 +36,7 @@ class ValidateRateStopLossUseCase @Inject constructor(
             } else {
                 val diff = amountSl.minus(maxAmountSl)
                 if (diff < 0) {
-                    if (abs(-diff.minus(parameters.amountSl.minus(nativeAmount))) < parameters.available) {
+                    if (kotlin.math.abs(-diff.minus(parameters.amountSl.minus(nativeAmount))) < parameters.available) {
                         val addAmount = nativeAmount.minus(parameters.amount).minus(diff)
                         if (addAmount >= 0) {
                             throw AddAmountException(

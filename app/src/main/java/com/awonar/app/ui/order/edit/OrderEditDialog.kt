@@ -68,14 +68,14 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
         }
         launchAndRepeatWithViewLifecycle {
             orderViewModel.stopLossState.collect {
-                position?.let {
-                    orderViewModel.validateStopLoss(
-                        position = it,
-                        current = price
-                    )
-                }
-                val absPair = Pair(abs(it.first), it.second)
-                binding.awonarOrderEditTextNumberpickerSl.setNumber(absPair)
+//                position?.let {
+//                    orderViewModel.validateStopLoss(
+//                        position = it,
+//                        current = price
+//                    )
+//                }
+//                val absPair = Pair(abs(it.first), it.second)
+//                binding.awonarOrderEditTextNumberpickerSl.setNumber(absPair)
             }
         }
         launchAndRepeatWithViewLifecycle {
