@@ -13,7 +13,7 @@
             android:icon="@drawable/awonar_ic_portfolio"
             android:title="Portfolio" />
         <item
-            android:id="@+id/awonar_menu_drawer_main_news_feed"
+            android:id="@+id/feedFragment"
             android:icon="@drawable/awonar_ic_news"
             android:title="News Feed" />
 

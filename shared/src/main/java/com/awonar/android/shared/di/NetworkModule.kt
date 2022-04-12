@@ -106,5 +106,11 @@ class NetworkModule {
     fun provideSearchService(client: NetworkClient): SearchService {
         return SearchService.create(client)
     }
+
+    @Singleton
+    @Provides
+    fun provideFeedService(client: NetworkClient): FeedService {
+        return FeedService.create(client)
+    }
 }
 

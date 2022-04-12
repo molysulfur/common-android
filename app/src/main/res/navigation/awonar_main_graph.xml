@@ -59,7 +59,6 @@
     </fragment>
 
 
-
     <fragment
         android:id="@+id/historyFragment"
         android:name="com.awonar.app.ui.history.HistoryFragment"
@@ -73,5 +72,10 @@
         android:id="@+id/withdrawFragment"
         android:name="com.awonar.app.ui.payment.withdraw.WithdrawFragment"
         android:label="WithdrawFragment" />
+
+    <fragment
+        android:id="@+id/feedFragment"
+        android:name="com.awonar.app.ui.feed.FeedFragment"
+        android:label="FeedFragment" />
 
 </navigation>
