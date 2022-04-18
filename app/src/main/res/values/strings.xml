@@ -89,4 +89,7 @@
     <string name="awonar_text_1y">1Y</string>
     <string name="awonar_text_3y">3Y</string>
     <string name="awonar_text_max">Max</string>
+    <string name="awonar_text_like">Like</string>
+    <string name="awonar_text_comment">Comment</string>
+    <string name="awonar_text_share">Share</string>
 </resources>

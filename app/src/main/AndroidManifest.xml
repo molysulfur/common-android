@@ -16,7 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Awonar">
 
-        <activity android:name=".ui.launcher.LauncherActivity">
+        <activity
+            android:name=".ui.launcher.LauncherActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

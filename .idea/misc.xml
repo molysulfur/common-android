@@ -24,6 +24,7 @@
         <entry key="app/src/main/res/drawable/awonar_ic_facebook.xml" value="0.24259259259259258" />
         <entry key="app/src/main/res/drawable/awonar_ic_hamburger.xml" value="0.12291666666666666" />
         <entry key="app/src/main/res/drawable/awonar_ic_list.xml" value="0.23645833333333333" />
+        <entry key="app/src/main/res/drawable/awonar_ic_more.xml" value="0.263" />
         <entry key="app/src/main/res/drawable/awonar_ic_notification.xml" value="0.2962962962962963" />
         <entry key="app/src/main/res/drawable/awonar_ic_private.xml" value="0.20625" />
         <entry key="app/src/main/res/drawable/awonar_ic_search.xml" value="0.12760416666666666" />
@@ -51,6 +52,7 @@
         <entry key="app/src/main/res/layout/awoanr_fragment_watchlist_recently.xml" value="0.15348439504061565" />
         <entry key="app/src/main/res/layout/awoanr_item_dropdown.xml" value="0.2129115006412997" />
         <entry key="app/src/main/res/layout/awoanr_item_input_range.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/awoanr_widget_default_feed.xml" value="0.3185121846943138" />
         <entry key="app/src/main/res/layout/awonar_activity_about_me.xml" value="0.13697916666666668" />
         <entry key="app/src/main/res/layout/awonar_activity_auth.xml" value="0.21979166666666666" />
         <entry key="app/src/main/res/layout/awonar_activity_bank_account.xml" value="0.1796875" />
@@ -247,6 +249,7 @@
         <entry key="app/src/main/res/layout/awonar_widget_copies_card_view.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/awonar_widget_copies_item.xml" value="0.26875" />
         <entry key="app/src/main/res/layout/awonar_widget_datafeed_chart.xml" value="0.25760649087221094" />
+        <entry key="app/src/main/res/layout/awonar_widget_default_feed.xml" value="0.24871794871794872" />
         <entry key="app/src/main/res/layout/awonar_widget_edit_number_picker.xml" value="0.1" />
         <entry key="app/src/main/res/layout/awonar_widget_facebook.xml" value="0.1" />
         <entry key="app/src/main/res/layout/awonar_widget_financial_card.xml" value="0.42991452991452994" />
@@ -261,6 +264,7 @@
         <entry key="app/src/main/res/layout/awonar_widget_instrument_position_card.xml" value="0.34135338345864663" />
         <entry key="app/src/main/res/layout/awonar_widget_list_item.xml" value="0.296875" />
         <entry key="app/src/main/res/layout/awonar_widget_position.xml" value="0.12612227447627192" />
+        <entry key="app/src/main/res/layout/awonar_widget_preview_feed.xml" value="0.12441214194100043" />
         <entry key="app/src/main/res/layout/awonar_widget_progress.xml" value="0.5" />
         <entry key="app/src/main/res/layout/awonar_widget_search_item.xml" value="0.195382642154767" />
         <entry key="app/src/main/res/layout/awonar_widget_sector.xml" value="0.1748610517315092" />
@@ -289,6 +293,8 @@
         <entry key="camerax/src/main/res/layout/fragment_camera_gallery.xml" value="0.24375" />
         <entry key="camerax/src/main/res/layout/item_photo.xml" value="0.121875" />
         <entry key="camerax/src/main/res/xml/file_paths.xml" value="0.121875" />
+        <entry key="feedsui/src/main/res/drawable/feeds_ic_more.xml" value="0.1" />
+        <entry key="feedsui/src/main/res/layout/awoanr_widget_default_feed.xml" value="0.5" />
         <entry key="rechartlib/src/main/res/layout/activity_main.xml" value="0.15348439504061565" />
         <entry key="rechartwebview/src/main/res/layout/activity_main.xml" value="0.20350577169730655" />
       </map>

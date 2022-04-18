@@ -51,7 +51,6 @@ android {
 }
 
 dependencies {
-
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':common')
     implementation project(path: ':camerax')
@@ -107,4 +106,5 @@ dependencies {
     implementation 'com.akexorcist:dialog-interactor:1.0.0'
     implementation 'com.github.PhilJay:MPAndroidChart:3.1.0'
     implementation "androidx.paging:paging-runtime-ktx:3.0.1"
+    implementation "io.github.molysulfur:imagegallery:1.0.0"
 }

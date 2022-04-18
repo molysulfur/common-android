@@ -10,9 +10,9 @@ class FeedViewPager constructor(fragmentManager: FragmentManager, lifecycle: Lif
     override fun getItemCount(): Int = 3
 
     override fun createFragment(position: Int): Fragment = when (position) {
-        1 -> AllFeedFragment()
-        2 -> FollowingFeedFragment()
-        3 -> CopyTradeFeedFragment()
+        0 -> AllFeedFragment()
+        1 -> FollowingFeedFragment()
+        2 -> CopyTradeFeedFragment()
         else -> throw Error("View Pager is not found!")
     }
 

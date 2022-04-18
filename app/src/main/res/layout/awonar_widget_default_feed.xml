@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="title"
+            type="String" />
+
+        <variable
+            name="subTitle"
+            type="String" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/awonar_size_margin_padding_normal">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/awonar_default_feed_image_avatar"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:src="@drawable/awonar_placeholder_avatar"
+            app:layout_constraintBottom_toTopOf="@+id/awonar_default_feed_text_description"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:srcCompat="@color/cardview_shadow_end_color" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_default_feed_text_title"
+            style="@style/Awonar.SubTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@{title}"
+            app:layout_constraintBottom_toTopOf="@+id/awonar_default_feed_text_subtitle"
+            app:layout_constraintEnd_toStartOf="@+id/awonar_default_feed_image_icon_option"
+            app:layout_constraintStart_toEndOf="@+id/awonar_default_feed_image_avatar"
+            app:layout_constraintTop_toTopOf="@+id/awonar_default_feed_image_avatar"
+            tools:text="text" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_default_feed_text_subtitle"
+            style="@style/Awonar.Description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{subTitle}"
+            app:layout_constraintBottom_toBottomOf="@+id/awonar_default_feed_image_avatar"
+            app:layout_constraintEnd_toStartOf="@+id/awonar_default_feed_image_icon_option"
+            app:layout_constraintStart_toStartOf="@+id/awonar_default_feed_text_title"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_default_feed_text_title"
+            tools:text="text" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/awonar_default_feed_image_icon_option"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:src="@drawable/awonar_ic_more"
+            app:layout_constraintBottom_toBottomOf="@+id/awonar_default_feed_text_subtitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/awonar_default_feed_text_title" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_default_feed_text_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+            app:layout_constraintBottom_toTopOf="@+id/awonar_default_feed_view_preview"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_default_feed_image_avatar"
+            tools:text="@string/awonar_example_name" />
+
+        <FrameLayout
+            android:id="@+id/awonar_default_feed_view_preview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+            android:background="@drawable/awonar_ripple_border_gray"
+            android:padding="@dimen/awonar_size_margin_padding_small"
+            app:layout_constraintBottom_toTopOf="@+id/awonar_default_feed_text_like"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_default_feed_text_description"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_default_feed_text_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+            android:drawableStart="@drawable/awonar_ic_like"
+            android:text="0"
+            app:layout_constraintBottom_toTopOf="@+id/awonar_default_feed_button_like"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_default_feed_view_preview"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_default_feed_text_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0 Comment"
+            app:layout_constraintEnd_toStartOf="@+id/awonar_default_feed_text_share"
+            app:layout_constraintTop_toTopOf="@+id/awonar_default_feed_text_like" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_default_feed_text_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/awonar_ic_share"
+            android:text="0 Shared"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/awonar_default_feed_text_like" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/awonar_default_feed_button_like"
+            style="@style/Awonar.Button.Link"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/awonar_ic_like"
+            android:text="@string/awonar_text_like"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/awonar_default_feed_button_comment"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_default_feed_text_like"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/awonar_default_feed_button_comment"
+            style="@style/Awonar.Button.Link"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/awonar_ic_comment"
+            android:text="@string/awonar_text_comment"
+            app:layout_constraintEnd_toStartOf="@+id/awonar_default_feed_button_share"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/awonar_default_feed_button_like"
+            app:layout_constraintTop_toTopOf="@+id/awonar_default_feed_button_like" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/awonar_default_feed_button_share"
+            style="@style/Awonar.Button.Link"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/awonar_ic_share"
+            android:text="@string/awonar_text_share"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/awonar_default_feed_button_comment"
+            app:layout_constraintTop_toTopOf="@+id/awonar_default_feed_button_like" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
