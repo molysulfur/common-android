@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <com.awonar.app.widget.feed.DefaultFeed xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/awonar_default_feed_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</layout>

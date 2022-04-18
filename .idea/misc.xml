@@ -190,6 +190,7 @@
         <entry key="app/src/main/res/layout/awonar_item_copies_item.xml" value="0.134375" />
         <entry key="app/src/main/res/layout/awonar_item_copies_recommended.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/awonar_item_datafeed.xml" value="0.23169601482854496" />
+        <entry key="app/src/main/res/layout/awonar_item_default_feed.xml" value="0.1" />
         <entry key="app/src/main/res/layout/awonar_item_description.xml" value="0.20625" />
         <entry key="app/src/main/res/layout/awonar_item_divider.xml" value="0.20729166666666668" />
         <entry key="app/src/main/res/layout/awonar_item_divider_blank.xml" value="0.109375" />

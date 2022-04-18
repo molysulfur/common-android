@@ -7,8 +7,10 @@ import com.awonar.android.model.feed.FeedPaging
 import com.awonar.android.shared.domain.feed.GetAllFeedsUseCase
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,23 +24,17 @@ class FeedViewModel @Inject constructor(
     val feedsState get() = _feedsState
 
     init {
-
-        val feedFlow = flow {
+        viewModelScope.launch {
             _pageState.collect { page ->
-                getAllFeedsUseCase(page).collect { feeds ->
-                    val data = feeds.successOr(null)
+                getAllFeedsUseCase(page).collectLatest { result ->
+                    val data = result.successOr(null)
                     data?.feeds?.let { newFeeds ->
-                        val feeds = _feedsState.value
+                        val feeds = _feedsState.value.toMutableList()
+
                         feeds.addAll(newFeeds)
-                        this.emit(feeds)
+                        _feedsState.value = feeds
                     }
                 }
-            }
-        }
-
-        viewModelScope.launch {
-            feedFlow.collect {
-                _feedsState.value = it
             }
         }
     }
