@@ -242,6 +242,7 @@
         <entry key="app/src/main/res/layout/awonar_item_viewpager.xml" value="0.17528858486532706" />
         <entry key="app/src/main/res/layout/awonar_item_watchlist_columns.xml" value="0.3880208333333333" />
         <entry key="app/src/main/res/layout/awonar_skeleton_item.xml" value="0.2682291666666667" />
+        <entry key="app/src/main/res/layout/awonar_widget_card_feed.xml" value="0.3185121846943138" />
         <entry key="app/src/main/res/layout/awonar_widget_card_view_instrument.xml" value="0.14322916666666666" />
         <entry key="app/src/main/res/layout/awonar_widget_cashflow_collaspsible.xml" value="0.16702819956616052" />
         <entry key="app/src/main/res/layout/awonar_widget_collapsible_leverage.xml" value="0.23618090452261306" />

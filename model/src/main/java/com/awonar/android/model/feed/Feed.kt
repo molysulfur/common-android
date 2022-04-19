@@ -1,7 +1,6 @@
 package com.awonar.android.model.feed
 
 import android.os.Parcelable
-import com.awonar.android.model.user.User
 import com.awonar.android.model.user.UserResponse
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
@@ -26,6 +25,7 @@ data class Feed(
     @SerializedName("type") val type: String?,
     @SerializedName("createdAt") val createdAt: String?,
     @SerializedName("updatedAt") val updatedAt: String?,
+    var meta: NewsMeta? = null,
 ) : Parcelable
 
 @Parcelize

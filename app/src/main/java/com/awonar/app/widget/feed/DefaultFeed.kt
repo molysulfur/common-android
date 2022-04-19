@@ -111,10 +111,15 @@ class DefaultFeed : BaseViewGroup {
         updatePreview()
     }
 
+    fun clearOptionView() {
+        preview = null
+        updatePreview()
+    }
+
     private fun updatePreview() {
         with(binding.awonarDefaultFeedViewPreview) {
+            removeAllViews()
             if (preview != null) {
-                removeAllViews()
                 addView(preview)
             }
             visibility = if (preview != null) View.VISIBLE else View.GONE

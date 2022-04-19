@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="title"
+            type="String" />
+
+        <variable
+            name="description"
+            type="String" />
+
+        <variable
+            name="meta"
+            type="String" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/awonar_card_feed_image_cover"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                app:layout_constraintBottom_toTopOf="@+id/awonar_card_feed_text_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_card_feed_text_title"
+                style="@style/Awonar.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/awonar_size_margin_padding_normal"
+                android:text="@{title}"
+                app:layout_constraintBottom_toTopOf="@+id/awonar_card_feed_text_description"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_card_feed_image_cover"
+                tools:text="@string/awonar_example_name" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_card_feed_text_description"
+                style="@style/Awonar.Description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/awonar_size_margin_padding_normal"
+                android:text="@{description}"
+                app:layout_constraintBottom_toTopOf="@+id/awonar_card_feed_text_meta"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_card_feed_text_title"
+                tools:text="@string/awonar_example_name" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_card_feed_text_meta"
+                style="@style/Awonar.SubDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/awonar_size_margin_padding_normal"
+                android:text="@{meta}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_card_feed_text_description"
+                tools:text="@string/awonar_example_name" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+</layout>
+

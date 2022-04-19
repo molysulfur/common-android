@@ -31,23 +31,18 @@ class AllFeedFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         launchAndRepeatWithViewLifecycle {
-            viewModel.feedsState.collect { feeds ->
+            viewModel.feedItems.collect { itemList ->
                 with(binding.awonrAllFeedRecycler) {
                     if (adapter == null) {
-                        adapter = FeedsAdapter()
+                        adapter = FeedsAdapter().apply {
+                            onLoadMore = {
+                                viewModel.loadMore()
+                            }
+                        }
                         layoutManager =
                             LinearLayoutManager(requireContext(),
                                 LinearLayoutManager.VERTICAL,
                                 false)
-                    }
-                    val itemList = mutableListOf<FeedItem>()
-                    feeds.forEach {
-                        itemList.add(FeedItem.DefaultFeed(
-                            avatar = it?.user?.picture,
-                            title = it?.user?.username,
-                            subTitle = DateUtils.getTimeAgo(it?.createdAt),
-                            description = it?.description
-                        ))
                     }
                     (adapter as FeedsAdapter).itemLists = itemList
                 }

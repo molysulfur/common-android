@@ -8,7 +8,7 @@ import com.awonar.app.ui.feed.adapter.FeedItem
 import com.awonar.app.widget.feed.DefaultFeed
 import com.awonar.app.widget.feed.PreviewFeed
 
-class FeedViewHolder constructor(private val binding: AwonarItemDefaultFeedBinding) :
+class NewsFeedViewHolder constructor(private val binding: AwonarItemDefaultFeedBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: FeedItem.DefaultFeed) {
