@@ -27,7 +27,7 @@ class FeedsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
-            FeedType.IMAGES_TYPE -> ImageFeedViewHolder(AwonarItemImagesFeedBinding.inflate(
+            FeedType.IMAGES_TYPE -> ImageFeedViewHolder(AwonarItemDefaultFeedBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false

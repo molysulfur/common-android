@@ -8,12 +8,12 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.RequiresApi
-import com.awonar.app.databinding.AwonarWidgetImagesFeedBinding
+import com.awonar.app.databinding.AwonarWidgetImagesPreviewFeedBinding
 import com.molysulfur.library.widget.BaseViewGroup
 
 class ImagePreviewFeed : BaseViewGroup {
 
-    private lateinit var binding: AwonarWidgetImagesFeedBinding
+    private lateinit var binding: AwonarWidgetImagesPreviewFeedBinding
 
 
     override fun setup() {
@@ -27,7 +27,7 @@ class ImagePreviewFeed : BaseViewGroup {
     }
 
     override fun getLayoutResource(): View {
-        binding = AwonarWidgetImagesFeedBinding.inflate(LayoutInflater.from(context))
+        binding = AwonarWidgetImagesPreviewFeedBinding.inflate(LayoutInflater.from(context))
         return binding.root
     }
 

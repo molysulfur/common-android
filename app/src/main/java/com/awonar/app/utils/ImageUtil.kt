@@ -39,9 +39,9 @@ object ImageUtil {
             .crossfade(true)
             .build()
         val request = ImageRequest.Builder(context)
-            .data(url)
+            .data(BuildConfig.BASE_IMAGE_URL + url)
             .crossfade(true)
             .build()
-       return imageLoader.execute(request).drawable?.toBitmap()
+        return imageLoader.execute(request).drawable?.toBitmap()
     }
 }
