@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.awonar.android.model.feed.Feed
 import com.awonar.android.model.feed.FeedPaging
+import com.awonar.android.shared.domain.feed.FeedRequest
 import com.awonar.android.shared.domain.feed.GetAllFeedsUseCase
 import com.awonar.app.domain.feed.ConvertFeedData
 import com.awonar.app.domain.feed.ConvertFeedsToItemsUseCase
@@ -22,7 +23,8 @@ class FeedViewModel @Inject constructor(
     private val convertFeedsToItemsUseCase: ConvertFeedsToItemsUseCase,
 ) : ViewModel() {
 
-    val _pageState = MutableStateFlow(1)
+    private val _pageState = MutableStateFlow(1)
+    private val _feedType = MutableStateFlow("")
     private val _feedsState = MutableStateFlow<MutableList<Feed?>>(mutableListOf())
     private val _feedItems =
         MutableStateFlow<MutableList<FeedItem>>(mutableListOf(FeedItem.LoadingItem()))
@@ -30,7 +32,9 @@ class FeedViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getFeed()
+            _feedType.collect {
+                getFeed()
+            }
         }
 
         viewModelScope.launch {
@@ -43,7 +47,7 @@ class FeedViewModel @Inject constructor(
     }
 
     private suspend fun getFeed() {
-        getAllFeedsUseCase(_pageState.value).collectLatest { result ->
+        getAllFeedsUseCase(FeedRequest(_pageState.value, _feedType.value)).collectLatest { result ->
             val data = result.successOr(null)
             _pageState.value = data?.page ?: 0
             data?.feeds?.let { newFeeds ->
@@ -52,6 +56,12 @@ class FeedViewModel @Inject constructor(
                 _feedsState.value = feeds
             }
         }
+    }
+
+    fun setFeedType(type: String = "") {
+        _pageState.value = 1
+        _feedsState.value = mutableListOf()
+        _feedType.value = type
     }
 
     fun loadMore() {

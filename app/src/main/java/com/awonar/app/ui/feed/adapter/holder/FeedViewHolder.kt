@@ -17,6 +17,9 @@ class FeedViewHolder constructor(private val binding: AwonarItemDefaultFeedBindi
             title = item.title
             subTitle = item.subTitle
             description = item.description
+            likeCount = item.likeCount
+            commentCount = item.commentCount
+            sharedCount = item.sharedCount
             if (item.sharedFeed != null) {
                 addOptionView(createFeedView(item.sharedFeed))
             } else {

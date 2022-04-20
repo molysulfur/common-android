@@ -31,15 +31,16 @@ class FeedRepository @Inject constructor(
         }.asFlow()
 
 
-    fun getAllFeed(page: Int) =
+    fun getAllFeed(type: String, page: Int) =
         object : DirectNetworkFlow<Int, FeedPaging, FeedResponse>() {
             override fun createCall(): Response<FeedResponse> =
-                service.getAllFeed(page = page).execute()
+                service.getAllFeed(type= type,page = page).execute()
 
             override fun convertToResultType(response: FeedResponse): FeedPaging {
                 return FeedPaging(
                     feeds = response.feeds ?: emptyList(),
-                    page = if (response.meta?.hasMore == true) response.meta?.page?.plus(1) ?: 0 else 0
+                    page = if (response.meta?.hasMore == true) response.meta?.page?.plus(1)
+                        ?: 0 else 0
                 )
             }
 

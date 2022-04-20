@@ -1,6 +1,8 @@
 package com.awonar.app.ui.feed.adapter
 
+import android.graphics.Bitmap
 import android.os.Parcelable
+import com.awonar.android.model.feed.NewsMeta
 import com.awonar.android.model.feed.SharedFeed
 import kotlinx.parcelize.Parcelize
 
@@ -11,6 +13,18 @@ sealed class FeedItem(val type: Int) : Parcelable {
 
     @Parcelize
     class LoadingItem : FeedItem(FeedType.LOADING_TYPE)
+
+    @Parcelize
+    class ImagesFeeds(
+        val avatar: String?,
+        val title: String?,
+        val subTitle: String?,
+        val description: String?,
+        val likeCount: Int = 0,
+        val sharedCount: Int = 0,
+        val commentCount: Int = 0,
+        val images: List<String?>,
+    ) : FeedItem(FeedType.IMAGES_TYPE)
 
     @Parcelize
     class DefaultFeed(
@@ -30,9 +44,9 @@ sealed class FeedItem(val type: Int) : Parcelable {
         val title: String?,
         val subTitle: String?,
         val description: String?,
-        val sharedFeed: SharedFeed?,
+        val newsMeta: NewsMeta?,
         val likeCount: Int = 0,
         val sharedCount: Int = 0,
         val commentCount: Int = 0,
-    ) : FeedItem(FeedType.FEED_TYPE)
+    ) : FeedItem(FeedType.NEWS_TYPE)
 }

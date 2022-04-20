@@ -7,14 +7,19 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface FeedService {
     @GET("v1/link-preview")
     fun getMetaNews(@Query("url") url: String): Call<NewsMetaResponse?>
 
-    @GET("v1/feed/posts")
-    fun getAllFeed(@Query("page") page: Int, @Query("limit") limit: Int = 5): Call<FeedResponse>
+    @GET("v1/feed/posts/{type}")
+    fun getAllFeed(
+        @Path("type") type: String = "",
+        @Query("page") page: Int,
+        @Query("limit") limit: Int = 5,
+    ): Call<FeedResponse>
 
     companion object {
 

@@ -16,6 +16,36 @@ class DefaultFeed : BaseViewGroup {
     private lateinit var binding: AwonarWidgetDefaultFeedBinding
     private var preview: View? = null
 
+    var likeCount = 0
+        set(value) {
+            field = value
+            updateLikeCount()
+        }
+
+    private fun updateLikeCount() {
+        binding.like = "$likeCount"
+    }
+
+    var commentCount = 0
+        set(value) {
+            field = value
+            updateCommentCount()
+        }
+
+    private fun updateCommentCount() {
+        binding.comment = "$commentCount Comments"
+    }
+
+    var sharedCount = 0
+        set(value) {
+            field = value
+            updateSharedCount()
+        }
+
+    private fun updateSharedCount() {
+        binding.shared = "$sharedCount Shared"
+    }
+
     var description: String? = null
         set(value) {
             field = value

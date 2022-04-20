@@ -13,6 +13,18 @@
             name="subTitle"
             type="String" />
 
+        <variable
+            name="like"
+            type="String" />
+
+        <variable
+            name="comment"
+            type="String" />
+
+        <variable
+            name="shared"
+            type="String" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -83,7 +95,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
-            android:background="@drawable/awonar_ripple_border_gray"
             android:padding="@dimen/awonar_size_margin_padding_small"
             app:layout_constraintBottom_toTopOf="@+id/awonar_default_feed_text_like"
             app:layout_constraintEnd_toEndOf="parent"
@@ -99,7 +110,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
             android:drawableStart="@drawable/awonar_ic_like"
-            android:text="0"
+            android:text="@{like}"
             app:layout_constraintBottom_toTopOf="@+id/awonar_default_feed_button_like"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/awonar_default_feed_view_preview"
@@ -110,7 +121,7 @@
             android:id="@+id/awonar_default_feed_text_comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0 Comment"
+            android:text="@{comment}"
             app:layout_constraintEnd_toStartOf="@+id/awonar_default_feed_text_share"
             app:layout_constraintTop_toTopOf="@+id/awonar_default_feed_text_like" />
 
@@ -118,7 +129,7 @@
             android:id="@+id/awonar_default_feed_text_share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0 Shared"
+            android:text="@{shared}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/awonar_default_feed_text_like" />
 

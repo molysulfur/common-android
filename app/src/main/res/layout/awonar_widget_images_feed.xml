@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.molysulfur.library.galleryimage.GalleryRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/awonar_images_feeds_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+</com.molysulfur.library.galleryimage.GalleryRecyclerView>

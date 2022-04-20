@@ -20,11 +20,10 @@ import kotlin.coroutines.suspendCoroutine
 class GetAllFeedsUseCase @Inject constructor(
     private val repository: FeedRepository,
     @IoDispatcher dispatcher: CoroutineDispatcher,
-) : FlowUseCase<Int, FeedPaging?>(dispatcher) {
+) : FlowUseCase<FeedRequest, FeedPaging?>(dispatcher) {
 
-    override fun execute(parameters: Int): Flow<Result<FeedPaging?>> = flow {
-        Timber.e("$parameters")
-        repository.getAllFeed(parameters).collectIndexed { _, result ->
+    override fun execute(parameters: FeedRequest): Flow<Result<FeedPaging?>> = flow {
+        repository.getAllFeed(parameters.type, parameters.page).collectIndexed { _, result ->
             val data = result.successOr(null)
             coroutineScope {
                 val metas = data?.feeds?.mapIndexed { index, feed ->
@@ -39,8 +38,13 @@ class GetAllFeedsUseCase @Inject constructor(
                         feed
                     }
                 }
-                emit(Result.Success(FeedPaging(metas?: mutableListOf(),data?.page?:0)))
+                emit(Result.Success(FeedPaging(metas ?: mutableListOf(), data?.page ?: 0)))
             }
         }
     }
 }
+
+data class FeedRequest(
+    val page: Int,
+    val type: String = "",
+)

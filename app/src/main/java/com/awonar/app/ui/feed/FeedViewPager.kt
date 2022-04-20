@@ -7,6 +7,12 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 
 class FeedViewPager constructor(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
     FragmentStateAdapter(fragmentManager, lifecycle) {
+
+    companion object {
+        val TAB_TITLE = arrayListOf("All Post", "Following", "Copytrade")
+    }
+
+
     override fun getItemCount(): Int = 3
 
     override fun createFragment(position: Int): Fragment = when (position) {
