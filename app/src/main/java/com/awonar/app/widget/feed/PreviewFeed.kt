@@ -1,16 +1,21 @@
 package com.awonar.app.widget.feed
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.os.Build
 import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.RequiresApi
+import com.awonar.android.model.feed.NewsMeta
 import com.awonar.app.databinding.AwonarWidgetDefaultFeedBinding
 import com.awonar.app.databinding.AwonarWidgetPreviewFeedBinding
 import com.awonar.app.utils.ImageUtil
 import com.molysulfur.library.widget.BaseViewGroup
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class PreviewFeed : BaseViewGroup {
 
@@ -120,6 +125,29 @@ class PreviewFeed : BaseViewGroup {
             }
             visibility = if (preview != null) View.VISIBLE else View.GONE
         }
+    }
+
+    fun createImageFeed(images: List<String?>, scope: CoroutineScope) {
+        scope.launch {
+            val bitmaps: List<Bitmap?> = images.map {
+                ImageUtil.getBitmap(it, context)
+            }
+            val imagesView = ImagePreviewFeed(context).apply {
+                setImages(bitmaps.toMutableList())
+            }
+            addOptionView(imagesView)
+        }
+    }
+
+    fun createNewsFeed(news: NewsMeta?) {
+        Timber.e("$news")
+        val view = FeedCardView(context = binding.root.context).apply {
+            image = news?.image
+            title = news?.title
+            meta = "%s . %s".format(news?.siteName, news?.hostname)
+            description = news?.description
+        }
+        addOptionView(view)
     }
 
 

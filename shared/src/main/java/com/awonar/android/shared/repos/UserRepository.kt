@@ -13,6 +13,7 @@ import com.awonar.android.model.core.MessageSuccessResponse
 import com.awonar.android.model.experience.ExperienceAnswerResponse
 import com.awonar.android.model.experience.ExperienceRequest
 import com.awonar.android.model.experience.ExperienceResponse
+import com.awonar.android.model.feed.UserTag
 import com.awonar.android.model.privacy.PersonalAddressRequest
 import com.awonar.android.model.privacy.PersonalCardIdRequest
 import com.awonar.android.model.privacy.PersonalProfileRequest
@@ -31,6 +32,20 @@ class UserRepository @Inject constructor(
     private val userService: UserService,
     private val preference: UserPreferenceManager,
 ) {
+
+    fun getUserTagSuggestions(keyword: String) =
+        object : DirectNetworkFlow<Unit, List<UserTag>, List<UserTag>?>() {
+            override fun createCall(): Response<List<UserTag>?> =
+                userService.searchUsersWithKeyword(keyword).execute()
+
+            override fun convertToResultType(response: List<UserTag>?): List<UserTag> =
+                response ?: listOf()
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+
+        }.asFlow()
 
     fun isFollowing(userId: String, isUser: Boolean) =
         object : DirectNetworkFlow<Unit, Boolean, FollowResponse?>() {

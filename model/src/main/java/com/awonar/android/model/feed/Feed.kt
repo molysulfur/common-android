@@ -12,7 +12,7 @@ data class Feed(
     @SerializedName("commentTotal") val countComment: Int,
     @SerializedName("isLike") val isLike: Boolean,
     @SerializedName("shareTotal") val shareTotal: Int,
-    @SerializedName("sharePostData") val sharePostData: SharedFeed?,
+    @SerializedName("sharePostData") val sharePostData: Feed?,
     @SerializedName("tagsUsers") val tagsUsers: List<String?>?,
     @SerializedName("links") val links: List<String?>?,
     @SerializedName("description") val description: String?,

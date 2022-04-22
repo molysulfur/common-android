@@ -27,15 +27,26 @@ class GetAllFeedsUseCase @Inject constructor(
             val data = result.successOr(null)
             coroutineScope {
                 val metas = data?.feeds?.mapIndexed { index, feed ->
-                    if (feed?.type == "news") {
-                        val deffer = async {
-                            repository.getMetaNews(feed.newsId ?: "")
+                    when {
+                        feed?.type == "news" -> {
+                            val deffer = async {
+                                repository.getMetaNews(feed.links?.get(0) ?: "")
+                            }
+                            val meta = deffer.await().last().successOr(null)
+                            feed.meta = meta
+                            feed
                         }
-                        val meta = deffer.await().last().successOr(null)
-                        feed.meta = meta
-                        feed
-                    } else {
-                        feed
+                        feed?.sharePostData?.type == "news" -> {
+                            val deffer = async {
+                                repository.getMetaNews(feed.sharePostData?.links?.get(0) ?: "")
+                            }
+                            val meta = deffer.await().last().successOr(null)
+                            feed.sharePostData?.meta = meta
+                            feed
+                        }
+                        else -> {
+                            feed
+                        }
                     }
                 }
                 emit(Result.Success(FeedPaging(metas ?: mutableListOf(), data?.page ?: 0)))

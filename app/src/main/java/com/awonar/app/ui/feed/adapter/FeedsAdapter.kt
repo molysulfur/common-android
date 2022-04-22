@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.app.databinding.AwonarItemBlankGrayBinding
 import com.awonar.app.databinding.AwonarItemDefaultFeedBinding
-import com.awonar.app.databinding.AwonarItemImagesFeedBinding
 import com.awonar.app.databinding.AwonarItemLoadingBinding
 import com.awonar.app.ui.feed.adapter.holder.*
 import kotlinx.coroutines.CoroutineScope
@@ -60,7 +59,7 @@ class FeedsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         when (holder) {
             is ImageFeedViewHolder -> holder.bind(item as FeedItem.ImagesFeeds,scope)
             is NewsFeedViewHolder -> holder.bind(item as FeedItem.NewsFeed)
-            is FeedViewHolder -> holder.bind(item as FeedItem.DefaultFeed)
+            is FeedViewHolder -> holder.bind(item as FeedItem.DefaultFeed,scope)
             is LoadingViewHolder -> holder.bind {
                 onLoadMore?.invoke()
             }

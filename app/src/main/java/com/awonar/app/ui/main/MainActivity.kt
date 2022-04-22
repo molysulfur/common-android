@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.NavigationUI.onNavDestinationSelected
+import com.awonar.app.ui.publishfeed.PublishFeedActivity
 import com.awonar.app.ui.search.SearchActivity
 import com.awonar.app.ui.trading.TradingActivity
 import com.awonar.app.utils.ImageUtil
@@ -174,6 +175,7 @@ class MainActivity : BaseActivity() {
         binding.awonarMainToolbarHeader.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.awonar_toolbar_main_menu_search -> openActivity(SearchActivity::class.java)
+                R.id.awonar_toolbar_main_menu_write -> openActivity(PublishFeedActivity::class.java)
                 else -> openActivity(SearchActivity::class.java)
             }
             true

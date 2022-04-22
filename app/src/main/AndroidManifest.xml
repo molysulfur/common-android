@@ -59,6 +59,7 @@
         <activity android:name=".ui.watchlist.AddWatchlistItemActivity" />
         <activity android:name=".ui.search.SearchActivity" />
         <activity android:name=".ui.trading.TradingActivity" />
+        <activity android:name=".ui.publishfeed.PublishFeedActivity" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
