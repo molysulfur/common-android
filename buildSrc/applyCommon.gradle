@@ -15,12 +15,6 @@ android {
             keyAlias KEYSTORE_ALIAS
             keyPassword KEYSTORE_PASSWORD
         }
-
-        debug {
-            keyAlias 'androiddebugkey'
-            storePassword 'android'
-            keyPassword 'android'
-        }
     }
 
     buildTypes {

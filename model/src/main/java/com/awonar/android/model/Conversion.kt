@@ -9,7 +9,7 @@ import kotlinx.parcelize.Parcelize
 
 @Entity(tableName = "conversions")
 @Parcelize
-data class Conversion(
+data class Conversion constructor(
     @PrimaryKey
     @SerializedName("instrumentId")
     @ColumnInfo(name = "id")

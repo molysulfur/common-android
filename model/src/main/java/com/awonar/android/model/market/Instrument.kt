@@ -14,7 +14,7 @@ data class InstrumentResponse(
 
 @Entity(tableName = "instruments")
 @Parcelize
-data class Instrument(
+data class Instrument constructor(
     @PrimaryKey
     @SerializedName("id")
     @ColumnInfo(name = "id")

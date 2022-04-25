@@ -8,7 +8,7 @@ import kotlinx.parcelize.Parcelize
 
 @Entity(tableName = "trading_data")
 @Parcelize
-data class TradingData(
+data class TradingData constructor(
     @PrimaryKey
     @ColumnInfo(name = "instrumentId") val instrumentId: Int,
     @ColumnInfo(name = "allowBuy") val allowBuy: Boolean,

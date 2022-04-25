@@ -34,7 +34,7 @@ ext.versions = [
         screenOrientation : "1.0.0",
         retrofit          : "2.9.0",
         okhttp            : "4.9.0",
-        androidxRoom      : "2.3.0",
+        androidxRoom      : "2.4.2",
         paging            : "3.0.1"
 ]
 

@@ -23,7 +23,6 @@ import com.awonar.app.utils.ColorChangingUtil
 import com.molysulfur.library.extension.openActivity
 import com.molysulfur.library.extension.openActivityCompatForResult
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.*
 
