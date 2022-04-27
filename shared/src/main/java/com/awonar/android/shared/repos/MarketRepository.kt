@@ -1,5 +1,6 @@
 package com.awonar.android.shared.repos
 
+import com.awonar.android.model.feed.Tag
 import com.awonar.android.model.market.Instrument
 import com.awonar.android.model.market.InstrumentProfile
 import com.awonar.android.model.market.InstrumentResponse
@@ -13,6 +14,8 @@ import com.molysulfur.library.network.NetworkFlow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.Response
+import com.molysulfur.library.result.Result
+import timber.log.Timber
 import javax.inject.Inject
 
 open class MarketRepository @Inject constructor(
@@ -20,8 +23,6 @@ open class MarketRepository @Inject constructor(
     private val tradingDataDao: TradingDataDao,
     private val instrumentDao: InstrumentDao,
 ) {
-
-
 
     fun getInstrumentFromDao(id: Int): Instrument? {
         return instrumentDao.loadById(id)
@@ -109,4 +110,14 @@ open class MarketRepository @Inject constructor(
             }
 
         }.asFlow()
+
+    fun findInstrumentTags(keyword: String): Flow<Result<List<Tag>?>> = flow {
+        val result = instrumentDao.getInstrumentWithKeyword(keyword)
+        Timber.e("$result")
+
+        val tags = result.map {
+            Tag(id = "${it.id}", username = it.symbol)
+        }
+        emit(Result.Success(data = tags))
+    }
 }

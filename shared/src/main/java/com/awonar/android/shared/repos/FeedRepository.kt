@@ -5,10 +5,15 @@ import com.awonar.android.shared.api.FeedService
 import com.molysulfur.library.network.DirectNetworkFlow
 import com.molysulfur.library.result.Result
 import kotlinx.coroutines.flow.Flow
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
+
 
 @Singleton
 class FeedRepository @Inject constructor(
@@ -51,8 +56,21 @@ class FeedRepository @Inject constructor(
 
     fun create(request: CreateFeed): Flow<Result<Feed?>> =
         object : DirectNetworkFlow<CreateFeed, Feed?, Feed?>() {
-            override fun createCall(): Response<Feed?> =
-                service.create(request).execute()
+            override fun createCall(): Response<Feed?> {
+                val parts: MutableMap<String, RequestBody> = mutableMapOf()
+                val descriptionPart = request.description.toRequestBody()
+                val sharePostIdPart = request.sharePostId.toRequestBody()
+                parts["description"] = descriptionPart
+                parts["sharePostId"] = sharePostIdPart
+                val imageParts = request.images.map {
+                    MultipartBody.Part.createFormData(
+                        "file",
+                        it.name,
+                        it.asRequestBody("image/*".toMediaTypeOrNull())
+                    )
+                }
+                return service.create(parts, imageParts).execute()
+            }
 
             override fun convertToResultType(response: Feed?): Feed? = response
 

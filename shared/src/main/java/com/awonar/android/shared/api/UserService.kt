@@ -7,7 +7,7 @@ import com.awonar.android.model.core.MessageSuccessResponse
 import com.awonar.android.model.experience.ExperienceAnswerResponse
 import com.awonar.android.model.experience.ExperienceRequest
 import com.awonar.android.model.experience.ExperienceResponse
-import com.awonar.android.model.feed.UserTag
+import com.awonar.android.model.feed.Tag
 import com.awonar.android.model.privacy.PersonalAddressRequest
 import com.awonar.android.model.privacy.PersonalCardIdRequest
 import com.awonar.android.model.privacy.PersonalProfileRequest
@@ -24,7 +24,7 @@ interface UserService {
     @GET("v1/search/users/{keyword}")
     fun searchUsersWithKeyword(
         @Path("keyword") keyword: String,
-    ): Call<List<UserTag>?>
+    ): Call<List<Tag>?>
 
     @POST("v1/follow/{uid}")
     fun isFollow(@Path("uid") userId: String?, @Body isUser: IsFollowUser): Call<FollowResponse?>

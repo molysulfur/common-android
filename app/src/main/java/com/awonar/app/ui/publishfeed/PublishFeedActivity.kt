@@ -1,18 +1,20 @@
 package com.awonar.app.ui.publishfeed
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.activity.viewModels
 import androidx.core.widget.doAfterTextChanged
-import androidx.core.widget.doBeforeTextChanged
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.awonar.app.R
 import com.awonar.app.databinding.AwonarActivityPublishFeedBinding
 import com.awonar.app.dialog.loading.LoadingDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.linkedin.android.spyglass.mentions.Mentionable
 import com.linkedin.android.spyglass.suggestions.SuggestionsResult
 import com.linkedin.android.spyglass.suggestions.interfaces.Suggestible
@@ -23,6 +25,7 @@ import com.linkedin.android.spyglass.tokenization.impl.WordTokenizer
 import com.linkedin.android.spyglass.tokenization.impl.WordTokenizerConfig
 import com.linkedin.android.spyglass.tokenization.interfaces.QueryTokenReceiver
 import com.molysulfur.library.activity.BaseActivity
+import com.molysulfur.library.extension.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -35,6 +38,8 @@ class PublishFeedActivity : BaseActivity(), QueryTokenReceiver, SuggestionsResul
     SuggestionsVisibilityManager {
 
     companion object {
+        const val RESULT_CODE = 2000
+        const val EXTRA_FEED = "com.awonar.app.ui.publishfeed.extra.feed"
         private const val DIALOG_KEY = "com.awonar.app.ui.publishfeed.dialog.key.loading"
         private const val BUCKET = "people-network"
     }
@@ -53,7 +58,7 @@ class PublishFeedActivity : BaseActivity(), QueryTokenReceiver, SuggestionsResul
 
     private val tokenizerConfig = WordTokenizerConfig.Builder()
         .setWordBreakChars(", ")
-        .setExplicitChars("@#")
+        .setExplicitChars("@$")
         .setMaxNumKeywords(2)
         .setThreshold(1)
         .build()
@@ -62,12 +67,29 @@ class PublishFeedActivity : BaseActivity(), QueryTokenReceiver, SuggestionsResul
         super.onCreate(savedInstanceState)
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.publishFeedState.collectLatest { feed ->
+                    if (feed != null) {
+                        val intent = Intent()
+                        val bundle = Bundle().apply {
+                            putParcelable(EXTRA_FEED,feed)
+                        }
+                        intent.putExtras(bundle)
+                        setResult(RESULT_CODE, intent)
+                        toast(getString(R.string.awoanr_publish_feed_text_success))
+                        finish()
+                    } else {
+                        toast(getString(R.string.awoanr_publish_feed_text_error))
+                    }
+                }
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.suggestionState.collectLatest { result ->
                     onReceiveSuggestionsResult(result, BUCKET)
                 }
             }
         }
-
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.loadingState.collectLatest { isLoading ->
@@ -110,8 +132,8 @@ class PublishFeedActivity : BaseActivity(), QueryTokenReceiver, SuggestionsResul
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed({
             when (queryToken.explicitChar) {
-                '@' -> viewModel.getSuggestion(queryToken)
-                '#' -> viewModel.getSuggestion(queryToken)
+                '@' -> viewModel.getUserSuggestion(queryToken)
+                '$' -> viewModel.getInstrumentSuggestion(queryToken)
             }
 
         }, 2000)
@@ -150,4 +172,19 @@ class PublishFeedActivity : BaseActivity(), QueryTokenReceiver, SuggestionsResul
     override fun isDisplayingSuggestions(): Boolean =
         binding.awonarPublishFeedRecyclerList.visibility == RecyclerView.VISIBLE
 
+    override fun onBackPressed() {
+        if (!viewModel.canBack()) {
+            MaterialAlertDialogBuilder(this)
+                .setMessage(getString(R.string.awonar_hint_darf_post))
+                .setNegativeButton("Discard") { dialog, which ->
+
+                }
+                .setPositiveButton("Continue") { dialog, which ->
+                    super.onBackPressed()
+                }
+                .show()
+        } else {
+            super.onBackPressed()
+        }
+    }
 }

@@ -92,4 +92,7 @@
     <string name="awonar_text_like">Like</string>
     <string name="awonar_text_comment">Comment</string>
     <string name="awonar_text_share">Share</string>
+    <string name="awonar_hint_darf_post">If you go back now, your draft will be discarded</string>
+    <string name="awoanr_publish_feed_text_error">Publish Feed is failed. please try again.</string>
+    <string name="awoanr_publish_feed_text_success">Publish Feed is Successful.</string>
 </resources>

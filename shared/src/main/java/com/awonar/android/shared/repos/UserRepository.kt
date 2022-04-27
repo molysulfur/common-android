@@ -13,7 +13,7 @@ import com.awonar.android.model.core.MessageSuccessResponse
 import com.awonar.android.model.experience.ExperienceAnswerResponse
 import com.awonar.android.model.experience.ExperienceRequest
 import com.awonar.android.model.experience.ExperienceResponse
-import com.awonar.android.model.feed.UserTag
+import com.awonar.android.model.feed.Tag
 import com.awonar.android.model.privacy.PersonalAddressRequest
 import com.awonar.android.model.privacy.PersonalCardIdRequest
 import com.awonar.android.model.privacy.PersonalProfileRequest
@@ -34,11 +34,11 @@ class UserRepository @Inject constructor(
 ) {
 
     fun getUserTagSuggestions(keyword: String) =
-        object : DirectNetworkFlow<Unit, List<UserTag>, List<UserTag>?>() {
-            override fun createCall(): Response<List<UserTag>?> =
+        object : DirectNetworkFlow<Unit, List<Tag>, List<Tag>?>() {
+            override fun createCall(): Response<List<Tag>?> =
                 userService.searchUsersWithKeyword(keyword).execute()
 
-            override fun convertToResultType(response: List<UserTag>?): List<UserTag> =
+            override fun convertToResultType(response: List<Tag>?): List<Tag> =
                 response ?: listOf()
 
             override fun onFetchFailed(errorMessage: String) {

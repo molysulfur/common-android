@@ -5,6 +5,10 @@ import com.awonar.android.model.market.Instrument
 
 @Dao
 interface InstrumentDao {
+
+    @Query("SELECT * FROM instruments WHERE symbol LIKE UPPER(:keyword) || '%'")
+    fun getInstrumentWithKeyword(keyword: String): List<Instrument>
+
     @Query("SELECT * FROM instruments")
     fun getAll(): List<Instrument>
 

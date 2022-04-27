@@ -2,11 +2,13 @@ package com.awonar.app.ui.feed.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.app.databinding.AwonarItemBlankGrayBinding
 import com.awonar.app.databinding.AwonarItemDefaultFeedBinding
 import com.awonar.app.databinding.AwonarItemLoadingBinding
 import com.awonar.app.ui.feed.adapter.holder.*
+import com.awonar.app.ui.profile.history.adapter.HistoryProfileItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -26,40 +28,50 @@ class FeedsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
-            FeedType.IMAGES_TYPE -> ImageFeedViewHolder(AwonarItemDefaultFeedBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            ))
-            FeedType.NEWS_TYPE -> NewsFeedViewHolder(AwonarItemDefaultFeedBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            ))
-            FeedType.BLANK_TYPE -> BlankViewHolder(AwonarItemBlankGrayBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            ))
-            FeedType.LOADING_TYPE -> LoadingViewHolder(AwonarItemLoadingBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            ))
-            FeedType.FEED_TYPE -> FeedViewHolder(AwonarItemDefaultFeedBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            ))
+            FeedType.IMAGES_TYPE -> ImageFeedViewHolder(
+                AwonarItemDefaultFeedBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+            FeedType.NEWS_TYPE -> NewsFeedViewHolder(
+                AwonarItemDefaultFeedBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+            FeedType.BLANK_TYPE -> BlankViewHolder(
+                AwonarItemBlankGrayBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+            FeedType.LOADING_TYPE -> LoadingViewHolder(
+                AwonarItemLoadingBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+            FeedType.FEED_TYPE -> FeedViewHolder(
+                AwonarItemDefaultFeedBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
             else -> throw Error("View type is not found!")
         }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = itemLists[position]
         when (holder) {
-            is ImageFeedViewHolder -> holder.bind(item as FeedItem.ImagesFeeds,scope)
+            is ImageFeedViewHolder -> holder.bind(item as FeedItem.ImagesFeeds, scope)
             is NewsFeedViewHolder -> holder.bind(item as FeedItem.NewsFeed)
-            is FeedViewHolder -> holder.bind(item as FeedItem.DefaultFeed,scope)
+            is FeedViewHolder -> holder.bind(item as FeedItem.DefaultFeed, scope)
             is LoadingViewHolder -> holder.bind {
                 onLoadMore?.invoke()
             }
@@ -69,4 +81,5 @@ class FeedsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemCount(): Int = itemLists.size
 
     override fun getItemViewType(position: Int): Int = itemLists[position].type
+
 }

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class UserTag(
+data class Tag(
     @SerializedName("id") val id: String?,
     @SerializedName("username") val username: String?,
 ) : Parcelable
