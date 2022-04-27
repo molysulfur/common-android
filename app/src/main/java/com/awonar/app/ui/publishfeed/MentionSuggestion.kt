@@ -13,7 +13,7 @@ data class MentionSuggestion(
     override fun getSuggestiblePrimaryText(): String = suggestion
 
     override fun getTextForDisplayMode(mode: Mentionable.MentionDisplayMode): String = when (mode) {
-        Mentionable.MentionDisplayMode.FULL -> suggestion
+        Mentionable.MentionDisplayMode.FULL -> "@$suggestion"
         else -> ""
     }
 

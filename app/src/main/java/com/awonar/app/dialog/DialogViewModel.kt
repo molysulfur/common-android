@@ -8,6 +8,7 @@ import com.awonar.app.dialog.copier.add.RemoveFundMapper
 import com.awonar.app.dialog.copier.edit.EditCopierMapper
 import com.awonar.app.dialog.copier.pause.PauseCopierMapper
 import com.awonar.app.dialog.copier.stop.StopCopierMapper
+import com.awonar.app.dialog.loading.LoadingMapper
 import com.awonar.app.ui.order.OrderMapper
 import com.awonar.app.ui.order.edit.OrderEditMapper
 import com.awonar.app.ui.order.partialclose.PartialCloseMapper
@@ -22,4 +23,5 @@ class DialogViewModel : ViewModel() {
     val stopCopierDialog = DialogLauncher(StopCopierMapper::class.java)
     val pauseCopierDialog = DialogLauncher(PauseCopierMapper::class.java)
     val editStopLossDialog = DialogLauncher(EditCopierMapper::class.java)
+    val loadingDialog = DialogLauncher(LoadingMapper::class.java)
 }
