@@ -4,10 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.awonar.app.databinding.AwonarItemBlankGrayBinding
-import com.awonar.app.databinding.AwonarItemDefaultFeedBinding
-import com.awonar.app.databinding.AwonarItemFeedLoadingBinding
-import com.awonar.app.databinding.AwonarItemLoadingBinding
+import com.awonar.app.databinding.*
 import com.awonar.app.ui.feed.adapter.holder.*
 import com.awonar.app.ui.profile.history.adapter.HistoryProfileItem
 import kotlinx.coroutines.CoroutineScope
@@ -59,6 +56,13 @@ class FeedsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             )
             FeedType.FEED_TYPE -> FeedViewHolder(
                 AwonarItemDefaultFeedBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+            FeedType.EMPTY_TYPE -> EmptyViewHolder(
+                AwonarItemEmptyBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false

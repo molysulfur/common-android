@@ -10,9 +10,6 @@ class LoadingViewHolder constructor(private val binding: AwonarItemFeedLoadingBi
 
 
     fun bind(onLoad: (() -> Unit)?) {
-        with(binding.awoanrFeedLoadingShimmerLoad) {
-            startShimmer()
-        }
         onLoad?.invoke()
     }
 }

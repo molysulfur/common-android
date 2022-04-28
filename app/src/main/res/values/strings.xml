@@ -95,4 +95,6 @@
     <string name="awonar_hint_darf_post">If you go back now, your draft will be discarded</string>
     <string name="awoanr_publish_feed_text_error">Publish Feed is failed. please try again.</string>
     <string name="awoanr_publish_feed_text_success">Publish Feed is Successful.</string>
+    <string name="awonar_feed_title_empty">Empty Post</string>
+    <string name="awoanr_feed_text_empty_description">The Timeline is empty It seems there are no shares insights.</string>
 </resources>

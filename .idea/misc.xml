@@ -10,10 +10,12 @@
         <entry key="app/src/main/res/layout/awonar_activity_publish_feed.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/awonar_dialog_loading.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/awonar_fragment_all_feed.xml" value="0.171875" />
+        <entry key="app/src/main/res/layout/awonar_fragment_copytrade_feed.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/awonar_fragment_feed.xml" value="0.18697916666666667" />
         <entry key="app/src/main/res/layout/awonar_fragment_following_feed.xml" value="0.171875" />
         <entry key="app/src/main/res/layout/awonar_fragment_market_recommended.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/awonar_item_button_item.xml" value="0.16145833333333334" />
+        <entry key="app/src/main/res/layout/awonar_item_empty.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/awonar_item_feed_loading.xml" value="0.171875" />
         <entry key="app/src/main/res/layout/awonar_item_loading.xml" value="0.171875" />
         <entry key="app/src/main/res/layout/awonar_widget_card_feed.xml" value="0.17135416666666667" />

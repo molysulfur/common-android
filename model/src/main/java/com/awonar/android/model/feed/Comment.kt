@@ -2,6 +2,7 @@ package com.awonar.android.model.feed
 
 import android.os.Parcelable
 import com.awonar.android.model.user.User
+import com.awonar.android.model.user.UserResponse
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
@@ -19,6 +20,6 @@ data class Comment(
     @SerializedName("subComment") val reply: List<Comment>,
     @SerializedName("tagsUser") val tagsUser: List<String?>?,
     @SerializedName("updatedAt") val updatedAt: String?,
-    @SerializedName("user") val user: User?,
+    @SerializedName("user") val user: UserResponse?,
     @SerializedName("userId") val userId: String?,
 ) : Parcelable

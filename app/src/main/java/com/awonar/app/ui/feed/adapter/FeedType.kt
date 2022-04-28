@@ -6,4 +6,5 @@ object FeedType {
     const val LOADING_TYPE = 2
     const val NEWS_TYPE = 3
     const val IMAGES_TYPE = 4
+    const val EMPTY_TYPE = 5
 }

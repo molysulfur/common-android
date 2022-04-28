@@ -8,6 +8,9 @@ import kotlinx.parcelize.Parcelize
 sealed class FeedItem(val type: Int) : Parcelable {
 
     @Parcelize
+    class  EmptyItem : FeedItem(FeedType.EMPTY_TYPE)
+
+    @Parcelize
     class BlankItem : FeedItem(FeedType.BLANK_TYPE)
 
     @Parcelize
