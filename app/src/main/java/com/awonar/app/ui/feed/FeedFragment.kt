@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.awonar.app.databinding.AwonarFragmentFeedBinding
 import com.awonar.app.ui.feed.FeedViewPager.Companion.TAB_TITLE
+import com.google.android.material.tabs.TabItem
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import timber.log.Timber
@@ -31,6 +33,12 @@ class FeedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        with(binding.awonarFeedRefreshUpdate) {
+            setOnRefreshListener {
+                viewModel.refresh()
+                isRefreshing = false
+            }
+        }
         with(binding.awonarFeedViewpagerFeed) {
             adapter = FeedViewPager(childFragmentManager, lifecycle)
         }
@@ -49,14 +57,18 @@ class FeedFragment : Fragment() {
                 }
 
                 override fun onTabReselected(tab: TabLayout.Tab?) {
+                    viewModel.refresh()
+                    viewModel.goToTop()
                 }
 
             })
         }
-        TabLayoutMediator(binding.awonarFeedTabsFeeds,
-            binding.awonarFeedViewpagerFeed) { tab, index ->
+        TabLayoutMediator(
+            binding.awonarFeedTabsFeeds,
+            binding.awonarFeedViewpagerFeed
+        ) { tab, index ->
             tab.text = TAB_TITLE[index]
-
         }.attach()
+
     }
 }

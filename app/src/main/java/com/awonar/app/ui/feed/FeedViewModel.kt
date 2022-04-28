@@ -12,6 +12,7 @@ import com.awonar.app.ui.feed.adapter.FeedItem
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -30,6 +31,9 @@ class FeedViewModel @Inject constructor(
         MutableStateFlow<MutableList<FeedItem>>(mutableListOf(FeedItem.LoadingItem()))
     val feedItems get() = _feedItems
 
+    private val _goToTopState = Channel<Unit>(Channel.CONFLATED)
+    val goToTopState get() = _goToTopState.receiveAsFlow()
+
     init {
         viewModelScope.launch {
             _feedType.collect {
@@ -41,7 +45,8 @@ class FeedViewModel @Inject constructor(
             _feedsState.collect {
                 _feedItems.value =
                     convertFeedsToItemsUseCase(ConvertFeedData(it, _pageState.value)).successOr(
-                        mutableListOf())
+                        mutableListOf()
+                    )
             }
         }
     }
@@ -72,5 +77,11 @@ class FeedViewModel @Inject constructor(
 
     fun refresh() {
 
+    }
+
+    fun goToTop() {
+        viewModelScope.launch {
+            _goToTopState.send(Unit)
+        }
     }
 }

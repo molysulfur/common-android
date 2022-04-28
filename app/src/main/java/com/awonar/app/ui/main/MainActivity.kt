@@ -25,7 +25,6 @@ import com.awonar.app.ui.auth.AuthenticationActivity
 import com.awonar.app.ui.profile.ProfileActivity
 import com.awonar.app.ui.user.UserViewModel
 import com.molysulfur.library.activity.BaseActivity
-import com.molysulfur.library.extension.openActivityAndClearThisActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -35,9 +34,7 @@ import com.awonar.app.ui.publishfeed.PublishFeedActivity
 import com.awonar.app.ui.search.SearchActivity
 import com.awonar.app.ui.trading.TradingActivity
 import com.awonar.app.utils.ImageUtil
-import com.molysulfur.library.extension.openActivity
-import com.molysulfur.library.extension.openActivityAndClearAllActivity
-import com.molysulfur.library.extension.openActivityCompatForResult
+import com.molysulfur.library.extension.*
 
 
 @AndroidEntryPoint
@@ -175,7 +172,11 @@ class MainActivity : BaseActivity() {
         binding.awonarMainToolbarHeader.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.awonar_toolbar_main_menu_search -> openActivity(SearchActivity::class.java)
-                R.id.awonar_toolbar_main_menu_write -> openActivity(PublishFeedActivity::class.java)
+                R.id.awonar_toolbar_main_menu_write -> openActivityForResult(
+                    PublishFeedActivity::class.java,
+                    20000,
+                    null
+                )
                 else -> openActivity(SearchActivity::class.java)
             }
             true

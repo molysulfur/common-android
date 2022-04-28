@@ -3,7 +3,6 @@ package com.awonar.app.ui.feed.adapter.holder
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.feed.Feed
-import com.awonar.android.model.feed.SharedFeed
 import com.awonar.app.databinding.AwonarItemDefaultFeedBinding
 import com.awonar.app.ui.feed.adapter.FeedItem
 import com.awonar.app.widget.feed.PreviewFeed

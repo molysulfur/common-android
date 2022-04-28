@@ -1,10 +1,8 @@
 package com.awonar.app.ui.feed.adapter
 
-import android.graphics.Bitmap
 import android.os.Parcelable
 import com.awonar.android.model.feed.Feed
 import com.awonar.android.model.feed.NewsMeta
-import com.awonar.android.model.feed.SharedFeed
 import kotlinx.parcelize.Parcelize
 
 sealed class FeedItem(val type: Int) : Parcelable {

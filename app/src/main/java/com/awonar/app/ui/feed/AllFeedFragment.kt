@@ -1,5 +1,6 @@
 package com.awonar.app.ui.feed
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import com.awonar.app.widget.feed.DefaultFeed
 import com.awonar.app.widget.feed.PreviewFeed
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
 class AllFeedFragment : Fragment() {
@@ -31,6 +33,11 @@ class AllFeedFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         launchAndRepeatWithViewLifecycle {
+            viewModel.goToTopState.collectLatest {
+                binding.awonrAllFeedRecycler.smoothScrollToPosition(0)
+            }
+        }
+        launchAndRepeatWithViewLifecycle {
             viewModel.feedItems.collect { itemList ->
                 with(binding.awonrAllFeedRecycler) {
                     if (adapter == null) {
@@ -40,9 +47,11 @@ class AllFeedFragment : Fragment() {
                             }
                         }
                         layoutManager =
-                            LinearLayoutManager(requireContext(),
+                            LinearLayoutManager(
+                                requireContext(),
                                 LinearLayoutManager.VERTICAL,
-                                false)
+                                false
+                            )
                     }
                     (adapter as FeedsAdapter).itemLists = itemList
                 }
@@ -54,6 +63,11 @@ class AllFeedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun startActivityForResult(intent: Intent?, requestCode: Int) {
+        Timber.e("$requestCode")
+        super.startActivityForResult(intent, requestCode)
 
     }
 }

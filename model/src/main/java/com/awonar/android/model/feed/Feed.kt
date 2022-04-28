@@ -34,15 +34,3 @@ data class InstrumentsFeed(
     @SerializedName("stampPrice") val price: Float,
     @SerializedName("stampSymbol") val stampSymbol: String?,
 ) : Parcelable
-
-@Parcelize
-data class SharedFeed(
-    @SerializedName("id") val id: String?,
-    @SerializedName("links") val links: List<String>?,
-    @SerializedName("description") val description: String?,
-    @SerializedName("images") val images: List<String>?,
-    @SerializedName("instruments") val instruments: List<InstrumentsFeed>?,
-    @SerializedName("user") val user: UserResponse?,
-    @SerializedName("type") val type: String?,
-    @SerializedName("createdAt") val createdAt: String?,
-) : Parcelable
