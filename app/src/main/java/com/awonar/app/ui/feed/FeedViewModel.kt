@@ -27,6 +27,8 @@ class FeedViewModel @Inject constructor(
     private val _pageState = MutableStateFlow(1)
     private val _feedType = MutableStateFlow("")
     private val _feedsState = MutableStateFlow<MutableList<Feed?>>(mutableListOf())
+    private val _followFeedsState = MutableStateFlow<MutableList<Feed?>>(mutableListOf())
+    private val _copyTradeFeedState = MutableStateFlow<MutableList<Feed?>>(mutableListOf())
     private val _feedItems =
         MutableStateFlow<MutableList<FeedItem>>(mutableListOf(FeedItem.LoadingItem()))
     val feedItems get() = _feedItems
@@ -49,6 +51,24 @@ class FeedViewModel @Inject constructor(
                     )
             }
         }
+
+        viewModelScope.launch {
+            _followFeedsState.collect {
+                _feedItems.value =
+                    convertFeedsToItemsUseCase(ConvertFeedData(it, _pageState.value)).successOr(
+                        mutableListOf()
+                    )
+            }
+        }
+
+        viewModelScope.launch {
+            _copyTradeFeedState.collect {
+                _feedItems.value =
+                    convertFeedsToItemsUseCase(ConvertFeedData(it, _pageState.value)).successOr(
+                        mutableListOf()
+                    )
+            }
+        }
     }
 
     private suspend fun getFeed() {
@@ -56,9 +76,18 @@ class FeedViewModel @Inject constructor(
             val data = result.successOr(null)
             _pageState.value = data?.page ?: 0
             data?.feeds?.let { newFeeds ->
-                val feeds = _feedsState.value.toMutableList()
+                val feeds = when (_feedType.value) {
+                    "following" -> _followFeedsState.value.toMutableList()
+                    "copy" -> _copyTradeFeedState.value.toMutableList()
+                    else -> _feedsState.value.toMutableList()
+                }
                 feeds.addAll(newFeeds)
-                _feedsState.value = feeds
+                when (_feedType.value) {
+                    "following" -> _followFeedsState.value = feeds
+                    "copy" -> _copyTradeFeedState.value = feeds
+                    else -> _feedsState.value = feeds
+                }
+
             }
         }
     }

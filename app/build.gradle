@@ -101,8 +101,7 @@ dependencies {
     implementation "androidx.camera:camera-lifecycle:$camerax_version"
 // CameraX View class
     implementation "androidx.camera:camera-view:1.0.0-alpha28"
-    implementation 'com.ethanhua:skeleton:1.1.2'
-    implementation 'io.supercharge:shimmerlayout:2.1.0'
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
     implementation 'com.akexorcist:dialog-interactor:1.0.0'
     implementation 'com.github.PhilJay:MPAndroidChart:3.1.0'
     implementation "androidx.paging:paging-runtime-ktx:3.0.1"

@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.app.ui.market.MarketViewModel
-import io.supercharge.shimmerlayout.ShimmerLayout
+import com.facebook.shimmer.ShimmerFrameLayout
 
 @BindingAdapter("categoryItem", "viewModel")
 fun setInstrumentCategoryItem(
@@ -48,9 +48,11 @@ fun setInstrumentItem(recyclerView: RecyclerView, instrument: List<InstrumentIte
 }
 
 @BindingAdapter("startLoading")
-fun setLoading(progress: ShimmerLayout, isStart: Boolean) {
-    if (isStart)
-        progress.startShimmerAnimation()
-    else
-        progress.stopShimmerAnimation()
+fun setLoading(progress: ShimmerFrameLayout, isStart: Boolean) {
+    progress.showShimmer(isStart)
+    if (isStart) {
+        progress.startShimmer()
+    } else {
+        progress.hideShimmer()
+    }
 }

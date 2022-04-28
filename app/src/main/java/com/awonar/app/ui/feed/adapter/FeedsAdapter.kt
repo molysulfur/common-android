@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.app.databinding.AwonarItemBlankGrayBinding
 import com.awonar.app.databinding.AwonarItemDefaultFeedBinding
+import com.awonar.app.databinding.AwonarItemFeedLoadingBinding
 import com.awonar.app.databinding.AwonarItemLoadingBinding
 import com.awonar.app.ui.feed.adapter.holder.*
 import com.awonar.app.ui.profile.history.adapter.HistoryProfileItem
@@ -50,7 +51,7 @@ class FeedsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 )
             )
             FeedType.LOADING_TYPE -> LoadingViewHolder(
-                AwonarItemLoadingBinding.inflate(
+                AwonarItemFeedLoadingBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false

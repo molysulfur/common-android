@@ -10,7 +10,7 @@
 
     </data>
 
-    <io.supercharge.shimmerlayout.ShimmerLayout
+    <com.facebook.shimmer.ShimmerFrameLayout
         android:id="@+id/awonar_market_recommended_shimmer_loading"
         startLoading="@{viewModel.instrumentItem.size == 0}"
         android:layout_width="match_parent"
@@ -22,5 +22,5 @@
             android:layout_height="match_parent"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
-    </io.supercharge.shimmerlayout.ShimmerLayout>
+    </com.facebook.shimmer.ShimmerFrameLayout>
 </layout>

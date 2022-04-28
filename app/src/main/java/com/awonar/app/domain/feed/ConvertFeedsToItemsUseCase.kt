@@ -15,6 +15,7 @@ class ConvertFeedsToItemsUseCase @Inject constructor(
     UseCase<ConvertFeedData, MutableList<FeedItem>>(dispatcher) {
     override suspend fun execute(parameters: ConvertFeedData): MutableList<FeedItem> {
         val itemList = mutableListOf<FeedItem>()
+        itemList.add(FeedItem.BlankItem())
         parameters.feeds.forEach {
             when {
                 it?.images?.size ?: 0 > 0 -> itemList.add(FeedItem.ImagesFeeds(

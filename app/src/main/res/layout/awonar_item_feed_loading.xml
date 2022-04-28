@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/awoanr_feed_loading_shimmer_load"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/awonar_size_margin_padding_normal">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/awonar_feed_loading_image_avatar"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:src="@drawable/awonar_placeholder_avatar"
+                app:layout_constraintBottom_toTopOf="@+id/awonar_feed_loading_view_3"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:srcCompat="@color/cardview_shadow_end_color" />
+
+            <FrameLayout
+                android:id="@+id/awonar_feed_loading_view_1"
+                style="@style/Awonar.SubTitle"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="8dp"
+                android:background="@color/awonar_color_light_gray"
+                app:layout_constraintBottom_toTopOf="@+id/awonar_feed_loading_view_2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/awonar_feed_loading_image_avatar"
+                app:layout_constraintTop_toTopOf="@+id/awonar_feed_loading_image_avatar" />
+
+            <FrameLayout
+                android:id="@+id/awonar_feed_loading_view_2"
+                style="@style/Awonar.Description"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:background="@color/awonar_color_light_gray"
+                app:layout_constraintBottom_toBottomOf="@+id/awonar_feed_loading_image_avatar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/awonar_feed_loading_view_1"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_feed_loading_view_1" />
+
+            <FrameLayout
+                android:id="@+id/awonar_feed_loading_view_3"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+                android:background="@color/awonar_color_light_gray"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_feed_loading_image_avatar"
+                tools:text="@string/awonar_example_name" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
+</layout>
