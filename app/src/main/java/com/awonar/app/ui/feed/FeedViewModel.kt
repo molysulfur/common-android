@@ -64,8 +64,7 @@ class FeedViewModel @Inject constructor(
     }
 
     fun setFeedType(type: String = "") {
-        _pageState.value = 1
-        _feedsState.value = mutableListOf()
+        refresh()
         _feedType.value = type
     }
 
@@ -76,7 +75,8 @@ class FeedViewModel @Inject constructor(
     }
 
     fun refresh() {
-
+        _pageState.value = 1
+        _feedsState.value = mutableListOf()
     }
 
     fun goToTop() {
