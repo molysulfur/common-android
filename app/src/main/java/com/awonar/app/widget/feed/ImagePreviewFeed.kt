@@ -10,6 +10,7 @@ import android.view.View
 import androidx.annotation.RequiresApi
 import com.awonar.app.databinding.AwonarWidgetImagesPreviewFeedBinding
 import com.molysulfur.library.widget.BaseViewGroup
+import timber.log.Timber
 
 class ImagePreviewFeed : BaseViewGroup {
 

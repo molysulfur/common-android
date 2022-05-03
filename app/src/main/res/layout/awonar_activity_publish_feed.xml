@@ -33,14 +33,31 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/awonar_publish_feed_recycler_list"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toTopOf="@+id/awonar_publish_feed_button_grallery"
+                android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/awonar_publish_feed_editor_post" />
+
+            <com.molysulfur.library.galleryimage.GalleryRecyclerView
+                android:id="@+id/awonar_publish_feed_image_previews"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_publish_feed_recycler_list" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/awonar_publish_feed_button_remove_previews"
+                style="@style/Awonar.Button.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/awonar_ic_close"
+                app:layout_constraintEnd_toEndOf="@+id/awonar_publish_feed_image_previews"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_publish_feed_recycler_list" />
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/awonar_publish_feed_button_grallery"
@@ -59,6 +76,13 @@
                 android:text="Post"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/awonar_publish_feed_group_preview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="awonar_publish_feed_button_remove_previews,awonar_publish_feed_image_previews" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

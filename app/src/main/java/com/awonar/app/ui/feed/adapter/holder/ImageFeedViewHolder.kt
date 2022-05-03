@@ -9,6 +9,7 @@ import com.awonar.app.utils.ImageUtil
 import com.awonar.app.widget.feed.ImagePreviewFeed
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class ImageFeedViewHolder constructor(private val binding: AwonarItemDefaultFeedBinding) :
     RecyclerView.ViewHolder(binding.root) {

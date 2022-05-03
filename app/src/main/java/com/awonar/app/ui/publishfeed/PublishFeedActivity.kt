@@ -1,9 +1,12 @@
 package com.awonar.app.ui.publishfeed
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.View
 import androidx.activity.viewModels
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Lifecycle
@@ -14,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarActivityPublishFeedBinding
 import com.awonar.app.dialog.loading.LoadingDialog
+import com.awonar.app.utils.ImageUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.linkedin.android.spyglass.mentions.Mentionable
 import com.linkedin.android.spyglass.suggestions.SuggestionsResult
@@ -30,8 +34,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.io.File
+import java.io.InputStream
 import java.util.*
-
 
 @AndroidEntryPoint
 class PublishFeedActivity : BaseActivity(), QueryTokenReceiver, SuggestionsResultListener,
@@ -63,6 +68,7 @@ class PublishFeedActivity : BaseActivity(), QueryTokenReceiver, SuggestionsResul
         .setThreshold(1)
         .build()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycleScope.launch {
@@ -71,7 +77,7 @@ class PublishFeedActivity : BaseActivity(), QueryTokenReceiver, SuggestionsResul
                     if (feed != null) {
                         val intent = Intent()
                         val bundle = Bundle().apply {
-                            putParcelable(EXTRA_FEED,feed)
+                            putParcelable(EXTRA_FEED, feed)
                         }
                         intent.putExtras(bundle)
                         setResult(RESULT_CODE, intent)
@@ -103,6 +109,11 @@ class PublishFeedActivity : BaseActivity(), QueryTokenReceiver, SuggestionsResul
         }
         binding.lifecycleOwner = this
         setContentView(binding.root)
+        with(binding.awonarPublishFeedButtonRemovePreviews) {
+            setOnClickListener {
+                binding.awonarPublishFeedGroupPreview.visibility = View.GONE
+            }
+        }
         with(binding.awonarPublishFeedEditorPost) {
             setQueryTokenReceiver(this@PublishFeedActivity)
             setQueryTokenReceiver(this@PublishFeedActivity)
@@ -120,9 +131,19 @@ class PublishFeedActivity : BaseActivity(), QueryTokenReceiver, SuggestionsResul
                 onBackPressed()
             }
         }
+
         with(binding.awonarPublishFeedButtonPost) {
             setOnClickListener {
                 viewModel.submit()
+            }
+        }
+        with(binding.awonarPublishFeedButtonGrallery) {
+            setOnClickListener {
+                val intent = Intent()
+                intent.type = "image/*"
+                intent.action = Intent.ACTION_GET_CONTENT
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), 200)
             }
         }
     }
@@ -176,10 +197,10 @@ class PublishFeedActivity : BaseActivity(), QueryTokenReceiver, SuggestionsResul
         if (!viewModel.canBack()) {
             MaterialAlertDialogBuilder(this)
                 .setMessage(getString(R.string.awonar_hint_darf_post))
-                .setNegativeButton("Discard") { dialog, which ->
+                .setNegativeButton("Discard") { _, _ ->
 
                 }
-                .setPositiveButton("Continue") { dialog, which ->
+                .setPositiveButton("Continue") { _, _ ->
                     super.onBackPressed()
                 }
                 .show()
@@ -187,4 +208,32 @@ class PublishFeedActivity : BaseActivity(), QueryTokenReceiver, SuggestionsResul
             super.onBackPressed()
         }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 200 && data?.clipData != null) {
+            val mClipData = data.clipData
+            val count = mClipData?.itemCount ?: 0
+            val bitmaps = mutableListOf<Bitmap?>()
+            val files = mutableListOf<File>()
+            for (i in 0 until count) {
+                val imageUri = mClipData?.getItemAt(0)?.uri
+                imageUri?.let {
+                    val imageStream: InputStream? = contentResolver.openInputStream(imageUri)
+                    val bm: Bitmap = BitmapFactory.decodeStream(imageStream)
+                    bitmaps.add(bm)
+                    val file = ImageUtil.bitmapToFile(bm, "")
+                    file?.let {
+                        files.add(it)
+                    }
+//                    val encodedImage: String = ImageUtil.convertBase64(bm)
+                }
+            }
+            viewModel.saveFiles(files)
+            binding.awonarPublishFeedImagePreviews.setImageUrlList(bitmaps)
+            binding.awonarPublishFeedGroupPreview.visibility = View.VISIBLE
+        }
+    }
+
+
 }

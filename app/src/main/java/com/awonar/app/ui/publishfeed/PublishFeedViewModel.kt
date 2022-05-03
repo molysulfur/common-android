@@ -17,6 +17,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,6 +28,7 @@ class PublishFeedViewModel @Inject constructor(
     private val createFeedUseCase: CreateFeedUseCase
 ) : ViewModel() {
 
+    private var files = mutableListOf<File>()
     private val _editableText = MutableStateFlow("")
 
     private val _suggestionState = Channel<SuggestionsResult>(Channel.CONFLATED)
@@ -58,7 +61,8 @@ class PublishFeedViewModel @Inject constructor(
         viewModelScope.launch {
             val text = _editableText.value
             val request = CreateFeed(
-                description = text
+                description = text,
+                images = files
             )
             createFeedUseCase(request).collectIndexed { _, result ->
                 if (result is Result.Loading) {
@@ -101,5 +105,9 @@ class PublishFeedViewModel @Inject constructor(
             return false
         }
         return true
+    }
+
+    fun saveFiles(files: MutableList<File>) {
+        this.files = files
     }
 }

@@ -7,6 +7,6 @@ import java.io.File
 @Parcelize
 data class CreateFeed(
     val description: String = "",
-    val images: List<File> = listOf(),
+    val images: MutableList<File> = mutableListOf(),
     val sharePostId: String = ""
 ) : Parcelable

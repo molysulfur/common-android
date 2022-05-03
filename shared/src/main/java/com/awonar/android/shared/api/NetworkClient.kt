@@ -27,9 +27,9 @@ class NetworkClient constructor(
     private fun getRequestInterceptor(): Interceptor {
         return Interceptor { chain ->
             val request = chain.request().newBuilder().apply {
-                addHeader("Content-Type", "application/json;charset=utf-8")
+//                addHeader("Content-Type", "application/json;charset=utf-8")
                 addHeader("Authorization", "Bearer ${accessTokenManager.getAccessToken()}")
-                addHeader("Accept", "application/json;")
+//                addHeader("Accept", "application/json;")
             }.build()
             chain.proceed(request)
         }
