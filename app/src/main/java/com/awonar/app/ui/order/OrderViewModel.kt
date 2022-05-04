@@ -113,18 +113,23 @@ class OrderViewModel @Inject constructor(
             _takeProfitState.collect {
                 val isBuy = _isBuyState.value == true
                 if (_tradingData.value != null) {
-                    val result = validateRateTakeProfitUseCase(ValidateRateTakeProfitRequest(
-                        rateTp = it.second,
-                        currentPrice = priceState.value,
-                        openPrice = rateState.value ?: 0f,
-                        units = amountState.value.second,
-                        isBuy = isBuy,
-                        conversionRate = getConversionByInstrumentUseCase(_instrument.value?.id
-                            ?: 0).successOr(0f),
-                        amount = _amountState.value.first,
-                        maxTakeProfitPercentage = _tradingData.value?.maxTakeProfitPercentage ?: 0f,
-                        digit = _instrument.value?.digit ?: 0
-                    ))
+                    val result = validateRateTakeProfitUseCase(
+                        ValidateRateTakeProfitRequest(
+                            rateTp = it.second,
+                            currentPrice = priceState.value,
+                            openPrice = rateState.value ?: 0f,
+                            units = amountState.value.second,
+                            isBuy = isBuy,
+                            conversionRate = getConversionByInstrumentUseCase(
+                                _instrument.value?.id
+                                    ?: 0
+                            ).successOr(0f),
+                            amount = _amountState.value.first,
+                            maxTakeProfitPercentage = _tradingData.value?.maxTakeProfitPercentage
+                                ?: 0f,
+                            digit = _instrument.value?.digit ?: 0
+                        )
+                    )
                     if (result is Result.Success) {
                         _takeProfit.value = it
                     }
@@ -139,27 +144,31 @@ class OrderViewModel @Inject constructor(
                 val isBuy = _isBuyState.value == true
                 val leverage = _leverageState.value
                 if (_tradingData.value != null) {
-                    val result = validateRateStopLossUseCase(ValidateRateStopLossRequest(
-                        amountSl = it.first,
-                        rateSl = it.second,
-                        amount = _amountState.value.first,
-                        currentPrice = _priceState.value,
-                        openPrice = _rateState.value ?: 0f,
-                        exposure = _exposureState.value,
-                        units = _amountState.value.second,
-                        leverage = leverage,
-                        isBuy = isBuy,
-                        available = _portfolioState.value?.available ?: 0f,
-                        conversionRate = getConversionByInstrumentUseCase(_instrument.value?.id
-                            ?: 0).successOr(0f),
-                        digit = _instrument.value?.digit ?: 0,
-                        maxStopLoss = ConverterOrderUtil.getMaxAmountSl(
-                            native = _stopLossState.value.first,
+                    val result = validateRateStopLossUseCase(
+                        ValidateRateStopLossRequest(
+                            amountSl = it.first,
+                            rateSl = it.second,
+                            amount = _amountState.value.first,
+                            currentPrice = _priceState.value,
+                            openPrice = _rateState.value ?: 0f,
+                            exposure = _exposureState.value,
+                            units = _amountState.value.second,
                             leverage = leverage,
                             isBuy = isBuy,
-                            tradingData = tradingData.value
+                            available = _portfolioState.value?.available ?: 0f,
+                            conversionRate = getConversionByInstrumentUseCase(
+                                _instrument.value?.id
+                                    ?: 0
+                            ).successOr(0f),
+                            digit = _instrument.value?.digit ?: 0,
+                            maxStopLoss = ConverterOrderUtil.getMaxAmountSl(
+                                native = _stopLossState.value.first,
+                                leverage = leverage,
+                                isBuy = isBuy,
+                                tradingData = tradingData.value
+                            )
                         )
-                    ))
+                    )
                     if (result is Result.Success) {
                         _stopLossState.value = it
                     }
@@ -174,32 +183,38 @@ class OrderViewModel @Inject constructor(
         }
         viewModelScope.launch {
             _leverageState.collect { leverage ->
-                val result = validateExposureUseCase(ExposureRequest(
-                    instrumentId = _instrument.value?.id ?: 0,
-                    amount = _amountState.value.first,
-                    leverage = leverage
-                ))
+                val result = validateExposureUseCase(
+                    ExposureRequest(
+                        instrumentId = _instrument.value?.id ?: 0,
+                        amount = _amountState.value.first,
+                        leverage = leverage
+                    )
+                )
                 _exposureState.value = _amountState.value.first.times(leverage)
                 if (result is Result.Error) {
                     _amountError.value = result.exception.message ?: ""
                 }
             }
         }
-        val initState = combine(_portfolioState,
+        val initState = combine(
+            _portfolioState,
             _instrument,
-            _tradingData) { portfolio, instrument, tradingData ->
+            _tradingData
+        ) { portfolio, instrument, tradingData ->
             if (portfolio != null && instrument != null && tradingData != null) {
                 /**
                  * Default Amount
                  */
                 val leverage = tradingData.defaultLeverage
                 val defaultAmount = portfolio.available.times(0.05f)
-                val defaultUnit = getUnitUseCase(CalAmountUnitRequest(
-                    instrumentId = instrument.id,
-                    leverage = leverage,
-                    price = _priceState.value,
-                    amount = defaultAmount
-                )).successOr(0f)
+                val defaultUnit = getUnitUseCase(
+                    CalAmountUnitRequest(
+                        instrumentId = instrument.id,
+                        leverage = leverage,
+                        price = _priceState.value,
+                        amount = defaultAmount
+                    )
+                ).successOr(0f)
                 _amountState.emit(Pair(defaultAmount, defaultUnit))
                 /**
                  * Default Leverage
@@ -244,7 +259,7 @@ class OrderViewModel @Inject constructor(
         request: OpenOrderRequest,
     ) {
         viewModelScope.launch {
-            openOrderUseCase(request).collect {
+            openOrderUseCase(request).collectLatest {
                 if (it.succeeded) {
                     _openOrderState.send("Successfully")
                 }
@@ -258,7 +273,7 @@ class OrderViewModel @Inject constructor(
     fun validateStopLoss(position: Position, current: Float) {
         if (current > 0) {
             viewModelScope.launch {
-                getMyPortFolioUseCase(true).collect {
+                getMyPortFolioUseCase(true).collectLatest {
                     val conversionRate =
                         getConversionByInstrumentUseCase(position.instrument?.id ?: 0).successOr(1f)
                     val trading = getTradingDataByInstrumentIdUseCase(position.instrument?.id ?: 0)
@@ -434,7 +449,7 @@ class OrderViewModel @Inject constructor(
                         takeProfitRate = tp,
                         stopLossRate = sl
                     )
-                ).collect {
+                ).collectLatest {
                     if (it.succeeded) {
                         _openOrderState.send("Update is successfully.")
                     }
@@ -568,13 +583,13 @@ class OrderViewModel @Inject constructor(
     fun closePosition(id: String, marketOrderType: MarketOrderType) {
         viewModelScope.launch {
             if (marketOrderType == MarketOrderType.PENDING_ORDER) {
-                closePositionUseCase(id).collect {
+                closePositionUseCase(id).collectLatest {
                     if (it.succeeded) {
                         _orderSuccessState.send("Position was closed.")
                     }
                 }
             } else {
-                removePositionUseCase(id).collect {
+                removePositionUseCase(id).collectLatest {
                     _orderSuccessState.send("Position was closed.")
                 }
             }
@@ -591,7 +606,7 @@ class OrderViewModel @Inject constructor(
                         positionId = position.id,
                         unitsToDeduce = unitReduct,
                     )
-                ).collect {
+                ).collectLatest {
                     if (it.succeeded) {
                         _orderSuccessState.send(
                             "$realAmountReduct units of your %s position were closed at %s.".format(
@@ -607,7 +622,7 @@ class OrderViewModel @Inject constructor(
                         id = position.id ?: "",
                         unitsToReduce = unitReduct
                     )
-                ).collect {
+                ).collectLatest {
                     if (it.succeeded) {
                         _orderSuccessState.send(
                             "$realAmountReduct units of your %s position were closed at %s.".format(
@@ -657,9 +672,11 @@ class OrderViewModel @Inject constructor(
 
     private fun setPrice(quote: Quote) {
         viewModelScope.launch {
-            val price = ConverterQuoteUtil.getCurrentPrice(quote = quote,
+            val price = ConverterQuoteUtil.getCurrentPrice(
+                quote = quote,
                 leverage = _leverageState.value,
-                isBuy = _isBuyState.value == true)
+                isBuy = _isBuyState.value == true
+            )
             val change = ConverterQuoteUtil.change(price, quote.previous)
             val percentChange = ConverterQuoteUtil.percentChange(price, quote.previous)
             _changeState.value = Pair(change, percentChange)
@@ -681,5 +698,27 @@ class OrderViewModel @Inject constructor(
         }
     }
 
-
+    fun submit() {
+        viewModelScope.launch {
+          val request =  OpenOrderRequest(
+                instrumentId = _instrument.value?.id ?: 0,
+                amount = _amountState.value.first,
+                isBuy = _isBuyState.value == false,
+                leverage = _leverageState.value,
+                rate = _rateState.value ?:0f,
+                stopLoss = _stopLossState.value.second,
+                takeProfit = _takeProfit.value.second,
+                units = _amountState.value.second
+            )
+            Timber.e("$request")
+            openOrderUseCase(request).collectLatest {
+                if (it.succeeded) {
+                    _openOrderState.send("Successfully")
+                }
+                if (it is Result.Error) {
+                    _openOrderState.send("Failed to Open Trade")
+                }
+            }
+        }
+    }
 }

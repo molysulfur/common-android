@@ -1,5 +1,6 @@
 package com.awonar.app.ui.order
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -40,6 +41,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -58,8 +60,10 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         launchAndRepeatWithViewLifecycle {
             orderViewModel.changeState.collect {
                 binding.awonarDialogOrderTextChange.text =
-                    "%.${orderViewModel.instrument.value?.digit}f (%.2f%s)".format(it.first,
-                        it.second, "%")
+                    "%.${orderViewModel.instrument.value?.digit}f (%.2f%s)".format(
+                        it.first,
+                        it.second, "%"
+                    )
             }
         }
         /**
@@ -115,11 +119,13 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                     when (binding.awonarDialogOrderToggleOrderAmountType.checkedButtonId) {
                         R.id.awonar_dialog_order_button_amount_amount -> {
                             binding.awonarDialogOrderNumberPickerInputAmount.setNumber(
-                                amount.first)
+                                amount.first
+                            )
                         }
                         R.id.awonar_dialog_order_button_amount_unit -> {
                             binding.awonarDialogOrderNumberPickerInputAmount.setNumber(
-                                amount.second)
+                                amount.second
+                            )
                         }
                     }
                     validateExposure(amount = amount.first)
@@ -144,9 +150,11 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             launch {
                 orderViewModel.rateState.collect { rate ->
                     rate?.let {
-                        orderActivityViewModel.validateRate(it,
+                        orderActivityViewModel.validateRate(
+                            it,
                             orderViewModel.priceState.value,
-                            orderViewModel.instrument.value?.digit ?: 0)
+                            orderViewModel.instrument.value?.digit ?: 0
+                        )
                     }
                 }
             }
@@ -166,12 +174,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             }
         }
         launchAndRepeatWithViewLifecycle {
-            launch {
-                orderActivityViewModel.getOrderRequest.collect {
-                    orderViewModel.openOrder(it)
-                }
-            }
-
             launch {
                 orderViewModel.leverageState.collect {
                     binding.awonarDialogOrderNumberPickerInputAmount.setHelp("")
@@ -220,12 +222,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             dismiss()
         }
         binding.awonarDialogOrderButtonOpenTrade.setOnClickListener {
-            instrument?.let { instrument ->
-//                orderActivityViewModel.getOrderRequest(
-//                    instrumentId = instrument.id,
-//                    orderType = isBuy
-//                )
-            }
+            orderViewModel.submit()
         }
         setupAmount()
         setupLeverageAdapter()
