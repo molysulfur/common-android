@@ -30,7 +30,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -252,21 +251,6 @@ class OrderViewModel @Inject constructor(
         }
         viewModelScope.launch {
             getTradingDataByInstrumentIdUseCase(1)
-        }
-    }
-
-    fun openOrder(
-        request: OpenOrderRequest,
-    ) {
-        viewModelScope.launch {
-            openOrderUseCase(request).collectLatest {
-                if (it.succeeded) {
-                    _openOrderState.send("Successfully")
-                }
-                if (it is Result.Error) {
-                    _openOrderState.send("Failed to Open Trade")
-                }
-            }
         }
     }
 
@@ -681,7 +665,6 @@ class OrderViewModel @Inject constructor(
             val percentChange = ConverterQuoteUtil.percentChange(price, quote.previous)
             _changeState.value = Pair(change, percentChange)
             _priceState.value = price
-
         }
     }
 
@@ -700,17 +683,17 @@ class OrderViewModel @Inject constructor(
 
     fun submit() {
         viewModelScope.launch {
-          val request =  OpenOrderRequest(
+            val request = OpenOrderRequest(
                 instrumentId = _instrument.value?.id ?: 0,
                 amount = _amountState.value.first,
                 isBuy = _isBuyState.value == false,
                 leverage = _leverageState.value,
-                rate = _rateState.value ?:0f,
+                rate = _rateState.value ?: 0f,
                 stopLoss = _stopLossState.value.second,
                 takeProfit = _takeProfit.value.second,
-                units = _amountState.value.second
+                units = _amountState.value.second,
+                isEntry = _marketType.value == MarketOrderType.ENTRY_ORDER
             )
-            Timber.e("$request")
             openOrderUseCase(request).collectLatest {
                 if (it.succeeded) {
                     _openOrderState.send("Successfully")

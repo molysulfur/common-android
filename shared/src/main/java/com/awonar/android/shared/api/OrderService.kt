@@ -20,6 +20,9 @@ interface OrderService {
     @POST("v1/orders")
     fun openOrder(@Body request: OpenOrderRequest): Call<OpenOrderResponse>
 
+    @POST("v1/entry-orders")
+    fun openEntryOrder(@Body request: OpenOrderRequest): Call<OpenOrderResponse>
+
     @PUT("v1/positions/{id}")
     fun edit(@Path("id") id: String, @Body request: UpdateOrderRequest): Call<Position>
 
