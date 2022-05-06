@@ -30,6 +30,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -56,7 +57,7 @@ class OrderViewModel @Inject constructor(
     private val _isBuyState = MutableStateFlow<Boolean?>(null)
     private val _marketType = MutableStateFlow(MarketOrderType.ENTRY_ORDER)
     private val _portfolioState = MutableStateFlow<Portfolio?>(null)
-    private val _exposureState = MutableStateFlow<Float>(0f)
+    private val _exposureState = MutableStateFlow(0f)
     private val _takeProfitState = MutableStateFlow(Pair(0f, 0f))
 
     private val _priceState = MutableStateFlow(0f)
@@ -237,7 +238,8 @@ class OrderViewModel @Inject constructor(
                     defaultTakeProfitPercentage = tradingData.defaultTakeProfitPercentage,
                     conversionRate = conversionRate,
                     units = defaultUnit,
-                    price = _priceState.value
+                    price = _priceState.value,
+                    isBuy = _isBuyState.value == true
                 )
                 _stopLossState.value = Pair(-amountStopLoss, rateStopLoss)
                 _takeProfitState.value = defaultTakeProfit
@@ -686,7 +688,7 @@ class OrderViewModel @Inject constructor(
             val request = OpenOrderRequest(
                 instrumentId = _instrument.value?.id ?: 0,
                 amount = _amountState.value.first,
-                isBuy = _isBuyState.value == false,
+                isBuy = _isBuyState.value == true,
                 leverage = _leverageState.value,
                 rate = _rateState.value ?: 0f,
                 stopLoss = _stopLossState.value.second,

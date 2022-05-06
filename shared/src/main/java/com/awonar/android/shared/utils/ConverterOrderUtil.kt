@@ -19,8 +19,10 @@ object ConverterOrderUtil {
                     .div(units)).plus(openRate)
             }
             else -> {
-                -(openRate.minus(amount.times(conversionRate)
-                    .div(units)))
+                -(openRate.minus(
+                    amount.times(conversionRate)
+                        .div(units)
+                ))
             }
         }
     }
@@ -44,10 +46,17 @@ object ConverterOrderUtil {
         conversionRate: Float,
         units: Float,
         price: Float,
+        isBuy: Boolean
     ): Pair<Float, Float> {
         val percent = defaultTakeProfitPercentage.minus(0.5f).div(100)
         val amountTp = amount.times(percent)
-        val rateTp = amountTp.times(conversionRate).div(units).plus(price)
+        val rateTp = convertAmountToRate(
+            amount = amountTp,
+            conversionRate = conversionRate,
+            units = units,
+            openRate = price,
+            isBuy = isBuy
+        )
         return Pair(amountTp, rateTp)
     }
 

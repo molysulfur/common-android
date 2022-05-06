@@ -10,7 +10,7 @@ data class OpenOrderRequest(
     @SerializedName("amount") val amount: Float,
     @SerializedName("isBuy") val isBuy: Boolean,
     @SerializedName("leverage") val leverage: Int,
-    @SerializedName("rate") val rate: Float,
+    @SerializedName("openRate") val rate: Float,
     @SerializedName("stopLossRate") val stopLoss: Float,
     @SerializedName("takeProfitRate") val takeProfit: Float,
     @SerializedName("units") val units: Float,

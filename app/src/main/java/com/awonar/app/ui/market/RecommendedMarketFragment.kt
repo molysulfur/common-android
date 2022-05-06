@@ -17,6 +17,7 @@ import com.awonar.app.ui.market.adapter.InstrumentListAdapter
 import com.awonar.app.ui.marketprofile.MarketProfileActivity
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
+import timber.log.Timber
 
 class RecommendedMarketFragment : Fragment() {
 
@@ -89,6 +90,7 @@ class RecommendedMarketFragment : Fragment() {
                 viewModel.onViewMore(arg)
             }
             instrumentAdapter.onOpenOrder = { instrument, isBuy ->
+                Timber.e("$isBuy")
                 OrderDialog.Builder()
                     .setType(isBuy)
                     .setSymbol(instrument)

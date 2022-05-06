@@ -10,6 +10,7 @@
         <entry key="app/src/main/res/layout/awonar_activity_publish_feed.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/awonar_dialog_loading.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/awonar_dialog_order.xml" value="0.14010416666666667" />
+        <entry key="app/src/main/res/layout/awonar_dialog_partialclose.xml" value="0.14010416666666667" />
         <entry key="app/src/main/res/layout/awonar_fragment_all_feed.xml" value="0.171875" />
         <entry key="app/src/main/res/layout/awonar_fragment_copytrade_feed.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/awonar_fragment_feed.xml" value="0.18697916666666667" />
