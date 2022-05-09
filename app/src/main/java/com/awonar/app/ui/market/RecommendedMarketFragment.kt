@@ -90,7 +90,6 @@ class RecommendedMarketFragment : Fragment() {
                 viewModel.onViewMore(arg)
             }
             instrumentAdapter.onOpenOrder = { instrument, isBuy ->
-                Timber.e("$isBuy")
                 OrderDialog.Builder()
                     .setType(isBuy)
                     .setSymbol(instrument)

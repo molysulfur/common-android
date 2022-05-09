@@ -25,12 +25,16 @@ class ValidateRateTakeProfitUseCase @Inject constructor(
          */
         when {
             parameters.isBuy && (rateTp < MIN_RATE_TP) -> {
-                throw ValidationException("Take Profit can't less than $MIN_RATE_TP",
-                    MIN_RATE_TP)
+                throw ValidationException(
+                    "Take Profit can't less than $MIN_RATE_TP",
+                    MIN_RATE_TP
+                )
             }
             !parameters.isBuy && (rateTp > MIN_RATE_TP) -> {
-                throw ValidationException("Take Profit can't more than $MIN_RATE_TP",
-                    MIN_RATE_TP)
+                throw ValidationException(
+                    "Take Profit can't more than $MIN_RATE_TP",
+                    MIN_RATE_TP
+                )
             }
             else -> {}
         }
@@ -46,20 +50,25 @@ class ValidateRateTakeProfitUseCase @Inject constructor(
         )
         val value = pl.plus(parameters.amount)
         val MAX_AMOUNT_TP = value.times(parameters.maxTakeProfitPercentage).div(100)
-        Timber.e("$value $MAX_AMOUNT_TP $rateTp")
         when (parameters.isBuy) {
             true -> {
-                val MAX_RATE_TP = MAX_AMOUNT_TP.times(parameters.conversionRate).div(parameters.units).plus(parameters.openPrice)
-                if(rateTp > MAX_RATE_TP){
-                    throw ValidationException("Take Profit can't more than $MAX_RATE_TP",
-                        MAX_RATE_TP)
+                val MAX_RATE_TP =
+                    MAX_AMOUNT_TP.times(parameters.conversionRate).div(parameters.units)
+                        .plus(parameters.openPrice)
+                if (rateTp > MAX_RATE_TP) {
+                    throw ValidationException(
+                        "Take Profit can't more than $MAX_RATE_TP",
+                        MAX_RATE_TP
+                    )
                 }
             }
             false -> {
                 val MAX_RATE_TP = 10f.pow(-parameters.digit)
-                if(rateTp <= MAX_RATE_TP){
-                    throw ValidationException("Take Profit can't less than $MAX_RATE_TP",
-                        MAX_RATE_TP)
+                if (rateTp <= MAX_RATE_TP) {
+                    throw ValidationException(
+                        "Take Profit can't less than $MAX_RATE_TP",
+                        MAX_RATE_TP
+                    )
                 }
             }
         }
