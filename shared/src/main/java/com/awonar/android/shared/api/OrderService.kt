@@ -17,8 +17,8 @@ interface OrderService {
     @POST("v1/exit-orders")
     fun exitOrder(@Body request: ExitOrderPartialRequest): Call<ExitOrder>
 
-    @POST("v1/orders")
-    fun openOrder(@Body request: OpenOrderRequest): Call<OpenOrderResponse>
+    @POST("v1/positions")
+    fun openOrder(@Body request: OpenOrderRequest): Call<Position?>
 
     @POST("v1/entry-orders")
     fun openEntryOrder(@Body request: OpenOrderRequest): Call<OpenOrderResponse>

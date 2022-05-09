@@ -14,5 +14,4 @@ data class OpenOrderRequest(
     @SerializedName("stopLossRate") val stopLoss: Float,
     @SerializedName("takeProfitRate") val takeProfit: Float,
     @SerializedName("units") val units: Float,
-    @SerializedName("isEntry") val isEntry: Boolean,
 ) : Parcelable

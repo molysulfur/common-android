@@ -27,14 +27,11 @@ class OrderRepository @Inject constructor(
 
 
     fun openOrder(request: OpenOrderRequest) =
-        object : DirectNetworkFlow<OpenOrderRequest, OpenOrderResponse, OpenOrderResponse>() {
-            override fun createCall(): Response<OpenOrderResponse> = if (request.isEntry) {
-                orderService.openEntryOrder(request).execute()
-            } else {
+        object : DirectNetworkFlow<OpenOrderRequest, Position?, Position?>() {
+            override fun createCall(): Response<Position?> =
                 orderService.openOrder(request).execute()
-            }
 
-            override fun convertToResultType(response: OpenOrderResponse): OpenOrderResponse =
+            override fun convertToResultType(response: Position?): Position? =
                 response
 
             override fun onFetchFailed(errorMessage: String) {

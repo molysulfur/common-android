@@ -11,7 +11,7 @@ data class OpenOrderResponse(
     @SerializedName("instrumentId") val instrumentId: Int,
     @SerializedName("parentOrderId") val parentOrderId: String?,
     @SerializedName("ip") val ip: String?,
-    @SerializedName("amount") val amount: Int,
+    @SerializedName("amount") val amount: Float,
     @SerializedName("exposure") val exposure: Float,
     @SerializedName("isBuy") val isBuy: Boolean,
     @SerializedName("leverage") val leverage: Int,

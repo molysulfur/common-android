@@ -225,9 +225,9 @@ class OrderViewModel @Inject constructor(
                  */
                 val conversionRate = getConversionByInstrumentUseCase(instrument.id).successOr(0f)
                 val percent = tradingData.defaultStopLossPercentage.minus(0.5f).div(100)
-                val rateStopLoss = (_rateState.value ?: _priceState.value).times(percent)
-                val amountStopLoss = ConverterOrderUtil.convertRateToAmount(
-                    rate = rateStopLoss,
+                val amountStopLoss = defaultAmount.times(percent)
+                val rateStopLoss = ConverterOrderUtil.convertAmountToRate(
+                    amount = if (_isBuyState.value == true) -amountStopLoss else amountStopLoss,
                     conversionRate = conversionRate,
                     units = defaultUnit,
                     openRate = _priceState.value,
@@ -693,8 +693,7 @@ class OrderViewModel @Inject constructor(
                 rate = _rateState.value ?: 0f,
                 stopLoss = _stopLossState.value.second,
                 takeProfit = _takeProfit.value.second,
-                units = _amountState.value.second,
-                isEntry = _marketType.value == MarketOrderType.ENTRY_ORDER
+                units = _amountState.value.second
             )
             openOrderUseCase(request).collectLatest {
                 if (it.succeeded) {
