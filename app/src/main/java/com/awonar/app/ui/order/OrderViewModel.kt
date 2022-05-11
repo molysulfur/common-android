@@ -75,13 +75,10 @@ class OrderViewModel @Inject constructor(
 
     private val _amountState = MutableStateFlow(Pair(0f, 0f))
     val amountState: StateFlow<Pair<Float, Float>> get() = _amountState
-
     private val _rateState = MutableStateFlow<Float?>(null)
     val rateState: StateFlow<Float?> get() = _rateState
-
     private val _hasPartialState = MutableStateFlow(false)
     val hasPartialState: StateFlow<Boolean> get() = _hasPartialState
-
     private val _openOrderState = Channel<String>(capacity = Channel.CONFLATED)
     val openOrderState get() = _openOrderState.receiveAsFlow()
     private val _orderSuccessState = Channel<String>(capacity = Channel.CONFLATED)
@@ -97,18 +94,47 @@ class OrderViewModel @Inject constructor(
     val takeProfit: StateFlow<Pair<Float, Float>> get() = _takeProfit
     private val _takeProfitError = MutableStateFlow("")
     val takeProfitError: StateFlow<String> get() = _takeProfitError
-
     private val _stopLossState = MutableStateFlow(Pair(0f, 0f))
     val stopLossState: StateFlow<Pair<Float, Float>> get() = _stopLossState
     private val _stopLossError = MutableStateFlow("")
     val stopLossError: StateFlow<String> get() = _stopLossError
-
     private val _errorState = MutableStateFlow("")
     val errorState: StateFlow<String> get() = _errorState
     private val _amountError = MutableStateFlow("")
     val amountError: StateFlow<String> get() = _amountError
+    private val _overnightFeeMessage = MutableStateFlow("")
+    val overnightFeeMessage: StateFlow<String> get() = _overnightFeeMessage
 
     init {
+        viewModelScope.launch {
+            combine(
+                _amountState,
+                _leverageState,
+                tradingData,
+                _isBuyState
+            ) { amount, leverage, tradingData, isBuy ->
+                if (tradingData != null) {
+                    val units = amount.second
+                    val exposure = amount.first.div(leverage)
+                    var message = ""
+                    message += "%.2f Units | %s | Exposure $%.2f \n".format(
+                        units,
+                        "5% of Equity",
+                        exposure
+                    )
+                    val (day, week) = ConverterOrderUtil.getOverNightFee(
+                        tradingData,
+                        units,
+                        leverage,
+                        isBuy == true
+                    )
+                    message += "Daily $%.2f Weekly $%.2f".format(day, week)
+                    _overnightFeeMessage.value = message
+                }
+            }.collectLatest {
+
+            }
+        }
         viewModelScope.launch {
             _takeProfitState.collect {
                 val isBuy = _isBuyState.value == true
@@ -169,12 +195,11 @@ class OrderViewModel @Inject constructor(
                             )
                         )
                     )
-                    if (result is Result.Success) {
-                        _stopLossState.value = it
-                    }
                     if (result is Result.Error) {
                         if (result.exception is ValidationException) {
-                            setRateSl((result.exception as ValidationException).value)
+                            val newRateSL = (result.exception as ValidationException).value
+                            Timber.e("$newRateSL")
+                            setRateSl(newRateSL)
                         }
                     }
                 }
@@ -357,7 +382,7 @@ class OrderViewModel @Inject constructor(
                 openRate = rateState.value ?: 0f,
                 isBuy = _isBuyState.value == true
             )
-            _takeProfitState.value = Pair(amount, slRate)
+            _stopLossState.value = Pair(amount, slRate)
         }
     }
 
@@ -374,7 +399,7 @@ class OrderViewModel @Inject constructor(
                 openRate = rateState.value ?: 0f,
                 isBuy = _isBuyState.value == true
             )
-            _takeProfitState.value = Pair(slAmount, slRate)
+            _stopLossState.value = Pair(slAmount, slRate)
         }
     }
 

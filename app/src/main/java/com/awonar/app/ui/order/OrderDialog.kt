@@ -19,6 +19,7 @@ import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.molysulfur.library.extension.toast
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -48,6 +49,11 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         savedInstanceState: Bundle?,
     ): View {
         observeError()
+        launchAndRepeatWithViewLifecycle {
+            orderViewModel.overnightFeeMessage.collectLatest {
+                binding.awonarDialogOrderTextOrderOvernight.text = it
+            }
+        }
         /**
          * Current Price and Changed
          */

@@ -1,10 +1,33 @@
 package com.awonar.android.shared.utils
 
 import com.awonar.android.model.tradingdata.TradingData
-import timber.log.Timber
 import java.lang.Error
 
 object ConverterOrderUtil {
+
+    fun getOverNightFee(
+        tradingData: TradingData,
+        units: Float,
+        leverage: Int,
+        isBuy: Boolean
+    ): Pair<Float, Float> = when {
+        isBuy && leverage == 1 -> Pair(
+            tradingData.nonLeveragedBuyOverNightFee.times(units),
+            tradingData.nonLeveragedBuyEndOfWeekFee.times(units)
+        )
+        isBuy && leverage > 1 -> Pair(
+            tradingData.leveragedBuyOverNightFee.times(units),
+            tradingData.leveragedBuyEndOfWeekFee.times(units)
+        )
+        !isBuy && leverage == 1 -> Pair(
+            tradingData.nonLeveragedSellOverNightFee.times(units),
+            tradingData.nonLeveragedSellEndOfWeekFee.times(units)
+        )
+        else -> Pair(
+            tradingData.leveragedSellOverNightFee.times(units),
+            tradingData.leveragedSellEndOfWeekFee.times(units)
+        )
+    }
 
     fun convertAmountToRate(
         amount: Float,
