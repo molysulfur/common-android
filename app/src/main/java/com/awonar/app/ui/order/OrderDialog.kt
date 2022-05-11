@@ -50,6 +50,15 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     ): View {
         observeError()
         launchAndRepeatWithViewLifecycle {
+            orderViewModel.depositState.collectLatest { isDeposit ->
+                if (isDeposit) {
+                    binding.awonarDialogOrderButtonOpenTrade.text = "Deposit"
+                } else {
+                    binding.awonarDialogOrderButtonOpenTrade.text = "Open Trade"
+                }
+            }
+        }
+        launchAndRepeatWithViewLifecycle {
             orderViewModel.overnightFeeMessage.collectLatest {
                 binding.awonarDialogOrderTextOrderOvernight.text = it
             }
@@ -135,9 +144,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                         }
                     }
                     validateExposure(amount = amount.first)
-//                    getDefaultTpAndSl()
-//                    updateDetail()
-//                    getOvernight()
                 }
             }
         }

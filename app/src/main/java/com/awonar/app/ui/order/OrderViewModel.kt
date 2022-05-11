@@ -104,8 +104,22 @@ class OrderViewModel @Inject constructor(
     val amountError: StateFlow<String> get() = _amountError
     private val _overnightFeeMessage = MutableStateFlow("")
     val overnightFeeMessage: StateFlow<String> get() = _overnightFeeMessage
+    private val _depositState = MutableStateFlow(false)
+    val depositState: StateFlow<Boolean> get() = _depositState
 
     init {
+        viewModelScope.launch {
+            combine(_amountState, _portfolioState) { amount, portfolio ->
+                if (portfolio != null) {
+                    val available = portfolio.available
+                    Timber.e("$available , ${amount.first} ${amount.first > available}")
+                    return@combine amount.first > available
+                }
+                return@combine false
+            }.collectLatest {
+                _depositState.value = it
+            }
+        }
         viewModelScope.launch {
             combine(
                 _amountState,
@@ -113,10 +127,11 @@ class OrderViewModel @Inject constructor(
                 tradingData,
                 _isBuyState
             ) { amount, leverage, tradingData, isBuy ->
+                var message = ""
                 if (tradingData != null) {
                     val units = amount.second
                     val exposure = amount.first.div(leverage)
-                    var message = ""
+
                     message += "%.2f Units | %s | Exposure $%.2f \n".format(
                         units,
                         "5% of Equity",
@@ -129,10 +144,11 @@ class OrderViewModel @Inject constructor(
                         isBuy == true
                     )
                     message += "Daily $%.2f Weekly $%.2f".format(day, week)
-                    _overnightFeeMessage.value = message
                 }
-            }.collectLatest {
 
+                message
+            }.collectLatest {
+                _overnightFeeMessage.value = it
             }
         }
         viewModelScope.launch {
