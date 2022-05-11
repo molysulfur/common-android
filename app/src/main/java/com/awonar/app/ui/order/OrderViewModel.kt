@@ -112,7 +112,6 @@ class OrderViewModel @Inject constructor(
             combine(_amountState, _portfolioState) { amount, portfolio ->
                 if (portfolio != null) {
                     val available = portfolio.available
-                    Timber.e("$available , ${amount.first} ${amount.first > available}")
                     return@combine amount.first > available
                 }
                 return@combine false
@@ -726,6 +725,9 @@ class OrderViewModel @Inject constructor(
 
     fun submit() {
         viewModelScope.launch {
+            if (_depositState.value) {
+                return@launch
+            }
             val request = OpenOrderRequest(
                 instrumentId = _instrument.value?.id ?: 0,
                 amount = _amountState.value.first,
