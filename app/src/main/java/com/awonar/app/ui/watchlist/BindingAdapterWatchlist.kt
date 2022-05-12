@@ -29,6 +29,9 @@ fun setWatchlistAdapter(
                 onButtonClick = {
                     viewModel.openAddWatchlist()
                 }
+                openDialog = { id, isBuy ->
+                    viewModel.openTradeDialog(id, isBuy)
+                }
             }
         }
     }
@@ -69,8 +72,11 @@ fun setFolderAdapter(
                 LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
             adapter = WatchlistFolderAdapter().apply {
                 onCardClick = {
-                    viewModel.navigate(WatchlistFolderFragmentDirections.watchlistFolderFragmentToWatchlistListFragment(
-                        it))
+                    viewModel.navigate(
+                        WatchlistFolderFragmentDirections.watchlistFolderFragmentToWatchlistListFragment(
+                            it
+                        )
+                    )
                 }
                 onClose = {
                     MaterialAlertDialogBuilder(recycler.context)

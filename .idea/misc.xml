@@ -19,6 +19,7 @@
         <entry key="app/src/main/res/layout/awonar_fragment_market_list.xml" value="0.1" />
         <entry key="app/src/main/res/layout/awonar_fragment_market_recommended.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/awonar_fragment_market_viewmore.xml" value="0.17135416666666667" />
+        <entry key="app/src/main/res/layout/awonar_fragment_watchlist.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/awonar_item_button_item.xml" value="0.16145833333333334" />
         <entry key="app/src/main/res/layout/awonar_item_empty.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/awonar_item_feed_loading.xml" value="0.171875" />

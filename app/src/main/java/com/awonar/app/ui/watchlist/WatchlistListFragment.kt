@@ -12,9 +12,11 @@ import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentWatchlistListBinding
 import com.awonar.app.dialog.menu.MenuDialog
 import com.awonar.app.dialog.menu.MenuDialogButtonSheet
+import com.awonar.app.ui.order.OrderDialog
 import com.molysulfur.library.extension.openActivity
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
 class WatchlistListFragment : Fragment() {

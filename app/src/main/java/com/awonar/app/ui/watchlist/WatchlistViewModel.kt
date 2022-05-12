@@ -8,6 +8,7 @@ import com.awonar.android.model.market.Instrument
 import com.awonar.android.model.watchlist.AddWatchlistItemRequest
 import com.awonar.android.model.watchlist.DeleteWatchlistRequest
 import com.awonar.android.model.watchlist.Folder
+import com.awonar.android.shared.domain.market.GetInstrumentWithIdUseCase
 import com.awonar.android.shared.domain.watchlist.*
 import com.awonar.android.shared.utils.JsonUtil
 import com.awonar.app.domain.watchlist.ConvertWatchlistItemUseCase
@@ -30,10 +31,14 @@ class WatchlistViewModel @Inject constructor(
     private val addWatchlistUseCase: AddWatchlistUseCase,
     private val convertWatchlistItemUseCase: ConvertWatchlistItemUseCase,
     private val updateDefaultFolderUseCase: UpdateDefaultFolderUseCase,
+    private val getInstrumentWithIdUseCase: GetInstrumentWithIdUseCase
 ) : ViewModel() {
 
     private val _title = MutableStateFlow("")
     val title get() = _title
+
+    private val _showOpenTrade = Channel<Pair<Instrument, Boolean>>(Channel.CONFLATED)
+    val showOpenTrade: Flow<Pair<Instrument, Boolean>> get() = _showOpenTrade.receiveAsFlow()
 
     private val _showDialog = Channel<String>(Channel.CONFLATED)
     val showDialog get() = _showDialog.receiveAsFlow()
@@ -61,7 +66,7 @@ class WatchlistViewModel @Inject constructor(
 
     init {
         val folders = flow {
-            getWatchlistFoldersUseCase(true).collect {
+            getWatchlistFoldersUseCase(true).collectLatest {
                 val folder = it.successOr(emptyList())
                 _progress.value = it is Result.Loading
                 emit(folder)
@@ -123,7 +128,7 @@ class WatchlistViewModel @Inject constructor(
 
     fun refresh(needFresh: Boolean) {
         viewModelScope.launch {
-            getWatchlistFoldersUseCase(needFresh).collect {
+            getWatchlistFoldersUseCase(needFresh).collectLatest {
                 val folder = it.successOr(emptyList())
                 _progress.value = it is Result.Loading
                 _folders.emit(folder)
@@ -151,10 +156,12 @@ class WatchlistViewModel @Inject constructor(
         viewModelScope.launch {
             val folder = _folders.value.find { it.id == folderId }
             id.let { _ ->
-                addWatchlistUseCase(AddWatchlistItemRequest(
-                    folderId = folder?.id ?: "",
-                    instrumentId = id
-                )).collect {
+                addWatchlistUseCase(
+                    AddWatchlistItemRequest(
+                        folderId = folder?.id ?: "",
+                        instrumentId = id
+                    )
+                ).collectLatest {
                     if (it.succeeded) {
                         _folders.emit(it.successOr(emptyList()))
                         _successState.send("")
@@ -172,10 +179,12 @@ class WatchlistViewModel @Inject constructor(
             val folder = _folders.value.find { it.id == folderId }
             val id = folder?.infos?.find { it.instrumentId == instrumentId }?.id
             id?.let { _ ->
-                deleteWatchlistUseCase(DeleteWatchlistRequest(
-                    folderId = folder.id,
-                    itemId = id
-                )).collect {
+                deleteWatchlistUseCase(
+                    DeleteWatchlistRequest(
+                        folderId = folder.id,
+                        itemId = id
+                    )
+                ).collectLatest {
                     if (it.succeeded) {
                         _folders.emit(it.successOr(emptyList()))
                         _successState.send("")
@@ -197,10 +206,12 @@ class WatchlistViewModel @Inject constructor(
             }
             val folder = _folders.value.find { it.infos.find { it.id == id } != null }
             id?.let { _ ->
-                deleteWatchlistUseCase(DeleteWatchlistRequest(
-                    folderId = folder?.id ?: "",
-                    itemId = id
-                )).collect {
+                deleteWatchlistUseCase(
+                    DeleteWatchlistRequest(
+                        folderId = folder?.id ?: "",
+                        itemId = id
+                    )
+                ).collectLatest {
                     if (it.succeeded) {
                         val newFolders = it.successOr(emptyList())
                         _folders.emit(newFolders)
@@ -224,7 +235,7 @@ class WatchlistViewModel @Inject constructor(
 
     fun setDefault(folderId: String) {
         viewModelScope.launch {
-            updateDefaultFolderUseCase(folderId).collect {
+            updateDefaultFolderUseCase(folderId).collectLatest {
                 if (it.succeeded) {
                     _folders.emit(it.successOr(emptyList()))
                 } else if (it is Result.Error) {
@@ -261,6 +272,15 @@ class WatchlistViewModel @Inject constructor(
     fun openAddWatchlist() {
         viewModelScope.launch {
             _openActivity.send("add")
+        }
+    }
+
+    fun openTradeDialog(instrumentId: Int, isBuy: Boolean) {
+        viewModelScope.launch {
+            val result = getInstrumentWithIdUseCase(instrumentId)
+            result.successOr(null)?.let {
+                _showOpenTrade.send(Pair(it, isBuy))
+            }
         }
     }
 

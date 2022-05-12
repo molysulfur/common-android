@@ -1,6 +1,7 @@
 package com.awonar.app.ui.watchlist.adapter.holder
 
 import androidx.recyclerview.widget.RecyclerView
+import com.awonar.android.model.market.Instrument
 import com.awonar.android.shared.steaming.QuoteSteamingManager
 import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.android.shared.utils.PortfolioUtil
@@ -18,7 +19,11 @@ class InstrumentViewHolder constructor(private val binding: AwonarItemInstrument
 
     private var instrumentId: Int = 0
 
-    fun bind(item: WatchlistItem.InstrumentItem) {
+    fun bind(
+        item: WatchlistItem.InstrumentItem,
+        onItemClick: ((Int) -> Unit)?,
+        onTradeClick: ((Int, Boolean) -> Unit)?
+    ) {
         instrumentId = item.instrumentId
         CoroutineScope(Dispatchers.Main).launch {
             QuoteSteamingManager.quotesState.collect { quotes ->
@@ -26,14 +31,18 @@ class InstrumentViewHolder constructor(private val binding: AwonarItemInstrument
                 quote?.let {
                     binding.awonarInstrumentItemList.setAsk(quote.ask)
                     binding.awonarInstrumentItemList.setBid(quote.bid)
-                    binding.awonarInstrumentItemList.setChange(ConverterQuoteUtil.change(
-                        quote.close,
-                        quote.previous
-                    ))
-                    binding.awonarInstrumentItemList.setPercentChange(ConverterQuoteUtil.percentChange(
-                        quote.previous,
-                        quote.close
-                    ))
+                    binding.awonarInstrumentItemList.setChange(
+                        ConverterQuoteUtil.change(
+                            quote.close,
+                            quote.previous
+                        )
+                    )
+                    binding.awonarInstrumentItemList.setPercentChange(
+                        ConverterQuoteUtil.percentChange(
+                            quote.previous,
+                            quote.close
+                        )
+                    )
                     binding.awonarInstrumentItemList.setPercentChange(quote.close)
                 }
             }
@@ -41,6 +50,12 @@ class InstrumentViewHolder constructor(private val binding: AwonarItemInstrument
         with(binding.awonarInstrumentItemList) {
             setImage(item.image ?: "")
             setTitle(item.title ?: "")
+            setOnClickListener {
+                onItemClick?.invoke(instrumentId)
+            }
+            onOpenOrder = {
+                onTradeClick?.invoke(item.instrumentId, it)
+            }
         }
     }
 

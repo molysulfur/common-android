@@ -14,10 +14,12 @@ import com.awonar.app.databinding.AwonarFragmentWatchlistBinding
 import com.awonar.app.dialog.menu.MenuDialog
 import com.awonar.app.dialog.menu.MenuDialogButtonSheet
 import com.awonar.app.ui.market.MarketViewModel
+import com.awonar.app.ui.order.OrderDialog
 import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.molysulfur.library.extension.toast
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class WatchListFragment : Fragment() {
@@ -59,6 +61,15 @@ class WatchListFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         launchAndRepeatWithViewLifecycle {
+            viewModel.showOpenTrade.collectLatest {
+                OrderDialog.Builder()
+                    .setType(it.second)
+                    .setSymbol(it.first)
+                    .build()
+                    .show(childFragmentManager)
+            }
+        }
+        launchAndRepeatWithViewLifecycle {
             QuoteSteamingManager.quotesState.collect { quotes ->
                 portViewModel.sumTotalProfitAndEquity(quotes)
             }
@@ -83,17 +94,23 @@ class WatchListFragment : Fragment() {
         binding.awonarWatchlistButtonSector.setOnClickListener {
             val folders = viewModel.folders.value
             settingDialog = MenuDialogButtonSheet.Builder()
-                .setMenus(arrayListOf(
-                    MenuDialog(key = "default",
-                        iconRes = R.drawable.awonar_ic_add_list,
-                        text = folders.find { it.default }?.name),
-                    MenuDialog(key = "recently",
-                        iconRes = R.drawable.awonar_ic_add_list,
-                        text = folders.find { it.static }?.name),
-                    MenuDialog(key = "all",
-                        iconRes = R.drawable.awonar_ic_add_list,
-                        text = "Watchlist")
-                ))
+                .setMenus(
+                    arrayListOf(
+                        MenuDialog(key = "default",
+                            iconRes = R.drawable.awonar_ic_add_list,
+                            text = folders.find { it.default }?.name
+                        ),
+                        MenuDialog(key = "recently",
+                            iconRes = R.drawable.awonar_ic_add_list,
+                            text = folders.find { it.static }?.name
+                        ),
+                        MenuDialog(
+                            key = "all",
+                            iconRes = R.drawable.awonar_ic_add_list,
+                            text = "Watchlist"
+                        )
+                    )
+                )
                 .setListener(dialogListener)
                 .build()
             settingDialog.show(childFragmentManager, "Title")

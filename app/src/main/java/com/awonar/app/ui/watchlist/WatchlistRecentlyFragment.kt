@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.awonar.app.databinding.AwonarFragmentWatchlistListBinding
+import com.awonar.app.ui.order.OrderDialog
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 
 class WatchlistRecentlyFragment : Fragment() {
 
