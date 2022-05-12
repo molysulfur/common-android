@@ -1,5 +1,6 @@
 package com.awonar.app.ui.watchlist
 
+import android.content.Intent
 import android.graphics.Canvas
 import android.view.View
 import androidx.databinding.BindingAdapter
@@ -7,6 +8,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.android.model.watchlist.Folder
+import com.awonar.app.ui.marketprofile.MarketProfileActivity
 import com.awonar.app.ui.watchlist.adapter.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.CircularProgressIndicator
@@ -28,6 +30,13 @@ fun setWatchlistAdapter(
             adapter = WatchlistAdapter().apply {
                 onButtonClick = {
                     viewModel.openAddWatchlist()
+                }
+                onItemClick = {
+                    val newIntent =
+                        Intent(recycler.context, MarketProfileActivity::class.java).apply {
+                            putExtra(MarketProfileActivity.INSTRUMENT_EXTRA, it)
+                        }
+                    recycler.context.startActivity(newIntent)
                 }
                 openDialog = { id, isBuy ->
                     viewModel.openTradeDialog(id, isBuy)
@@ -82,10 +91,10 @@ fun setFolderAdapter(
                     MaterialAlertDialogBuilder(recycler.context)
                         .setTitle("Are you sure?")
                         .setMessage("You want to delete folder?")
-                        .setPositiveButton("Cancel") { dialog, which ->
+                        .setPositiveButton("Cancel") { dialog, _ ->
                             dialog.dismiss()
                         }
-                        .setNegativeButton("Delete") { dialog, which ->
+                        .setNegativeButton("Delete") { _, _ ->
                             viewModel.deleteFolder(it)
                         }
                         .show()

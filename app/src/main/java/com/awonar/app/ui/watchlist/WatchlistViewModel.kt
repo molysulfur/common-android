@@ -66,9 +66,9 @@ class WatchlistViewModel @Inject constructor(
 
     init {
         val folders = flow {
-            getWatchlistFoldersUseCase(true).collectLatest {
-                val folder = it.successOr(emptyList())
-                _progress.value = it is Result.Loading
+            getWatchlistFoldersUseCase(true).collectIndexed { _, value ->
+                val folder = value.successOr(emptyList())
+                _progress.value = value is Result.Loading
                 emit(folder)
             }
         }
