@@ -21,7 +21,6 @@ class ConvertAllocateToPieChartUseCase @Inject constructor(
         itemList.add(PositionChartItem.SubTitleItem("Click on the pie chart or legend item to drill down"))
         val entries = arrayListOf<PieEntry>()
         for ((k, v) in parameters.data) {
-            Timber.e("$k $v")
             entries.add(PieEntry(v.toFloat(), k))
         }
         itemList.add(PositionChartItem.PieChartItem(entries))

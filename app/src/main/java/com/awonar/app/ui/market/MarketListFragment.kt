@@ -6,7 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.awonar.app.databinding.AwonarFragmentMarketListBinding
+import com.awonar.app.ui.market.adapter.InstrumentListAdapter
+import com.awonar.app.ui.order.OrderDialog
+import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
+import kotlinx.coroutines.flow.collectLatest
 
 class MarketListFragment : Fragment() {
 
@@ -21,14 +26,35 @@ class MarketListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding.viewModel = viewModel
+        launchAndRepeatWithViewLifecycle {
+            viewModel.instrumentItem.collectLatest { instrument ->
+                with(binding.awonarMarketListRecyclerItems) {
+                    if (adapter == null) {
+                        layoutManager =
+                            LinearLayoutManager(
+                                context,
+                                LinearLayoutManager.VERTICAL,
+                                false
+                            )
+                        adapter = InstrumentListAdapter().apply {
+                            onViewMoreClick = { arg ->
+                                viewModel.onViewMore(arg)
+                            }
+                            onOpenOrder = { instrument, isBuy ->
+                                OrderDialog.Builder()
+                                    .setType(isBuy)
+                                    .setSymbol(instrument)
+                                    .build()
+                                    .show(childFragmentManager)
+                            }
+                        }
+                    }
+                    (adapter as InstrumentListAdapter).itemList = instrument
+                }
+            }
+        }
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
     }
 
 }
