@@ -165,7 +165,7 @@ class PortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     ): Float = when (column) {
         "Invested" -> item.position.invested
         "Units" -> item.position.units
-        "Open" -> item.position.open
+        "Open" -> item.position.avgOpen
         "Current" -> item.position.current
         "P/L($)" -> item.position.profitLoss
         "P/L(%)" -> item.position.profitLossPercent
@@ -180,7 +180,7 @@ class PortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         "TP($)" -> item.position.amountTakeProfit
         "SL(%)" -> item.position.stopLossPercent
         "TP(%)" -> item.position.takeProfitPercent
-        "Avg. Open" -> item.position.open
+        "Avg. Open" -> item.position.avgOpen
         else -> 0f
     }
 

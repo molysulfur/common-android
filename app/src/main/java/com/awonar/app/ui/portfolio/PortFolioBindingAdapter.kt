@@ -408,7 +408,7 @@ private fun getPositionValueByColumn(
         "Invested" -> "$%.2f".format(item.invested)
         "Invested(%)" -> "%.2f%s".format(item.invested, "%")
         "Units" -> "%.2f".format(item.units)
-        "Open", "Avg. Open" -> "%s".format(if (item.openRate != 0f) item.openRate else item.open)
+        "Open", "Avg. Open" -> "%s".format(if (item.openRate != 0f) item.openRate else item.avgOpen)
         "Current" -> "%s".format(item.current)
         "P/L($)" -> "$%.2f".format(item.profitLoss)
         "P/L(%)" -> "%.2f%s".format(

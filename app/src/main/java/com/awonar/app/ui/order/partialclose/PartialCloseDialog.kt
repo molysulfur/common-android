@@ -17,6 +17,7 @@ import com.awonar.app.R
 import com.awonar.app.databinding.AwonarDialogPartialcloseBinding
 import com.awonar.app.dialog.DialogViewModel
 import com.awonar.app.ui.order.OrderViewModel
+import com.awonar.app.utils.ColorChangingUtil
 import com.awonar.app.utils.ImageUtil
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
@@ -77,6 +78,11 @@ class PartialCloseDialog :
                 binding.price = "%s".format(current)
                 position?.let {
                     val pl = viewModel.getProfit(current, it)
+                    binding.awonarPartialCloseTextPl.setTextColor(
+                        ColorChangingUtil.getTextColorChange(
+                            pl
+                        )
+                    )
                     binding.pl = "%.2f".format(pl)
                     binding.total = "%.2f".format(it.amount.plus(pl))
                 }

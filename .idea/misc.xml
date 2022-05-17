@@ -10,7 +10,7 @@
         <entry key="app/src/main/res/layout/awonar_activity_publish_feed.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/awonar_dialog_loading.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/awonar_dialog_order.xml" value="0.14010416666666667" />
-        <entry key="app/src/main/res/layout/awonar_dialog_partialclose.xml" value="0.14010416666666667" />
+        <entry key="app/src/main/res/layout/awonar_dialog_partialclose.xml" value="0.2652370203160271" />
         <entry key="app/src/main/res/layout/awonar_fragment_all_feed.xml" value="0.171875" />
         <entry key="app/src/main/res/layout/awonar_fragment_copytrade_feed.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/awonar_fragment_feed.xml" value="0.18697916666666667" />
@@ -19,11 +19,15 @@
         <entry key="app/src/main/res/layout/awonar_fragment_market_list.xml" value="0.1" />
         <entry key="app/src/main/res/layout/awonar_fragment_market_recommended.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/awonar_fragment_market_viewmore.xml" value="0.17135416666666667" />
+        <entry key="app/src/main/res/layout/awonar_fragment_portfolio_inside_copier.xml" value="0.1" />
         <entry key="app/src/main/res/layout/awonar_fragment_watchlist.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/awonar_item_button_item.xml" value="0.16145833333333334" />
+        <entry key="app/src/main/res/layout/awonar_item_copier_card.xml" value="0.12239583333333333" />
+        <entry key="app/src/main/res/layout/awonar_item_copier_position.xml" value="0.12239583333333333" />
         <entry key="app/src/main/res/layout/awonar_item_empty.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/awonar_item_feed_loading.xml" value="0.171875" />
         <entry key="app/src/main/res/layout/awonar_item_loading.xml" value="0.171875" />
+        <entry key="app/src/main/res/layout/awonar_item_position.xml" value="0.12239583333333333" />
         <entry key="app/src/main/res/layout/awonar_widget_card_feed.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/awonar_widget_default_feed.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/awonar_widget_images_preview_feed.xml" value="0.12447916666666667" />

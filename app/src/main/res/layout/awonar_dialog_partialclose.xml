@@ -40,8 +40,8 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:background="@color/awonar_color_surface"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/awonar_color_surface">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
@@ -81,6 +81,7 @@
                     style="@style/Awonar.SubTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
                     android:text="@{title}"
                     app:layout_constraintStart_toEndOf="@+id/awonar_partial_close_image_logo"
                     app:layout_constraintTop_toTopOf="@+id/awonar_partial_close_image_logo"
@@ -93,7 +94,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/awonar_size_margin_padding_small"
                     android:text="@{price}"
-                    app:layout_constraintStart_toEndOf="@+id/awonar_partial_close_image_logo"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_partial_close_text_title"
                     app:layout_constraintTop_toBottomOf="@+id/awonar_partial_close_text_title"
                     tools:text="@string/awonar_example_name" />
 
@@ -190,7 +191,8 @@
                         android:layout_height="wrap_content"
                         android:text="@{pl}"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/awonar_partial_close_divider_plus" />
+                        app:layout_constraintTop_toBottomOf="@+id/awonar_partial_close_divider_plus"
+                        tools:text="@string/awonar_example_name" />
 
                     <com.awonar.app.widget.TextDividerView
                         android:id="@+id/awonar_partial_close_divider_equal"
@@ -215,7 +217,8 @@
                         android:layout_height="wrap_content"
                         android:text="@{total}"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/awonar_partial_close_divider_equal" />
+                        app:layout_constraintTop_toBottomOf="@+id/awonar_partial_close_divider_equal"
+                        tools:text="@string/awonar_example_name" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

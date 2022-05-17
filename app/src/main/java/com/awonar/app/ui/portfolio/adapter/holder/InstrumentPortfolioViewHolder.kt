@@ -63,16 +63,28 @@ class InstrumentPortfolioViewHolder constructor(
                             if (positionItem.position.isBuy) it.bid else it.ask
                         val pl = PortfolioUtil.getProfitOrLoss(
                             positionItem.position.current,
-                            positionItem.position.open,
+                            positionItem.position.openRate,
                             positionItem.position.units,
                             positionItem.conversionRate,
                             positionItem.position.isBuy
                         )
                         val pipChange = PortfolioUtil.pipChange(
                             positionItem.position.current,
-                            positionItem.position.open,
+                            positionItem.position.openRate,
                             positionItem.position.isBuy,
                             positionItem.position.instrument?.digit ?: 2
+                        )
+                        Timber.e(
+                            """
+                             symbol:  ${positionItem.position.instrument?.symbol}
+                             current: ${positionItem.position.current}   
+                             openRate: ${positionItem.position.openRate}   
+                             units: ${positionItem.position.units}   
+                             conversionRate: ${positionItem.conversionRate}  
+                             isBuy: ${positionItem.position.isBuy}   
+                             pl: $pl
+                             pip: $pipChange
+                            """
                         )
                         val value = PortfolioUtil.getValue(pl, positionItem.position.invested)
                         val plPercent =

@@ -137,7 +137,7 @@ data class Position(
     @SerializedName("closeDateTime") var closeDateTime: String? = null,
     @SerializedName("conversionRate") var conversionRate: Float = 0f,
     @SerializedName("invested") var invested: Float = 0f,
-    @SerializedName("open") var open: Float = 0f,
+    @SerializedName("open") var avgOpen: Float = 0f,
     @SerializedName("currentRate") var current: Float = 0f,
     @SerializedName("stopLoss") var stopLoss: Float = 0f,
     @SerializedName("takeProfit") var takeProfit: Float = 0f,

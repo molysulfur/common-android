@@ -35,14 +35,14 @@ class InstrumentPositionCardViewHolder constructor(private val binding: AwonarIt
                             if (positionItem.position.isBuy) it.bid else it.ask
                         val pl = PortfolioUtil.getProfitOrLoss(
                             positionItem.position.current,
-                            positionItem.position.open,
+                            positionItem.position.avgOpen,
                             positionItem.position.units,
                             1f,
                             positionItem.position.isBuy
                         )
                         val pipChange = PortfolioUtil.pipChange(
                             positionItem.position.current,
-                            positionItem.position.open,
+                            positionItem.position.avgOpen,
                             positionItem.position.isBuy,
                             positionItem.position.instrument?.digit ?: 2
                         )

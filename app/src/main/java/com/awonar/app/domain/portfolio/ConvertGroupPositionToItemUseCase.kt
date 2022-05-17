@@ -13,14 +13,13 @@ import com.molysulfur.library.result.data
 import com.molysulfur.library.result.succeeded
 import com.molysulfur.library.usecase.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.abs
 
 
 class ConvertGroupPositionToItemUseCase @Inject constructor(
     private val currenciesRepository: CurrenciesRepository,
-    private val calculateAmountStopLossAndTakeProfitWithBuyUseCase: CalculateAmountStopLossAndTakeProfitWithBuyUseCase,
-    private val calculateAmountStopLossAndTakeProfitWithSellUseCase: CalculateAmountStopLossAndTakeProfitWithSellUseCase,
     @IoDispatcher dispatcher: CoroutineDispatcher,
 ) : UseCase<List<Position>, List<PortfolioItem>>(dispatcher) {
     override suspend fun execute(parameters: List<Position>): MutableList<PortfolioItem> {
@@ -62,43 +61,6 @@ class ConvertGroupPositionToItemUseCase @Inject constructor(
 
 
         return itemList
-    }
-
-    private suspend fun calculateAmount(
-        instrumentId: Int,
-        rate: Float,
-        open: Float,
-        unit: Float,
-        isBuy: Boolean,
-    ): Float {
-        val request = StopLossRequest(
-            instrumentId = instrumentId,
-            stopLoss = Price(0f, rate, "amount"),
-            openPrice = open,
-            unit = unit
-        )
-        val result = if (isBuy) {
-            calculateAmountStopLossAndTakeProfitWithBuyUseCase(request)
-        } else {
-            calculateAmountStopLossAndTakeProfitWithSellUseCase(request)
-        }
-        if (result.succeeded) {
-            return result.data?.amount ?: 0f
-        }
-        return 0f
-    }
-
-    private fun calAvgOpen(buyPositions: List<Position>, sellPosition: List<Position>): Double {
-        val sumBuyOpen = buyPositions.sumOf {
-            (it.units * it.openRate).toDouble()
-        }
-        val sumSellOpen = buyPositions.sumOf {
-            (it.units * it.openRate).toDouble()
-        }
-        val sumBuyUnit = buyPositions.sumOf { it.units.toDouble() }
-        val sumSellUnit = sellPosition.sumOf { it.units.toDouble() }
-
-        return (sumBuyOpen.minus(sumSellOpen)).div((sumBuyUnit - sumSellUnit))
     }
 }
 
