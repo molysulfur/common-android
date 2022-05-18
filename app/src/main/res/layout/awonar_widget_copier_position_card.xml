@@ -24,7 +24,7 @@
 
         <variable
             name="valueInvest"
-            type="Float" />
+            type="String" />
 
         <variable
             name="units"
@@ -32,7 +32,7 @@
 
         <variable
             name="profitLoss"
-            type="Float" />
+            type="String" />
 
         <variable
             name="avgOpen"

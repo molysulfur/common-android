@@ -38,7 +38,6 @@ class ConvertPositionToItemUseCase @Inject constructor(
             val amountTp = calculateAmount(position.instrumentId, tp, open, units, position.isBuy)
             val slPercent = amountSl.times(100).div(invested)
             val tpPercent = amountTp.times(100).div(invested)
-            position
             val date =
                 if (position.exitOrder != null) "Pending" else DateUtils.getDate(position.openDateTime)
             itemList.add(

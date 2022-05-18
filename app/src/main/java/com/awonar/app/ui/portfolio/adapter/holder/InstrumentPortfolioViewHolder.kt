@@ -74,18 +74,6 @@ class InstrumentPortfolioViewHolder constructor(
                             positionItem.position.isBuy,
                             positionItem.position.instrument?.digit ?: 2
                         )
-                        Timber.e(
-                            """
-                             symbol:  ${positionItem.position.instrument?.symbol}
-                             current: ${positionItem.position.current}   
-                             openRate: ${positionItem.position.openRate}   
-                             units: ${positionItem.position.units}   
-                             conversionRate: ${positionItem.conversionRate}  
-                             isBuy: ${positionItem.position.isBuy}   
-                             pl: $pl
-                             pip: $pipChange
-                            """
-                        )
                         val value = PortfolioUtil.getValue(pl, positionItem.position.invested)
                         val plPercent =
                             PortfolioUtil.profitLossPercent(pl, positionItem.position.invested)

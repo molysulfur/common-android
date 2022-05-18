@@ -94,7 +94,7 @@ class PositionViewModel @Inject constructor(
             if (username != null && symbol != null) {
                 getPositionPublicBySymbolUseCase(
                     PublicPositionRequest(username, symbol)
-                ).collect {
+                ).collectLatest {
                     _publicPosition.emit(it.successOr(null))
                 }
             }

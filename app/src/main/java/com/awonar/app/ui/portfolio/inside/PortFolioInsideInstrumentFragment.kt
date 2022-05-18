@@ -104,7 +104,7 @@ class PortFolioInsideInstrumentFragment : Fragment() {
                     binding.column1 = newColumn[0]
                     binding.column2 = newColumn[1]
                     binding.column3 = newColumn[2]
-                    binding.column4 = newColumn[3]
+                    binding.column4 = "P/L($)"
                 }
             }
         }

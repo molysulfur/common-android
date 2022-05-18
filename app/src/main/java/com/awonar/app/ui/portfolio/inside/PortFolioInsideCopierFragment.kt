@@ -9,6 +9,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.awonar.android.model.portfolio.Copier
+import com.awonar.android.shared.steaming.QuoteSteamingManager
+import com.awonar.android.shared.utils.ConverterQuoteUtil
+import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentPortfolioInsideCopierBinding
 import com.awonar.app.dialog.copier.add.AddFundDialog
@@ -25,7 +28,10 @@ import com.awonar.app.ui.portfolio.position.PositionViewModel
 import com.awonar.app.utils.ColorChangingUtil
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectIndexed
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class PortFolioInsideCopierFragment : Fragment() {
 
@@ -60,6 +66,21 @@ class PortFolioInsideCopierFragment : Fragment() {
     ): View {
         launchAndRepeatWithViewLifecycle {
             launch {
+                insideViewModel.sumFloatingPL.collectIndexed { _, value ->
+                    binding.awonarPortfolioInsideCopierPositionHeader.setProfitLoss(value)
+                }
+            }
+            launch {
+                insideViewModel.sumValue.collectIndexed { _, value ->
+                    binding.awonarPortfolioInsideCopierPositionHeader.setValueInvested(value)
+                }
+            }
+            launch {
+                QuoteSteamingManager.quotesState.collectLatest { quotes ->
+                    insideViewModel.updateHeader(quotes)
+                }
+            }
+            launch {
                 insideViewModel.copiesState.collect {
                     marketViewModel.getConversionsRateList(it?.positions ?: emptyList())
                     columnsViewModel.getActivedColumns()
@@ -80,7 +101,6 @@ class PortFolioInsideCopierFragment : Fragment() {
         binding.viewModel = insideViewModel
         binding.positionViewModel = positionViewModel
         binding.columnsViewModel = columnsViewModel
-        binding.marketViewModel = marketViewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
@@ -89,7 +109,7 @@ class PortFolioInsideCopierFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         currentIndex = args.index
         columnsViewModel.getActivedColumns()
-        insideViewModel.convertCopies(portFolioViewModel.positionState.value, currentIndex)
+        insideViewModel.getCopiesWithIndex(portFolioViewModel.positionState.value, currentIndex)
         setupToolbar()
     }
 
@@ -102,7 +122,8 @@ class PortFolioInsideCopierFragment : Fragment() {
             binding.awonarPortfolioInsideCopierTextTotalCloseNetprofit.text =
                 "P/L($): $%.2f".format(it.closedPositionsNetProfit)
             binding.awonarPortfolioInsideCopierTextTotalCloseNetprofit.setTextColor(
-                ColorChangingUtil.getTextColorChange(requireContext(), it.closedPositionsNetProfit))
+                ColorChangingUtil.getTextColorChange(requireContext(), it.closedPositionsNetProfit)
+            )
         }
     }
 
@@ -142,8 +163,10 @@ class PortFolioInsideCopierFragment : Fragment() {
                 R.id.awonar_menu_instide_position_back -> {
                     if (currentIndex > 0) {
                         currentIndex--
-                        insideViewModel.convertCopies(portFolioViewModel.positionState.value,
-                            currentIndex)
+                        insideViewModel.getCopiesWithIndex(
+                            portFolioViewModel.positionState.value,
+                            currentIndex
+                        )
                     }
                     true
                 }
@@ -151,8 +174,10 @@ class PortFolioInsideCopierFragment : Fragment() {
                     val positionSize = portFolioViewModel.positionState.value?.copies?.size ?: 0
                     if (currentIndex < positionSize.minus(1)) {
                         currentIndex++
-                        insideViewModel.convertCopies(portFolioViewModel.positionState.value,
-                            currentIndex)
+                        insideViewModel.getCopiesWithIndex(
+                            portFolioViewModel.positionState.value,
+                            currentIndex
+                        )
                     }
                     true
                 }

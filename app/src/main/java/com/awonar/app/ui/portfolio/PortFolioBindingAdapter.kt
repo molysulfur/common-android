@@ -105,9 +105,12 @@ fun setProfit(
     profit: Float,
 ) {
     with(textView) {
-        setTextColor(ColorChangingUtil.getTextColorChange(
-            textView.context,
-            profit))
+        setTextColor(
+            ColorChangingUtil.getTextColorChange(
+                textView.context,
+                profit
+            )
+        )
         text = "Profit: $%.2f".format(profit)
     }
 }
@@ -118,9 +121,12 @@ fun setEquity(
     equity: Float,
 ) {
     with(textView) {
-        setTextColor(ColorChangingUtil.getTextColorChange(
-            textView.context,
-            equity))
+        setTextColor(
+            ColorChangingUtil.getTextColorChange(
+                textView.context,
+                equity
+            )
+        )
         text = "Equity: $%.2f".format(equity)
     }
 }
@@ -161,31 +167,6 @@ fun setInstrumentPositionCardView(
         view.setChange(item.position.change)
         view.setChangePercent(item.position.changePercent)
         view.setStatusText("Market is ${item.position.status}")
-    }
-}
-
-@BindingAdapter("copier", "conversionRateList", "quote")
-fun updateCopierProfitLoss(
-    view: CopierPositionCardView,
-    copier: Copier?,
-    conversions: HashMap<Int, Float>,
-    quotes: Array<Quote>?,
-) {
-    copier?.positions?.forEach { position ->
-        val quote = quotes?.find { it.id == position.instrumentId }
-        var sumFloatingPL = 0f
-        quote?.let {
-            val current = if (position.isBuy) it.bid else it.ask
-            val pl = PortfolioUtil.getProfitOrLoss(
-                current,
-                position.openRate,
-                position.units,
-                conversions[position.instrumentId] ?: 1f,
-                position.isBuy
-            )
-            sumFloatingPL = sumFloatingPL.plus(pl)
-        }
-        view.setProfitLoss(copier.closedPositionsNetProfit.plus(sumFloatingPL))
     }
 }
 
@@ -413,13 +394,14 @@ private fun getPositionValueByColumn(
         "P/L($)" -> "$%.2f".format(item.profitLoss)
         "P/L(%)" -> "%.2f%s".format(
             if (item.netProfit != 0f) item.netProfit else item.profitLossPercent,
-            "%")
+            "%"
+        )
         "Pip Change" -> "%s".format(item.pipChange.toInt())
         "Leverage" -> "%s".format(item.leverage)
         "Value" -> "$%.2f".format(item.value)
         "Value(%)" -> "%.2f%s".format(item.value, "%")
         "Fee" -> "$%.2f".format(item.fees)
-        "Execute at" -> "$%s".format(item.invested)
+        "Execute at" -> "%s".format(item.units)
         "SL" -> "%s".format(item.stopLoss)
         "TP" -> "%s".format(item.takeProfit)
         "SL($)" -> "$%.2f".format(item.amountStopLoss)
@@ -465,8 +447,10 @@ private fun getCopierValueByColumn(
     "Invested" -> "$%.2f".format(item.invested)
     "Invested(%)" -> "%.2f%s".format(item.invested, "%")
     "P/L($)" -> "$%.2f".format(item.profitLoss)
-    "P/L(%)" -> "%.2f%s".format((if (item.netProfit != 0f) item.netProfit else item.profitLossPercent),
-        "%")
+    "P/L(%)" -> "%.2f%s".format(
+        (if (item.netProfit != 0f) item.netProfit else item.profitLossPercent),
+        "%"
+    )
     "Value" -> "$%.2f".format(item.value)
     "Value(%)" -> "%.2f%s".format(item.value, "%")
     "Fee" -> "$%s".format(item.fees)

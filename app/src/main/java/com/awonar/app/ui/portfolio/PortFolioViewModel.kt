@@ -60,8 +60,8 @@ class PortFolioViewModel @Inject constructor(
 
 
     val portfolioState: StateFlow<Portfolio?> = flow {
-        getMyPortFolioUseCase(true).collect {
-            val data = it.successOr(null)
+        getMyPortFolioUseCase(true).collectIndexed { _, value ->
+            val data = value.successOr(null)
             this.emit(data)
         }
     }.stateIn(viewModelScope, WhileViewSubscribed, null)
@@ -71,8 +71,11 @@ class PortFolioViewModel @Inject constructor(
 
     fun navigate(index: Int) {
         viewModelScope.launch {
-            _navigateActions.send(PublicPortfolioFragmentDirections.publicPortfolioFragmentToInsidePositionPortfolioFragment(
-                index))
+            _navigateActions.send(
+                PublicPortfolioFragmentDirections.publicPortfolioFragmentToInsidePositionPortfolioFragment(
+                    index
+                )
+            )
         }
     }
 
@@ -179,9 +182,12 @@ class PortFolioViewModel @Inject constructor(
                             current,
                             position.openRate,
                             position.units,
-                            getConversionByInstrumentUseCase(position.instrument?.id
-                                ?: 0).successOr(0f),
-                            position.isBuy)
+                            getConversionByInstrumentUseCase(
+                                position.instrument?.id
+                                    ?: 0
+                            ).successOr(0f),
+                            position.isBuy
+                        )
                     }
                 }
                 _positionState.value?.copies?.forEach { copier ->
@@ -192,10 +198,14 @@ class PortFolioViewModel @Inject constructor(
                                 current,
                                 position.openRate,
                                 position.units,
-                                getConversionByInstrumentUseCase(position.instrument?.id
-                                    ?: 0).successOr(
-                                    0f),
-                                position.isBuy)
+                                getConversionByInstrumentUseCase(
+                                    position.instrument?.id
+                                        ?: 0
+                                ).successOr(
+                                    0f
+                                ),
+                                position.isBuy
+                            )
                         }
                     }
                 }

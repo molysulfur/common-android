@@ -72,7 +72,7 @@ class CopierPositionCardView : BaseViewGroup {
     }
 
     private fun updateProfitLoss() {
-        binding.profitLoss = profitLoss
+        binding.profitLoss = "$%.2f".format(profitLoss)
     }
 
     fun setUnit(unit: Float) {
@@ -90,7 +90,7 @@ class CopierPositionCardView : BaseViewGroup {
     }
 
     private fun updateValueInvested() {
-        binding.valueInvest = valueInvest
+        binding.valueInvest = "$%.2f".format(valueInvest)
     }
 
 
