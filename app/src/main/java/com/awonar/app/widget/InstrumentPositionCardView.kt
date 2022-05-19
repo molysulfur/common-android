@@ -9,11 +9,13 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import com.awonar.app.R
 import com.awonar.app.databinding.AwonarWidgetImageCheckboxBinding
 import com.awonar.app.databinding.AwonarWidgetInstrumentPositionCardBinding
 import com.awonar.app.utils.ColorChangingUtil
 import com.awonar.app.utils.ImageUtil
 import com.molysulfur.library.widget.BaseViewGroup
+import timber.log.Timber
 
 class InstrumentPositionCardView : BaseViewGroup {
 
@@ -55,6 +57,12 @@ class InstrumentPositionCardView : BaseViewGroup {
 
     private fun updateProfitLoss() {
         binding.profitLoss = profitLoss
+        binding.awonarInstrumentPositionCardTextProfitloss.setTextColor(
+            ColorChangingUtil.getTextColorChange(
+                context,
+                profitLoss
+            )
+        )
     }
 
     fun setUnit(unit: Float) {

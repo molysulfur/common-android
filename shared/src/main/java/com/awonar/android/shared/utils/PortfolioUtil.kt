@@ -42,23 +42,4 @@ object PortfolioUtil {
 
     fun getCurrent(isBuy: Boolean, quote: Quote): Float = if (isBuy) quote.bid else quote.ask
 
-    fun getFloatingPL(positions: List<Position>, quotes: Array<Quote>): Float {
-        val sumPL = 0f
-        positions.forEach { position ->
-            val quote = quotes.find { it.id == position.instrumentId }
-            quote?.let {
-                val current = if (position.isBuy) it.bid else it.ask
-                val pl = getProfitOrLoss(
-                    current,
-                    position.openRate,
-                    position.units,
-                    //TODO("conversion rate")
-                    1f,
-                    position.isBuy
-                )
-                sumPL.plus(pl)
-            }
-        }
-        return sumPL
-    }
 }
