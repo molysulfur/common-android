@@ -25,7 +25,6 @@ import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.awonar.app.ui.portfolio.chart.PositionChartFragmentDirections
 import com.molysulfur.library.extension.openActivityCompatForResult
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
-import kotlinx.coroutines.flow.collect
 
 class PositionFragment : Fragment() {
 
@@ -104,9 +103,11 @@ class PositionFragment : Fragment() {
             titleDialog.show(parentFragmentManager, SECTION_DIALOG)
         }
         binding.awonarPortfolioImageIconSetting.setOnClickListener {
-            openActivityCompatForResult(activityResult,
+            openActivityCompatForResult(
+                activityResult,
                 ColumnsActivedActivity::class.java,
-                bundleOf(ColumnsActivedActivity.EXTRA_COLUMNS_ACTIVED to positionType))
+                bundleOf(ColumnsActivedActivity.EXTRA_COLUMNS_ACTIVED to positionType)
+            )
         }
         binding.awonarPortfolioImageChangeStyle.setOnClickListener {
             navigate()
@@ -123,16 +124,8 @@ class PositionFragment : Fragment() {
                 "chart" -> binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_card_list)
                 "card" -> binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_list_2)
             }
-            visibleColumns()
+            columnViewModel.setColumnType(positionType)
         }
-    }
-
-    private fun visibleColumns() {
-        when (positionType) {
-            "chart" -> columnViewModel.visible(false)
-            else -> columnViewModel.visible(true)
-        }
-
     }
 
     private fun navigate() {

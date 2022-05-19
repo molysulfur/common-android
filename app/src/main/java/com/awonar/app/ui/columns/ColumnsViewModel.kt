@@ -11,10 +11,7 @@ import com.awonar.android.shared.domain.portfolio.*
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -51,6 +48,14 @@ class ColumnsViewModel @Inject constructor(
 
     private val _columnType = MutableStateFlow<String?>("market")
 
+    init {
+        viewModelScope.launch {
+            _columnType.collectIndexed { _, value ->
+                fetchActivedColumns()
+            }
+        }
+    }
+
     fun visible(isVisible: Boolean) {
         viewModelScope.launch {
             if (isVisible) {
@@ -64,7 +69,6 @@ class ColumnsViewModel @Inject constructor(
     fun setColumnType(type: String) {
         viewModelScope.launch {
             _columnType.emit(type)
-            fetchActivedColumns()
         }
     }
 
@@ -117,9 +121,11 @@ class ColumnsViewModel @Inject constructor(
             "manual" -> getActivedManualColumnUseCase(Unit).successOr(emptyList())
             "history" -> getHistoryActivedColumnUseCase(Unit).successOr(emptyList())
             "card" -> emptyList()
-            "piechart" -> emptyList()
+            "chart" -> emptyList()
             else -> throw Error("column type is not found!")
         }
+        Timber.e("$data ${data.isNotEmpty()}")
+        visible(data.isNotEmpty())
         _activedColumnState.emit(data)
     }
 

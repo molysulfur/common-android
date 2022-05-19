@@ -11,12 +11,10 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.app.databinding.AwonarFragmentPositionManualBinding
 import com.awonar.app.ui.columns.ColumnsViewModel
-import com.awonar.app.ui.order.edit.OrderEditDialog
 import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.awonar.app.ui.portfolio.adapter.IPortfolioListItemTouchHelperCallback
 import com.awonar.app.ui.portfolio.adapter.PortfolioListItemTouchHelperCallback
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
-import kotlinx.coroutines.flow.collect
 
 class PositionManualFragment : Fragment() {
 
