@@ -38,7 +38,13 @@ class InstrumentPositionCardView : BaseViewGroup {
     private var profitLoss: Float = 0f
     private var avgOpen: Float = 0f
 
+
+    var onSetting : (() ->Unit)? = null
+
     override fun setup() {
+        binding.awonarInstrumentPositionCardButtonSetting.setOnClickListener {
+            onSetting?.invoke()
+        }
     }
 
     fun setAvgOpen(number: Float) {

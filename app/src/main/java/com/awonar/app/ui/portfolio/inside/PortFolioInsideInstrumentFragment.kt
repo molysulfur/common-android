@@ -19,6 +19,9 @@ import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentPortfolioInsideInstrumentBinding
+import com.awonar.app.dialog.menu.MenuDialog
+import com.awonar.app.dialog.menu.MenuDialogButtonSheet
+import com.awonar.app.ui.columns.ColumnsActivedActivity
 import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.order.OrderDialog
 import com.awonar.app.ui.order.OrderViewModel
@@ -28,12 +31,20 @@ import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.awonar.app.ui.portfolio.adapter.IPortfolioListItemTouchHelperCallback
 import com.awonar.app.ui.portfolio.adapter.PortfolioAdapter
 import com.awonar.app.ui.portfolio.adapter.PortfolioListItemTouchHelperCallback
+import com.awonar.app.ui.publishfeed.PublishFeedActivity
 import com.google.android.material.snackbar.Snackbar
+import com.molysulfur.library.extension.openActivity
+import com.molysulfur.library.extension.openActivityCompatForResult
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class PortFolioInsideInstrumentFragment : Fragment() {
+
+    companion object {
+        private const val OPEN_DIALOG_TAG =
+            "com.awonar.app.ui.portfolio.inside.dialog.open_position"
+    }
 
     private val portFolioViewModel: PortFolioViewModel by activityViewModels()
     private val activityViewModel: PositionInsideViewModel by activityViewModels()
@@ -41,6 +52,16 @@ class PortFolioInsideInstrumentFragment : Fragment() {
     private val orderViewModel: OrderViewModel by activityViewModels()
 
     private val args: PortFolioInsideInstrumentFragmentArgs by navArgs()
+
+    private var menus: ArrayList<MenuDialog> = arrayListOf(
+        MenuDialog(key = "new_trade", text = "Open New Trade"),
+        MenuDialog(key = "new_post", text = "Write New Post"),
+        MenuDialog(key = "view_chart", text = "View Chart"),
+        MenuDialog(key = "set_price_alert", text = "Set Price Alert"),
+    )
+
+    private lateinit var settingBottomSheet: MenuDialogButtonSheet
+
 
     private val binding: AwonarFragmentPortfolioInsideInstrumentBinding by lazy {
         AwonarFragmentPortfolioInsideInstrumentBinding.inflate(layoutInflater)
@@ -116,6 +137,8 @@ class PortFolioInsideInstrumentFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupDialog()
+        setupListener()
         currentIndex = args.index
         columnsViewModel.setColumnType("manual")
         launchAndRepeatWithViewLifecycle {
@@ -133,6 +156,24 @@ class PortFolioInsideInstrumentFragment : Fragment() {
         setupListener()
     }
 
+    private fun setupDialog() {
+        settingBottomSheet = MenuDialogButtonSheet.Builder()
+            .setListener(object : MenuDialogButtonSheet.MenuDialogButtonSheetListener {
+                override fun onMenuClick(menu: MenuDialog) {
+                    when (menu.key) {
+                        "new_trade" -> OrderDialog.Builder()
+                            .setType(true)
+                            .setSymbol(instrument = activityViewModel.positionState.value?.instrument)
+                            .build()
+                            .show(childFragmentManager)
+                        "new_post" -> openActivity(PublishFeedActivity::class.java)
+                    }
+                }
+            })
+            .setMenus(menus)
+            .build()
+    }
+
     private suspend fun setupHeader(
         quote: Quote,
         position: Position?,
@@ -148,22 +189,29 @@ class PortFolioInsideInstrumentFragment : Fragment() {
         binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setPrice(price)
         binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setChange(change)
         binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setChangePercent(
-            percent)
+            percent
+        )
         binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setStatusText(
-            quote.status ?: "")
+            quote.status ?: ""
+        )
         binding.awonarPortfolioButtonBuy.text = "${quote.bid}"
         binding.awonarPortfolioButtonSell.text = "${quote.ask}"
         position?.let {
             val profit = orderViewModel.getProfit(price, position)
             val valueInvest = PortfolioUtil.getValue(profit, position.amount)
             binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setValueInvested(
-                valueInvest)
+                valueInvest
+            )
             binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setProfitLoss(
-                profit)
+                profit
+            )
         }
     }
 
     private fun setupListener() {
+        binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.onSetting = {
+            settingBottomSheet.show(childFragmentManager, OPEN_DIALOG_TAG)
+        }
         binding.awonarPortfolioButtonBuy.setOnClickListener {
             val position: Position? = activityViewModel.positionState.value
             OrderDialog.Builder().setSymbol(position?.instrument).setType(true).build()
@@ -185,8 +233,10 @@ class PortFolioInsideInstrumentFragment : Fragment() {
                 R.id.awonar_menu_instide_position_back -> {
                     if (currentIndex > 0) {
                         currentIndex--
-                        activityViewModel.convertPosition(portFolioViewModel.positionState.value,
-                            currentIndex)
+                        activityViewModel.convertPosition(
+                            portFolioViewModel.positionState.value,
+                            currentIndex
+                        )
                     }
                     true
                 }
@@ -194,8 +244,10 @@ class PortFolioInsideInstrumentFragment : Fragment() {
                     val positionSize = portFolioViewModel.positionState.value?.positions?.size ?: 0
                     if (currentIndex < positionSize.minus(1)) {
                         currentIndex++
-                        activityViewModel.convertPosition(portFolioViewModel.positionState.value,
-                            currentIndex)
+                        activityViewModel.convertPosition(
+                            portFolioViewModel.positionState.value,
+                            currentIndex
+                        )
                     }
                     true
                 }

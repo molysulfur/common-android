@@ -53,8 +53,8 @@
         android:layout_height="match_parent"
         android:padding="@dimen/awonar_size_margin_padding_normal">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/appCompatImageView2"
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/awonar_instrument_position_card_button_setting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/awonar_ripple_light_gray"
@@ -94,7 +94,7 @@
             android:lines="1"
             android:text="@{subTitle}"
             app:layout_constraintBottom_toBottomOf="@+id/awonar_instrument_position_card_text_title"
-            app:layout_constraintEnd_toStartOf="@+id/appCompatImageView2"
+            app:layout_constraintEnd_toStartOf="@+id/awonar_instrument_position_card_button_setting"
             app:layout_constraintStart_toEndOf="@+id/awonar_instrument_position_card_text_title"
             tools:text="@string/awonar_example_name" />
 

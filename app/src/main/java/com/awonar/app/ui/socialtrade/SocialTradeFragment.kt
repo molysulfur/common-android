@@ -21,7 +21,6 @@ import com.google.android.material.chip.Chip
 import com.molysulfur.library.extension.openActivity
 import com.molysulfur.library.extension.openActivityCompatForResult
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
-import kotlinx.coroutines.flow.collect
 
 class SocialTradeFragment : Fragment() {
 

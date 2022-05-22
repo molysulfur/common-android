@@ -124,7 +124,6 @@ class ColumnsViewModel @Inject constructor(
             "chart" -> emptyList()
             else -> throw Error("column type is not found!")
         }
-        Timber.e("$data ${data.isNotEmpty()}")
         visible(data.isNotEmpty())
         _activedColumnState.emit(data)
     }

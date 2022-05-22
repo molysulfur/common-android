@@ -6,10 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentWatchlistFolderBinding
@@ -17,7 +15,6 @@ import com.awonar.app.dialog.menu.MenuDialog
 import com.awonar.app.dialog.menu.MenuDialogButtonSheet
 import com.molysulfur.library.extension.openActivityCompatForResult
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
-import kotlinx.coroutines.flow.collect
 
 class WatchlistFolderFragment : Fragment() {
 

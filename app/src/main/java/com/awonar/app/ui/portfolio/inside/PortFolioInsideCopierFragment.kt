@@ -1,17 +1,19 @@
 package com.awonar.app.ui.portfolio.inside
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.shared.steaming.QuoteSteamingManager
-import com.awonar.android.shared.utils.ConverterQuoteUtil
-import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentPortfolioInsideCopierBinding
 import com.awonar.app.dialog.copier.add.AddFundDialog
@@ -21,17 +23,17 @@ import com.awonar.app.dialog.copier.remove.RemoveFundDialog
 import com.awonar.app.dialog.copier.stop.StopCopierDialog
 import com.awonar.app.dialog.menu.MenuDialog
 import com.awonar.app.dialog.menu.MenuDialogButtonSheet
+import com.awonar.app.ui.columns.ColumnsActivedActivity
 import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.awonar.app.ui.portfolio.position.PositionViewModel
 import com.awonar.app.utils.ColorChangingUtil
+import com.molysulfur.library.extension.openActivityCompatForResult
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class PortFolioInsideCopierFragment : Fragment() {
 
@@ -49,12 +51,20 @@ class PortFolioInsideCopierFragment : Fragment() {
         AwonarFragmentPortfolioInsideCopierBinding.inflate(layoutInflater)
     }
 
+    private val activityResult: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
+            if (activityResult.resultCode == Activity.RESULT_OK) {
+                columnsViewModel.getActivedColumns()
+            }
+        }
     private var menus: ArrayList<MenuDialog> = arrayListOf(
         MenuDialog(key = "add_fund", text = "Add Fund"),
         MenuDialog(key = "remove_fund", text = "Remove Fund"),
         MenuDialog(key = "pause_copy", text = "Pause Copy"),
         MenuDialog(key = "set_stoploss", text = "Set Stoploss Copy"),
         MenuDialog(key = "stop_copy", text = "Stop Copy"),
+        MenuDialog(key = "customize", text = "Customize"),
+        MenuDialog(key = "all_view", text = "All Trade View"),
     )
 
     private lateinit var settingBottomSheet: MenuDialogButtonSheet
@@ -146,6 +156,12 @@ class PortFolioInsideCopierFragment : Fragment() {
                         }
                         "set_stoploss" -> {
                             openEditCopyDialog()
+                        }
+                        "customize" -> {
+                            openActivityCompatForResult(
+                                activityResult,
+                                ColumnsActivedActivity::class.java
+                            )
                         }
                     }
                 }
