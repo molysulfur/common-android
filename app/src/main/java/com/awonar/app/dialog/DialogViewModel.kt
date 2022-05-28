@@ -10,12 +10,12 @@ import com.awonar.app.dialog.copier.pause.PauseCopierMapper
 import com.awonar.app.dialog.copier.stop.StopCopierMapper
 import com.awonar.app.dialog.loading.LoadingMapper
 import com.awonar.app.ui.order.OrderMapper
-import com.awonar.app.ui.order.edit.OrderEditMapper
+import com.awonar.app.ui.order.edit.EditPositionMapper
 import com.awonar.app.ui.order.partialclose.PartialCloseMapper
 
 class DialogViewModel : ViewModel() {
     val order = DialogLauncher(OrderMapper::class.java)
-    val orderEdit = DialogLauncher(OrderEditMapper::class.java)
+    val orderEdit = DialogLauncher(EditPositionMapper::class.java)
     val partialClose = DialogLauncher(PartialCloseMapper::class.java)
     val copierDialog = DialogLauncher(CopierMapper::class.java)
     val addCopierDialog = DialogLauncher(AddFundMapper::class.java)

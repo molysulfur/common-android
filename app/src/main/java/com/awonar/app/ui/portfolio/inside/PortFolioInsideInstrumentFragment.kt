@@ -21,22 +21,18 @@ import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentPortfolioInsideInstrumentBinding
 import com.awonar.app.dialog.menu.MenuDialog
 import com.awonar.app.dialog.menu.MenuDialogButtonSheet
-import com.awonar.app.ui.columns.ColumnsActivedActivity
 import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.order.OrderDialog
 import com.awonar.app.ui.order.OrderViewModel
-import com.awonar.app.ui.order.edit.OrderEditDialog
+import com.awonar.app.ui.order.edit.EditPositionDialog
 import com.awonar.app.ui.order.partialclose.PartialCloseDialog
 import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.awonar.app.ui.portfolio.adapter.IPortfolioListItemTouchHelperCallback
-import com.awonar.app.ui.portfolio.adapter.PortfolioAdapter
 import com.awonar.app.ui.portfolio.adapter.PortfolioListItemTouchHelperCallback
 import com.awonar.app.ui.publishfeed.PublishFeedActivity
 import com.google.android.material.snackbar.Snackbar
 import com.molysulfur.library.extension.openActivity
-import com.molysulfur.library.extension.openActivityCompatForResult
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
-import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class PortFolioInsideInstrumentFragment : Fragment() {
@@ -79,7 +75,7 @@ class PortFolioInsideInstrumentFragment : Fragment() {
         launchAndRepeatWithViewLifecycle {
             activityViewModel.editDialog.collect { position ->
                 position?.let {
-                    OrderEditDialog.Builder()
+                    EditPositionDialog.Builder()
                         .setPosition(it)
                         .setKey("inside_instrument")
                         .build()
@@ -113,7 +109,7 @@ class PortFolioInsideInstrumentFragment : Fragment() {
             launch {
                 activityViewModel.editDialog.collect { position ->
                     position?.let {
-                        OrderEditDialog.Builder()
+                        EditPositionDialog.Builder()
                             .setPosition(it)
                             .build()
                             .show(childFragmentManager)

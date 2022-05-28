@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.awonar.app.ui.order.OrderViewModel" />
+            type="com.awonar.app.ui.order.edit.EditPositionViewModel" />
 
         <variable
             name="id"

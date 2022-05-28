@@ -15,25 +15,23 @@ import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarDialogOrderEditBinding
 import com.awonar.app.dialog.DialogViewModel
-import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.order.OrderViewModel
 import com.awonar.app.utils.ColorChangingUtil
 import com.awonar.app.utils.DateUtils
 import com.awonar.app.utils.ImageUtil
 import com.molysulfur.library.extension.toast
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
-import kotlinx.coroutines.flow.collect
 import timber.log.Timber
-import kotlin.math.abs
 
-class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, DialogViewModel>() {
+class EditPositionDialog :
+    InteractorDialog<EditPositionMapper, EditPositionListener, DialogViewModel>() {
 
     private lateinit var binding: AwonarDialogOrderEditBinding
 
     private var position: Position? = null
     private var pl: Float = 0f
     private var price: Float = 0f
-    private val orderViewModel: OrderViewModel by activityViewModels()
+    private val viewModel: EditPositionViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,28 +44,7 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
         binding.awonarOrderEditTextNumberpickerTp.setDescriptionColor(R.color.awonar_color_primary)
         binding.awonarOrderEditTextNumberpickerSl.setDescriptionColor(R.color.awonar_color_orange)
         launchAndRepeatWithViewLifecycle {
-            orderViewModel.openOrderState.collect {
-                dismiss()
-                toast(it)
-            }
-        }
-        launchAndRepeatWithViewLifecycle {
-            orderViewModel.errorState.collect {
-                binding.error = it
-            }
-        }
-        launchAndRepeatWithViewLifecycle {
-            orderViewModel.takeProfitError.collect {
-                binding.awonarOrderEditTextNumberpickerTp.setHelp(it)
-            }
-        }
-        launchAndRepeatWithViewLifecycle {
-            orderViewModel.stopLossError.collect {
-                binding.awonarOrderEditTextNumberpickerSl.setHelp(it)
-            }
-        }
-        launchAndRepeatWithViewLifecycle {
-            orderViewModel.stopLossState.collect {
+//            orderViewModel.stopLossState.collect {
 //                position?.let {
 //                    orderViewModel.validateStopLoss(
 //                        position = it,
@@ -76,11 +53,10 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
 //                }
 //                val absPair = Pair(abs(it.first), it.second)
 //                binding.awonarOrderEditTextNumberpickerSl.setNumber(absPair)
-            }
+//            }
         }
         launchAndRepeatWithViewLifecycle {
-            orderViewModel.takeProfit.collect {
-                Timber.e("$it")
+            viewModel.takeProfitState.collect {
                 binding.awonarOrderEditTextNumberpickerTp.setNumber(it)
             }
         }
@@ -131,15 +107,20 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
                     binding.description = position?.instrument?.categories?.get(0) ?: ""
                     binding.awonarOrderEditTextChange.setTextColor(
                         ColorChangingUtil.getTextColorChange(
+                            requireContext(),
                             priceChange
                         )
                     )
                 }
             }
         }
-        binding.viewModel = orderViewModel
+        binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
+    }
+
+    fun edit(id: Int) {
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -148,25 +129,23 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
             position = getParcelable(EXTRA_POSITION)
         }
         setupHeader()
+        setupState()
         setupListener()
         setupTakeProfit()
         setupStopLoss()
     }
 
-    private fun setupStopLoss() {
-        orderViewModel.setStopLoss(
-            sl = position?.stopLossRate ?: 0f,
-            type = "rate",
-            current = position?.openRate ?: 0f,
-            unit = position?.units ?: 0f,
-            instrumentId = position?.instrument?.id ?: 1,
-            isBuy = position?.isBuy == true
-        )
+    private fun setupState() {
+        position?.let {
+            viewModel.setPositionType(it.isBuy)
+            viewModel.setUnits(it.units)
+            viewModel.setInstrumentId(it.instrument?.id ?: 0)
+        }
     }
 
-    private fun setupTakeProfit() {
-//        orderViewModel.setTakeProfit(
-//            tp = position?.takeProfitRate ?: 0f,
+    private fun setupStopLoss() {
+//        orderViewModel.setStopLoss(
+//            sl = position?.stopLossRate ?: 0f,
 //            type = "rate",
 //            current = position?.openRate ?: 0f,
 //            unit = position?.units ?: 0f,
@@ -175,36 +154,40 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
 //        )
     }
 
+    private fun setupTakeProfit() {
+        viewModel.setTakeProfit(position?.takeProfitRate ?: 0f)
+    }
+
     private fun setupListener() {
         binding.awonarOrderEditTextNumberpickerTp.doAfterToggle = { isLeft ->
-            if (isLeft) {
-                binding.awonarOrderEditTextNumberpickerTp.setDescription(
-                    "$%.2f".format(
-                        orderViewModel.takeProfit.value.first
-                    )
-                )
-            } else {
-                binding.awonarOrderEditTextNumberpickerTp.setDescription(
-                    "%s".format(
-                        orderViewModel.takeProfit.value.second
-                    )
-                )
-            }
+//            if (isLeft) {
+//                binding.awonarOrderEditTextNumberpickerTp.setDescription(
+//                    "$%.2f".format(
+//                        orderViewModel.takeProfit.value.first
+//                    )
+//                )
+//            } else {
+//                binding.awonarOrderEditTextNumberpickerTp.setDescription(
+//                    "%s".format(
+//                        orderViewModel.takeProfit.value.second
+//                    )
+//                )
+//            }
         }
         binding.awonarOrderEditTextNumberpickerSl.doAfterToggle = { isLeft ->
-            if (isLeft) {
-                binding.awonarOrderEditTextNumberpickerSl.setDescription(
-                    "$%.2f".format(
-                        orderViewModel.stopLossState.value.first
-                    )
-                )
-            } else {
-                binding.awonarOrderEditTextNumberpickerSl.setDescription(
-                    "%s".format(
-                        orderViewModel.stopLossState.value.second
-                    )
-                )
-            }
+//            if (isLeft) {
+//                binding.awonarOrderEditTextNumberpickerSl.setDescription(
+//                    "$%.2f".format(
+//                        orderViewModel.stopLossState.value.first
+//                    )
+//                )
+//            } else {
+//                binding.awonarOrderEditTextNumberpickerSl.setDescription(
+//                    "%s".format(
+//                        orderViewModel.stopLossState.value.second
+//                    )
+//                )
+//            }
         }
         binding.awonarOrderEditTextNumberpickerTp.doAfterFocusChange = { number, isLeft ->
             val type = if (isLeft) {
@@ -227,14 +210,14 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
             } else {
                 "rate"
             }
-            orderViewModel.setStopLoss(
-                sl = if (isLeft) -number.first else number.second,
-                type = type,
-                current = position?.openRate ?: 0f,
-                unit = position?.units ?: 0f,
-                instrumentId = position?.instrument?.id ?: 1,
-                isBuy = position?.isBuy == true
-            )
+//            orderViewModel.setStopLoss(
+//                sl = if (isLeft) -number.first else number.second,
+//                type = type,
+//                current = position?.openRate ?: 0f,
+//                unit = position?.units ?: 0f,
+//                instrumentId = position?.instrument?.id ?: 1,
+//                isBuy = position?.isBuy == true
+//            )
         }
     }
 
@@ -278,7 +261,7 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
             this.data = data
         }
 
-        fun build(): OrderEditDialog = newInstance(position, key, data)
+        fun build(): EditPositionDialog = newInstance(position, key, data)
     }
 
     companion object {
@@ -290,14 +273,14 @@ class OrderEditDialog : InteractorDialog<OrderEditMapper, OrderEditListener, Dia
             key: String?,
             data: Bundle?,
         ) =
-            OrderEditDialog().apply {
+            EditPositionDialog().apply {
                 arguments = createBundle(key, data).apply {
                     putParcelable(EXTRA_POSITION, position)
                 }
             }
     }
 
-    override fun bindLauncher(viewModel: DialogViewModel): DialogLauncher<OrderEditMapper, OrderEditListener> =
+    override fun bindLauncher(viewModel: DialogViewModel): DialogLauncher<EditPositionMapper, EditPositionListener> =
         viewModel.orderEdit
 
     override fun bindViewModel(): Class<DialogViewModel> = DialogViewModel::class.java

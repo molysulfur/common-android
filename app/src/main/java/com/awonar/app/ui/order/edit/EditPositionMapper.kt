@@ -4,17 +4,16 @@ import android.os.Bundle
 import com.akexorcist.library.dialoginteractor.DialogEvent
 import com.akexorcist.library.dialoginteractor.EventMapper
 import com.akexorcist.library.dialoginteractor.LiveEvent
-import com.awonar.app.ui.order.OrderDialogListener
 
 
-class OrderEditMapper : EventMapper<OrderEditListener>() {
+class EditPositionMapper : EventMapper<EditPositionListener>() {
     companion object {
         const val EVENT_SUCCESS = "event_success"
         const val EVENT_FAILURE = "event_failure"
     }
 
-    override fun toEvent(event: LiveEvent<DialogEvent>): OrderEditListener =
-        object : OrderEditListener {
+    override fun toEvent(event: LiveEvent<DialogEvent>): EditPositionListener =
+        object : EditPositionListener {
             override fun onEditSuccess(name: String?, key: String?, data: Bundle?) {
                 event.value = DialogEvent.Builder(
                     event = EVENT_SUCCESS,
@@ -34,7 +33,7 @@ class OrderEditMapper : EventMapper<OrderEditListener>() {
             }
         }
 
-    override fun toListener(event: DialogEvent, listener: OrderEditListener) {
+    override fun toListener(event: DialogEvent, listener: EditPositionListener) {
 
     }
 
