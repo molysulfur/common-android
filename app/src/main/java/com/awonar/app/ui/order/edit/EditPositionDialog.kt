@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.akexorcist.library.dialoginteractor.DialogLauncher
 import com.akexorcist.library.dialoginteractor.InteractorDialog
 import com.akexorcist.library.dialoginteractor.createBundle
@@ -44,16 +45,9 @@ class EditPositionDialog :
         binding.awonarOrderEditTextNumberpickerTp.setDescriptionColor(R.color.awonar_color_primary)
         binding.awonarOrderEditTextNumberpickerSl.setDescriptionColor(R.color.awonar_color_orange)
         launchAndRepeatWithViewLifecycle {
-//            orderViewModel.stopLossState.collect {
-//                position?.let {
-//                    orderViewModel.validateStopLoss(
-//                        position = it,
-//                        current = price
-//                    )
-//                }
-//                val absPair = Pair(abs(it.first), it.second)
-//                binding.awonarOrderEditTextNumberpickerSl.setNumber(absPair)
-//            }
+            viewModel.stopLossState.collect {
+                binding.awonarOrderEditTextNumberpickerSl.setNumber(it)
+            }
         }
         launchAndRepeatWithViewLifecycle {
             viewModel.takeProfitState.collect {
@@ -65,9 +59,9 @@ class EditPositionDialog :
                 val quote = quotes[position?.instrument?.id]
                 quote?.let {
                     price = ConverterQuoteUtil.getCurrentPrice(
-                        it,
-                        position?.leverage ?: 0,
-                        position?.isBuy == true
+                        quote = it,
+                        leverage = position?.leverage ?: 0,
+                        isBuy = position?.isBuy == true
                     )
                     pl = PortfolioUtil.getProfitOrLoss(
                         current = price,
@@ -77,12 +71,12 @@ class EditPositionDialog :
                         isBuy = position?.isBuy == true
                     )
                     val priceChange = ConverterQuoteUtil.change(
-                        quote.close,
-                        quote.previous
+                        close = quote.close,
+                        previous = quote.previous
                     )
                     val pricePercentChange = ConverterQuoteUtil.percentChange(
-                        quote.previous,
-                        quote.close,
+                        oldPrice = quote.previous,
+                        newPrice = quote.close,
                     )
                     binding.pl = "$%.2f".format(pl)
                     binding.plPercent = "%.2f%s".format(
@@ -144,14 +138,7 @@ class EditPositionDialog :
     }
 
     private fun setupStopLoss() {
-//        orderViewModel.setStopLoss(
-//            sl = position?.stopLossRate ?: 0f,
-//            type = "rate",
-//            current = position?.openRate ?: 0f,
-//            unit = position?.units ?: 0f,
-//            instrumentId = position?.instrument?.id ?: 1,
-//            isBuy = position?.isBuy == true
-//        )
+        viewModel.setStopLoss(position?.stopLossRate ?: 0f)
     }
 
     private fun setupTakeProfit() {
@@ -159,35 +146,8 @@ class EditPositionDialog :
     }
 
     private fun setupListener() {
-        binding.awonarOrderEditTextNumberpickerTp.doAfterToggle = { isLeft ->
-//            if (isLeft) {
-//                binding.awonarOrderEditTextNumberpickerTp.setDescription(
-//                    "$%.2f".format(
-//                        orderViewModel.takeProfit.value.first
-//                    )
-//                )
-//            } else {
-//                binding.awonarOrderEditTextNumberpickerTp.setDescription(
-//                    "%s".format(
-//                        orderViewModel.takeProfit.value.second
-//                    )
-//                )
-//            }
-        }
-        binding.awonarOrderEditTextNumberpickerSl.doAfterToggle = { isLeft ->
-//            if (isLeft) {
-//                binding.awonarOrderEditTextNumberpickerSl.setDescription(
-//                    "$%.2f".format(
-//                        orderViewModel.stopLossState.value.first
-//                    )
-//                )
-//            } else {
-//                binding.awonarOrderEditTextNumberpickerSl.setDescription(
-//                    "%s".format(
-//                        orderViewModel.stopLossState.value.second
-//                    )
-//                )
-//            }
+        binding.awonarOrderEditToolbar.setOnClickListener {
+            dismiss()
         }
         binding.awonarOrderEditTextNumberpickerTp.doAfterFocusChange = { number, isLeft ->
             val type = if (isLeft) {
@@ -195,29 +155,8 @@ class EditPositionDialog :
             } else {
                 "rate"
             }
-//            orderViewModel.setTakeProfit(
-//                tp = if (isLeft) number.first else number.second,
-//                type = type,
-//                current = position?.openRate ?: 0f,
-//                unit = position?.units ?: 0f,
-//                instrumentId = position?.instrument?.id ?: 1,
-//                isBuy = position?.isBuy == true
-//            )
         }
         binding.awonarOrderEditTextNumberpickerSl.doAfterFocusChange = { number, isLeft ->
-            val type = if (isLeft) {
-                "amount"
-            } else {
-                "rate"
-            }
-//            orderViewModel.setStopLoss(
-//                sl = if (isLeft) -number.first else number.second,
-//                type = type,
-//                current = position?.openRate ?: 0f,
-//                unit = position?.units ?: 0f,
-//                instrumentId = position?.instrument?.id ?: 1,
-//                isBuy = position?.isBuy == true
-//            )
         }
     }
 
