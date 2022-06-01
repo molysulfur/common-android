@@ -45,7 +45,7 @@ class ValidateRateTakeProfitUseCase @Inject constructor(
             current = parameters.currentPrice,
             openRate = parameters.openPrice,
             unit = parameters.units,
-            rate = 1f,
+            conversionRate = 1f,
             isBuy = parameters.isBuy
         )
         val value = pl.plus(parameters.amount)

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.awonar.app.databinding.*
 import com.awonar.app.ui.portfolio.adapter.holder.*
 import com.awonar.app.ui.portfolio.chart.adapter.holder.*
+import timber.log.Timber
 
 @SuppressLint("NotifyDataSetChanged")
 class PortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -21,8 +22,9 @@ class PortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var columns: List<String> = listOf()
         set(value) {
+            val oldList = field
             field = value
-            notifyDataSetChanged()
+            DiffUtil.calculateDiff(ColumnsDiffCallback(oldList, value)).dispatchUpdatesTo(this)
         }
 
     var onClick: ((Int, String) -> Unit)? = null
@@ -94,7 +96,7 @@ class PortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         when (holder) {
             is BalanceViewHolder -> holder.bind(item as PortfolioItem.BalanceItem)
             is InstrumentPortfolioViewHolder -> holder.bind(
-                item as PortfolioItem.InstrumentPortfolioItem,
+                item as PortfolioItem.PositionItem,
                 columns,
                 onClick
             )
@@ -127,14 +129,14 @@ class PortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         when (isDesc) {
             true -> itemLists.sortByDescending {
                 when (it) {
-                    is PortfolioItem.InstrumentPortfolioItem -> sortPosition(it, column)
+                    is PortfolioItem.PositionItem -> sortPosition(it, column)
                     is PortfolioItem.CopierPortfolioItem -> sortCopier(it, column)
                     else -> 0f
                 }
             }
             else -> itemLists.sortBy {
                 when (it) {
-                    is PortfolioItem.InstrumentPortfolioItem -> sortPosition(it, column)
+                    is PortfolioItem.PositionItem -> sortPosition(it, column)
                     is PortfolioItem.CopierPortfolioItem -> sortCopier(it, column)
                     else -> 0f
                 }
@@ -160,45 +162,62 @@ class PortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     private fun sortPosition(
-        item: PortfolioItem.InstrumentPortfolioItem,
+        item: PortfolioItem.PositionItem,
         column: String?,
     ): Float = when (column) {
-        "Invested" -> item.position.invested
-        "Units" -> item.position.units
-        "Open" -> item.position.avgOpen
-        "Current" -> item.position.current
-        "P/L($)" -> item.position.profitLoss
-        "P/L(%)" -> item.position.profitLossPercent
-        "Pip Change" -> item.position.pipChange
-        "Leverage" -> item.position.leverage.toFloat()
-        "Value" -> item.position.value
-        "Fee" -> item.position.fees
-        "Execute at" -> item.position.invested
-        "SL" -> item.position.stopLoss
-        "TP" -> item.position.takeProfit
-        "SL($)" -> item.position.amountStopLoss
-        "TP($)" -> item.position.amountTakeProfit
-        "SL(%)" -> item.position.stopLossPercent
-        "TP(%)" -> item.position.takeProfitPercent
-        "Avg. Open" -> item.position.avgOpen
+        "Invested" -> item.invested
+        "Units" -> item.units
+        "Open" -> item.openRate
+        "Current" -> item.current
+        "P/L($)" -> item.pl
+        "P/L(%)" -> item.plPercent
+        "Pip Change" -> item.pipChange.toFloat()
+        "Leverage" -> item.leverage.toFloat()
+        "Value" -> item.value
+        "Fee" -> item.fees
+        "SL" -> item.stopLoss
+        "TP" -> item.takeProfit
+        "SL($)" -> item.amountStopLoss
+        "TP($)" -> item.amountTakeProfit
+        "SL(%)" -> item.stopLossPercent
+        "TP(%)" -> item.takeProfitPercent
+        "Avg. Open" -> item.openRate
         else -> 0f
     }
 
     class PortfolioDiffCallback(
-        private val oldItems: MutableList<PortfolioItem>?,
-        private val newItems: MutableList<PortfolioItem>?,
+        private val oldItems: MutableList<PortfolioItem>,
+        private val newItems: MutableList<PortfolioItem>,
     ) : DiffUtil.Callback() {
 
-        override fun getOldListSize(): Int = oldItems?.size ?: 0
+        override fun getOldListSize(): Int = oldItems.size
 
-        override fun getNewListSize(): Int = newItems?.size ?: 0
+        override fun getNewListSize(): Int = newItems.size
 
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldItems?.get(oldItemPosition) === newItems?.get(newItemPosition)
+            return oldItems[oldItemPosition] === newItems[newItemPosition]
         }
 
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldItems?.get(oldItemPosition) == newItems?.get(newItemPosition)
+            return oldItems[oldItemPosition] === newItems[newItemPosition]
+        }
+    }
+
+    class ColumnsDiffCallback(
+        private val oldItems: List<String>,
+        private val newItems: List<String>
+    ) : DiffUtil.Callback() {
+
+        override fun getOldListSize(): Int = oldItems.size
+
+        override fun getNewListSize(): Int = newItems.size
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldItems[oldItemPosition] === newItems[newItemPosition]
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return this.oldItems[oldItemPosition] == newItems[newItemPosition]
         }
     }
 

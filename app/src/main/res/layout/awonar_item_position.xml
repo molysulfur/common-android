@@ -21,7 +21,7 @@
 
         <variable
             name="item"
-            type="com.awonar.android.model.portfolio.Position" />
+            type="com.awonar.app.ui.portfolio.adapter.PortfolioItem.PositionItem" />
 
     </data>
 

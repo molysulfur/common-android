@@ -8,7 +8,7 @@ import com.awonar.android.model.portfolio.Position
 import com.awonar.android.model.portfolio.UserPortfolioResponse
 import com.awonar.android.shared.domain.market.GetConversionByInstrumentUseCase
 import com.awonar.android.shared.utils.PortfolioUtil
-import com.awonar.app.domain.portfolio.ConvertGroupPositionToItemUseCase
+import com.awonar.app.domain.portfolio.ConvertMarketToItemUseCase
 import com.awonar.app.domain.portfolio.ConvertPositionToItemUseCase
 import com.awonar.app.domain.portfolio.ConvertPublicPositionToItemUseCase
 import com.awonar.app.ui.portfolio.adapter.PortfolioItem
@@ -21,13 +21,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class PositionInsideViewModel @Inject constructor(
     private val convertPositionToItemUseCase: ConvertPositionToItemUseCase,
-    private val convertPositionGroupPositionToItemUseCase: ConvertGroupPositionToItemUseCase,
+    private val convertPositionGroupPositionToItemUseCase: ConvertMarketToItemUseCase,
     private val convertPublicPositionToItemUseCase: ConvertPublicPositionToItemUseCase,
     private val getConversionByInstrumentUseCase: GetConversionByInstrumentUseCase
 ) : ViewModel() {
@@ -76,15 +75,15 @@ class PositionInsideViewModel @Inject constructor(
             val positionList: List<Position> = copies?.positions ?: emptyList()
             ?: emptyList()
             if (copies != null) {
-                val items =
-                    convertPositionGroupPositionToItemUseCase(positionList).successOr(emptyList())
-                        .toMutableList()
-                items.add(
-                    0,
-                    PortfolioItem.SectionItem("Start Copy ${DateUtils.getDate(copies.startedCopyDate)}")
-                )
-                _copiesState.value = copies
-                _positionItems.value = items
+//                val items =
+//                    convertPositionGroupPositionToItemUseCase(positionList).successOr(emptyList())
+//                        .toMutableList()
+//                items.add(
+//                    0,
+//                    PortfolioItem.SectionItem("Start Copy ${DateUtils.getDate(copies.startedCopyDate)}")
+//                )
+//                _copiesState.value = copies
+//                _positionItems.value = items
             }
         }
     }
@@ -93,8 +92,8 @@ class PositionInsideViewModel @Inject constructor(
         viewModelScope.launch {
             val item = _positionItems.value[position]
             when (item) {
-                is PortfolioItem.InstrumentPortfolioItem -> {
-                    _closeDialog.send(item.position)
+                is PortfolioItem.PositionItem -> {
+//                    _closeDialog.send(item.position)
                 }
                 else -> {}
             }
@@ -105,9 +104,9 @@ class PositionInsideViewModel @Inject constructor(
         viewModelScope.launch {
             val item = _positionItems.value[position]
             when (item) {
-                is PortfolioItem.InstrumentPortfolioItem -> {
-                    _editDialog.send(item.position)
-                }
+//                is PortfolioItem.InstrumentPortfolioItem -> {
+//                    _editDialog.send(item.position)
+//                }
                 else -> {}
             }
         }

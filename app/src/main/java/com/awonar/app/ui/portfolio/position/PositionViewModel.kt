@@ -3,13 +3,12 @@ package com.awonar.app.ui.portfolio.position
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDirections
-import com.awonar.android.model.portfolio.Copier
-import com.awonar.android.model.portfolio.Position
-import com.awonar.android.model.portfolio.PublicPosition
-import com.awonar.android.model.portfolio.PublicPositionRequest
+import com.awonar.android.model.market.Quote
+import com.awonar.android.model.portfolio.*
 import com.awonar.android.shared.domain.portfolio.GetPositionPublicBySymbolUseCase
+import com.awonar.android.shared.steaming.QuoteSteamingManager
 import com.awonar.app.domain.portfolio.ConvertCopierToItemUseCase
-import com.awonar.app.domain.portfolio.ConvertGroupPositionToItemUseCase
+import com.awonar.app.domain.portfolio.ConvertMarketToItemUseCase
 import com.awonar.app.domain.portfolio.ConvertPositionToCardItemUseCase
 import com.awonar.app.domain.portfolio.ConvertPositionToItemUseCase
 import com.awonar.app.ui.portfolio.adapter.PortfolioItem
@@ -26,9 +25,12 @@ class PositionViewModel @Inject constructor(
     private val getPositionPublicBySymbolUseCase: GetPositionPublicBySymbolUseCase,
     private val convertPositionToItemUseCase: ConvertPositionToItemUseCase,
     private val convertPositionToCardItemUseCase: ConvertPositionToCardItemUseCase,
-    private val convertPositionGroupPositionToItemUseCase: ConvertGroupPositionToItemUseCase,
+    private val convertMarketToItemUseCase: ConvertMarketToItemUseCase,
     private var convertCopierToItemUseCase: ConvertCopierToItemUseCase,
 ) : ViewModel() {
+    private val _portfolio = MutableStateFlow<UserPortfolioResponse?>(null)
+    private val _styleTypeState = MutableStateFlow("market")
+    val styleTypeState get() = _styleTypeState
 
     private val _navigateActions = Channel<NavDirections>(Channel.CONFLATED)
     val navigateActions get() = _navigateActions.receiveAsFlow()
@@ -40,6 +42,31 @@ class PositionViewModel @Inject constructor(
         MutableStateFlow(mutableListOf(PortfolioItem.EmptyItem()))
     val positionItems: StateFlow<MutableList<PortfolioItem>> get() = _positionItems
 
+
+    init {
+        val steaming = combine(
+            _portfolio,
+            styleTypeState
+        ) { portfolio, style ->
+            portfolio?.let {
+                when (style) {
+                    "market" -> convertMarket(
+                        portfolio
+                    )
+                    "manual" -> mutableListOf<PortfolioItem>()
+                    "chart" -> mutableListOf<PortfolioItem>()
+                    "card" -> mutableListOf<PortfolioItem>()
+                    else -> mutableListOf<PortfolioItem>()
+                }
+            }
+            Unit
+        }
+        viewModelScope.launch {
+            steaming.collectLatest {
+            }
+        }
+    }
+
     fun convertManual(it: List<Position>) {
         viewModelScope.launch {
             val positionItemResult = convertPositionToItemUseCase(it).successOr(emptyList())
@@ -47,34 +74,36 @@ class PositionViewModel @Inject constructor(
         }
     }
 
-    fun convertMarket(positions: List<Position>, copies: List<Copier>) {
+    private fun convertMarket(
+        portfolio: UserPortfolioResponse,
+    ) {
         viewModelScope.launch {
-            combine(
-                flowOf(convertPositionGroupPositionToItemUseCase(positions).successOr(listOf())),
-                flowOf(convertCopierToItemUseCase(copies).successOr(listOf()))
-            ) { position, copies ->
-                val list = mutableListOf<PortfolioItem>()
-                list.addAll(position)
-                list.addAll(copies)
-                list
-            }.collect {
-                _positionItems.emit(it)
-            }
+            val itemLists = convertMarketToItemUseCase(
+                ConvertMarketRequest(
+                    portfolio
+                )
+            ).successOr(mutableListOf())
+            _positionItems.value = itemLists
         }
     }
 
     fun navigateInstrumentInside(index: Int, type: String) {
         viewModelScope.launch {
             when (type) {
-                "instrument" -> _navigateActions.send(PositionFragmentDirections.actionPositionFragmentToPortFolioInsideInstrumentPortfolioFragment(
-                    index))
+                "instrument" -> _navigateActions.send(
+                    PositionFragmentDirections.actionPositionFragmentToPortFolioInsideInstrumentPortfolioFragment(
+                        index
+                    )
+                )
                 "copies" -> _navigateActions.send(
                     PositionFragmentDirections.actionPositionFragmentToPortFolioInsideCopierPortfolioFragment(
-                        index)
+                        index
+                    )
                 )
                 "copies_instrument" -> _navigateActions.send(
                     PortFolioInsideCopierFragmentDirections.actionPortFolioInsideCopierFragmentToPortFolioInsideInstrumentCopierFragment(
-                        index)
+                        index
+                    )
                 )
             }
 
@@ -99,5 +128,20 @@ class PositionViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun getPositionListItems(portfolio: UserPortfolioResponse?) {
+        _portfolio.value = portfolio
+    }
+
+    fun toggleStyle() {
+        val newStyle = when (_styleTypeState.value) {
+            "market" -> "manual"
+            "manual" -> "chart"
+            "chart" -> "card"
+            "card" -> "market"
+            else -> "market"
+        }
+        _styleTypeState.value = newStyle
     }
 }

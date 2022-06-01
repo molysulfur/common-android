@@ -44,14 +44,14 @@ class ConvertPositionWithCopierUseCase @Inject constructor(
                 val plPercent = 0f // cal after get realtime
                 val pipChange = 0f // cal after get realtime
                 val value = 0f// cal after get realtime
-                itemList.add(
-                    PortfolioItem.InstrumentPortfolioItem(
-                        position = position,
-                        conversionRate = conversionRate,
-                        meta = DateUtils.getDate(position.openDateTime),
-                        index = index
-                    )
-                )
+//                itemList.add(
+//                    PortfolioItem.InstrumentPortfolioItem(
+//                        position = position,
+//                        conversionRate = conversionRate,
+//                        meta = DateUtils.getDate(position.openDateTime),
+//                        index = index
+//                    )
+//                )
             }
         return itemList
     }

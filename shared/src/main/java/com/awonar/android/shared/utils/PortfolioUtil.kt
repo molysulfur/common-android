@@ -30,16 +30,15 @@ object PortfolioUtil {
         current: Float,
         openRate: Float,
         unit: Float,
-        rate: Float,
+        conversionRate: Float,
         isBuy: Boolean
     ): Float =
         when (isBuy) {
-            true -> current.minus(openRate).times(unit).div(rate)
-            false -> openRate.minus(current).times(unit).div(rate)
+            true -> current.minus(openRate).times(unit).div(conversionRate)
+            false -> openRate.minus(current).times(unit).div(conversionRate)
         }
 
     fun getValue(profitLoss: Float, amount: Float): Float = profitLoss.plus(amount)
 
-    fun getCurrent(isBuy: Boolean, quote: Quote): Float = if (isBuy) quote.bid else quote.ask
 
 }

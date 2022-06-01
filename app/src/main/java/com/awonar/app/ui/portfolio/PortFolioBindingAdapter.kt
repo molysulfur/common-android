@@ -233,30 +233,6 @@ fun setInsidePositionAdapter(
     }
 }
 
-@BindingAdapter("setPositionAdapter", "activedColumn", "viewModel")
-fun setPositionAdapter(
-    recycler: RecyclerView,
-    items: MutableList<PortfolioItem>,
-    activedColumn: List<String> = emptyList(),
-    viewModel: PositionViewModel,
-) {
-    if (recycler.adapter == null) {
-        recycler.apply {
-            layoutManager =
-                LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
-            adapter = PortfolioAdapter().apply {
-                onClick = { it, type ->
-                    viewModel.navigateInstrumentInside(it, type)
-                }
-            }
-        }
-    }
-    val adapter = recycler.adapter as PortfolioAdapter
-    adapter.apply {
-        columns = activedColumn
-        itemLists = items
-    }
-}
 
 @BindingAdapter("setCopierPosition", "column1", "column2", "column3", "column4")
 fun setCopierPositionItem(
@@ -322,7 +298,7 @@ fun setCopierPositionItem(
 @BindingAdapter("setPosition", "column1", "column2", "column3", "column4")
 fun setPositionItem(
     view: PositionView,
-    item: Position?,
+    item: PortfolioItem.PositionItem?,
     column1: String?,
     column2: String?,
     column3: String?,
@@ -382,46 +358,45 @@ fun setPositionItem(
 
 
 private fun getPositionValueByColumn(
-    item: Position,
+    item: PortfolioItem.PositionItem,
     column: String,
 ): String {
     return when (column) {
         "Invested" -> "$%.2f".format(item.invested)
         "Invested(%)" -> "%.2f%s".format(item.invested, "%")
         "Units" -> "%.2f".format(item.units)
-        "Open", "Avg. Open" -> "%s".format(if (item.openRate != 0f) item.openRate else item.avgOpen)
+        "Open", "Avg. Open" -> "%s".format(if (item.openRate != 0f) item.openRate else item.openRate)
         "Current" -> "%s".format(item.current)
-        "P/L($)" -> "$%.2f".format(item.profitLoss)
+        "P/L($)" -> "$%.2f".format(item.pl)
         "P/L(%)" -> "%.2f%s".format(
-            if (item.netProfit != 0f) item.netProfit else item.profitLossPercent,
+            item.plPercent,
             "%"
         )
-        "Pip Change" -> "%s".format(item.pipChange.toInt())
+        "Pip Change" -> "%s".format(item.pipChange)
         "Leverage" -> "%s".format(item.leverage)
         "Value" -> "$%.2f".format(item.value)
         "Value(%)" -> "%.2f%s".format(item.value, "%")
         "Fee" -> "$%.2f".format(item.fees)
-        "Execute at" -> "%s".format(item.units)
         "SL" -> "%s".format(item.stopLoss)
         "TP" -> "%s".format(item.takeProfit)
         "SL($)" -> "$%.2f".format(item.amountStopLoss)
         "TP($)" -> "$%.2f".format(item.amountTakeProfit)
         "SL(%)" -> "%.2f%s".format(item.stopLossPercent, "%")
         "TP(%)" -> "%.2f%s".format(item.takeProfitPercent, "%")
-        "Buy/Sell" -> "%s".format(item.type)
-        "Amount" -> "%.2f%s".format(item.amount, "%")
+        "Buy/Sell" -> "%s".format(item.buyOrSell)
+        "Amount" -> "%.2f%s".format(item.invested, "%")
         else -> ""
     }
 }
 
 private fun getPositionColorColoumn(
-    item: Position,
+    item: PortfolioItem.PositionItem,
     column: String,
 ): Int = when {
-    column == "P/L($)" && item.profitLoss < 0 -> R.color.awonar_color_orange
-    column == "P/L($)" && item.profitLoss >= 0 -> R.color.awonar_color_green
-    column == "P/L(%)" && (if (item.netProfit != 0f) item.netProfit else item.profitLossPercent) < 0 -> R.color.awonar_color_orange
-    column == "P/L(%)" && (if (item.netProfit != 0f) item.netProfit else item.profitLossPercent) >= 0 -> R.color.awonar_color_green
+    column == "P/L($)" && item.pl < 0 -> R.color.awonar_color_orange
+    column == "P/L($)" && item.pl >= 0 -> R.color.awonar_color_green
+    column == "P/L(%)" && item.plPercent < 0 -> R.color.awonar_color_orange
+    column == "P/L(%)" && item.plPercent >= 0 -> R.color.awonar_color_green
     column == "Pip Change" && item.pipChange < 0 -> R.color.awonar_color_orange
     column == "Pip Change" && item.pipChange >= 0 -> R.color.awonar_color_green
     else -> 0

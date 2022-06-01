@@ -67,7 +67,7 @@ class EditPositionDialog :
                         current = price,
                         openRate = position?.openRate ?: 0f,
                         unit = position?.units ?: 0f,
-                        rate = 1f,
+                        conversionRate = 1f,
                         isBuy = position?.isBuy == true
                     )
                     val priceChange = ConverterQuoteUtil.change(
@@ -113,20 +113,14 @@ class EditPositionDialog :
         return binding.root
     }
 
-    fun edit(id: Int) {
-
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         arguments?.run {
             position = getParcelable(EXTRA_POSITION)
         }
-        setupHeader()
+        setInfo()
         setupState()
         setupListener()
-        setupTakeProfit()
-        setupStopLoss()
     }
 
     private fun setupState() {
@@ -134,15 +128,9 @@ class EditPositionDialog :
             viewModel.setPositionType(it.isBuy)
             viewModel.setUnits(it.units)
             viewModel.setInstrumentId(it.instrument?.id ?: 0)
+            viewModel.setStopLoss(it.stopLossRate ?: 0f)
+            viewModel.setTakeProfit(it.takeProfitRate ?: 0f)
         }
-    }
-
-    private fun setupStopLoss() {
-        viewModel.setStopLoss(position?.stopLossRate ?: 0f)
-    }
-
-    private fun setupTakeProfit() {
-        viewModel.setTakeProfit(position?.takeProfitRate ?: 0f)
     }
 
     private fun setupListener() {
@@ -160,7 +148,7 @@ class EditPositionDialog :
         }
     }
 
-    private fun setupHeader() {
+    private fun setInfo() {
         ImageUtil.loadImage(binding.awonarOrderEditImageAvatar, position?.instrument?.logo)
         binding.awonarOrderEditTextTitle.text = "%s %s".format(
             if (position?.isBuy == true) "BUY" else "SELL",
@@ -170,7 +158,7 @@ class EditPositionDialog :
         binding.unit = "%.3f Unit".format(position?.units)
         binding.rate = "%s".format(position?.openRate)
         binding.date = "%s".format(DateUtils.getDate(position?.openDateTime))
-        binding.fee = "$%.2f".format(position?.totalFees)
+        binding.fee = "Fee: $%.2f".format(position?.totalFees)
         binding.leverage = "X%s".format(position?.leverage)
         binding.id = position?.id
     }

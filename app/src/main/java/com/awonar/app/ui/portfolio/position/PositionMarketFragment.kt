@@ -9,16 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.awonar.android.shared.steaming.QuoteSteamingManager
 import com.awonar.app.databinding.AwonarFragmentPositionMarketBinding
 import com.awonar.app.ui.columns.ColumnsViewModel
 import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.awonar.app.ui.portfolio.adapter.IPortfolioListItemTouchHelperCallback
-import com.awonar.app.ui.portfolio.adapter.PortfolioAdapter
 import com.awonar.app.ui.portfolio.adapter.PortfolioType
 import com.awonar.app.ui.portfolio.adapter.PortfolioListItemTouchHelperCallback
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
-import kotlinx.coroutines.flow.collect
 
 class PositionMarketFragment : Fragment() {
 
@@ -37,11 +34,7 @@ class PositionMarketFragment : Fragment() {
     ): View {
         launchAndRepeatWithViewLifecycle {
             viewModel.positionState.collect { position ->
-                position?.let {
-                    activityViewModel.convertMarket(
-                        position.positions ?: emptyList(),
-                        position.copies ?: emptyList())
-                }
+
             }
         }
         binding.columns = columns

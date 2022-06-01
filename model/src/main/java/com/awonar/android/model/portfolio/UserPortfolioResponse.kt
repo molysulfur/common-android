@@ -120,7 +120,7 @@ data class Position(
     @SerializedName("exposure") val exposure: Float = 0f,
     @SerializedName("instrument") var instrument: Instrument? = null,
     @SerializedName("openDateTime") val openDateTime: String? = null,
-    @SerializedName("openRate") val openRate: Float = 0f,
+    @SerializedName("openRate") var openRate: Float = 0f,
     @SerializedName("orderNo") val orderNo: String? = null,
     @SerializedName("parentPositionId") val parentPositionId: String? = null,
     @SerializedName("parentUid") val parentUid: String? = null,

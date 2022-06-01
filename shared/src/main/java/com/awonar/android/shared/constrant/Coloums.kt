@@ -4,7 +4,7 @@ object Columns {
 
     val DEFAULT_COLUMN_POSITION = listOf(
         "Invested",
-        "Execute at",
+        "Units",
         "Current",
         "Pip Change"
     )

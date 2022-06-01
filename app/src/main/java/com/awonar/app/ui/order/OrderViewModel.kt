@@ -539,7 +539,7 @@ class OrderViewModel @Inject constructor(
                 current = price,
                 openRate = position.openRate,
                 unit = position.units,
-                rate = rate,
+                conversionRate = rate,
                 isBuy = position.isBuy
             )
             val result = validatePartialCloseAmountUseCase(

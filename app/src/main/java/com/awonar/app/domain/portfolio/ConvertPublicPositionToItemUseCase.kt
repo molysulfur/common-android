@@ -19,12 +19,12 @@ class ConvertPublicPositionToItemUseCase @Inject constructor(
             val conversionRate =
                 currenciesRepository.getConversionByInstrumentId(position.instrument?.id
                     ?: 0).rateBid
-            itemList.add(PortfolioItem.InstrumentPortfolioItem(
-                position = position,
-                conversionRate = conversionRate,
-                meta = DateUtils.getDate(position.openDateTime),
-                index = index
-            ))
+//            itemList.add(PortfolioItem.InstrumentPortfolioItem(
+//                position = position,
+//                conversionRate = conversionRate,
+//                meta = DateUtils.getDate(position.openDateTime),
+//                index = index
+//            ))
         }
         return itemList
     }

@@ -19,9 +19,7 @@ import javax.inject.Inject
 import com.awonar.app.domain.portfolio.*
 import com.awonar.app.ui.portfolio.chart.adapter.PositionChartItem
 import com.awonar.app.ui.profile.user.PublicPortfolioFragmentDirections
-import com.molysulfur.library.result.Result
 import kotlinx.coroutines.channels.Channel
-import timber.log.Timber
 
 @HiltViewModel
 class PortFolioViewModel @Inject constructor(
@@ -58,7 +56,6 @@ class PortFolioViewModel @Inject constructor(
     private val _positionState = MutableStateFlow<UserPortfolioResponse?>(null)
     val positionState: StateFlow<UserPortfolioResponse?> get() = _positionState
 
-
     val portfolioState: StateFlow<Portfolio?> = flow {
         getMyPortFolioUseCase(true).collectIndexed { _, value ->
             val data = value.successOr(null)
@@ -69,6 +66,10 @@ class PortFolioViewModel @Inject constructor(
     private val _navigateActions = Channel<NavDirections>(Channel.CONFLATED)
     val navigateActions get() = _navigateActions.receiveAsFlow()
 
+    init {
+        getPosition()
+    }
+
     fun navigate(index: Int) {
         viewModelScope.launch {
             _navigateActions.send(
@@ -78,6 +79,7 @@ class PortFolioViewModel @Inject constructor(
             )
         }
     }
+
 
     fun getManual(username: String? = null) {
         viewModelScope.launch {
@@ -177,35 +179,35 @@ class PortFolioViewModel @Inject constructor(
                 var plCopy = 0f
                 _positionState.value?.positions?.forEach { position ->
                     quotes[position.instrument?.id]?.let { quote ->
-                        val current = PortfolioUtil.getCurrent(position.isBuy, quote)
-                        plSymbol += PortfolioUtil.getProfitOrLoss(
-                            current,
-                            position.openRate,
-                            position.units,
-                            getConversionByInstrumentUseCase(
-                                position.instrument?.id
-                                    ?: 0
-                            ).successOr(0f),
-                            position.isBuy
-                        )
+//                        val current = PortfolioUtil.getCurrent(position.isBuy, quote)
+//                        plSymbol += PortfolioUtil.getProfitOrLoss(
+//                            current,
+//                            position.openRate,
+//                            position.units,
+//                            getConversionByInstrumentUseCase(
+//                                position.instrument?.id
+//                                    ?: 0
+//                            ).successOr(0f),
+//                            position.isBuy
+//                        )
                     }
                 }
                 _positionState.value?.copies?.forEach { copier ->
                     copier.positions?.forEach { position ->
                         quotes[position.instrument?.id]?.let { quote ->
-                            val current = PortfolioUtil.getCurrent(position.isBuy, quote)
-                            plCopy += PortfolioUtil.getProfitOrLoss(
-                                current,
-                                position.openRate,
-                                position.units,
-                                getConversionByInstrumentUseCase(
-                                    position.instrument?.id
-                                        ?: 0
-                                ).successOr(
-                                    0f
-                                ),
-                                position.isBuy
-                            )
+//                            val current = PortfolioUtil.getCurrent(position.isBuy, quote)
+//                            plCopy += PortfolioUtil.getProfitOrLoss(
+//                                current,
+//                                position.openRate,
+//                                position.units,
+//                                getConversionByInstrumentUseCase(
+//                                    position.instrument?.id
+//                                        ?: 0
+//                                ).successOr(
+//                                    0f
+//                                ),
+//                                position.isBuy
+//                            )
                         }
                     }
                 }
@@ -220,9 +222,9 @@ class PortFolioViewModel @Inject constructor(
         if (currentIndex >= 0 && currentIndex < positionList.value.size) {
             val item = positionList.value[currentIndex]
             if (currentIndex > positionList.value.size || currentIndex < positionList.value.size) {
-                if (item is PortfolioItem.InstrumentPortfolioItem) {
-                    return item.position
-                }
+//                if (item is PortfolioItem.InstrumentPortfolioItem) {
+//                    return item.position
+//                }
             }
         }
         return null

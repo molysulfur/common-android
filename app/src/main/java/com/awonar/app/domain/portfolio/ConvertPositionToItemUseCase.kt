@@ -40,15 +40,15 @@ class ConvertPositionToItemUseCase @Inject constructor(
             val tpPercent = amountTp.times(100).div(invested)
             val date =
                 if (position.exitOrder != null) "Pending" else DateUtils.getDate(position.openDateTime)
-            itemList.add(
-                PortfolioItem.InstrumentPortfolioItem(
-                    position = position,
-                    conversionRate = conversionRate,
-                    meta = date,
-                    index = index,
-                    isRealTime = true
-                )
-            )
+//            itemList.add(
+//                PortfolioItem.InstrumentPortfolioItem(
+//                    position = position,
+//                    conversionRate = conversionRate,
+//                    meta = date,
+//                    index = index,
+//                    isRealTime = true
+//                )
+//            )
         }
         return itemList
     }

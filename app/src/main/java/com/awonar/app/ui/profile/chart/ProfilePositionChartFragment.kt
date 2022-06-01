@@ -67,8 +67,8 @@ class ProfilePositionChartFragment : Fragment() {
         launchAndRepeatWithViewLifecycle {
             viewModel.navigateAction.collect {
                 val index: Int = portfolioViewModel.positionList.value.indexOfLast { item ->
-                    if (item is PortfolioItem.InstrumentPortfolioItem) {
-                        item.position.instrument?.symbol == it
+                    if (item is PortfolioItem.PositionItem) {
+//                        item.title == it
                     }
                     false
                 }

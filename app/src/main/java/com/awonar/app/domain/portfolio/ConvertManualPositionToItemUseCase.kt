@@ -20,12 +20,12 @@ class ConvertManualPositionToItemUseCase @Inject constructor(
             val conversionRate =
                 currenciesRepository.getConversionByInstrumentId(position.instrumentId).rateBid
             sumInvested += position.invested
-            itemList.add(PortfolioItem.InstrumentPortfolioItem(
-                position = position,
-                conversionRate = conversionRate,
-                meta = null,
-                index = index
-            ))
+//            itemList.add(PortfolioItem.InstrumentPortfolioItem(
+//                position = position,
+//                conversionRate = conversionRate,
+//                meta = null,
+//                index = index
+//            ))
         }
         parameters?.copies?.forEachIndexed { index, copier ->
             sumInvested += copier.invested

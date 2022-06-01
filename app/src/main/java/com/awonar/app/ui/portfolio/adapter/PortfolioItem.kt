@@ -40,12 +40,28 @@ sealed class PortfolioItem(
     class EmptyItem : PortfolioItem(EMPTY_PORTFOLIO)
 
     @Parcelize
-    class InstrumentPortfolioItem(
-        val position: Position,
-        val conversionRate: Float,
-        var meta: String?,
-        val index: Int,
-        val isRealTime: Boolean = false,
+    class PositionItem(
+        val positionId: Int,
+        val copierId: String? = null,
+        val instrumentGroup: List<Position>? = null,
+        val conversionRate: Float = 0f,
+        var invested: Float = 0f,
+        var current: Float = 0f,
+        var units: Float = 0f,
+        var openRate: Float = 0f,
+        var pl: Float = 0f,
+        var plPercent: Float = 0f,
+        var pipChange: Int = 0,
+        var leverage: Float = 0f,
+        var value: Float = 0f,
+        var fees: Float = 0f,
+        var stopLoss: Float = 0f,
+        var takeProfit: Float = 0f,
+        var amountStopLoss: Float = 0f,
+        var amountTakeProfit: Float = 0f,
+        var stopLossPercent: Float = 0f,
+        var takeProfitPercent: Float = 0f,
+        var buyOrSell: Float = 0f
     ) : PortfolioItem(INSTRUMENT_PORTFOLIO)
 
     @Parcelize

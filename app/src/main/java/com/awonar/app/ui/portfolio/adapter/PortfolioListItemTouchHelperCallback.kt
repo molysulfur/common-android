@@ -283,15 +283,15 @@ class PortfolioListItemTouchHelperCallback constructor(
     }
 
     fun onDraw(c: Canvas) {
-        if (currentItemViewHolder != null) {
-            when (currentItemViewHolder) {
-                is InstrumentPortfolioViewHolder -> drawButtons(c,
-                    currentItemViewHolder!!,
-                    (currentItemViewHolder!! as InstrumentPortfolioViewHolder).positionItem?.position?.exitOrder != null)
-
-                else -> drawButtons(c, currentItemViewHolder!!)
-            }
-        }
+//        if (currentItemViewHolder != null) {
+//            when (currentItemViewHolder) {
+//                is InstrumentPortfolioViewHolder -> drawButtons(c,
+//                    currentItemViewHolder!!,
+//                    (currentItemViewHolder!! as InstrumentPortfolioViewHolder).positionItem?.position?.exitOrder != null)
+//
+//                else -> drawButtons(c, currentItemViewHolder!!)
+//            }
+//        }
     }
 
 

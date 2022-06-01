@@ -10,8 +10,8 @@
             type="com.awonar.app.ui.columns.ColumnsViewModel" />
 
         <variable
-            name="market"
-            type="com.awonar.app.ui.market.MarketViewModel" />
+            name="positionViewModel"
+            type="com.awonar.app.ui.portfolio.position.PositionViewModel" />
 
         <variable
             name="viewModel"
@@ -142,12 +142,13 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.fragment.app.FragmentContainerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/awonar_main_drawer_navigation_host_position"
-            android:name="androidx.navigation.fragment.NavHostFragment"
+            activedColumn="@{columnViewModel.activedColumnState}"
+            setPositionAdapter="@{positionViewModel.positionItems}"
+            viewModel="@{positionViewModel}"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:defaultNavHost="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/awonar_portfolio_layout_columns"
             app:navGraph="@navigation/awonar_position_graph" />

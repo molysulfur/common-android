@@ -20,11 +20,13 @@ import com.awonar.app.dialog.menu.MenuDialog
 import com.awonar.app.dialog.menu.MenuDialogButtonSheet
 import com.awonar.app.ui.columns.ColumnsActivedActivity
 import com.awonar.app.ui.columns.ColumnsViewModel
-import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.awonar.app.ui.portfolio.chart.PositionChartFragmentDirections
 import com.molysulfur.library.extension.openActivityCompatForResult
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
+import kotlinx.coroutines.flow.collectIndexed
+import kotlinx.coroutines.flow.collectLatest
+import timber.log.Timber
 
 class PositionFragment : Fragment() {
 
@@ -35,15 +37,15 @@ class PositionFragment : Fragment() {
         private const val KEY_DIALOG_ORDER = "com.awonar.app.ui.portfolio.position.dialog.key_order"
     }
 
-    private var positionType: String = "market"
 
     private val binding: AwonarFragmentPositionBinding by lazy {
         AwonarFragmentPositionBinding.inflate(layoutInflater)
     }
 
     private val viewModel: PortFolioViewModel by activityViewModels()
-    private val marketViewModel: MarketViewModel by activityViewModels()
     private val columnViewModel: ColumnsViewModel by activityViewModels()
+    private val portfolioViewModel: PortFolioViewModel by activityViewModels()
+    private val positionViewModel: PositionViewModel by activityViewModels()
 
     private val activityResult: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
@@ -85,20 +87,40 @@ class PositionFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         launchAndRepeatWithViewLifecycle {
+            positionViewModel.styleTypeState.collectLatest { type ->
+                columnViewModel.setColumnType(type)
+//                navigate(type)
+                setIconStyle(type)
+            }
+        }
+        launchAndRepeatWithViewLifecycle {
+            portfolioViewModel.positionState.collectIndexed { _, value ->
+                positionViewModel.getPositionListItems(value)
+            }
+        }
+        launchAndRepeatWithViewLifecycle {
             columnViewModel.visibleState.collect {
                 binding.awonarPortfolioLayoutColumns.visibility = it
             }
         }
         binding.columnViewModel = columnViewModel
-        binding.market = marketViewModel
+        binding.positionViewModel = positionViewModel
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
+    private fun setIconStyle(type: String) {
+        when (type) {
+            "market" -> binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_list)
+            "manual" -> binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_chart)
+            "chart" -> binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_card_list)
+            "card" -> binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_list_2)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        columnViewModel.setColumnType(positionType)
         binding.awonarPortfolioTextTitleSection.setOnClickListener {
             titleDialog.show(parentFragmentManager, SECTION_DIALOG)
         }
@@ -106,30 +128,17 @@ class PositionFragment : Fragment() {
             openActivityCompatForResult(
                 activityResult,
                 ColumnsActivedActivity::class.java,
-                bundleOf(ColumnsActivedActivity.EXTRA_COLUMNS_ACTIVED to positionType)
+                bundleOf(ColumnsActivedActivity.EXTRA_COLUMNS_ACTIVED to positionViewModel.styleTypeState.value)
             )
         }
         binding.awonarPortfolioImageChangeStyle.setOnClickListener {
-            navigate()
-            positionType = when (positionType) {
-                "market" -> "manual"
-                "manual" -> "chart"
-                "chart" -> "card"
-                "card" -> "market"
-                else -> "market"
-            }
-            when (positionType) {
-                "market" -> binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_list)
-                "manual" -> binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_chart)
-                "chart" -> binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_card_list)
-                "card" -> binding.awonarPortfolioImageChangeStyle.setImageResource(R.drawable.awonar_ic_list_2)
-            }
-            columnViewModel.setColumnType(positionType)
+            positionViewModel.toggleStyle()
+
         }
     }
 
-    private fun navigate() {
-        val direction: NavDirections = when (positionType) {
+    private fun navigate(type: String) {
+        val direction: NavDirections = when (type) {
             "market" -> PositionMarketFragmentDirections.actionPositionMarketFragmentToPositionManualFragment()
             "manual" -> PositionManualFragmentDirections.actionPositionManualFragmentToPositionChartFragment()
             "chart" -> PositionChartFragmentDirections.actionPositionChartFragmentToPositionCardFragment()
