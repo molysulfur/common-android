@@ -3,11 +3,8 @@ package com.awonar.app.ui.portfolio.position
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDirections
-import com.awonar.android.model.market.Quote
 import com.awonar.android.model.portfolio.*
 import com.awonar.android.shared.domain.portfolio.GetPositionPublicBySymbolUseCase
-import com.awonar.android.shared.steaming.QuoteSteamingManager
-import com.awonar.app.domain.portfolio.ConvertCopierToItemUseCase
 import com.awonar.app.domain.portfolio.ConvertMarketToItemUseCase
 import com.awonar.app.domain.portfolio.ConvertPositionToCardItemUseCase
 import com.awonar.app.domain.portfolio.ConvertPositionToItemUseCase
@@ -26,7 +23,6 @@ class PositionViewModel @Inject constructor(
     private val convertPositionToItemUseCase: ConvertPositionToItemUseCase,
     private val convertPositionToCardItemUseCase: ConvertPositionToCardItemUseCase,
     private val convertMarketToItemUseCase: ConvertMarketToItemUseCase,
-    private var convertCopierToItemUseCase: ConvertCopierToItemUseCase,
 ) : ViewModel() {
     private val _portfolio = MutableStateFlow<UserPortfolioResponse?>(null)
     private val _styleTypeState = MutableStateFlow("market")
@@ -50,10 +46,8 @@ class PositionViewModel @Inject constructor(
         ) { portfolio, style ->
             portfolio?.let {
                 when (style) {
-                    "market" -> convertMarket(
-                        portfolio
-                    )
-                    "manual" -> mutableListOf<PortfolioItem>()
+                    "market" -> convertMarket(portfolio)
+                    "manual" -> convertManual(portfolio)
                     "chart" -> mutableListOf<PortfolioItem>()
                     "card" -> mutableListOf<PortfolioItem>()
                     else -> mutableListOf<PortfolioItem>()
@@ -67,10 +61,13 @@ class PositionViewModel @Inject constructor(
         }
     }
 
-    fun convertManual(it: List<Position>) {
+    fun convertManual(portfolio: UserPortfolioResponse?) {
         viewModelScope.launch {
-            val positionItemResult = convertPositionToItemUseCase(it).successOr(emptyList())
-            _positionItems.emit(positionItemResult.toMutableList())
+            portfolio?.let {
+//                val positionItemResult = convertPositionToItemUseCase(it).successOr(emptyList())
+//                _positionItems.emit(positionItemResult.toMutableList())
+            }
+
         }
     }
 
@@ -78,34 +75,30 @@ class PositionViewModel @Inject constructor(
         portfolio: UserPortfolioResponse,
     ) {
         viewModelScope.launch {
-            val itemLists = convertMarketToItemUseCase(
-                ConvertMarketRequest(
-                    portfolio
-                )
-            ).successOr(mutableListOf())
+            val itemLists = convertMarketToItemUseCase(portfolio).successOr(mutableListOf())
             _positionItems.value = itemLists
         }
     }
 
-    fun navigateInstrumentInside(index: Int, type: String) {
+    fun navigateInstrumentInside(position: Int) {
         viewModelScope.launch {
-            when (type) {
-                "instrument" -> _navigateActions.send(
-                    PositionFragmentDirections.actionPositionFragmentToPortFolioInsideInstrumentPortfolioFragment(
-                        index
-                    )
-                )
-                "copies" -> _navigateActions.send(
-                    PositionFragmentDirections.actionPositionFragmentToPortFolioInsideCopierPortfolioFragment(
-                        index
-                    )
-                )
-                "copies_instrument" -> _navigateActions.send(
-                    PortFolioInsideCopierFragmentDirections.actionPortFolioInsideCopierFragmentToPortFolioInsideInstrumentCopierFragment(
-                        index
-                    )
-                )
-            }
+            _navigateActions.send(
+                PositionFragmentDirections
+                    .actionPositionFragmentToPortFolioInsideInstrumentPortfolioFragment(position)
+            )
+//            when (type) {
+//                "instrument" ->
+//                "copies" -> _navigateActions.send(
+//                    PositionFragmentDirections.actionPositionFragmentToPortFolioInsideCopierPortfolioFragment(
+//                        index
+//                    )
+//                )
+//                "copies_instrument" -> _navigateActions.send(
+//                    PortFolioInsideCopierFragmentDirections.actionPortFolioInsideCopierFragmentToPortFolioInsideInstrumentCopierFragment(
+//                        index
+//                    )
+//                )
+//            }
 
         }
     }

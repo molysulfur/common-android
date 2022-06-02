@@ -9,10 +9,7 @@ import com.awonar.app.databinding.AwonarItemPositionBinding
 import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class InstrumentPortfolioViewHolder constructor(
     private val binding: AwonarItemPositionBinding,
@@ -24,10 +21,16 @@ class InstrumentPortfolioViewHolder constructor(
     fun bind(
         item: PortfolioItem.PositionItem,
         columns: List<String>,
-        onClick: ((Int, String) -> Unit)?,
+        onClick: (() -> Unit)?,
     ) {
         if (columns.isNotEmpty()) {
             positionItem = item
+            positionItem?.apply {
+                val positions = instrumentGroup
+                invested = positions?.sumOf { it.amount.toDouble() }?.toFloat() ?: 0f
+                units = positions?.sumOf { it.units.toDouble() }?.toFloat() ?: 0f
+            }
+
             binding.column1 = columns[0]
             binding.column2 = columns[1]
             binding.column3 = columns[2]
@@ -40,7 +43,7 @@ class InstrumentPortfolioViewHolder constructor(
                     setDescription("")
                 }
                 setOnClickListener {
-//                onClick?.invoke(item.index, "instrument")
+                    onClick?.invoke()
                 }
             }
             positionItem?.let {
@@ -55,12 +58,10 @@ class InstrumentPortfolioViewHolder constructor(
                 val positions = positionItem?.instrumentGroup
                 positionItem?.let { positionItem ->
                     val quote = quotes[positions?.get(0)?.instrument?.id]
-                    val invested: Double = positions?.sumOf { it.amount.toDouble() } ?: 0.0
-                    val sumUnits: Double = positions?.sumOf { it.units.toDouble() } ?: 0.0
                     val leverage = (positions?.sumOf {
                         val rate = positionItem.conversionRate
                         it.openRate.times(it.units).times(rate).toDouble()
-                    })?.div(invested) ?: 0.0
+                    })?.div(positionItem.invested) ?: 0.0
                     quote?.let {
                         var pl = 0f
                         positionItem.instrumentGroup?.forEach { position ->
@@ -73,9 +74,8 @@ class InstrumentPortfolioViewHolder constructor(
                                 it.openRate.toDouble().div(positionItem.instrumentGroup.size)
                             }
                             positionItem.current = it.close
-                            positionItem.invested = invested.toFloat()
-                            positionItem.units = sumUnits.toFloat()
                             positionItem.openRate = sumOpenRate.toFloat()
+                            positionItem.leverage = leverage.toFloat()
                             pl += PortfolioUtil.getProfitOrLoss(
                                 current,
                                 position.openRate,
@@ -83,11 +83,13 @@ class InstrumentPortfolioViewHolder constructor(
                                 positionItem.conversionRate,
                                 position.isBuy
                             )
-                            Timber.e("$pl $position")
                         }
                         positionItem.pl = pl
                         positionItem.plPercent =
-                            PortfolioUtil.profitLossPercent(pl = pl, invested = invested.toFloat())
+                            PortfolioUtil.profitLossPercent(
+                                pl = pl,
+                                invested = positionItem.invested
+                            )
                     }
                     binding.item = positionItem
                 }

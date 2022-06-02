@@ -11,7 +11,7 @@
         android:label="PortFolioInsideInstrumentPortfolioFragment">
 
         <argument
-            android:name="index"
+            android:name="position"
             app:argType="integer" />
     </fragment>
 

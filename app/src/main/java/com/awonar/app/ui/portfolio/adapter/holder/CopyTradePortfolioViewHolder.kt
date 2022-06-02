@@ -15,12 +15,15 @@ class CopyTradePortfolioViewHolder constructor(
     private val binding: AwonarItemCopierPositionBinding,
 ) : RecyclerView.ViewHolder(binding.root) {
 
+    var copierItem: PortfolioItem.CopierPortfolioItem? = null
+
     fun bind(
         item: PortfolioItem.CopierPortfolioItem,
         columns: List<String>,
-        onClick: ((Int, String) -> Unit)?,
+        onClick: (() -> Unit)?,
     ) {
-//        setupDataSteaming(item)
+        copierItem = item
+        setupDataSteaming()
         if (columns.isNotEmpty()) {
             binding.column1 = columns[0]
             binding.column2 = columns[1]
@@ -32,17 +35,18 @@ class CopyTradePortfolioViewHolder constructor(
             setImage(copy.user.picture ?: "")
             setTitle(copy.user.username ?: "")
             setOnClickListener {
-                onClick?.invoke(item.index, "copies")
+                onClick?.invoke()
             }
         }
         binding.item = item.copier
     }
 
-    private fun setupDataSteaming(item: PortfolioItem.CopierPortfolioItem) {
+    private fun setupDataSteaming() {
         CoroutineScope(Dispatchers.IO).launch {
             QuoteSteamingManager.quotesState.collect { quotes ->
-                val sumFloatingPL = 0f
-                item.copier.positions?.forEach { position ->
+                var sumFloatingPL = 0f
+                val copier = copierItem?.copier
+                copier?.positions?.forEach { position ->
                     val quote = quotes[position.instrumentId]
                     quote?.let {
                         val current = if (position.isBuy) it.bid else it.ask
@@ -50,20 +54,20 @@ class CopyTradePortfolioViewHolder constructor(
                             current,
                             position.openRate,
                             position.units,
-                            item.conversions[position.instrumentId] ?: 1f,
+                            copierItem?.conversions?.get(position.instrumentId) ?: 1f,
                             position.isBuy
                         )
-                        sumFloatingPL.plus(pl)
+                        sumFloatingPL += sumFloatingPL.plus(pl)
                     }
                 }
-                val pl = sumFloatingPL.plus(item.copier.closedPositionsNetProfit)
-                val plPercent = pl.div(item.copier.invested)
-                val moneyInOut = item.copier.depositSummary.minus(item.copier.withdrawalSummary)
-                val value = item.copier.initialInvestment.plus(moneyInOut).plus(pl)
-                item.copier.profitLoss = pl
-                item.copier.profitLossPercent = plPercent
-                item.copier.value = value
-//                binding.item = item
+                val pl = sumFloatingPL.plus(copier?.closedPositionsNetProfit ?: 0f)
+                val plPercent = pl.div(copier?.invested ?: 0f)
+                val moneyInOut = copier?.depositSummary?.minus(copier.withdrawalSummary) ?: 0f
+                val value = copier?.initialInvestment?.plus(moneyInOut)?.plus(pl) ?: 0f
+                copier?.profitLoss = pl
+                copier?.profitLossPercent = plPercent
+                copier?.value = value
+                binding.item = copier
             }
         }
     }

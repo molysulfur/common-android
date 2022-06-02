@@ -60,8 +60,7 @@ class PositionMarketFragment : Fragment() {
                 override fun onClose(position: Int) {
                     when (activityViewModel.positionItems.value[position].type) {
                         PortfolioType.INSTRUMENT_PORTFOLIO -> activityViewModel.navigateInstrumentInside(
-                            position,
-                            "instrument")
+                            position)
                     }
 
                 }

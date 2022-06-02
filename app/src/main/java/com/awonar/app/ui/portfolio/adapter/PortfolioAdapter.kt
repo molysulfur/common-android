@@ -22,12 +22,12 @@ class PortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var columns: List<String> = listOf()
         set(value) {
-            val oldList = field
             field = value
-            DiffUtil.calculateDiff(ColumnsDiffCallback(oldList, value)).dispatchUpdatesTo(this)
+            notifyDataSetChanged()
         }
 
-    var onClick: ((Int, String) -> Unit)? = null
+    var onIntrumentClick: ((Int) -> Unit)? = null
+    var onCopierClick: ((Int) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -97,14 +97,16 @@ class PortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is BalanceViewHolder -> holder.bind(item as PortfolioItem.BalanceItem)
             is InstrumentPortfolioViewHolder -> holder.bind(
                 item as PortfolioItem.PositionItem,
-                columns,
-                onClick
-            )
+                columns
+            ) {
+                onIntrumentClick?.invoke(position)
+            }
             is CopyTradePortfolioViewHolder -> holder.bind(
                 item as PortfolioItem.CopierPortfolioItem,
-                columns,
-                onClick
-            )
+                columns
+            ) {
+                onCopierClick?.invoke(position)
+            }
             is InstrumentPositionCardViewHolder -> holder.bind(
                 item as PortfolioItem.InstrumentPositionCardItem
             )
@@ -172,7 +174,7 @@ class PortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         "P/L($)" -> item.pl
         "P/L(%)" -> item.plPercent
         "Pip Change" -> item.pipChange.toFloat()
-        "Leverage" -> item.leverage.toFloat()
+        "Leverage" -> item.leverage
         "Value" -> item.value
         "Fee" -> item.fees
         "SL" -> item.stopLoss
@@ -200,24 +202,6 @@ class PortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
             return oldItems[oldItemPosition] === newItems[newItemPosition]
-        }
-    }
-
-    class ColumnsDiffCallback(
-        private val oldItems: List<String>,
-        private val newItems: List<String>
-    ) : DiffUtil.Callback() {
-
-        override fun getOldListSize(): Int = oldItems.size
-
-        override fun getNewListSize(): Int = newItems.size
-
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldItems[oldItemPosition] === newItems[newItemPosition]
-        }
-
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return this.oldItems[oldItemPosition] == newItems[newItemPosition]
         }
     }
 

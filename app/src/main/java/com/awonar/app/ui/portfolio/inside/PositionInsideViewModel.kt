@@ -8,6 +8,7 @@ import com.awonar.android.model.portfolio.Position
 import com.awonar.android.model.portfolio.UserPortfolioResponse
 import com.awonar.android.shared.domain.market.GetConversionByInstrumentUseCase
 import com.awonar.android.shared.utils.PortfolioUtil
+import com.awonar.app.domain.portfolio.ConvertInsidePosition
 import com.awonar.app.domain.portfolio.ConvertMarketToItemUseCase
 import com.awonar.app.domain.portfolio.ConvertPositionToItemUseCase
 import com.awonar.app.domain.portfolio.ConvertPublicPositionToItemUseCase
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -55,15 +57,15 @@ class PositionInsideViewModel @Inject constructor(
         }
     }
 
-    fun convertPosition(userPosition: UserPortfolioResponse?, index: Int) {
+    fun convertPosition(userPosition: UserPortfolioResponse?, item: PortfolioItem.PositionItem) {
         viewModelScope.launch {
-            val position: Position? = userPosition?.positions?.get(index)
-            val positionList: List<Position> =
-                userPosition?.positions?.filter { it.instrument?.id == position?.instrument?.id }
-                    ?: emptyList()
-            if (positionList.isNotEmpty()) {
-                val items = convertPositionToItemUseCase(positionList).successOr(emptyList())
-                _positionState.value = positionList[0]
+            userPosition?.let {
+                val items = convertPositionToItemUseCase(
+                    ConvertInsidePosition(
+                        userPosition,
+                        item
+                    )
+                ).successOr(emptyList())
                 _positionItems.value = items.toMutableList()
             }
         }
@@ -72,11 +74,15 @@ class PositionInsideViewModel @Inject constructor(
     fun getCopiesWithIndex(userPosition: UserPortfolioResponse?, currentIndex: Int) {
         viewModelScope.launch {
             val copies: Copier? = userPosition?.copies?.get(currentIndex)
-            val positionList: List<Position> = copies?.positions ?: emptyList()
-            ?: emptyList()
-            if (copies != null) {
+//            val currentItem = _positionItems
+//            if (copies != null) {
 //                val items =
-//                    convertPositionGroupPositionToItemUseCase(positionList).successOr(emptyList())
+//                    convertPositionGroupPositionToItemUseCase(
+//                        ConvertInsidePosition(
+//                            userPosition,
+//                            item
+//                        )
+//                    ).successOr(emptyList())
 //                        .toMutableList()
 //                items.add(
 //                    0,
@@ -84,7 +90,7 @@ class PositionInsideViewModel @Inject constructor(
 //                )
 //                _copiesState.value = copies
 //                _positionItems.value = items
-            }
+//            }
         }
     }
 
@@ -113,20 +119,19 @@ class PositionInsideViewModel @Inject constructor(
     }
 
     fun convertPositionWithCopies(copies: Copier?, currentIndex: Int) {
-        viewModelScope.launch {
-            copies?.let { copies ->
-                val position = copies.positions?.get(currentIndex)
-                position?.let { position ->
-                    val items =
-                        convertPositionToItemUseCase(copies.positions?.filter { it.instrument?.id == position.instrument?.id }
-                            ?: emptyList()).successOr(
-                            emptyList()
-                        )
-                    _positionState.value = position
-                    _positionItems.value = items.toMutableList()
-                }
-            }
-        }
+//        viewModelScope.launch {
+//            copies?.let { copies ->
+//                val position = copies.positions?.get(currentIndex)
+//                position?.let { position ->
+//                    val items =
+//                        convertPositionToItemUseCase().successOr(
+//                            emptyList()
+//                        )
+//                    _positionState.value = position
+//                    _positionItems.value = items.toMutableList()
+//                }
+//            }
+//        }
     }
 
     fun updateHeader(quotes: MutableMap<Int, Quote>) {

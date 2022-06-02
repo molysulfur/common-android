@@ -28,7 +28,9 @@ import com.awonar.app.ui.order.edit.EditPositionDialog
 import com.awonar.app.ui.order.partialclose.PartialCloseDialog
 import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.awonar.app.ui.portfolio.adapter.IPortfolioListItemTouchHelperCallback
+import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 import com.awonar.app.ui.portfolio.adapter.PortfolioListItemTouchHelperCallback
+import com.awonar.app.ui.portfolio.position.PositionViewModel
 import com.awonar.app.ui.publishfeed.PublishFeedActivity
 import com.google.android.material.snackbar.Snackbar
 import com.molysulfur.library.extension.openActivity
@@ -46,6 +48,7 @@ class PortFolioInsideInstrumentFragment : Fragment() {
     private val activityViewModel: PositionInsideViewModel by activityViewModels()
     private val columnsViewModel: ColumnsViewModel by activityViewModels()
     private val orderViewModel: OrderViewModel by activityViewModels()
+    private val positionViewModel: PositionViewModel by activityViewModels()
 
     private val args: PortFolioInsideInstrumentFragmentArgs by navArgs()
 
@@ -135,7 +138,7 @@ class PortFolioInsideInstrumentFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupDialog()
         setupListener()
-        currentIndex = args.index
+        currentIndex = args.position
         columnsViewModel.setColumnType("manual")
         launchAndRepeatWithViewLifecycle {
             QuoteSteamingManager.quotesState.collect { quotes ->
@@ -146,7 +149,10 @@ class PortFolioInsideInstrumentFragment : Fragment() {
                 }
             }
         }
-        activityViewModel.convertPosition(portFolioViewModel.positionState.value, currentIndex)
+        activityViewModel.convertPosition(
+            portFolioViewModel.positionState.value,
+            positionViewModel.positionItems.value[currentIndex] as PortfolioItem.PositionItem
+        )
         setupToolbar()
         setTouchHelper()
         setupListener()
@@ -229,10 +235,10 @@ class PortFolioInsideInstrumentFragment : Fragment() {
                 R.id.awonar_menu_instide_position_back -> {
                     if (currentIndex > 0) {
                         currentIndex--
-                        activityViewModel.convertPosition(
-                            portFolioViewModel.positionState.value,
-                            currentIndex
-                        )
+//                        activityViewModel.convertPosition(
+//                            portFolioViewModel.positionState.value,
+//                            currentIndex
+//                        )
                     }
                     true
                 }
@@ -240,10 +246,10 @@ class PortFolioInsideInstrumentFragment : Fragment() {
                     val positionSize = portFolioViewModel.positionState.value?.positions?.size ?: 0
                     if (currentIndex < positionSize.minus(1)) {
                         currentIndex++
-                        activityViewModel.convertPosition(
-                            portFolioViewModel.positionState.value,
-                            currentIndex
-                        )
+//                        activityViewModel.convertPosition(
+//                            portFolioViewModel.positionState.value,
+//                            currentIndex
+//                        )
                     }
                     true
                 }

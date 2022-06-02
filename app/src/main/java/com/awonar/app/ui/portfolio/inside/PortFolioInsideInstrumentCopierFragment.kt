@@ -28,7 +28,6 @@ class PortFolioInsideInstrumentCopierFragment : Fragment() {
 
     private val positionViewModel: PositionViewModel by activityViewModels()
     private val activityViewModel: PositionInsideViewModel by activityViewModels()
-    private val marketViewModel: MarketViewModel by activityViewModels()
     private val columnsViewModel: ColumnsViewModel by activityViewModels()
     private val orderViewModel: OrderViewModel by activityViewModels()
 
@@ -64,7 +63,7 @@ class PortFolioInsideInstrumentCopierFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        currentIndex = args.index
+        currentIndex = args.position
         columnsViewModel.setColumnType("manual")
         launchAndRepeatWithViewLifecycle {
             QuoteSteamingManager.quotesState.collect { quotes ->

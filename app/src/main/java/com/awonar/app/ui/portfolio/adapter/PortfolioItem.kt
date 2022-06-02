@@ -42,7 +42,6 @@ sealed class PortfolioItem(
     @Parcelize
     class PositionItem(
         val positionId: Int,
-        val copierId: String? = null,
         val instrumentGroup: List<Position>? = null,
         val conversionRate: Float = 0f,
         var invested: Float = 0f,
@@ -66,7 +65,7 @@ sealed class PortfolioItem(
 
     @Parcelize
     class CopierPortfolioItem(
-        val copier: Copier,
+        var copier: Copier,
         val conversions: Map<Int, Float>,
         var index: Int,
     ) : PortfolioItem(COPYTRADE_PORTFOLIO)

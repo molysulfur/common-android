@@ -64,7 +64,7 @@ fun setUserPortfolio(
     if (recycler.adapter == null) {
         with(recycler) {
             adapter = PortfolioAdapter().apply {
-                onClick = { index, type ->
+                onIntrumentClick = { index ->
                     viewModel?.navigate(index)
                 }
             }
@@ -219,8 +219,7 @@ fun setInsidePositionAdapter(
             layoutManager =
                 LinearLayoutManager(recycler.context, LinearLayoutManager.VERTICAL, false)
             adapter = PortfolioAdapter().apply {
-                onClick = { index, type ->
-                    viewModel?.navigateInstrumentInside(index, "copies_instrument")
+                onIntrumentClick = { position ->
                 }
             }
         }
@@ -373,7 +372,7 @@ private fun getPositionValueByColumn(
             "%"
         )
         "Pip Change" -> "%s".format(item.pipChange)
-        "Leverage" -> "%s".format(item.leverage)
+        "Leverage" -> "%.2f".format(item.leverage)
         "Value" -> "$%.2f".format(item.value)
         "Value(%)" -> "%.2f%s".format(item.value, "%")
         "Fee" -> "$%.2f".format(item.fees)
