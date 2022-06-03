@@ -42,8 +42,6 @@ class PositionInsideViewModel @Inject constructor(
     val editDialog: Flow<Position?> get() = _editDialog.receiveAsFlow()
     private val _closeDialog = Channel<Position?>(capacity = Channel.CONFLATED)
     val closeDialog: Flow<Position?> get() = _closeDialog.receiveAsFlow()
-    private val _positionState: MutableStateFlow<Position?> = MutableStateFlow(null)
-    val positionState: StateFlow<Position?> get() = _positionState
     private val _copiesState: MutableStateFlow<Copier?> = MutableStateFlow(null)
     val copiesState: StateFlow<Copier?> get() = _copiesState
     private val _positionItems: MutableStateFlow<MutableList<PortfolioItem>> =

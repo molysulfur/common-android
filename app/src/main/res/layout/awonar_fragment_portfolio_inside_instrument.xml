@@ -59,7 +59,6 @@
 
                 <com.awonar.app.widget.InstrumentPositionCardView
                     android:id="@+id/awonar_portfolio_inside_instrument_instrument_position_header"
-                    setInstrumentPositionCard="@{viewModel.positionState}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 

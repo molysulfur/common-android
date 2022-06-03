@@ -19,7 +19,6 @@ import javax.inject.Inject
 
 
 class ConvertPositionToItemUseCase @Inject constructor(
-    private val currenciesRepository: CurrenciesRepository,
     private val calculateAmountStopLossAndTakeProfitWithBuyUseCase: CalculateAmountStopLossAndTakeProfitWithBuyUseCase,
     private val calculateAmountStopLossAndTakeProfitWithSellUseCase: CalculateAmountStopLossAndTakeProfitWithSellUseCase,
     @IoDispatcher dispatcher: CoroutineDispatcher,
@@ -30,7 +29,6 @@ class ConvertPositionToItemUseCase @Inject constructor(
         val positions = parameters.portfolio.positions
         val instrumentId = parameters.currentItem.instrumentGroup?.get(0)?.instrument?.id
         positions?.filter { it.instrumentId == instrumentId }?.forEach {
-            Timber.e("${it.instrument?.symbol}")
             itemList.add(
                 PortfolioItem.PositionItem(
                     positionId = it.instrumentId,

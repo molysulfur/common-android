@@ -4,10 +4,8 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.awonar.android.model.market.Quote
 import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.portfolio.Position
-import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.app.R
 import com.awonar.app.ui.portfolio.adapter.PortfolioAdapter
 import com.awonar.app.ui.portfolio.adapter.PortfolioItem
@@ -18,8 +16,6 @@ import com.awonar.app.utils.ColorChangingUtil
 import com.awonar.app.widget.CopierPositionCardView
 import com.awonar.app.widget.PositionView
 import com.awonar.app.widget.InstrumentPositionCardView
-import timber.log.Timber
-import kotlin.collections.HashMap
 
 @BindingAdapter("setChartPortfolio", "viewModel")
 fun setChartPortfolio(
@@ -185,24 +181,6 @@ fun setCopierPositionCard(
             setInvested(it.initialInvestment)
             setMoney(money)
             setValueInvested(value)
-        }
-    }
-}
-
-@BindingAdapter("setInstrumentPositionCard")
-fun setInstrumentPositionCard(
-    view: InstrumentPositionCardView,
-    position: Position?,
-) {
-    position?.let {
-        view.apply {
-            setImage(it.instrument?.logo ?: "")
-            setTitle(it.instrument?.symbol ?: "")
-            setSubTitle(it.instrument?.name ?: "")
-            setDescrption(it.instrument?.industry ?: "")
-            setInvested(it.amount)
-            setUnit(it.units)
-            setAvgOpen(it.openRate)
         }
     }
 }

@@ -10,6 +10,7 @@ import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class InstrumentPortfolioViewHolder constructor(
     private val binding: AwonarItemPositionBinding,
@@ -73,7 +74,7 @@ class InstrumentPortfolioViewHolder constructor(
                             val sumOpenRate: Double = positionItem.instrumentGroup.sumOf {
                                 it.openRate.toDouble().div(positionItem.instrumentGroup.size)
                             }
-                            positionItem.current = it.close
+                            positionItem.current = current
                             positionItem.openRate = sumOpenRate.toFloat()
                             positionItem.leverage = leverage.toFloat()
                             pl += PortfolioUtil.getProfitOrLoss(
@@ -83,7 +84,14 @@ class InstrumentPortfolioViewHolder constructor(
                                 positionItem.conversionRate,
                                 position.isBuy
                             )
+                            positionItem.pipChange = PortfolioUtil.pipChange(
+                                current = current,
+                                openRate = position.openRate,
+                                isBuy = position.isBuy,
+                                digit = position.instrument?.digit ?: 0
+                            ).toInt()
                         }
+
                         positionItem.pl = pl
                         positionItem.plPercent =
                             PortfolioUtil.profitLossPercent(

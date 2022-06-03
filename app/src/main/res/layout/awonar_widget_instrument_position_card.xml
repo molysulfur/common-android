@@ -40,7 +40,7 @@
 
         <variable
             name="profitLoss"
-            type="Float" />
+            type="String" />
 
         <variable
             name="avgOpen"

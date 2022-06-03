@@ -11,7 +11,8 @@ import com.awonar.app.ui.portfolio.chart.adapter.holder.*
 import timber.log.Timber
 
 @SuppressLint("NotifyDataSetChanged")
-class PortfolioAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PortfolioAdapter :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var itemLists: MutableList<PortfolioItem> = mutableListOf(PortfolioItem.EmptyItem())
         set(value) {

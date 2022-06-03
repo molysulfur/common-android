@@ -67,33 +67,33 @@ class PortFolioInsideInstrumentCopierFragment : Fragment() {
         columnsViewModel.setColumnType("manual")
         launchAndRepeatWithViewLifecycle {
             QuoteSteamingManager.quotesState.collect { quotes ->
-                val position: Position? = activityViewModel.positionState.value
-                val quote = quotes[position?.instrument?.id]
-                quote?.let {
-                    val price = ConverterQuoteUtil.getCurrentPrice(
-                        quote = quote,
-                        leverage = position?.leverage ?: 1,
-                        isBuy = position?.isBuy == true
-                    )
-                    val change = ConverterQuoteUtil.change(it.close, it.previous)
-                    val percent = ConverterQuoteUtil.percentChange(it.previous, it.close)
-                    binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setPrice(price)
-                    binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setChange(change)
-                    binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setChangePercent(
-                        percent)
-                    binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setStatusText(
-                        quote.status ?: "")
-                    binding.awonarPortfolioButtonBuy.text = "${quote.bid}"
-                    binding.awonarPortfolioButtonSell.text = "${quote.ask}"
-                    position?.let {
-                        val profit = orderViewModel.getProfit(price, position)
-                        val valueInvest = PortfolioUtil.getValue(profit, position.amount)
-                        binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setValueInvested(
-                            valueInvest)
-                        binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setProfitLoss(
-                            profit)
-                    }
-                }
+//                val position: Position? = activityViewModel.positionState.value
+//                val quote = quotes[position?.instrument?.id]
+//                quote?.let {
+//                    val price = ConverterQuoteUtil.getCurrentPrice(
+//                        quote = quote,
+//                        leverage = position?.leverage ?: 1,
+//                        isBuy = position?.isBuy == true
+//                    )
+//                    val change = ConverterQuoteUtil.change(it.close, it.previous)
+//                    val percent = ConverterQuoteUtil.percentChange(it.previous, it.close)
+//                    binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setPrice(price)
+//                    binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setChange(change)
+//                    binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setChangePercent(
+//                        percent)
+//                    binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setStatusText(
+//                        quote.status ?: "")
+//                    binding.awonarPortfolioButtonBuy.text = "${quote.bid}"
+//                    binding.awonarPortfolioButtonSell.text = "${quote.ask}"
+//                    position?.let {
+//                        val profit = orderViewModel.getProfit(price, position)
+//                        val valueInvest = PortfolioUtil.getValue(profit, position.amount)
+//                        binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setValueInvested(
+//                            valueInvest)
+//                        binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setProfitLoss(
+//                            profit)
+//                    }
+//                }
 
             }
         }
@@ -103,20 +103,22 @@ class PortFolioInsideInstrumentCopierFragment : Fragment() {
     }
 
     private fun setupPosition() {
-        activityViewModel.convertPositionWithCopies(activityViewModel.copiesState.value,
-            currentIndex)
+        activityViewModel.convertPositionWithCopies(
+            activityViewModel.copiesState.value,
+            currentIndex
+        )
     }
 
     private fun setupListener() {
         binding.awonarPortfolioButtonBuy.setOnClickListener {
-            val position: Position? = activityViewModel.positionState.value
-            OrderDialog.Builder().setSymbol(position?.instrument).setType(true).build()
-                .show(childFragmentManager)
+//            val position: Position? = activityViewModel.positionState.value
+//            OrderDialog.Builder().setSymbol(position?.instrument).setType(true).build()
+//                .show(childFragmentManager)
         }
         binding.awonarPortfolioButtonSell.setOnClickListener {
-            val position: Position? = activityViewModel.positionState.value
-            OrderDialog.Builder().setSymbol(position?.instrument).setType(false).build()
-                .show(childFragmentManager)
+//            val position: Position? = activityViewModel.positionState.value
+//            OrderDialog.Builder().setSymbol(position?.instrument).setType(false).build()
+//                .show(childFragmentManager)
         }
     }
 

@@ -4,12 +4,15 @@ import com.awonar.android.model.market.Quote
 
 object ConverterQuoteUtil {
 
-    fun getCurrentPrice(quote: Quote, leverage: Int, isBuy: Boolean) = when (isBuy) {
+    fun getCurrentPrice(
+        quote: Quote, leverage: Int,
+        isBuy: Boolean,
+    ) = when (isBuy) {
         true -> {
-            if (leverage > 1) quote.ask else quote.askSpread
+            if (leverage > 1) quote.bid else quote.bidSpread
         }
         else -> {
-            quote.bidSpread
+            quote.askSpread
         }
     }
 

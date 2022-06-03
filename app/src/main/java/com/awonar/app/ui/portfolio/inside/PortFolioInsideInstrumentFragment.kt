@@ -124,7 +124,7 @@ class PortFolioInsideInstrumentFragment : Fragment() {
                     binding.column1 = newColumn[0]
                     binding.column2 = newColumn[1]
                     binding.column3 = newColumn[2]
-                    binding.column4 = "P/L($)"
+                    binding.column4 = newColumn[3]
                 }
             }
         }
@@ -142,10 +142,14 @@ class PortFolioInsideInstrumentFragment : Fragment() {
         columnsViewModel.setColumnType("manual")
         launchAndRepeatWithViewLifecycle {
             QuoteSteamingManager.quotesState.collect { quotes ->
-                val position: Position? = activityViewModel.positionState.value
-                val quote = quotes[position?.instrument?.id]
-                quote?.let {
-                    setupHeader(quote, position, it)
+                val item =
+                    positionViewModel.positionItems.value[currentIndex] as PortfolioItem.PositionItem
+                val position: List<Position> = item.instrumentGroup ?: emptyList()
+                if (position.isNotEmpty()) {
+                    val quote = quotes[position[0].instrument?.id]
+                    quote?.let {
+                        setupHeader(quote, position, item.conversionRate)
+                    }
                 }
             }
         }
@@ -162,10 +166,13 @@ class PortFolioInsideInstrumentFragment : Fragment() {
         settingBottomSheet = MenuDialogButtonSheet.Builder()
             .setListener(object : MenuDialogButtonSheet.MenuDialogButtonSheetListener {
                 override fun onMenuClick(menu: MenuDialog) {
+                    val item =
+                        positionViewModel.positionItems.value[currentIndex] as PortfolioItem.PositionItem
+                    val position: Position? = item.instrumentGroup?.get(0)
                     when (menu.key) {
                         "new_trade" -> OrderDialog.Builder()
                             .setType(true)
-                            .setSymbol(instrument = activityViewModel.positionState.value?.instrument)
+                            .setSymbol(instrument = position?.instrument)
                             .build()
                             .show(childFragmentManager)
                         "new_post" -> openActivity(PublishFeedActivity::class.java)
@@ -178,36 +185,50 @@ class PortFolioInsideInstrumentFragment : Fragment() {
 
     private suspend fun setupHeader(
         quote: Quote,
-        position: Position?,
-        it: Quote,
+        position: List<Position>,
+        conversionRate: Float
     ) {
-        val price = ConverterQuoteUtil.getCurrentPrice(
-            quote = quote,
-            leverage = position?.leverage ?: 1,
-            isBuy = position?.isBuy == true
-        )
-        val change = ConverterQuoteUtil.change(it.close, it.previous)
-        val percent = ConverterQuoteUtil.percentChange(it.previous, it.close)
-        binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setPrice(price)
-        binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setChange(change)
-        binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setChangePercent(
-            percent
-        )
-        binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setStatusText(
-            quote.status ?: ""
-        )
+        val price = quote.close
+        val change = ConverterQuoteUtil.change(quote.close, quote.previous)
+        val percent = ConverterQuoteUtil.percentChange(quote.previous, quote.close)
+        val invested = position.sumOf { it.amount.toDouble() }
+        var totalValue = 0.0
+        val totalPL = position.sumOf {
+            val currentPl = PortfolioUtil.getProfitOrLoss(
+                ConverterQuoteUtil.getCurrentPrice(
+                    quote,
+                    it.leverage,
+                    it.isBuy
+                ),
+                it.openRate,
+                it.units,
+                conversionRate,
+                it.isBuy
+            ).toDouble()
+            val value = currentPl.plus(it.amount)
+            totalValue += value
+            currentPl
+        }
+        val sumBuy = position.filter { it.isBuy }.sumOf { it.units.times(it.openRate).toDouble() }
+        val sumSell = position.filter { !it.isBuy }.sumOf { it.units.times(it.openRate).toDouble() }
+        val sumUnitBuy = position.filter { it.isBuy }.sumOf { it.units.toDouble() }
+        val sumUnitSell = position.filter { !it.isBuy }.sumOf { it.units.toDouble() }
+        val avgOpen = sumBuy.minus(sumSell).div((sumUnitBuy.minus(sumUnitSell)))
+        binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.apply {
+            setImage(position[0].instrument?.logo ?: "")
+            setTitle(position[0].instrument?.symbol ?: "")
+            setPrice(price)
+            setChange(change)
+            setChangePercent(percent)
+            setStatusText(quote.status ?: "")
+            setInvested(invested.toFloat())
+            setValueInvested(totalValue.toFloat())
+            setProfitLoss(totalPL.toFloat())
+            setAvgOpen(avgOpen.toFloat())
+            setUnit(sumUnitBuy.plus(sumUnitSell).toFloat())
+        }
         binding.awonarPortfolioButtonBuy.text = "${quote.bid}"
         binding.awonarPortfolioButtonSell.text = "${quote.ask}"
-        position?.let {
-            val profit = orderViewModel.getProfit(price, position)
-            val valueInvest = PortfolioUtil.getValue(profit, position.amount)
-            binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setValueInvested(
-                valueInvest
-            )
-            binding.awonarPortfolioInsideInstrumentInstrumentPositionHeader.setProfitLoss(
-                profit
-            )
-        }
     }
 
     private fun setupListener() {
@@ -215,12 +236,16 @@ class PortFolioInsideInstrumentFragment : Fragment() {
             settingBottomSheet.show(childFragmentManager, OPEN_DIALOG_TAG)
         }
         binding.awonarPortfolioButtonBuy.setOnClickListener {
-            val position: Position? = activityViewModel.positionState.value
+            val item =
+                positionViewModel.positionItems.value[currentIndex] as PortfolioItem.PositionItem
+            val position: Position? = item.instrumentGroup?.get(0)
             OrderDialog.Builder().setSymbol(position?.instrument).setType(true).build()
                 .show(childFragmentManager)
         }
         binding.awonarPortfolioButtonSell.setOnClickListener {
-            val position: Position? = activityViewModel.positionState.value
+            val item =
+                positionViewModel.positionItems.value[currentIndex] as PortfolioItem.PositionItem
+            val position: Position? = item.instrumentGroup?.get(0)
             OrderDialog.Builder().setSymbol(position?.instrument).setType(false).build()
                 .show(childFragmentManager)
         }

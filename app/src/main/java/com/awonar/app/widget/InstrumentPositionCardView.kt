@@ -62,7 +62,7 @@ class InstrumentPositionCardView : BaseViewGroup {
     }
 
     private fun updateProfitLoss() {
-        binding.profitLoss = profitLoss
+        binding.profitLoss = "$%.2f".format(profitLoss)
         binding.awonarInstrumentPositionCardTextProfitloss.setTextColor(
             ColorChangingUtil.getTextColorChange(
                 context,

@@ -153,6 +153,7 @@ data class Position(
     @SerializedName("change") var change: Float = 0f,
     @SerializedName("changePercent") var changePercent: Float = 0f,
     @SerializedName("status") var status: String? = null,
+    @SerializedName("isCFD") var isCFD: Boolean = true,
 ) : Parcelable
 
 
