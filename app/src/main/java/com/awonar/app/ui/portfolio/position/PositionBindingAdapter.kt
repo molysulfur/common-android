@@ -24,6 +24,9 @@ fun setPositionAdapter(
                 onIntrumentClick = { position ->
                     viewModel.navigateInstrumentInside(position)
                 }
+                onCopierClick = { position ->
+                    viewModel.navigateInstrumentCopier(position)
+                }
             }
         }
     }

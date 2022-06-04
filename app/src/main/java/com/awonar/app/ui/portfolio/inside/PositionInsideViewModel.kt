@@ -42,8 +42,6 @@ class PositionInsideViewModel @Inject constructor(
     val editDialog: Flow<Position?> get() = _editDialog.receiveAsFlow()
     private val _closeDialog = Channel<Position?>(capacity = Channel.CONFLATED)
     val closeDialog: Flow<Position?> get() = _closeDialog.receiveAsFlow()
-    private val _copiesState: MutableStateFlow<Copier?> = MutableStateFlow(null)
-    val copiesState: StateFlow<Copier?> get() = _copiesState
     private val _positionItems: MutableStateFlow<MutableList<PortfolioItem>> =
         MutableStateFlow(mutableListOf(PortfolioItem.EmptyItem()))
     val positionItems: StateFlow<MutableList<PortfolioItem>> get() = _positionItems
@@ -69,9 +67,8 @@ class PositionInsideViewModel @Inject constructor(
         }
     }
 
-    fun getCopiesWithIndex(userPosition: UserPortfolioResponse?, currentIndex: Int) {
+    fun getCopiesWithIndex(userPosition: UserPortfolioResponse?, currentIndex: PortfolioItem.CopierPortfolioItem) {
         viewModelScope.launch {
-            val copies: Copier? = userPosition?.copies?.get(currentIndex)
 //            val currentItem = _positionItems
 //            if (copies != null) {
 //                val items =
@@ -132,29 +129,5 @@ class PositionInsideViewModel @Inject constructor(
 //        }
     }
 
-    fun updateHeader(quotes: MutableMap<Int, Quote>) {
-        viewModelScope.launch {
-            val copier = _copiesState.value
-            val sumPL = copier?.positions?.sumOf { position ->
-                val conversion =
-                    getConversionByInstrumentUseCase(position.instrument?.id ?: 0).successOr(0f)
-                val quote = quotes[position.instrumentId]
-                val current = if (position.isBuy) quote?.bid else quote?.ask
-                val pl = PortfolioUtil.getProfitOrLoss(
-                    current ?: 0f,
-                    position.openRate,
-                    position.units,
-                    conversion,
-                    position.isBuy
-                ).toDouble()
-                pl
-            } ?: 0.0
-            val pl = copier?.closedPositionsNetProfit?.plus(sumPL.toFloat()) ?: 0f
-            _sumFloatingPL.value = pl
-            val value = copier?.invested?.plus(pl) ?: 0f
-
-            _sumValue.value = value
-        }
-    }
 
 }

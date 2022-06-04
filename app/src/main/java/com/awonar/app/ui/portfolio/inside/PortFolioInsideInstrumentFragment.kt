@@ -61,7 +61,6 @@ class PortFolioInsideInstrumentFragment : Fragment() {
 
     private lateinit var settingBottomSheet: MenuDialogButtonSheet
 
-
     private val binding: AwonarFragmentPortfolioInsideInstrumentBinding by lazy {
         AwonarFragmentPortfolioInsideInstrumentBinding.inflate(layoutInflater)
     }

@@ -103,10 +103,10 @@ class PortFolioInsideInstrumentCopierFragment : Fragment() {
     }
 
     private fun setupPosition() {
-        activityViewModel.convertPositionWithCopies(
-            activityViewModel.copiesState.value,
-            currentIndex
-        )
+//        activityViewModel.convertPositionWithCopies(
+//            activityViewModel.copiesState.value,
+//            currentIndex
+//        )
     }
 
     private fun setupListener() {
@@ -136,11 +136,11 @@ class PortFolioInsideInstrumentCopierFragment : Fragment() {
                     true
                 }
                 R.id.awonar_menu_instide_position_next -> {
-                    val positionSize = activityViewModel.copiesState.value?.positions?.size ?: 0
-                    if (currentIndex < positionSize.minus(1)) {
-                        currentIndex++
-                        setupPosition()
-                    }
+//                    val positionSize = activityViewModel.copiesState.value?.positions?.size ?: 0
+//                    if (currentIndex < positionSize.minus(1)) {
+//                        currentIndex++
+//                        setupPosition()
+//                    }
                     true
                 }
                 else -> false

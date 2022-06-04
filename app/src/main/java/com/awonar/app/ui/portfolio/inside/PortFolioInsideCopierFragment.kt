@@ -16,17 +16,12 @@ import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.shared.steaming.QuoteSteamingManager
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentPortfolioInsideCopierBinding
-import com.awonar.app.dialog.copier.add.AddFundDialog
-import com.awonar.app.dialog.copier.edit.EditCopierDialog
-import com.awonar.app.dialog.copier.pause.PauseCopierDialog
-import com.awonar.app.dialog.copier.remove.RemoveFundDialog
-import com.awonar.app.dialog.copier.stop.StopCopierDialog
 import com.awonar.app.dialog.menu.MenuDialog
 import com.awonar.app.dialog.menu.MenuDialogButtonSheet
 import com.awonar.app.ui.columns.ColumnsActivedActivity
 import com.awonar.app.ui.columns.ColumnsViewModel
-import com.awonar.app.ui.market.MarketViewModel
 import com.awonar.app.ui.portfolio.PortFolioViewModel
+import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 import com.awonar.app.ui.portfolio.position.PositionViewModel
 import com.awonar.app.utils.ColorChangingUtil
 import com.molysulfur.library.extension.openActivityCompatForResult
@@ -41,7 +36,6 @@ class PortFolioInsideCopierFragment : Fragment() {
     private val positionViewModel: PositionViewModel by activityViewModels()
     private val insideViewModel: PositionInsideViewModel by activityViewModels()
     private val columnsViewModel: ColumnsViewModel by activityViewModels()
-    private val marketViewModel: MarketViewModel by activityViewModels()
 
     private val args: PortFolioInsideCopierFragmentArgs by navArgs()
 
@@ -87,14 +81,26 @@ class PortFolioInsideCopierFragment : Fragment() {
             }
             launch {
                 QuoteSteamingManager.quotesState.collectLatest { quotes ->
-                    insideViewModel.updateHeader(quotes)
-                }
-            }
-            launch {
-                insideViewModel.copiesState.collect {
-                    marketViewModel.getConversionsRateList(it?.positions ?: emptyList())
-                    columnsViewModel.getActivedColumns()
-                    setupFooter(it)
+                    val item =
+                        positionViewModel.positionItems.value[currentIndex] as PortfolioItem.CopierPortfolioItem
+                    val copier = item.copier
+                    val invested = copier.initialInvestment
+                    val money = copier.depositSummary.minus(item.copier.withdrawalSummary)
+                    val value =
+                        copier.initialInvestment.plus(money)
+                    binding.awonarPortfolioInsideCopierPositionHeader.apply {
+                        setImage(copier.user.picture ?: "")
+                        setTitle(
+                            if (copier.user.private) copier.user.username
+                                ?: "" else "%s %s".format(
+                                copier.user.firstName,
+                                copier.user.lastName
+                            )
+                        )
+                        setInvested(invested)
+                        setMoney(money)
+                        setValueInvested(value)
+                    }
                 }
             }
             launch {
@@ -119,7 +125,10 @@ class PortFolioInsideCopierFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         currentIndex = args.index
         columnsViewModel.getActivedColumns()
-        insideViewModel.getCopiesWithIndex(portFolioViewModel.positionState.value, currentIndex)
+        insideViewModel.getCopiesWithIndex(
+            portFolioViewModel.positionState.value,
+            positionViewModel.positionItems.value[currentIndex] as PortfolioItem.CopierPortfolioItem
+        )
         setupToolbar()
     }
 
@@ -179,10 +188,10 @@ class PortFolioInsideCopierFragment : Fragment() {
                 R.id.awonar_menu_instide_position_back -> {
                     if (currentIndex > 0) {
                         currentIndex--
-                        insideViewModel.getCopiesWithIndex(
-                            portFolioViewModel.positionState.value,
-                            currentIndex
-                        )
+//                        insideViewModel.getCopiesWithIndex(
+//                            portFolioViewModel.positionState.value,
+//                            currentIndex
+//                        )
                     }
                     true
                 }
@@ -190,10 +199,10 @@ class PortFolioInsideCopierFragment : Fragment() {
                     val positionSize = portFolioViewModel.positionState.value?.copies?.size ?: 0
                     if (currentIndex < positionSize.minus(1)) {
                         currentIndex++
-                        insideViewModel.getCopiesWithIndex(
-                            portFolioViewModel.positionState.value,
-                            currentIndex
-                        )
+//                        insideViewModel.getCopiesWithIndex(
+//                            portFolioViewModel.positionState.value,
+//                            currentIndex
+//                        )
                     }
                     true
                 }
@@ -203,38 +212,38 @@ class PortFolioInsideCopierFragment : Fragment() {
     }
 
     private fun openEditCopyDialog() {
-        EditCopierDialog.Builder()
-            .setCopies(copier = insideViewModel.copiesState.value)
-            .build()
-            .show(parentFragmentManager)
+//        EditCopierDialog.Builder()
+//            .setCopies(copier = insideViewModel.copiesState.value)
+//            .build()
+//            .show(parentFragmentManager)
     }
 
     private fun openPauseCopyDialog() {
-        PauseCopierDialog.Builder()
-            .setCopies(copier = insideViewModel.copiesState.value)
-            .build()
-            .show(parentFragmentManager)
+//        PauseCopierDialog.Builder()
+//            .setCopies(copier = insideViewModel.copiesState.value)
+//            .build()
+//            .show(parentFragmentManager)
     }
 
     private fun openRemoveFundDialog() {
-        RemoveFundDialog.Builder()
-            .setCopies(copier = insideViewModel.copiesState.value)
-            .build()
-            .show(parentFragmentManager)
+//        RemoveFundDialog.Builder()
+//            .setCopies(copier = insideViewModel.copiesState.value)
+//            .build()
+//            .show(parentFragmentManager)
     }
 
     private fun openAddFundDialog() {
-        AddFundDialog.Builder()
-            .setCopies(copier = insideViewModel.copiesState.value)
-            .build()
-            .show(parentFragmentManager)
+//        AddFundDialog.Builder()
+//            .setCopies(copier = insideViewModel.copiesState.value)
+//            .build()
+//            .show(parentFragmentManager)
     }
 
     private fun openStopCopyDialog() {
-        StopCopierDialog.Builder()
-            .setCopies(copier = insideViewModel.copiesState.value)
-            .build()
-            .show(parentFragmentManager)
+//        StopCopierDialog.Builder()
+//            .setCopies(copier = insideViewModel.copiesState.value)
+//            .build()
+//            .show(parentFragmentManager)
     }
 
 }

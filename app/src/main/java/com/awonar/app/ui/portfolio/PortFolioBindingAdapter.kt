@@ -166,25 +166,6 @@ fun setInstrumentPositionCardView(
     }
 }
 
-@BindingAdapter("setOrder")
-fun setCopierPositionCard(
-    view: CopierPositionCardView,
-    copier: Copier?,
-) {
-    copier?.let {
-        val money = it.depositSummary.minus(it.withdrawalSummary)
-        val value = it.initialInvestment.plus(money)
-        view.apply {
-            setImage(it.user.picture ?: "")
-            setTitle("${it.user.firstName} ${it.user.middleName} ${it.user.lastName}")
-            setDescrption(it.user.username ?: "")
-            setInvested(it.initialInvestment)
-            setMoney(money)
-            setValueInvested(value)
-        }
-    }
-}
-
 @BindingAdapter("setInsideAdapter", "activedColumn", "viewModel")
 fun setInsidePositionAdapter(
     recycler: RecyclerView,

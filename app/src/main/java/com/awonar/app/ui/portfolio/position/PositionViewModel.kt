@@ -86,20 +86,15 @@ class PositionViewModel @Inject constructor(
                 PositionFragmentDirections
                     .actionPositionFragmentToPortFolioInsideInstrumentPortfolioFragment(position)
             )
-//            when (type) {
-//                "instrument" ->
-//                "copies" -> _navigateActions.send(
-//                    PositionFragmentDirections.actionPositionFragmentToPortFolioInsideCopierPortfolioFragment(
-//                        index
-//                    )
-//                )
-//                "copies_instrument" -> _navigateActions.send(
-//                    PortFolioInsideCopierFragmentDirections.actionPortFolioInsideCopierFragmentToPortFolioInsideInstrumentCopierFragment(
-//                        index
-//                    )
-//                )
-//            }
+        }
+    }
 
+    fun navigateInstrumentCopier(position: Int) {
+        viewModelScope.launch {
+            _navigateActions.send(
+                PositionFragmentDirections
+                    .actionPositionFragmentToPortFolioInsideCopierPortfolioFragment(position)
+            )
         }
     }
 
@@ -137,4 +132,5 @@ class PositionViewModel @Inject constructor(
         }
         _styleTypeState.value = newStyle
     }
+
 }
