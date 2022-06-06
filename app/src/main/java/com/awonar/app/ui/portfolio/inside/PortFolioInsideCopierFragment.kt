@@ -14,6 +14,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.shared.steaming.QuoteSteamingManager
+import com.awonar.android.shared.utils.ConverterQuoteUtil
+import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarFragmentPortfolioInsideCopierBinding
 import com.awonar.app.dialog.menu.MenuDialog
@@ -29,6 +31,7 @@ import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class PortFolioInsideCopierFragment : Fragment() {
 
@@ -80,27 +83,38 @@ class PortFolioInsideCopierFragment : Fragment() {
                 }
             }
             launch {
-                QuoteSteamingManager.quotesState.collectLatest { quotes ->
+                QuoteSteamingManager.quotesState.collectIndexed { index, quotes ->
                     val item =
                         positionViewModel.positionItems.value[currentIndex] as PortfolioItem.CopierPortfolioItem
                     val copier = item.copier
-                    val invested = copier.initialInvestment
+                    var sumPL = 0f
+                    copier.positions?.forEach { position ->
+                        val quote = quotes[position.instrument?.id]
+                        quote?.let {
+                            val current = ConverterQuoteUtil.getCurrentPrice(
+                                quote,
+                                position.leverage,
+                                position.isBuy
+                            )
+                            val pl = PortfolioUtil.getProfitOrLoss(
+                                current,
+                                position.openRate,
+                                position.units,
+                                position.conversionRate,
+                                position.isBuy
+                            )
+                            sumPL += pl
+                        }
+                    }
+                    val newPL = item.copier.closedPositionsNetProfit.plus(sumPL)
                     val money = copier.depositSummary.minus(item.copier.withdrawalSummary)
                     val value =
-                        copier.initialInvestment.plus(money)
+                        copier.initialInvestment.plus(money).plus(newPL)
                     binding.awonarPortfolioInsideCopierPositionHeader.apply {
-                        setImage(copier.user.picture ?: "")
-                        setTitle(
-                            if (copier.user.private) copier.user.username
-                                ?: "" else "%s %s".format(
-                                copier.user.firstName,
-                                copier.user.lastName
-                            )
-                        )
-                        setInvested(invested)
-                        setMoney(money)
+                        setProfitLoss(newPL)
                         setValueInvested(value)
                     }
+
                 }
             }
             launch {
@@ -129,7 +143,31 @@ class PortFolioInsideCopierFragment : Fragment() {
             portFolioViewModel.positionState.value,
             positionViewModel.positionItems.value[currentIndex] as PortfolioItem.CopierPortfolioItem
         )
+        setupHeader()
         setupToolbar()
+    }
+
+    private fun setupHeader() {
+        val item =
+            positionViewModel.positionItems.value[currentIndex] as PortfolioItem.CopierPortfolioItem
+        val copier = item.copier
+        val invested = copier.initialInvestment
+        val money = copier.depositSummary.minus(item.copier.withdrawalSummary)
+
+        binding.awonarPortfolioInsideCopierPositionHeader.apply {
+            setImage(copier.user.picture ?: "")
+            setTitle(
+                if (copier.user.private) copier.user.username
+                    ?: "" else "%s %s".format(
+                    copier.user.firstName,
+                    copier.user.lastName
+                )
+            )
+
+            setInvested(invested)
+            setMoney(money)
+
+        }
     }
 
     private fun setupFooter(copier: Copier?) {

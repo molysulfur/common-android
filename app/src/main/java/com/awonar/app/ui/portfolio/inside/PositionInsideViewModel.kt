@@ -8,10 +8,7 @@ import com.awonar.android.model.portfolio.Position
 import com.awonar.android.model.portfolio.UserPortfolioResponse
 import com.awonar.android.shared.domain.market.GetConversionByInstrumentUseCase
 import com.awonar.android.shared.utils.PortfolioUtil
-import com.awonar.app.domain.portfolio.ConvertInsidePosition
-import com.awonar.app.domain.portfolio.ConvertMarketToItemUseCase
-import com.awonar.app.domain.portfolio.ConvertPositionToItemUseCase
-import com.awonar.app.domain.portfolio.ConvertPublicPositionToItemUseCase
+import com.awonar.app.domain.portfolio.*
 import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 import com.awonar.app.utils.DateUtils
 import com.molysulfur.library.result.successOr
@@ -27,10 +24,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PositionInsideViewModel @Inject constructor(
+    private val convertInsideCopierPositionToItemUseCase: ConvertInsideCopierPositionToItemUseCase,
     private val convertPositionToItemUseCase: ConvertPositionToItemUseCase,
-    private val convertPositionGroupPositionToItemUseCase: ConvertMarketToItemUseCase,
     private val convertPublicPositionToItemUseCase: ConvertPublicPositionToItemUseCase,
-    private val getConversionByInstrumentUseCase: GetConversionByInstrumentUseCase
 ) : ViewModel() {
 
     private val _sumFloatingPL = MutableStateFlow(0f)
@@ -67,25 +63,14 @@ class PositionInsideViewModel @Inject constructor(
         }
     }
 
-    fun getCopiesWithIndex(userPosition: UserPortfolioResponse?, currentIndex: PortfolioItem.CopierPortfolioItem) {
+    fun getCopiesWithIndex(
+        userPosition: UserPortfolioResponse?,
+        currentIndex: PortfolioItem.CopierPortfolioItem
+    ) {
         viewModelScope.launch {
-//            val currentItem = _positionItems
-//            if (copies != null) {
-//                val items =
-//                    convertPositionGroupPositionToItemUseCase(
-//                        ConvertInsidePosition(
-//                            userPosition,
-//                            item
-//                        )
-//                    ).successOr(emptyList())
-//                        .toMutableList()
-//                items.add(
-//                    0,
-//                    PortfolioItem.SectionItem("Start Copy ${DateUtils.getDate(copies.startedCopyDate)}")
-//                )
-//                _copiesState.value = copies
-//                _positionItems.value = items
-//            }
+            val itemLists =
+                convertInsideCopierPositionToItemUseCase(currentIndex.copier).successOr(emptyList())
+            _positionItems.value = itemLists.toMutableList()
         }
     }
 
