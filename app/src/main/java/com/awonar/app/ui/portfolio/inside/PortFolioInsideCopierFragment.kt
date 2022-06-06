@@ -110,6 +110,28 @@ class PortFolioInsideCopierFragment : Fragment() {
                     val money = copier.depositSummary.minus(item.copier.withdrawalSummary)
                     val value =
                         copier.initialInvestment.plus(money).plus(newPL)
+                    binding.awonarPortfolioInsideCopierTextTotalOpenPl.apply {
+                        text = "PL($): $%.2f".format(newPL)
+                        setTextColor(ColorChangingUtil.getTextColorChange(requireContext(), newPL))
+
+                    }
+                    binding.awonarPortfolioInsideCopierTextTotalOpenPlPercent.apply {
+                        text = "PL(%): " + "%.2f".format(
+                            PortfolioUtil.profitLossPercent(
+                                newPL,
+                                copier.initialInvestment
+                            )
+                        )
+                        setTextColor(
+                            ColorChangingUtil.getTextColorChange(
+                                requireContext(),
+                                PortfolioUtil.profitLossPercent(
+                                    newPL,
+                                    copier.initialInvestment
+                                )
+                            )
+                        )
+                    }
                     binding.awonarPortfolioInsideCopierPositionHeader.apply {
                         setProfitLoss(newPL)
                         setValueInvested(value)
@@ -145,6 +167,7 @@ class PortFolioInsideCopierFragment : Fragment() {
         )
         setupHeader()
         setupToolbar()
+        setupFooter()
     }
 
     private fun setupHeader() {
@@ -170,8 +193,11 @@ class PortFolioInsideCopierFragment : Fragment() {
         }
     }
 
-    private fun setupFooter(copier: Copier?) {
-        copier?.let {
+    private fun setupFooter() {
+        val item =
+            positionViewModel.positionItems.value[currentIndex] as PortfolioItem.CopierPortfolioItem
+        val copier = item.copier
+        copier.let {
             binding.awonarPortfolioInsideCopierTextTotalOpenInvested.text =
                 "Invested: $%.2f".format(it.investAmount)
             binding.awonarPortfolioInsideCopierTextTotalCloseFee.text =
