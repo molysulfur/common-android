@@ -83,63 +83,6 @@ class PortFolioInsideCopierFragment : Fragment() {
                 }
             }
             launch {
-                QuoteSteamingManager.quotesState.collectIndexed { index, quotes ->
-                    val item =
-                        positionViewModel.positionItems.value[currentIndex] as PortfolioItem.CopierPortfolioItem
-                    val copier = item.copier
-                    var sumPL = 0f
-                    copier.positions?.forEach { position ->
-                        val quote = quotes[position.instrument?.id]
-                        quote?.let {
-                            val current = ConverterQuoteUtil.getCurrentPrice(
-                                quote,
-                                position.leverage,
-                                position.isBuy
-                            )
-                            val pl = PortfolioUtil.getProfitOrLoss(
-                                current,
-                                position.openRate,
-                                position.units,
-                                position.conversionRate,
-                                position.isBuy
-                            )
-                            sumPL += pl
-                        }
-                    }
-                    val newPL = item.copier.closedPositionsNetProfit.plus(sumPL)
-                    val money = copier.depositSummary.minus(item.copier.withdrawalSummary)
-                    val value =
-                        copier.initialInvestment.plus(money).plus(newPL)
-                    binding.awonarPortfolioInsideCopierTextTotalOpenPl.apply {
-                        text = "PL($): $%.2f".format(newPL)
-                        setTextColor(ColorChangingUtil.getTextColorChange(requireContext(), newPL))
-
-                    }
-                    binding.awonarPortfolioInsideCopierTextTotalOpenPlPercent.apply {
-                        text = "PL(%): " + "%.2f".format(
-                            PortfolioUtil.profitLossPercent(
-                                newPL,
-                                copier.initialInvestment
-                            )
-                        )
-                        setTextColor(
-                            ColorChangingUtil.getTextColorChange(
-                                requireContext(),
-                                PortfolioUtil.profitLossPercent(
-                                    newPL,
-                                    copier.initialInvestment
-                                )
-                            )
-                        )
-                    }
-                    binding.awonarPortfolioInsideCopierPositionHeader.apply {
-                        setProfitLoss(newPL)
-                        setValueInvested(value)
-                    }
-
-                }
-            }
-            launch {
                 columnsViewModel.activedColumnState.collect { newColumn ->
                     if (newColumn.isNotEmpty()) {
                         binding.column1 = newColumn[0]
@@ -160,6 +103,63 @@ class PortFolioInsideCopierFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         currentIndex = args.index
+        launchAndRepeatWithViewLifecycle {
+            QuoteSteamingManager.quotesState.collectIndexed { index, quotes ->
+                val item =
+                    positionViewModel.positionItems.value[currentIndex] as PortfolioItem.CopierPortfolioItem
+                val copier = item.copier
+                val sumPL = copier.positions?.sumOf { position ->
+                    val quote = quotes[position.instrument?.id]
+                    quote?.let {
+                        val current = ConverterQuoteUtil.getCurrentPrice(
+                            quote,
+                            position.leverage,
+                            position.isBuy
+                        )
+                        val pl = PortfolioUtil.getProfitOrLoss(
+                            current,
+                            position.openRate,
+                            position.units,
+                            1f,
+                            position.isBuy
+                        )
+                        return@sumOf pl.toDouble()
+                    }
+                    return@sumOf 0.0
+                }?.toFloat() ?: 0f
+                val newPL = item.copier.closedPositionsNetProfit.plus(sumPL)
+                val money = copier.depositSummary.minus(item.copier.withdrawalSummary)
+                val value =
+                    copier.initialInvestment.plus(money).plus(newPL)
+                binding.awonarPortfolioInsideCopierTextTotalOpenPl.apply {
+                    text = "PL($): $%.2f".format(newPL)
+                    setTextColor(ColorChangingUtil.getTextColorChange(requireContext(), newPL))
+
+                }
+                binding.awonarPortfolioInsideCopierTextTotalOpenPlPercent.apply {
+                    text = "PL(%): " + "%.2f".format(
+                        PortfolioUtil.profitLossPercent(
+                            newPL,
+                            copier.initialInvestment
+                        )
+                    )
+                    setTextColor(
+                        ColorChangingUtil.getTextColorChange(
+                            requireContext(),
+                            PortfolioUtil.profitLossPercent(
+                                newPL,
+                                copier.initialInvestment
+                            )
+                        )
+                    )
+                }
+                binding.awonarPortfolioInsideCopierPositionHeader.apply {
+                    setProfitLoss(newPL)
+                    setValueInvested(value)
+                }
+
+            }
+        }
         columnsViewModel.getActivedColumns()
         insideViewModel.getCopiesWithIndex(
             portFolioViewModel.positionState.value,
