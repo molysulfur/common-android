@@ -29,7 +29,6 @@ class PortFolioInsideInstrumentCopierFragment : Fragment() {
     private val positionViewModel: PositionViewModel by activityViewModels()
     private val activityViewModel: PositionInsideViewModel by activityViewModels()
     private val columnsViewModel: ColumnsViewModel by activityViewModels()
-    private val orderViewModel: OrderViewModel by activityViewModels()
 
     private val args: PortFolioInsideInstrumentFragmentArgs by navArgs()
 

@@ -160,6 +160,7 @@ class PortFolioInsideCopierFragment : Fragment() {
 
             }
         }
+        columnsViewModel.setColumnType("manual")
         columnsViewModel.getActivedColumns()
         insideViewModel.getCopiesWithIndex(
             portFolioViewModel.positionState.value,
