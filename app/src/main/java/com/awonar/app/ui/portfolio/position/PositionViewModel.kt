@@ -4,26 +4,34 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDirections
 import com.awonar.android.model.portfolio.*
-import com.awonar.android.shared.domain.portfolio.GetPositionPublicBySymbolUseCase
-import com.awonar.app.domain.portfolio.ConvertMarketToItemUseCase
-import com.awonar.app.domain.portfolio.ConvertPositionToCardItemUseCase
-import com.awonar.app.domain.portfolio.ConvertPositionToItemUseCase
+import com.awonar.android.shared.domain.portfolio.*
+import com.awonar.app.domain.portfolio.*
 import com.awonar.app.ui.portfolio.adapter.PortfolioItem
-import com.awonar.app.ui.portfolio.inside.PortFolioInsideCopierFragmentDirections
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class PositionViewModel @Inject constructor(
     private val getPositionPublicBySymbolUseCase: GetPositionPublicBySymbolUseCase,
-    private val convertPositionToItemUseCase: ConvertPositionToItemUseCase,
+    private val getPieChartMarketAllocateUseCase: GetPieChartMarketAllocateUseCase,
+    private val getPieChartInstrumentAllocateUseCase: GetPieChartInstrumentAllocateUseCase,
+    private var getPieChartAllocateUseCase: GetPieChartAllocateUseCase,
+    private var getPieChartExposureUseCase: GetPieChartExposureUseCase,
+    private val getPieChartInstrumentExposureUseCase: GetPieChartInstrumentExposureUseCase,
+    private var convertExposureToPieChartUseCase: ConvertExposureToPieChartUseCase,
+    private val convertManualPositionToItemUseCase: ConvertManualPositionToItemUseCase,
     private val convertPositionToCardItemUseCase: ConvertPositionToCardItemUseCase,
     private val convertMarketToItemUseCase: ConvertMarketToItemUseCase,
+    private var convertAllocateToPieChartUseCase: ConvertAllocateToPieChartUseCase,
 ) : ViewModel() {
+    private val _chartType = MutableStateFlow("allocate")
+    private val _chart = MutableStateFlow("allocate")
+
     private val _portfolio = MutableStateFlow<UserPortfolioResponse?>(null)
     private val _styleTypeState = MutableStateFlow("market")
     val styleTypeState get() = _styleTypeState
@@ -38,25 +46,82 @@ class PositionViewModel @Inject constructor(
         MutableStateFlow(mutableListOf(PortfolioItem.EmptyItem()))
     val positionItems: StateFlow<MutableList<PortfolioItem>> get() = _positionItems
 
-
     init {
-        val steaming = combine(
+        val watchChart = combine(
+            _chartType,
+            _styleTypeState
+        ) { chartType, style ->
+            Timber.e("$chartType,$style")
+            if (style == "chart") {
+                when (chartType) {
+                    "allocate" -> getAllocate("market")
+                    "exposure" -> getExposure(chartType)
+                }
+            }
+        }
+        viewModelScope.launch {
+            watchChart.collectIndexed { _, value ->
+
+            }
+        }
+        val watchPortfolio = combine(
             _portfolio,
-            styleTypeState
+            _styleTypeState
         ) { portfolio, style ->
             portfolio?.let {
                 when (style) {
                     "market" -> convertMarket(portfolio)
                     "manual" -> convertManual(portfolio)
-                    "chart" -> mutableListOf<PortfolioItem>()
-                    "card" -> mutableListOf<PortfolioItem>()
-                    else -> mutableListOf<PortfolioItem>()
+                    "card" -> convertCard(portfolio)
+                    else -> {}
                 }
             }
             Unit
         }
         viewModelScope.launch {
-            steaming.collectLatest {
+            watchPortfolio.collectLatest {
+            }
+        }
+    }
+
+    fun updateChartType(it: String = "allocate") {
+        _chartType.value = it
+    }
+
+    private fun getAllocate(type: String? = null) {
+        viewModelScope.launch {
+            when (type) {
+                "market" -> getPieChartMarketAllocateUseCase(Unit)
+                "stocks", "currencies", "crypto" -> getPieChartInstrumentAllocateUseCase(type)
+                else -> getPieChartAllocateUseCase(Unit)
+            }.collectIndexed { _, value ->
+                val data = value.successOr(emptyMap())
+                val items = convertAllocateToPieChartUseCase(
+                    PieChartRequest(
+                        data,
+                        type in arrayListOf("stocks", "currencies", "crypto")
+                    )
+                ).successOr(mutableListOf())
+                _positionItems.emit(items.toMutableList())
+            }
+        }
+    }
+
+    private fun getExposure(type: String? = null) {
+        viewModelScope.launch {
+            when (type) {
+                "stocks", "currencies", "crypto" -> getPieChartInstrumentExposureUseCase(type)
+                else -> getPieChartExposureUseCase(Unit)
+            }.collectLatest {
+                val data = it.successOr(emptyMap())
+                val items = convertExposureToPieChartUseCase(
+                    PieChartRequest(
+                        data,
+                        type in arrayListOf("stocks", "currencies", "crypto")
+                    )
+                ).successOr(emptyList())
+                _positionItems.emit(items.toMutableList())
+
             }
         }
     }
@@ -64,8 +129,9 @@ class PositionViewModel @Inject constructor(
     fun convertManual(portfolio: UserPortfolioResponse?) {
         viewModelScope.launch {
             portfolio?.let {
-//                val positionItemResult = convertPositionToItemUseCase(it).successOr(emptyList())
-//                _positionItems.emit(positionItemResult.toMutableList())
+                val positionItemResult =
+                    convertManualPositionToItemUseCase(it).successOr(emptyList())
+                _positionItems.emit(positionItemResult.toMutableList())
             }
 
         }
@@ -77,6 +143,14 @@ class PositionViewModel @Inject constructor(
         viewModelScope.launch {
             val itemLists = convertMarketToItemUseCase(portfolio).successOr(mutableListOf())
             _positionItems.value = itemLists
+        }
+    }
+
+    fun convertCard(userPortfolio: UserPortfolioResponse) {
+        viewModelScope.launch {
+            val positionItemResult =
+                convertPositionToCardItemUseCase(userPortfolio).successOr(mutableListOf())
+            _positionItems.value = positionItemResult
         }
     }
 
@@ -98,13 +172,6 @@ class PositionViewModel @Inject constructor(
         }
     }
 
-    fun convertCard(positions: List<Position>) {
-        viewModelScope.launch {
-            val positionItemResult =
-                convertPositionToCardItemUseCase(positions).successOr(emptyList())
-            _positionItems.emit(positionItemResult.toMutableList())
-        }
-    }
 
     fun getInsidePublic(username: String?, symbol: String?) {
         viewModelScope.launch {

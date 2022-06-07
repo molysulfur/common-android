@@ -12,34 +12,29 @@ import javax.inject.Inject
 class ConvertManualPositionToItemUseCase @Inject constructor(
     private val currenciesRepository: CurrenciesRepository,
     @IoDispatcher dispatcher: CoroutineDispatcher,
-) : UseCase<UserPortfolioResponse?, MutableList<PortfolioItem>>(dispatcher) {
-    override suspend fun execute(parameters: UserPortfolioResponse?): MutableList<PortfolioItem> {
+) : UseCase<UserPortfolioResponse, MutableList<PortfolioItem>>(dispatcher) {
+
+    override suspend fun execute(parameters: UserPortfolioResponse): MutableList<PortfolioItem> {
+        val positions = parameters.positions ?: emptyList()
         val itemList = mutableListOf<PortfolioItem>()
-        var sumInvested = 0f
-        parameters?.positions?.forEachIndexed { index, position ->
-            val conversionRate =
-                currenciesRepository.getConversionByInstrumentId(position.instrumentId).rateBid
-            sumInvested += position.invested
-//            itemList.add(PortfolioItem.InstrumentPortfolioItem(
-//                position = position,
-//                conversionRate = conversionRate,
-//                meta = null,
-//                index = index
-//            ))
-        }
-        parameters?.copies?.forEachIndexed { index, copier ->
-            sumInvested += copier.invested
-            itemList.add(PortfolioItem.CopierPortfolioItem(
-                copier = copier,
-                conversions = emptyMap(),
-                index = index
-            ))
-        }
-        itemList.add(PortfolioItem.BalanceItem(
-            title = "Balance",
-            value = 100f.minus(sumInvested)
-        ))
+        convertInstrumentItem(positions, itemList)
         return itemList
     }
 
+    private fun convertInstrumentItem(
+        positions: List<Position>,
+        itemList: MutableList<PortfolioItem>
+    ) {
+        val groupInstrument: Map<Int, List<Position>> = positions.groupBy { it.instrumentId }
+        for ((key, positions) in groupInstrument) {
+            val conversionRate = currenciesRepository.getConversionByInstrumentId(key).rateBid
+            itemList.add(
+                PortfolioItem.PositionItem(
+                    positionId = positions.indexOfFirst { it.instrument?.id == positions[0].instrument?.id },
+                    instrumentGroup = positions,
+                    conversionRate = conversionRate
+                )
+            )
+        }
+    }
 }

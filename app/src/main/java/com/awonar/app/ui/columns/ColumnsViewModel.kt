@@ -13,7 +13,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -124,7 +123,6 @@ class ColumnsViewModel @Inject constructor(
             "chart" -> emptyList()
             else -> throw Error("column type is not found!")
         }
-        Timber.e("$type $data")
         visible(data.isNotEmpty())
         _activedColumnState.emit(data)
     }

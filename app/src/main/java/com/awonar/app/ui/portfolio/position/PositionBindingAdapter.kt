@@ -5,15 +5,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.awonar.app.ui.portfolio.adapter.PortfolioAdapter
 import com.awonar.app.ui.portfolio.adapter.PortfolioItem
+import timber.log.Timber
 
-@BindingAdapter("setPositionAdapter", "activedColumn", "viewModel")
+@BindingAdapter("setPositionAdapter", "activedColumn", "viewModel", "positionStyle")
 fun setPositionAdapter(
     recycler: RecyclerView,
     items: MutableList<PortfolioItem>,
     activedColumn: List<String> = emptyList(),
     viewModel: PositionViewModel,
+    style: String?
 ) {
-    if (activedColumn.size <= 3) {
+    if (activedColumn.size <= 3 && style != "card" && style != "chart") {
         return
     }
     if (activedColumn.size > 3 && recycler.adapter == null) {
@@ -26,6 +28,17 @@ fun setPositionAdapter(
                 }
                 onCopierClick = { position ->
                     viewModel.navigateInstrumentCopier(position)
+                }
+                onPieClick = { type ->
+                    type?.let {
+                        viewModel.updateChartType(it)
+                    }
+                }
+                onExposure = {
+                    viewModel.updateChartType("exposure")
+                }
+                onAllocate = {
+                    viewModel.updateChartType("allocate")
                 }
             }
         }

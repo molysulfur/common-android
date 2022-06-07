@@ -72,7 +72,7 @@ class PublicPortfolioFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getManual(userViewModel.userState.value?.username)
+//        viewModel.getManual(userViewModel.userState.value?.username)
         binding.awoanrPortfolioUserButtonType.setOnClickListener {
             dialog.show(parentFragmentManager, DIALOG_TAG)
         }

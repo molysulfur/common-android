@@ -9,7 +9,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetPositionMarketUseCase @Inject constructor(
+class GetUserPortfolioUseCase @Inject constructor(
     private val repository: PortfolioRepository,
     @IoDispatcher dispatcher: CoroutineDispatcher
 ) : FlowUseCase<Unit, UserPortfolioResponse?>(dispatcher) {

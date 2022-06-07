@@ -5,7 +5,6 @@ import com.awonar.android.model.portfolio.Copier
 import com.awonar.android.model.portfolio.PendingOrder
 import com.awonar.android.model.portfolio.Position
 import com.awonar.app.ui.portfolio.adapter.PortfolioType.BALANCE_PORTFOLIO
-import com.awonar.app.ui.portfolio.adapter.PortfolioType.BUTTON_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.PortfolioType.COPYTRADE_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.PortfolioType.COPY_POSITION_CARD
 import com.awonar.app.ui.portfolio.adapter.PortfolioType.EMPTY_PORTFOLIO
@@ -13,11 +12,13 @@ import com.awonar.app.ui.portfolio.adapter.PortfolioType.INSTRUMENT_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.PortfolioType.INSTRUMENT_POSITION_CARD
 import com.awonar.app.ui.portfolio.adapter.PortfolioType.LIST_ITEM_PORTFOLIO
 import com.awonar.app.ui.portfolio.adapter.PortfolioType.ORDER_PORTFOLIO
-import com.awonar.app.ui.portfolio.adapter.PortfolioType.PIECHART_PORTFOLIO
+import com.awonar.app.ui.portfolio.adapter.PortfolioType.POSITION_CHART_BUTTON
+import com.awonar.app.ui.portfolio.adapter.PortfolioType.POSITION_CHART_LIST
+import com.awonar.app.ui.portfolio.adapter.PortfolioType.POSITION_CHART_LOADING
+import com.awonar.app.ui.portfolio.adapter.PortfolioType.POSITION_CHART_SUBTITLE
+import com.awonar.app.ui.portfolio.adapter.PortfolioType.POSITION_CHART_TITLE
+import com.awonar.app.ui.portfolio.adapter.PortfolioType.POSITION_CHART_VIEW
 import com.awonar.app.ui.portfolio.adapter.PortfolioType.SECTION_PORTFOLIO
-import com.awonar.app.ui.portfolio.adapter.PortfolioType.SUBTITLE_CENTER_PORTFOLIO
-import com.awonar.app.ui.portfolio.adapter.PortfolioType.TITLE_CENTER_PORTFOLIO
-import com.awonar.app.ui.portfolio.adapter.PortfolioType.VIEWALL_BUTTON
 import com.github.mikephil.charting.data.PieEntry
 import kotlinx.parcelize.Parcelize
 
@@ -112,4 +113,36 @@ sealed class PortfolioItem(
         var stopLossPercent: Float,
         var takeProfitPercent: Float,
     ) : PortfolioItem(ORDER_PORTFOLIO)
+
+
+    @Parcelize
+    class LoadingItem : PortfolioItem(POSITION_CHART_LOADING)
+
+    @Parcelize
+    class ListTextItem(
+        val title: String?,
+        val meta: String?,
+        val labelColor: Int,
+    ) : PortfolioItem(POSITION_CHART_LIST)
+
+    @Parcelize
+    class PieChartItem(
+        val entries: List<PieEntry>,
+    ) : PortfolioItem(POSITION_CHART_VIEW)
+
+    @Parcelize
+    class ButtonItem(
+        val buttonText: String,
+    ) : PortfolioItem(POSITION_CHART_BUTTON)
+
+    @Parcelize
+    class TitleItem(
+        val title: String,
+    ) : PortfolioItem(POSITION_CHART_TITLE)
+
+    @Parcelize
+    class SubTitleItem(
+        val subTitle: String,
+    ) : PortfolioItem(POSITION_CHART_SUBTITLE)
+
 }

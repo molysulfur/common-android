@@ -87,92 +87,96 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:background="@color/awonar_color_surface"
-                app:layout_constraintBottom_toTopOf="@+id/awonar_portfolio_inside_copier_title_total_open"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0"
-                tools:layout_editor_absoluteX="0dp"
-                tools:listitem="@layout/awonar_item_instrument_position" />
+                app:layout_constraintBottom_toTopOf="@+id/awonar_portfolio_inside_copier_layout_footer"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/awonar_portfolio_inside_copier_title_total_open"
-                style="@style/Awonar.SubTitle"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/awonar_portfolio_inside_copier_layout_footer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/awonar_size_text_extra_small"
-                android:paddingTop="@dimen/awonar_size_margin_padding_normal"
-                android:text="@string/awonar_title_total_open"
-                app:layout_constraintBottom_toTopOf="@+id/awonar_portfolio_inside_copier_text_total_open_invested"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/awonar_portfolio_inside_copier_text_total_open_invested"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@+id/awonar_portfolio_inside_copier_title_total_close"
-                app:layout_constraintStart_toStartOf="@+id/awonar_portfolio_inside_copier_title_total_open"
-                tools:text="@string/awonar_title_total_open" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/awonar_portfolio_inside_copier_text_total_open_pl"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
-                app:layout_constraintStart_toEndOf="@+id/awonar_portfolio_inside_copier_text_total_open_invested"
-                app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_inside_copier_text_total_open_invested"
-                tools:text="@string/awonar_title_total_open" />
-
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/awonar_portfolio_inside_copier_text_total_open_pl_percent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
-                app:layout_constraintStart_toEndOf="@+id/awonar_portfolio_inside_copier_text_total_open_pl"
-                app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_inside_copier_text_total_open_invested"
-                tools:text="@string/awonar_title_total_open" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/awonar_portfolio_inside_copier_title_total_close"
-                style="@style/Awonar.SubTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/awonar_size_text_extra_small"
-                android:paddingTop="@dimen/awonar_size_margin_padding_normal"
-                android:text="@string/awonar_title_total_close"
-                app:layout_constraintBottom_toTopOf="@+id/awonar_portfolio_inside_copier_text_total_close_fee"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/awonar_portfolio_inside_copier_text_total_close_fee"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/awonar_size_margin_padding_normal"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/awonar_portfolio_inside_copier_title_total_close"
-                tools:text="@string/awonar_example_name" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/awonar_portfolio_inside_copier_text_total_close_netprofit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
-                android:layout_marginBottom="@dimen/awonar_size_margin_padding_normal"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/awonar_portfolio_inside_copier_text_total_close_fee"
-                tools:text="@string/awonar_example_name" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/awonar_portfolio_inside_copier_button_total_view"
-                style="@style/Awonar.Button.Link"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="View"
-                app:layout_constraintBottom_toBottomOf="@+id/awonar_portfolio_inside_copier_title_total_close"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/awonar_portfolio_inside_copier_text_total_open_invested" />
+                app:layout_constraintStart_toStartOf="parent">
 
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_portfolio_inside_copier_title_total_open"
+                    style="@style/Awonar.SubTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/awonar_size_text_extra_small"
+                    android:paddingTop="@dimen/awonar_size_margin_padding_normal"
+                    android:text="@string/awonar_title_total_open"
+                    app:layout_constraintBottom_toTopOf="@+id/awonar_portfolio_inside_copier_text_total_open_invested"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_portfolio_inside_copier_text_total_open_invested"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toTopOf="@+id/awonar_portfolio_inside_copier_title_total_close"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_portfolio_inside_copier_title_total_open"
+                    tools:text="@string/awonar_title_total_open" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_portfolio_inside_copier_text_total_open_pl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
+                    app:layout_constraintStart_toEndOf="@+id/awonar_portfolio_inside_copier_text_total_open_invested"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_inside_copier_text_total_open_invested"
+                    tools:text="@string/awonar_title_total_open" />
+
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_portfolio_inside_copier_text_total_open_pl_percent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
+                    app:layout_constraintStart_toEndOf="@+id/awonar_portfolio_inside_copier_text_total_open_pl"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_inside_copier_text_total_open_invested"
+                    tools:text="@string/awonar_title_total_open" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_portfolio_inside_copier_title_total_close"
+                    style="@style/Awonar.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/awonar_size_text_extra_small"
+                    android:paddingTop="@dimen/awonar_size_margin_padding_normal"
+                    android:text="@string/awonar_title_total_close"
+                    app:layout_constraintBottom_toTopOf="@+id/awonar_portfolio_inside_copier_text_total_close_fee"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_portfolio_inside_copier_text_total_close_fee"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/awonar_size_margin_padding_normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_portfolio_inside_copier_title_total_close"
+                    tools:text="@string/awonar_example_name" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_portfolio_inside_copier_text_total_close_netprofit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
+                    android:layout_marginBottom="@dimen/awonar_size_margin_padding_normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/awonar_portfolio_inside_copier_text_total_close_fee"
+                    tools:text="@string/awonar_example_name" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/awonar_portfolio_inside_copier_button_total_view"
+                    style="@style/Awonar.Button.Link"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="View"
+                    app:layout_constraintBottom_toBottomOf="@+id/awonar_portfolio_inside_copier_title_total_close"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_portfolio_inside_copier_text_total_open_invested" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

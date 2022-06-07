@@ -89,7 +89,6 @@ class PositionFragment : Fragment() {
         launchAndRepeatWithViewLifecycle {
             positionViewModel.styleTypeState.collectLatest { type ->
                 columnViewModel.setColumnType(type)
-//                navigate(type)
                 setIconStyle(type)
             }
         }

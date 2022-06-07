@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.awonar.app.databinding.*
 import com.awonar.app.ui.portfolio.adapter.holder.*
 import com.awonar.app.ui.portfolio.chart.adapter.holder.*
-import timber.log.Timber
 
 @SuppressLint("NotifyDataSetChanged")
 class PortfolioAdapter :
@@ -29,6 +28,9 @@ class PortfolioAdapter :
 
     var onIntrumentClick: ((Int) -> Unit)? = null
     var onCopierClick: ((Int) -> Unit)? = null
+    var onPieClick: ((String?) -> Unit)? = null
+    var onExposure: (() -> Unit)? = null
+    var onAllocate: (() -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -88,6 +90,48 @@ class PortfolioAdapter :
                     false
                 )
             )
+            PortfolioType.POSITION_CHART_LOADING -> LoadingViewHolder(
+                AwonarItemLoadingBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+            PortfolioType.POSITION_CHART_BUTTON -> ButtonViewHolder(
+                AwonarItemButtonViewmoreBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+            PortfolioType.POSITION_CHART_LIST -> ListItemViewHolder(
+                AwonarItemMarkerListItemBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+            PortfolioType.POSITION_CHART_VIEW -> PieChartViewHolder(
+                AwonarItemPiechartBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+            PortfolioType.POSITION_CHART_TITLE -> TitleViewHolder(
+                AwonarItemCenterTitleBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+            PortfolioType.POSITION_CHART_SUBTITLE -> SubTitleViewHolder(
+                AwonarItemCenterSubtitleBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
             else -> throw Exception("View Type is not found with $viewType")
         }
     }
@@ -121,6 +165,16 @@ class PortfolioAdapter :
             is SectionViewHolder -> holder.bind(
                 item as PortfolioItem.SectionItem
             )
+            is TitleViewHolder -> holder.bind(item as PortfolioItem.TitleItem)
+            is SubTitleViewHolder -> holder.bind(item as PortfolioItem.SubTitleItem)
+            is PieChartViewHolder -> holder.bind(item as PortfolioItem.PieChartItem, onPieClick)
+            is ListItemViewHolder -> holder.bind(item as PortfolioItem.ListTextItem)
+            is ButtonViewHolder -> holder.bind(item as PortfolioItem.ButtonItem) {
+                when (it.lowercase()) {
+                    "exposure" -> onExposure?.invoke()
+                    else -> onAllocate?.invoke()
+                }
+            }
         }
     }
 

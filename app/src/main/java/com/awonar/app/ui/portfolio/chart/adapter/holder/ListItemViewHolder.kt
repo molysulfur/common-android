@@ -1,16 +1,14 @@
 package com.awonar.app.ui.portfolio.chart.adapter.holder
 
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.awonar.app.databinding.AwonarItemListBinding
 import com.awonar.app.databinding.AwonarItemMarkerListItemBinding
-import com.awonar.app.ui.portfolio.chart.adapter.PositionChartItem
+import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 
 class ListItemViewHolder constructor(
     private val binding: AwonarItemMarkerListItemBinding,
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: PositionChartItem.ListItem) {
+    fun bind(item: PortfolioItem.ListTextItem) {
         with(binding.awonarItemMarkerListText) {
             setTitle(item.title ?: "")
             setMeta(item.meta ?: "")

@@ -146,6 +146,7 @@
             android:id="@+id/awonar_main_drawer_navigation_host_position"
             activedColumn="@{columnViewModel.activedColumnState}"
             setPositionAdapter="@{positionViewModel.positionItems}"
+            positionStyle="@{positionViewModel.styleTypeState}"
             viewModel="@{positionViewModel}"
             android:layout_width="match_parent"
             android:layout_height="0dp"

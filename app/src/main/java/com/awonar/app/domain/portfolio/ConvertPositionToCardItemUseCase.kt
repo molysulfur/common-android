@@ -1,20 +1,21 @@
 package com.awonar.app.domain.portfolio
 
-import com.awonar.android.model.portfolio.Position
+import com.awonar.android.model.portfolio.UserPortfolioResponse
 import com.awonar.android.shared.di.IoDispatcher
 import com.awonar.android.shared.repos.CurrenciesRepository
 import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 import com.molysulfur.library.usecase.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
+import timber.log.Timber
 import javax.inject.Inject
 
 class ConvertPositionToCardItemUseCase @Inject constructor(
     private val currenciesRepository: CurrenciesRepository,
     @IoDispatcher dispatcher: CoroutineDispatcher,
-) : UseCase<List<Position>, List<PortfolioItem>>(dispatcher) {
-    override suspend fun execute(parameters: List<Position>): List<PortfolioItem> {
+) : UseCase<UserPortfolioResponse, MutableList<PortfolioItem>>(dispatcher) {
+    override suspend fun execute(parameters: UserPortfolioResponse): MutableList<PortfolioItem> {
         val itemList = mutableListOf<PortfolioItem>()
-        parameters.forEach { position ->
+        parameters.positions?.forEach { position ->
             val conversion: Float =
                 currenciesRepository.getConversionByInstrumentId(position.instrumentId).rateBid
             with(position) {
@@ -24,10 +25,10 @@ class ConvertPositionToCardItemUseCase @Inject constructor(
                 PortfolioItem.InstrumentPositionCardItem(
                     position = position,
                     conversion = conversion,
-
-                    )
+                )
             )
         }
+        Timber.e("$itemList")
         return itemList
     }
 

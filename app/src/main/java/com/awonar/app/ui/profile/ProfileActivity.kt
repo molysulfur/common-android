@@ -110,7 +110,7 @@ class ProfileActivity : BaseActivity() {
                 userViewModel.userState.collect { userInfo ->
                     if (userInfo != null) {
                         user = userInfo
-                        portfolioViewModel.getPosition()
+//                        portfolioViewModel.getPosition()
                         updateUser()
                         updateEditVisible()
                     }
