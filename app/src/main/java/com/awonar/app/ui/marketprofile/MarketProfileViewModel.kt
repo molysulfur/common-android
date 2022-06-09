@@ -47,7 +47,8 @@ class MarketProfileViewModel @Inject constructor(
     private val _dropdownList = MutableStateFlow(mutableListOf<FinancialMarketItem>())
     val dropdownList get() = _dropdownList
     private val _financialItemList = MutableStateFlow<MutableList<FinancialMarketItem>>(
-        mutableListOf())
+        mutableListOf()
+    )
     val financialItemList: StateFlow<MutableList<FinancialMarketItem>> get() = _financialItemList
 
     private val _instrumentState = MutableStateFlow<InstrumentProfile?>(null)
@@ -57,7 +58,7 @@ class MarketProfileViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             _instrumentState.collectLatest { instrument ->
-                getFinancialInfoUseCase(instrument?.id ?: 0).collect {
+                getFinancialInfoUseCase(instrument?.id ?: 0).collectLatest {
                     _financialState.emit(it.successOr(null))
                 }
             }
@@ -81,16 +82,26 @@ class MarketProfileViewModel @Inject constructor(
                 val itemLists = mutableListOf<FinancialMarketItem>()
                 if (type == "annual") {
                     val year = fiscal.toInt()
-                    itemLists.add(FinancialMarketItem.DropdownItem("Select Year",
-                        fiscal,
-                        arrayListOf("$year",
-                            "${year.minus(1)}",
-                            "${year.minus(2)}",
-                            "${year.minus(3)}")))
+                    itemLists.add(
+                        FinancialMarketItem.DropdownItem(
+                            "Select Year",
+                            fiscal,
+                            arrayListOf(
+                                "$year",
+                                "${year.minus(1)}",
+                                "${year.minus(2)}",
+                                "${year.minus(3)}"
+                            )
+                        )
+                    )
                 } else {
-                    itemLists.add(FinancialMarketItem.DropdownItem("Select Quarter",
-                        quarter,
-                        arrayListOf("Q1", "Q2", "Q3", "Q4")))
+                    itemLists.add(
+                        FinancialMarketItem.DropdownItem(
+                            "Select Quarter",
+                            quarter,
+                            arrayListOf("Q1", "Q2", "Q3", "Q4")
+                        )
+                    )
                 }
                 _dropdownList.value = itemLists
             }
@@ -99,39 +110,86 @@ class MarketProfileViewModel @Inject constructor(
 
     val overviewMarketState: StateFlow<MutableList<OverviewMarketItem>> =
         _instrumentState.transformLatest { instrument ->
-            getOverviewMarketProfileUseCase(instrument?.id ?: 0).collect {
+            getOverviewMarketProfileUseCase(instrument?.id ?: 0).collectLatest {
                 val data = it.successOr(null)
                 val itemList = mutableListOf<OverviewMarketItem>()
                 itemList.add(OverviewMarketItem.TitleMarketItem("Overview"))
-                itemList.add(OverviewMarketItem.InfoMarketItem("Prev Close",
-                    "%.2f".format(data?.prevClose)))
-                itemList.add(OverviewMarketItem.InfoMarketItem("Day's Range",
-                    "%.2f - %.2f".format(data?.dayRange?.low ?: 0f, data?.dayRange?.high ?: 0f)))
-                itemList.add(OverviewMarketItem.InfoMarketItem("52 Week Range",
-                    "%.2f - %.2f".format(data?.yearRange?.low ?: 0f, data?.yearRange?.high ?: 0f)))
-                itemList.add(OverviewMarketItem.InfoMarketItem("Averagge Volume",
-                    "%s".format(data?.info?.averageVolume)))
-                itemList.add(OverviewMarketItem.InfoMarketItem("Year Return",
-                    "%.2f %s".format(data?.yearReturn, "%")))
-                itemList.add(OverviewMarketItem.InfoMarketItem("Beta",
-                    "%.2f".format(data?.info?.beta ?: 0f)))
-                itemList.add(OverviewMarketItem.InfoMarketItem("Market Cap ($)",
-                    "%s".format(data?.info?.marketCap ?: 0L)))
-                itemList.add(OverviewMarketItem.InfoMarketItem("P/E Ratio",
-                    "%.2f".format(data?.info?.peRatio ?: 0f)))
-                itemList.add(OverviewMarketItem.InfoMarketItem("Revenue ($)",
-                    "%s".format(data?.info?.revenue ?: 0L)))
-                itemList.add(OverviewMarketItem.InfoMarketItem("EPS",
-                    "%.2f".format(data?.info?.eps ?: 0f)))
-                itemList.add(OverviewMarketItem.InfoMarketItem("Divided (Yield)",
-                    "%.2f".format(data?.info?.dividend ?: 0f)))
+                itemList.add(
+                    OverviewMarketItem.InfoMarketItem(
+                        "Prev Close",
+                        "%.2f".format(data?.prevClose)
+                    )
+                )
+                itemList.add(
+                    OverviewMarketItem.InfoMarketItem(
+                        "Day's Range",
+                        "%.2f - %.2f".format(data?.dayRange?.low ?: 0f, data?.dayRange?.high ?: 0f)
+                    )
+                )
+                itemList.add(
+                    OverviewMarketItem.InfoMarketItem(
+                        "52 Week Range",
+                        "%.2f - %.2f".format(
+                            data?.yearRange?.low ?: 0f,
+                            data?.yearRange?.high ?: 0f
+                        )
+                    )
+                )
+                itemList.add(
+                    OverviewMarketItem.InfoMarketItem(
+                        "Averagge Volume",
+                        "%s".format(data?.info?.averageVolume)
+                    )
+                )
+                itemList.add(
+                    OverviewMarketItem.InfoMarketItem(
+                        "Year Return",
+                        "%.2f %s".format(data?.yearReturn, "%")
+                    )
+                )
+                itemList.add(
+                    OverviewMarketItem.InfoMarketItem(
+                        "Beta",
+                        "%.2f".format(data?.info?.beta ?: 0f)
+                    )
+                )
+                itemList.add(
+                    OverviewMarketItem.InfoMarketItem(
+                        "Market Cap ($)",
+                        "%s".format(data?.info?.marketCap ?: 0L)
+                    )
+                )
+                itemList.add(
+                    OverviewMarketItem.InfoMarketItem(
+                        "P/E Ratio",
+                        "%.2f".format(data?.info?.peRatio ?: 0f)
+                    )
+                )
+                itemList.add(
+                    OverviewMarketItem.InfoMarketItem(
+                        "Revenue ($)",
+                        "%s".format(data?.info?.revenue ?: 0L)
+                    )
+                )
+                itemList.add(
+                    OverviewMarketItem.InfoMarketItem(
+                        "EPS",
+                        "%.2f".format(data?.info?.eps ?: 0f)
+                    )
+                )
+                itemList.add(
+                    OverviewMarketItem.InfoMarketItem(
+                        "Divided (Yield)",
+                        "%.2f".format(data?.info?.dividend ?: 0f)
+                    )
+                )
                 emit(itemList)
             }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), mutableListOf())
 
     fun getInstrumentProfile(id: Int) {
         viewModelScope.launch {
-            getMarketProfileUseCase(id).collect {
+            getMarketProfileUseCase(id).collectLatest {
                 _instrumentState.value = it.successOr(null)
             }
         }
@@ -203,8 +261,10 @@ class MarketProfileViewModel @Inject constructor(
                     key = "netCashFlowFromOperatingActivitiesContinuing",
                     title = "Net Cash Flow From Operating Activities, Continuing",
                     entries = financial?.cashFlow?.get(quarter)?.map {
-                        BarEntry(0f,
-                            it["netCashFlowFromOperatingActivitiesContinuing"]?.toFloat() ?: 0f)
+                        BarEntry(
+                            0f,
+                            it["netCashFlowFromOperatingActivitiesContinuing"]?.toFloat() ?: 0f
+                        )
                     } ?: emptyList()
                 )
             )
@@ -252,11 +312,13 @@ class MarketProfileViewModel @Inject constructor(
         }
         val existEntry = barEntries.find { it.key == key }
         if (existEntry == null) {
-            barEntries.add(FinancialMarketItem.BarEntryItem(
-                key = key,
-                title = key,
-                entries = entries ?: emptyList()
-            ))
+            barEntries.add(
+                FinancialMarketItem.BarEntryItem(
+                    key = key,
+                    title = key,
+                    entries = entries ?: emptyList()
+                )
+            )
             _barEntry.value = barEntries
         } else {
             val newEntry = barEntries.filter { it.key != key }
@@ -270,43 +332,54 @@ class MarketProfileViewModel @Inject constructor(
             val type = _financialCurrentTab.value
             val itemList: MutableList<FinancialMarketItem> = when (type) {
                 "Statistic" -> {
-                    convertFinancialStatisticUseCase(ConvertFinancial(
-                        financial = financial,
-                        current = type,
-                        fiscal = _fiscal.value,
-                        quarter = _quarter.value,
-                        quarterType = _quarterType.value
-                    )).successOr(
-                        mutableListOf())
+                    convertFinancialStatisticUseCase(
+                        ConvertFinancial(
+                            financial = financial,
+                            current = type,
+                            fiscal = _fiscal.value,
+                            quarter = _quarter.value,
+                            quarterType = _quarterType.value
+                        )
+                    ).successOr(
+                        mutableListOf()
+                    )
                 }
                 "Income Statement" -> {
-                    convertFinancialIncomeStatementUseCase(ConvertFinancial(
+                    convertFinancialIncomeStatementUseCase(
+                        ConvertFinancial(
+                            financial = financial,
+                            defaultSet = _barEntry.value,
+                            current = type,
+                            fiscal = _fiscal.value,
+                            quarter = _quarter.value,
+                            quarterType = _quarterType.value
+                        )
+                    ).successOr(
+                        mutableListOf()
+                    )
+                }
+                "Balance Sheet" -> convertFinancialBalanceSheetUseCase(
+                    ConvertFinancial(
                         financial = financial,
                         defaultSet = _barEntry.value,
                         current = type,
                         fiscal = _fiscal.value,
                         quarter = _quarter.value,
                         quarterType = _quarterType.value
-                    )).successOr(
-                        mutableListOf())
-                }
-                "Balance Sheet" -> convertFinancialBalanceSheetUseCase(ConvertFinancial(
-                    financial = financial,
-                    defaultSet = _barEntry.value,
-                    current = type,
-                    fiscal = _fiscal.value,
-                    quarter = _quarter.value,
-                    quarterType = _quarterType.value
-                )).successOr(
-                    mutableListOf())
-                "Cashflow" -> convertFinancialCashflowUseCase(ConvertFinancial(
-                    financial = financial,
-                    defaultSet = _barEntry.value,
-                    current = type,
-                    fiscal = _fiscal.value,
-                    quarter = _quarter.value,
-                    quarterType = _quarterType.value
-                )).successOr(mutableListOf())
+                    )
+                ).successOr(
+                    mutableListOf()
+                )
+                "Cashflow" -> convertFinancialCashflowUseCase(
+                    ConvertFinancial(
+                        financial = financial,
+                        defaultSet = _barEntry.value,
+                        current = type,
+                        fiscal = _fiscal.value,
+                        quarter = _quarter.value,
+                        quarterType = _quarterType.value
+                    )
+                ).successOr(mutableListOf())
                 else -> mutableListOf()
             }
             _financialItemList.value = itemList

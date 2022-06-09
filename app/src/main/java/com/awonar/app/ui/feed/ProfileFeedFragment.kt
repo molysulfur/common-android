@@ -9,10 +9,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.awonar.app.databinding.AwonarFragmentAllFeedBinding
 import com.awonar.app.ui.feed.adapter.FeedsAdapter
+import com.awonar.app.ui.marketprofile.about.MarketAboutFragment
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collectLatest
 
-class AllFeedFragment : Fragment() {
+class ProfileFeedFragment : Fragment() {
 
     private val binding: AwonarFragmentAllFeedBinding by lazy {
         AwonarFragmentAllFeedBinding.inflate(layoutInflater)
@@ -54,9 +55,15 @@ class AllFeedFragment : Fragment() {
         return binding.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.setFeedType("")
+
+    }
+
+    companion object {
+
+        fun newInstance(): ProfileFeedFragment = ProfileFeedFragment()
     }
 
 }

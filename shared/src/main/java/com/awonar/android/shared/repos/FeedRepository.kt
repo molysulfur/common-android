@@ -54,6 +54,25 @@ class FeedRepository @Inject constructor(
 
         }.asFlow()
 
+    fun getAllFeed(type: String, prefix: String, page: Int) =
+        object : DirectNetworkFlow<Int, FeedPaging, FeedResponse>() {
+            override fun createCall(): Response<FeedResponse> =
+                service.getAllFeed(type = type, prefix = prefix, page = page).execute()
+
+            override fun convertToResultType(response: FeedResponse): FeedPaging {
+                return FeedPaging(
+                    feeds = response.feeds ?: emptyList(),
+                    page = if (response.meta?.hasMore == true) response.meta?.page?.plus(1)
+                        ?: 0 else 0
+                )
+            }
+
+            override fun onFetchFailed(errorMessage: String) {
+                println(errorMessage)
+            }
+
+        }.asFlow()
+
     fun create(request: CreateFeed): Flow<Result<Feed?>> =
         object : DirectNetworkFlow<CreateFeed, Feed?, Feed?>() {
             override fun createCall(): Response<Feed?> {

@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.awonar.app.R
+import com.awonar.app.ui.feed.ProfileFeedFragment
 import com.awonar.app.ui.marketprofile.about.MarketAboutFragment
 import com.awonar.app.ui.marketprofile.stat.MarketStatisticFragment
 import com.awonar.app.ui.profile.ProfilePrivateFragment
@@ -28,6 +29,7 @@ class MarketProfilePagerAdapter constructor(
     override fun getItemCount(): Int = ICON_TABS.size
 
     override fun createFragment(position: Int): Fragment = when (position) {
+        0 -> ProfileFeedFragment.newInstance()
         1 -> MarketAboutFragment.newInstance()
         3 -> MarketStatisticFragment()
         else -> ProfilePrivateFragment()

@@ -18,7 +18,7 @@ class ConvertFeedsToItemsUseCase @Inject constructor(
         itemList.add(FeedItem.BlankItem())
         parameters.feeds.forEach {
             when {
-                it?.images?.size ?: 0 > 0 -> itemList.add(
+                (it?.images?.size ?: 0) > 0 -> itemList.add(
                     FeedItem.ImagesFeeds(
                         avatar = it?.user?.picture,
                         title = it?.user?.username,

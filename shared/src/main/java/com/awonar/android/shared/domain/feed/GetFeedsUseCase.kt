@@ -1,32 +1,36 @@
 package com.awonar.android.shared.domain.feed
 
 import com.awonar.android.model.feed.FeedPaging
-import com.awonar.android.model.feed.FeedResponse
-import com.awonar.android.model.feed.NewsMeta
+import com.awonar.android.model.feed.FeedRequest
 import com.awonar.android.shared.di.IoDispatcher
 import com.awonar.android.shared.repos.FeedRepository
 import com.molysulfur.library.result.Result
-import com.molysulfur.library.result.data
-import com.molysulfur.library.result.succeeded
 import com.molysulfur.library.result.successOr
 import com.molysulfur.library.usecase.FlowUseCase
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
-import okhttp3.internal.wait
-import timber.log.Timber
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectIndexed
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.last
 import javax.inject.Inject
-import kotlin.coroutines.suspendCoroutine
 
-class GetAllFeedsUseCase @Inject constructor(
+class GetFeedsUseCase @Inject constructor(
     private val repository: FeedRepository,
     @IoDispatcher dispatcher: CoroutineDispatcher,
 ) : FlowUseCase<FeedRequest, FeedPaging?>(dispatcher) {
 
     override fun execute(parameters: FeedRequest): Flow<Result<FeedPaging?>> = flow {
-        repository.getAllFeed(parameters.type, parameters.page).collectIndexed { _, result ->
+        val flow = if (parameters.prefixPath.isNotBlank()) {
+            repository.getAllFeed(parameters.type, parameters.prefixPath, parameters.page)
+        } else {
+            repository.getAllFeed(parameters.type, parameters.page)
+        }
+        flow.collectIndexed { _, result ->
             val data = result.successOr(null)
             coroutineScope {
-                val metas = data?.feeds?.mapIndexed { index, feed ->
+                val metas = data?.feeds?.mapIndexed { _, feed ->
                     when {
                         feed?.type == "news" -> {
                             val deffer = async {
@@ -54,8 +58,3 @@ class GetAllFeedsUseCase @Inject constructor(
         }
     }
 }
-
-data class FeedRequest(
-    val page: Int,
-    val type: String = "",
-)

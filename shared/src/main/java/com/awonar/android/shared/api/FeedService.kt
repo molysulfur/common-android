@@ -30,6 +30,14 @@ interface FeedService {
         @Query("limit") limit: Int = 5,
     ): Call<FeedResponse>
 
+    @GET("v1/feed/posts/{type}/{prefix}")
+    fun getAllFeed(
+        @Path("type") type: String = "",
+        @Path("prefix") prefix: String = "",
+        @Query("page") page: Int,
+        @Query("limit") limit: Int = 5,
+    ): Call<FeedResponse>
+
     companion object {
 
         fun create(client: NetworkClient): FeedService = Retrofit.Builder()
