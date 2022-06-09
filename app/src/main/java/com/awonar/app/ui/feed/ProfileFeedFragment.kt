@@ -12,6 +12,7 @@ import com.awonar.app.ui.feed.adapter.FeedsAdapter
 import com.awonar.app.ui.marketprofile.about.MarketAboutFragment
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collectLatest
+import timber.log.Timber
 
 class ProfileFeedFragment : Fragment() {
 

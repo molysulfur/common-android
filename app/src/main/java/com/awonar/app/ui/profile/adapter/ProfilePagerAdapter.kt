@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.awonar.app.R
+import com.awonar.app.ui.feed.ProfileFeedFragment
 import com.awonar.app.ui.profile.user.UserPortfolioFragment
 import com.awonar.app.ui.profile.ProfilePrivateFragment
 import com.awonar.app.ui.profile.StatisticProfileFragment
@@ -26,7 +27,7 @@ class ProfilePagerAdapter constructor(fragmentManager: FragmentManager, lifecycl
     override fun getItemCount(): Int = ICON_TABS.size
 
     override fun createFragment(position: Int): Fragment = when (position) {
-        0 -> ProfilePrivateFragment()
+        0 -> ProfileFeedFragment.newInstance()
         1 -> UserInfoFragment.newInstance()
         2 -> StatisticProfileFragment.newInstance()
         3 -> UserPortfolioFragment.newInstance()

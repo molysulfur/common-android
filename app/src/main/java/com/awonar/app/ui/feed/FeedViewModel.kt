@@ -25,8 +25,7 @@ class FeedViewModel @Inject constructor(
     private val _pageState = MutableStateFlow(1)
     private val _prefix = MutableStateFlow("")
     private val _feedType = MutableStateFlow<String?>(null)
-    private val _instrumentFeeds = MutableStateFlow<MutableList<Feed?>>(mutableListOf())
-    private val _userFeeds = MutableStateFlow<MutableList<Feed?>>(mutableListOf())
+    private val _profileFeedsState = MutableStateFlow<MutableList<Feed?>>(mutableListOf())
     private val _feedsState = MutableStateFlow<MutableList<Feed?>>(mutableListOf())
     private val _followFeedsState = MutableStateFlow<MutableList<Feed?>>(mutableListOf())
     private val _copyTradeFeedState = MutableStateFlow<MutableList<Feed?>>(mutableListOf())
@@ -47,7 +46,8 @@ class FeedViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            _instrumentFeeds.collectIndexed { _, value ->
+            _profileFeedsState.collectIndexed { _, value ->
+                Timber.e("${_feedType.value} convert : ${_pageState.value}")
                 _feedItems.value =
                     convertFeedsToItemsUseCase(
                         ConvertFeedData(
@@ -89,7 +89,8 @@ class FeedViewModel @Inject constructor(
     }
 
     private suspend fun getFeed() {
-        if (_pageState.value > 0) {
+        Timber.e("${_feedType.value} getFeed : ${_pageState.value}")
+        if (_pageState.value > 0 && _feedType.value != null) {
             getFeedsUseCase(
                 FeedRequest(
                     _pageState.value,
@@ -99,22 +100,20 @@ class FeedViewModel @Inject constructor(
             ).collectLatest { result ->
                 val data = result.successOr(null)
                 _pageState.value = data?.page ?: 0
-                data?.feeds?.let { newFeeds ->
-                    val feeds = when (_feedType.value) {
-                        "" -> _feedsState.value.toMutableList()
-                        "following" -> _followFeedsState.value.toMutableList()
-                        "copy" -> _copyTradeFeedState.value.toMutableList()
-                        "instrument" -> _instrumentFeeds.value.toMutableList()
-                        else -> mutableListOf()
-                    }
-                    feeds.addAll(newFeeds)
-                    when (_feedType.value) {
-                        "" -> _feedsState.value = feeds
-                        "following" -> _followFeedsState.value = feeds
-                        "copy" -> _copyTradeFeedState.value = feeds
-                        "instrument" -> _instrumentFeeds.value = feeds
-                        else -> {}
-                    }
+                val feeds = when (_feedType.value) {
+                    "" -> _feedsState.value.toMutableList()
+                    "following" -> _followFeedsState.value.toMutableList()
+                    "copy" -> _copyTradeFeedState.value.toMutableList()
+                    "instrument", "user" -> _profileFeedsState.value.toMutableList()
+                    else -> mutableListOf()
+                }
+                feeds.addAll(data?.feeds ?: mutableListOf())
+                when (_feedType.value) {
+                    "" -> _feedsState.value = feeds
+                    "following" -> _followFeedsState.value = feeds
+                    "copy" -> _copyTradeFeedState.value = feeds
+                    "instrument", "user" -> _profileFeedsState.value = feeds
+                    else -> {}
                 }
             }
         }
@@ -138,8 +137,7 @@ class FeedViewModel @Inject constructor(
         _feedsState.value = mutableListOf()
         _followFeedsState.value = mutableListOf()
         _copyTradeFeedState.value = mutableListOf()
-        _userFeeds.value = mutableListOf()
-        _instrumentFeeds.value = mutableListOf()
+        _profileFeedsState.value = mutableListOf()
     }
 
     fun goToTop() {

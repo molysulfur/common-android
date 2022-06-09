@@ -14,6 +14,7 @@ import com.awonar.android.model.user.User
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarActivityProfileBinding
 import com.awonar.app.dialog.copier.CopierDialog
+import com.awonar.app.ui.feed.FeedViewModel
 import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.awonar.app.ui.profile.adapter.ProfilePagerAdapter
 import com.awonar.app.ui.user.UserViewModel
@@ -34,6 +35,7 @@ class ProfileActivity : BaseActivity() {
 
     private val userViewModel: UserViewModel by viewModels()
     private val portfolioViewModel: PortFolioViewModel by viewModels()
+    private val feedViewModel: FeedViewModel by viewModels()
 
     companion object {
         const val RESULT_CODE = 20000
@@ -78,8 +80,10 @@ class ProfileActivity : BaseActivity() {
             }
 
         })
-        TabLayoutMediator(binding.awonarProfileTabsMenu,
-            binding.awonarProfilePagerInfo) { tab, position ->
+        TabLayoutMediator(
+            binding.awonarProfileTabsMenu,
+            binding.awonarProfilePagerInfo
+        ) { tab, position ->
             tab.setIcon(ProfilePagerAdapter.ICON_TABS[position])
         }.attach()
     }
@@ -99,7 +103,8 @@ class ProfileActivity : BaseActivity() {
                         if (!copy.pendingForClosure) {
                             binding.awonarProfileButtonCopy.background = ContextCompat.getDrawable(
                                 baseContext,
-                                R.drawable.awonar_ripple_green)
+                                R.drawable.awonar_ripple_green
+                            )
                         }
                     }
                 }
@@ -110,9 +115,9 @@ class ProfileActivity : BaseActivity() {
                 userViewModel.userState.collect { userInfo ->
                     if (userInfo != null) {
                         user = userInfo
-//                        portfolioViewModel.getPosition()
                         updateUser()
                         updateEditVisible()
+                        feedViewModel.setFeedType("user", "${userInfo.id}")
                     }
                 }
             }

@@ -10,6 +10,7 @@ import com.awonar.app.ui.profile.history.adapter.HistoryProfileItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import timber.log.Timber
 
 class FeedsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -78,6 +79,7 @@ class FeedsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is NewsFeedViewHolder -> holder.bind(item as FeedItem.NewsFeed)
             is FeedViewHolder -> holder.bind(item as FeedItem.DefaultFeed, scope)
             is LoadingViewHolder -> holder.bind {
+                Timber.e("loadmore")
                 onLoadMore?.invoke()
             }
         }
