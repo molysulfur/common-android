@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import com.akexorcist.library.dialoginteractor.DialogLauncher
 import com.akexorcist.library.dialoginteractor.InteractorDialog
 import com.akexorcist.library.dialoginteractor.createBundle
@@ -89,6 +90,16 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                 orderViewModel.updatePrice(quotes)
             }
         }
+        launchAndRepeatWithViewLifecycle {
+            orderViewModel.bidState.collect { bid ->
+                binding.awonarDialogOrderButtonTypeBuy.text = "BUY $bid"
+            }
+        }
+        launchAndRepeatWithViewLifecycle {
+            orderViewModel.askState.collect { ask ->
+                binding.awonarDialogOrderButtonTypeSell.text = "Sell $ask"
+            }
+        }
         /**
          * instrument observe
          */
@@ -98,8 +109,8 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                     /**
                      * init input rate
                      */
-                    binding.awonarDialogOrderNumberPickerInputRate.setDigit(it.digit)
-                    binding.awonarDialogOrderNumberPickerInputRate.setPrefix("")
+//                    binding.awonarDialogOrderNumberPickerInputRate.setDigit(it.digit)
+//                    binding.awonarDialogOrderNumberPickerInputRate.setPrefix("")
                 }
             }
         }
@@ -123,26 +134,26 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         launchAndRepeatWithViewLifecycle {
             launch {
                 orderActivityViewModel.exposureError.collect { error ->
-                    error?.let {
-                        binding.awonarDialogOrderNumberPickerInputAmount.setNumber(it.value)
-                        binding.awonarDialogOrderNumberPickerInputAmount.setHelp(it.message ?: "")
-                    }
+//                    error?.let {
+//                        binding.awonarDialogOrderNumberPickerInputAmount.setNumber(it.value)
+//                        binding.awonarDialogOrderNumberPickerInputAmount.setHelp(it.message ?: "")
+//                    }
                 }
             }
             launch {
                 orderViewModel.amountState.collect { amount ->
-                    when (binding.awonarDialogOrderToggleOrderAmountType.checkedButtonId) {
-                        R.id.awonar_dialog_order_button_amount_amount -> {
-                            binding.awonarDialogOrderNumberPickerInputAmount.setNumber(
-                                amount.first
-                            )
-                        }
-                        R.id.awonar_dialog_order_button_amount_unit -> {
-                            binding.awonarDialogOrderNumberPickerInputAmount.setNumber(
-                                amount.second
-                            )
-                        }
-                    }
+//                    when (binding.awonarDialogOrderToggleOrderAmountType.checkedButtonId) {
+//                        R.id.awonar_dialog_order_button_amount_amount -> {
+//                            binding.awonarDialogOrderNumberPickerInputAmount.setNumber(
+//                                amount.first
+//                            )
+//                        }
+//                        R.id.awonar_dialog_order_button_amount_unit -> {
+//                            binding.awonarDialogOrderNumberPickerInputAmount.setNumber(
+//                                amount.second
+//                            )
+//                        }
+//                    }
                     validateExposure(amount = amount.first)
                 }
             }
@@ -150,17 +161,18 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         /**
          * Rate Obsever
          */
-        launchAndRepeatWithViewLifecycle {
+        launchAndRepeatWithViewLifecycle(Lifecycle.State.RESUMED) {
             launch {
                 orderActivityViewModel.rateErrorState.collect {
                     it?.let {
-                        binding.awonarDialogOrderNumberPickerInputRate.setNumber(it.rate)
-                        binding.awonarDialogOrderNumberPickerInputRate.setHelp(it.message ?: "")
+//                        binding.awonarDialogOrderNumberPickerInputRate.setNumber(it.rate)
+//                        binding.awonarDialogOrderNumberPickerInputRate.setHelp(it.message ?: "")
                     }
                 }
             }
             launch {
                 orderViewModel.rateState.collect { rate ->
+                    binding.awoanrDialogOrderInputLayoutRate.editText?.setText("${rate ?: ""}")
                     rate?.let {
                         orderActivityViewModel.validateRate(
                             it,
@@ -175,23 +187,23 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
          * stop loss Observer
          */
         launchAndRepeatWithViewLifecycle {
-            orderViewModel.takeProfit.collect { tp ->
-                binding.awonarDialogOrderViewNumberpickerCollapsibleTp.setNumber(tp)
-            }
+//            orderViewModel.takeProfit.collect { tp ->
+//                binding.awonarDialogOrderViewNumberpickerCollapsibleTp.setNumber(tp)
+//            }
         }
 
         launchAndRepeatWithViewLifecycle {
-            orderViewModel.stopLossState.collect { sl ->
-                binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setNumber(sl)
-            }
+//            orderViewModel.stopLossState.collect { sl ->
+//                binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setNumber(sl)
+//            }
         }
         launchAndRepeatWithViewLifecycle {
             launch {
-                orderViewModel.leverageState.collect {
-                    binding.awonarDialogOrderNumberPickerInputAmount.setHelp("")
-                    binding.awonarDialogOrderCollapseLeverage.setDescription("X$it")
-                    getOvernight()
-                }
+//                orderViewModel.leverageState.collect {
+//                    binding.awonarDialogOrderNumberPickerInputAmount.setHelp("")
+//                    binding.awonarDialogOrderCollapseLeverage.setDescription("X$it")
+//                    getOvernight()
+//                }
             }
             launch {
                 orderViewModel.openOrderState.collect { message ->
@@ -209,9 +221,9 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     private fun observeError() {
         launchAndRepeatWithViewLifecycle {
             launch {
-                orderViewModel.amountError.collect {
-                    binding.awonarDialogOrderNumberPickerInputAmount.setHelp(it)
-                }
+//                orderViewModel.amountError.collect {
+//                    binding.awonarDialogOrderNumberPickerInputAmount.setHelp(it)
+//                }
             }
         }
     }
@@ -229,13 +241,22 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                 else -> {}
             }
         }
-        setupRateInput()
+        binding.awonarDialogOrderToggleOrderType.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (isChecked) {
+                when (checkedId) {
+                    R.id.awonar_dialog_order_button_type_sell -> orderViewModel.setIsBuy(false)
+                    R.id.awonar_dialog_order_button_type_buy -> orderViewModel.setIsBuy(true)
+                }
+            }
+
+        }
         binding.awonarDialogOrderImageIconClose.setOnClickListener {
             dismiss()
         }
         binding.awonarDialogOrderButtonOpenTrade.setOnClickListener {
             orderViewModel.submit()
         }
+        setupRate()
         setupAmount()
         setupLeverageAdapter()
         initStopLoss()
@@ -243,58 +264,66 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     }
 
     private fun setupAmount() {
-        binding.awonarDialogOrderNumberPickerInputAmount.doAfterFocusChange = { number, hasFocus ->
-            if (!hasFocus) {
-                when (binding.awonarDialogOrderToggleOrderAmountType.checkedButtonId) {
-                    R.id.awonar_dialog_order_button_amount_amount -> {
-                        orderViewModel.updateAmount(
-                            instrumentId = orderViewModel.instrument.value?.id ?: 0,
-                            amount = number,
-                            price = orderViewModel.priceState.value
-                        )
-                    }
-                    R.id.awonar_dialog_order_button_amount_unit -> {
-                        orderViewModel.updateUnits(
-                            instrumentId = orderViewModel.instrument.value?.id ?: 0,
-                            units = number,
-                            price = orderViewModel.priceState.value
-                        )
-                    }
-                }
-            }
-        }
-        binding.awonarDialogOrderToggleOrderAmountType.addOnButtonCheckedListener { _, checkedId, _ ->
-            when (checkedId) {
-                R.id.awonar_dialog_order_button_amount_amount -> {
-                    binding.awonarDialogOrderNumberPickerInputAmount.setNumber(orderViewModel.amountState.value.first)
-                    binding.awonarDialogOrderNumberPickerInputAmount.setPrefix("$")
-                }
-                R.id.awonar_dialog_order_button_amount_unit -> {
-                    binding.awonarDialogOrderNumberPickerInputAmount.setNumber(orderViewModel.amountState.value.second)
-                    binding.awonarDialogOrderNumberPickerInputAmount.setPrefix("")
-                }
-            }
-        }
+//        binding.awonarDialogOrderNumberPickerInputAmount.doAfterFocusChange = { number, hasFocus ->
+//            if (!hasFocus) {
+//                when (binding.awonarDialogOrderToggleOrderAmountType.checkedButtonId) {
+//                    R.id.awonar_dialog_order_button_amount_amount -> {
+//                        orderViewModel.updateAmount(
+//                            instrumentId = orderViewModel.instrument.value?.id ?: 0,
+//                            amount = number,
+//                            price = orderViewModel.priceState.value
+//                        )
+//                    }
+//                    R.id.awonar_dialog_order_button_amount_unit -> {
+//                        orderViewModel.updateUnits(
+//                            instrumentId = orderViewModel.instrument.value?.id ?: 0,
+//                            units = number,
+//                            price = orderViewModel.priceState.value
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//        binding.awonarDialogOrderToggleOrderAmountType.addOnButtonCheckedListener { _, checkedId, _ ->
+//            when (checkedId) {
+//                R.id.awonar_dialog_order_button_amount_amount -> {
+//                    binding.awonarDialogOrderNumberPickerInputAmount.setNumber(orderViewModel.amountState.value.first)
+//                    binding.awonarDialogOrderNumberPickerInputAmount.setPrefix("$")
+//                }
+//                R.id.awonar_dialog_order_button_amount_unit -> {
+//                    binding.awonarDialogOrderNumberPickerInputAmount.setNumber(orderViewModel.amountState.value.second)
+//                    binding.awonarDialogOrderNumberPickerInputAmount.setPrefix("")
+//                }
+//            }
+//        }
     }
 
-    private fun setupRateInput() {
-        binding.awonarDialogOrderNumberPickerInputRate.doAfterTextChange = {
-            orderViewModel.updateRate(it)
-        }
-        binding.awonarDialogOrderToggleOrderRateType.addOnButtonCheckedListener { _, checkedId, _ ->
-            when (checkedId) {
-                R.id.awonar_dialog_order_button_rate_market -> {
-                    binding.awonarDialogOrderNumberPickerInputRate.setPlaceHolderEnable(true)
-                }
-                R.id.awonar_dialog_order_button_rate_manual -> {
-                    binding.awonarDialogOrderNumberPickerInputRate.setNumber(orderViewModel.priceState.value)
-                    binding.awonarDialogOrderNumberPickerInputRate.setPlaceHolderEnable(false)
-                    orderViewModel.updateMarketType(MarketOrderType.PENDING_ORDER)
-                }
-                else -> {
-                }
+    private fun setupRate() {
+        binding.awoanrDialogOrderButtonRateToggle.setOnClickListener {
+            val updateEnable = !binding.awoanrDialogOrderInputLayoutRate.isEnabled
+            binding.awoanrDialogOrderInputLayoutRate.apply {
+                isEnabled = updateEnable
+                hint = if (updateEnable) "Open Rate" else "At Market"
+            }
+            when (updateEnable) {
+                false -> orderViewModel.updateRate(null)
+                true -> orderViewModel.updateRate(orderViewModel.priceState.value)
             }
         }
+//        binding.awonarDialogOrderToggleOrderRateType.addOnButtonCheckedListener { _, checkedId, _ ->
+//            when (checkedId) {
+//                R.id.awonar_dialog_order_button_rate_market -> {
+//                    binding.awonarDialogOrderNumberPickerInputRate.setPlaceHolderEnable(true)
+//                }
+//                R.id.awonar_dialog_order_button_rate_manual -> {
+//                    binding.awonarDialogOrderNumberPickerInputRate.setNumber(orderViewModel.priceState.value)
+//                    binding.awonarDialogOrderNumberPickerInputRate.setPlaceHolderEnable(false)
+//                    orderViewModel.updateMarketType(MarketOrderType.PENDING_ORDER)
+//                }
+//                else -> {
+//                }
+//            }
+//        }
     }
 
     private fun getOvernight() {
@@ -312,36 +341,36 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     }
 
     private fun initTakeProfit() {
-        binding.awonarDialogOrderViewNumberpickerCollapsibleTp.setDescriptionColor(R.color.awonar_color_primary)
-        binding.awonarDialogOrderViewNumberpickerCollapsibleTp.doAfterFocusChange =
-            { number, isLeft ->
-                if (isLeft) {
-                    orderViewModel.setAmountTp(number.first)
-                } else {
-                    orderViewModel.setRateTp(number.second)
-                }
-            }
+//        binding.awonarDialogOrderViewNumberpickerCollapsibleTp.setDescriptionColor(R.color.awonar_color_primary)
+//        binding.awonarDialogOrderViewNumberpickerCollapsibleTp.doAfterFocusChange =
+//            { number, isLeft ->
+//                if (isLeft) {
+//                    orderViewModel.setAmountTp(number.first)
+//                } else {
+//                    orderViewModel.setRateTp(number.second)
+//                }
+//            }
     }
 
     private fun initStopLoss() {
-        binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setDescriptionColor(R.color.awonar_color_orange)
-        binding.awonarDialogOrderViewNumberpickerCollapsibleSl.doAfterFocusChange =
-            { number, isLeft ->
-                if (isLeft) {
-                    orderViewModel.setAmountSl(number.first)
-                } else {
-                    orderViewModel.setRateSl(number.second)
-                }
-            }
+//        binding.awonarDialogOrderViewNumberpickerCollapsibleSl.setDescriptionColor(R.color.awonar_color_orange)
+//        binding.awonarDialogOrderViewNumberpickerCollapsibleSl.doAfterFocusChange =
+//            { number, isLeft ->
+//                if (isLeft) {
+//                    orderViewModel.setAmountSl(number.first)
+//                } else {
+//                    orderViewModel.setRateSl(number.second)
+//                }
+//            }
     }
 
 
     private fun setupLeverageAdapter() {
-        binding.awonarDialogOrderToggleOrderType.addOnButtonCheckedListener { _, checkedId, _ ->
-            getOvernight()
-        }
-        binding.awonarDialogOrderCollapseLeverage.setTitle(getString(R.string.awonar_text_leverage))
-        binding.awonarDialogOrderCollapseLeverage.setAdapter(leverageAdapter)
+//        binding.awonarDialogOrderToggleOrderType.addOnButtonCheckedListener { _, checkedId, _ ->
+//            getOvernight()
+//        }
+//        binding.awonarDialogOrderCollapseLeverage.setTitle(getString(R.string.awonar_text_leverage))
+//        binding.awonarDialogOrderCollapseLeverage.setAdapter(leverageAdapter)
     }
 
     private fun validateExposure(amount: Float) {

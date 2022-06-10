@@ -62,6 +62,10 @@ class OrderViewModel @Inject constructor(
 
     private val _priceState = MutableStateFlow(0f)
     val priceState get() = _priceState
+    private val _bidState = MutableStateFlow(0f)
+    val bidState get() = _bidState
+    private val _askState = MutableStateFlow(0f)
+    val askState get() = _askState
     private val _changeState = MutableStateFlow(Pair(0f, 0f))
     val changeState get() = _changeState
     private val _marketStatus = MutableStateFlow("")
@@ -106,6 +110,8 @@ class OrderViewModel @Inject constructor(
     val overnightFeeMessage: StateFlow<String> get() = _overnightFeeMessage
     private val _depositState = MutableStateFlow(false)
     val depositState: StateFlow<Boolean> get() = _depositState
+    private val _buyOrSellMessage = MutableStateFlow("")
+    val buyOrSellMessage get() = _buyOrSellMessage
 
     init {
         viewModelScope.launch {
@@ -126,6 +132,11 @@ class OrderViewModel @Inject constructor(
                 tradingData,
                 _isBuyState
             ) { amount, leverage, tradingData, isBuy ->
+                _buyOrSellMessage.value = when (isBuy) {
+                    true -> "Buy"
+                    false -> "Sell"
+                    else -> ""
+                }
                 var message = ""
                 if (tradingData != null) {
                     val units = amount.second
@@ -191,7 +202,7 @@ class OrderViewModel @Inject constructor(
                             rateSl = it.second,
                             amount = _amountState.value.first,
                             currentPrice = _priceState.value,
-                            openPrice = _rateState.value ?: 0f,
+                            openPrice = _rateState.value ?: _priceState.value,
                             exposure = _exposureState.value,
                             units = _amountState.value.second,
                             leverage = leverage,
@@ -486,13 +497,9 @@ class OrderViewModel @Inject constructor(
     }
 
 
-    fun updateRate(rate: Float) {
+    fun updateRate(rate: Float?) {
         viewModelScope.launch {
-            val newRate = when (_marketType.value) {
-                MarketOrderType.ENTRY_ORDER, MarketOrderType.OPEN_ORDER -> priceState.value
-                else -> rate
-            }
-            _rateState.emit(newRate)
+            _rateState.emit(rate)
         }
     }
 
@@ -705,6 +712,8 @@ class OrderViewModel @Inject constructor(
             )
             val change = ConverterQuoteUtil.change(price, quote.previous)
             val percentChange = ConverterQuoteUtil.percentChange(price, quote.previous)
+            _bidState.value = ConverterQuoteUtil.getCurrentPrice(quote, _leverageState.value, true)
+            _askState.value = ConverterQuoteUtil.getCurrentPrice(quote, _leverageState.value, false)
             _changeState.value = Pair(change, percentChange)
             _priceState.value = price
         }
@@ -733,7 +742,7 @@ class OrderViewModel @Inject constructor(
                 amount = _amountState.value.first,
                 isBuy = _isBuyState.value == true,
                 leverage = _leverageState.value,
-                rate = _rateState.value ?: 0f,
+                rate = _rateState.value ?: _priceState.value,
                 stopLoss = _stopLossState.value.second,
                 takeProfit = _takeProfit.value.second,
                 units = _amountState.value.second
