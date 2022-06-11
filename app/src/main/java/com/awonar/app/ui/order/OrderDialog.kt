@@ -152,13 +152,13 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                         false -> {
                             binding.awoanrDialogOrderInputLayoutAmount.setStartIconDrawable(0)
                             binding.awoanrDialogOrderInputLayoutAmount.editText?.setText(
-                                "${amount.second}"
+                                "%.2f".format(amount.second)
                             )
                         }
                         true -> {
                             binding.awoanrDialogOrderInputLayoutAmount.setStartIconDrawable(R.drawable.awoanr_ic_dollar)
                             binding.awoanrDialogOrderInputLayoutAmount.editText?.setText(
-                                "${amount.first}"
+                                "%.2f".format(amount.first)
                             )
                         }
                     }
@@ -235,14 +235,14 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                         binding.awoanrDialogOrderInputLayoutAmount.setStartIconDrawable(R.drawable.awoanr_ic_dollar)
                         binding.awoanrDialogOrderButtonAmountToggle.text = "Unit"
                         binding.awoanrDialogOrderInputLayoutAmount.editText?.setText(
-                            "${orderViewModel.amountState.value.first}"
+                            "%.2f".format(orderViewModel.amountState.value.first)
                         )
                     }
                     else -> {
                         binding.awoanrDialogOrderInputLayoutAmount.setStartIconDrawable(0)
                         binding.awoanrDialogOrderButtonAmountToggle.text = "Amount"
                         binding.awoanrDialogOrderInputLayoutAmount.editText?.setText(
-                            "${orderViewModel.amountState.value.second}"
+                            "%.2f".format(orderViewModel.amountState.value.second)
                         )
 
                     }
