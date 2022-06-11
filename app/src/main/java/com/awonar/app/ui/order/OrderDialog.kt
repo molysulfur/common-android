@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import com.akexorcist.library.dialoginteractor.DialogLauncher
@@ -17,9 +19,11 @@ import com.awonar.app.R
 import com.awonar.app.databinding.AwonarDialogOrderBinding
 import com.awonar.app.dialog.DialogViewModel
 import com.awonar.app.ui.portfolio.PortFolioViewModel
+import com.google.android.material.textfield.TextInputEditText
 import com.molysulfur.library.extension.toast
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -49,6 +53,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
+        observeActivityViewModel()
         observeError()
         launchAndRepeatWithViewLifecycle {
             orderViewModel.depositState.collectLatest { isDeposit ->
@@ -134,26 +139,29 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         launchAndRepeatWithViewLifecycle {
             launch {
                 orderActivityViewModel.exposureError.collect { error ->
-//                    error?.let {
-//                        binding.awonarDialogOrderNumberPickerInputAmount.setNumber(it.value)
-//                        binding.awonarDialogOrderNumberPickerInputAmount.setHelp(it.message ?: "")
-//                    }
+                    binding.awoanrDialogOrderInputLayoutAmount.error = ""
+                    error?.let {
+                        binding.awoanrDialogOrderInputLayoutAmount.editText?.setText("${it.value}")
+                        binding.awoanrDialogOrderInputLayoutAmount.error = (it.message ?: "")
+                    }
                 }
             }
             launch {
                 orderViewModel.amountState.collect { amount ->
-//                    when (binding.awonarDialogOrderToggleOrderAmountType.checkedButtonId) {
-//                        R.id.awonar_dialog_order_button_amount_amount -> {
-//                            binding.awonarDialogOrderNumberPickerInputAmount.setNumber(
-//                                amount.first
-//                            )
-//                        }
-//                        R.id.awonar_dialog_order_button_amount_unit -> {
-//                            binding.awonarDialogOrderNumberPickerInputAmount.setNumber(
-//                                amount.second
-//                            )
-//                        }
-//                    }
+                    when (orderActivityViewModel.showAmount.value) {
+                        false -> {
+                            binding.awoanrDialogOrderInputLayoutAmount.setStartIconDrawable(0)
+                            binding.awoanrDialogOrderInputLayoutAmount.editText?.setText(
+                                "${amount.second}"
+                            )
+                        }
+                        true -> {
+                            binding.awoanrDialogOrderInputLayoutAmount.setStartIconDrawable(R.drawable.awoanr_ic_dollar)
+                            binding.awoanrDialogOrderInputLayoutAmount.editText?.setText(
+                                "${amount.first}"
+                            )
+                        }
+                    }
                     validateExposure(amount = amount.first)
                 }
             }
@@ -164,9 +172,10 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         launchAndRepeatWithViewLifecycle(Lifecycle.State.RESUMED) {
             launch {
                 orderActivityViewModel.rateErrorState.collect {
+                    binding.awoanrDialogOrderInputLayoutRate.error = ""
                     it?.let {
-//                        binding.awonarDialogOrderNumberPickerInputRate.setNumber(it.rate)
-//                        binding.awonarDialogOrderNumberPickerInputRate.setHelp(it.message ?: "")
+                        binding.awoanrDialogOrderInputLayoutRate.editText?.setText("${it.rate}")
+                        binding.awoanrDialogOrderInputLayoutRate.error = (it.message ?: "")
                     }
                 }
             }
@@ -218,6 +227,42 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         return binding.root
     }
 
+    private fun observeActivityViewModel() {
+        launchAndRepeatWithViewLifecycle {
+            orderActivityViewModel.showAmount.collectIndexed { _, isShowAmount ->
+                when (isShowAmount) {
+                    true -> {
+                        binding.awoanrDialogOrderInputLayoutAmount.setStartIconDrawable(R.drawable.awoanr_ic_dollar)
+                        binding.awoanrDialogOrderButtonAmountToggle.text = "Unit"
+                        binding.awoanrDialogOrderInputLayoutAmount.editText?.setText(
+                            "${orderViewModel.amountState.value.first}"
+                        )
+                    }
+                    else -> {
+                        binding.awoanrDialogOrderInputLayoutAmount.setStartIconDrawable(0)
+                        binding.awoanrDialogOrderButtonAmountToggle.text = "Amount"
+                        binding.awoanrDialogOrderInputLayoutAmount.editText?.setText(
+                            "${orderViewModel.amountState.value.second}"
+                        )
+
+                    }
+                }
+            }
+        }
+        launchAndRepeatWithViewLifecycle {
+            orderActivityViewModel.isSetRate.collectIndexed { _, isAtMarket ->
+                binding.awoanrDialogOrderInputLayoutRate.apply {
+                    isEnabled = isAtMarket
+                    hint = if (isAtMarket) "Open Rate" else "At Market"
+                }
+                when (isAtMarket) {
+                    false -> orderViewModel.updateRate(null)
+                    true -> orderViewModel.updateRate(orderViewModel.priceState.value)
+                }
+            }
+        }
+    }
+
     private fun observeError() {
         launchAndRepeatWithViewLifecycle {
             launch {
@@ -264,26 +309,32 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     }
 
     private fun setupAmount() {
-//        binding.awonarDialogOrderNumberPickerInputAmount.doAfterFocusChange = { number, hasFocus ->
-//            if (!hasFocus) {
-//                when (binding.awonarDialogOrderToggleOrderAmountType.checkedButtonId) {
-//                    R.id.awonar_dialog_order_button_amount_amount -> {
-//                        orderViewModel.updateAmount(
-//                            instrumentId = orderViewModel.instrument.value?.id ?: 0,
-//                            amount = number,
-//                            price = orderViewModel.priceState.value
-//                        )
-//                    }
-//                    R.id.awonar_dialog_order_button_amount_unit -> {
-//                        orderViewModel.updateUnits(
-//                            instrumentId = orderViewModel.instrument.value?.id ?: 0,
-//                            units = number,
-//                            price = orderViewModel.priceState.value
-//                        )
-//                    }
-//                }
-//            }
-//        }
+        with(binding.awoanrDialogOrderButtonAmountToggle) {
+            setOnClickListener {
+                orderActivityViewModel.toggleShowAmount()
+            }
+        }
+        binding.awoanrDialogOrderInputLayoutAmount.editText?.setOnFocusChangeListener { v, hasFocus ->
+            val text = (v as TextInputEditText).text.toString()
+            if (!hasFocus) {
+                when (orderActivityViewModel.showAmount.value) {
+                    true -> {
+                        orderViewModel.updateAmount(
+                            instrumentId = orderViewModel.instrument.value?.id ?: 0,
+                            amount = text.toFloat(),
+                            price = orderViewModel.priceState.value
+                        )
+                    }
+                    false -> {
+                        orderViewModel.updateUnits(
+                            instrumentId = orderViewModel.instrument.value?.id ?: 0,
+                            units = text.toFloat(),
+                            price = orderViewModel.priceState.value
+                        )
+                    }
+                }
+            }
+        }
 //        binding.awonarDialogOrderToggleOrderAmountType.addOnButtonCheckedListener { _, checkedId, _ ->
 //            when (checkedId) {
 //                R.id.awonar_dialog_order_button_amount_amount -> {
@@ -299,31 +350,23 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     }
 
     private fun setupRate() {
-        binding.awoanrDialogOrderButtonRateToggle.setOnClickListener {
-            val updateEnable = !binding.awoanrDialogOrderInputLayoutRate.isEnabled
-            binding.awoanrDialogOrderInputLayoutRate.apply {
-                isEnabled = updateEnable
-                hint = if (updateEnable) "Open Rate" else "At Market"
-            }
-            when (updateEnable) {
-                false -> orderViewModel.updateRate(null)
-                true -> orderViewModel.updateRate(orderViewModel.priceState.value)
+        binding.awoanrDialogOrderInputLayoutRate.editText?.let { editText ->
+            with(editText) {
+                setOnFocusChangeListener { v, hasFocus ->
+                    if (!hasFocus) {
+                        val newRate = (v as EditText).text.toString()
+                        if (newRate.isNotBlank()) {
+                            orderViewModel.updateRate(newRate.toFloat())
+                        }
+                    }
+                }
             }
         }
-//        binding.awonarDialogOrderToggleOrderRateType.addOnButtonCheckedListener { _, checkedId, _ ->
-//            when (checkedId) {
-//                R.id.awonar_dialog_order_button_rate_market -> {
-//                    binding.awonarDialogOrderNumberPickerInputRate.setPlaceHolderEnable(true)
-//                }
-//                R.id.awonar_dialog_order_button_rate_manual -> {
-//                    binding.awonarDialogOrderNumberPickerInputRate.setNumber(orderViewModel.priceState.value)
-//                    binding.awonarDialogOrderNumberPickerInputRate.setPlaceHolderEnable(false)
-//                    orderViewModel.updateMarketType(MarketOrderType.PENDING_ORDER)
-//                }
-//                else -> {
-//                }
-//            }
-//        }
+
+        binding.awoanrDialogOrderButtonRateToggle.setOnClickListener {
+            val updateEnable = !binding.awoanrDialogOrderInputLayoutRate.isEnabled
+            orderActivityViewModel.setAtMarket(updateEnable)
+        }
     }
 
     private fun getOvernight() {
@@ -374,13 +417,15 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     }
 
     private fun validateExposure(amount: Float) {
-//        instrument?.let { instrument ->
-//            orderActivityViewModel.validatePositionExposure(
-//                id = instrument.id,
-//                amount = amount,
-//                leverage = currentLeverage
-//            )
-//        }
+        orderViewModel.instrument.value?.let { instrument ->
+            if (orderViewModel.leverageState.value > 0) {
+                orderActivityViewModel.validateExposure(
+                    id = instrument.id,
+                    amount = amount,
+                    leverage = orderViewModel.leverageState.value
+                )
+            }
+        }
     }
 
 

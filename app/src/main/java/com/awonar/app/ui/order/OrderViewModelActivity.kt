@@ -18,6 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class OrderViewModelActivity @Inject constructor(
     private val getOvernightFeeDaliyUseCase: GetOvernightFeeDaliyUseCase,
+    private val validateExposureUseCase: ValidateExposureUseCase,
     private val validateRateUseCase: ValidateRateUseCase,
     private val validateRateStopLossWithBuyUseCase: ValidateRateStopLossWithBuyUseCase,
     private val validateRateStopLossWithSellUseCase: ValidateRateStopLossWithSellUseCase,
@@ -26,6 +27,11 @@ class OrderViewModelActivity @Inject constructor(
     private val validateAmountStopLossWithNonLeverageBuyUseCase: ValidateAmountStopLossWithNonLeverageBuyUseCase,
     private val validateAmountStopLossWithNonLeverageSellUseCase: ValidateAmountStopLossWithNonLeverageSellUseCase,
 ) : ViewModel() {
+
+    private val _showAmount = MutableStateFlow(true)
+    val showAmount = _showAmount
+    private val _isSetRate = MutableStateFlow(false)
+    val isSetRate = _isSetRate
 
     private val _rateErrorState = MutableStateFlow<RateException?>(null)
     val rateErrorState: StateFlow<RateException?> get() = _rateErrorState
@@ -40,9 +46,13 @@ class OrderViewModelActivity @Inject constructor(
     private val _overNightFeeWeekState: MutableStateFlow<Float> = MutableStateFlow(0f)
     val overNightFeeWeekState: StateFlow<Float> get() = _overNightFeeWeekState
 
-    private val _amountError = MutableSharedFlow<String>()
-    val amountError: SharedFlow<String> get() = _amountError
+    fun toggleShowAmount() {
+        _showAmount.value = !_showAmount.value
+    }
 
+    fun setAtMarket(isAtMarket: Boolean) {
+        _isSetRate.value = isAtMarket
+    }
 
     private suspend fun validateAmountStopLoss(
         data: ValidateStopLossRequest,
@@ -95,6 +105,25 @@ class OrderViewModelActivity @Inject constructor(
                 is Result.Error -> {
                     val error = result.exception as RateException
                     _rateErrorState.emit(error)
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun validateExposure(id: Int, amount: Float, leverage: Int) {
+        viewModelScope.launch {
+            val result = validateExposureUseCase(
+                ExposureRequest(
+                    instrumentId = id,
+                    amount = amount,
+                    leverage = leverage
+                )
+            )
+            when (result) {
+                is Result.Success -> _exposureError.emit(null)
+                is Result.Error -> {
+                    _exposureError.emit(result.exception as PositionExposureException)
                 }
                 else -> {}
             }

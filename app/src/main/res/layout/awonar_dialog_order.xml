@@ -169,6 +169,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/awonar_size_margin_padding_normal"
                 android:text="@string/awonar_dialog_order_text_title_set_rate"
+                app:layout_constraintBottom_toBottomOf="@+id/awoanr_dialog_order_input_layout_rate"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/awoanr_dialog_order_input_layout_rate" />
 
@@ -212,6 +213,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
                 android:text="@string/awonar_dialog_order_text_title_amount"
+                app:layout_constraintBottom_toBottomOf="@+id/awoanr_dialog_order_input_layout_amount"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/awoanr_dialog_order_input_layout_amount" />
 
@@ -243,7 +245,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minHeight="0dp"
-                android:text="Toggle"
+                android:text="Unit"
                 app:layout_constraintEnd_toEndOf="@+id/awoanr_dialog_order_input_layout_rate"
                 app:layout_constraintTop_toBottomOf="@+id/awoanr_dialog_order_input_layout_amount" />
 

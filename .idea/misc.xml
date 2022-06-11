@@ -6,6 +6,7 @@
         <entry key="../../../../layout/custom_preview.xml" value="0.1" />
         <entry key="../../.gradle/caches/transforms-3/d797a675616e6ebb0b19cc1350432527/transformed/jetified-skeleton-1.1.2/res/layout/layout_shimmer.xml" value="0.17135416666666667" />
         <entry key="../../.gradle/caches/transforms-3/f3ea59686c36bd564ab67af304dbf879/transformed/jetified-skeleton-1.1.2/res/layout/layout_shimmer.xml" value="0.17135416666666667" />
+        <entry key="app/src/main/res/drawable/awoanr_ic_dollar.xml" value="0.122" />
         <entry key="app/src/main/res/drawable/awonar_ripple_border_gray.xml" value="0.122" />
         <entry key="app/src/main/res/layout/awonar_activity_main.xml" value="0.18070652173913043" />
         <entry key="app/src/main/res/layout/awonar_activity_publish_feed.xml" value="0.17135416666666667" />

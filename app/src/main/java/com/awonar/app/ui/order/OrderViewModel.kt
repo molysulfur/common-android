@@ -74,7 +74,7 @@ class OrderViewModel @Inject constructor(
     val instrument get() = _instrument
     private val _tradingData = MutableStateFlow<TradingData?>(null)
     val tradingData get() = _tradingData
-    private val _leverageState = MutableStateFlow(1)
+    private val _leverageState = MutableStateFlow(0)
     val leverageState: StateFlow<Int> get() = _leverageState
 
     private val _amountState = MutableStateFlow(Pair(0f, 0f))
