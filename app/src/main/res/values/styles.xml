@@ -204,7 +204,6 @@
     <style name="Awonar.Button.Toggle">
         <item name="selectionRequired">true</item>
         <item name="singleSelection">true</item>
-        <item name="android:layout_margin">@dimen/awonar_size_margin_padding_normal</item>
     </style>
 
     <!-- TextInput Layout Style -->
@@ -231,6 +230,11 @@
 
     <style name="Awonar.Chip" parent="Widget.MaterialComponents.Chip.Choice">
         <item name="chipBackgroundColor">@color/awonar_selector_chip_primary</item>
+    </style>
+
+    <style name="Awonar.Slider">
+        <item name="trackColorActive">@color/awonar_color_primary</item>
+        <item name="trackColorInactive">@color/awonar_color_light_gray</item>
     </style>
 
 </resources>

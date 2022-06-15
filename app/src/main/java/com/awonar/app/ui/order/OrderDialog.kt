@@ -6,25 +6,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.akexorcist.library.dialoginteractor.DialogLauncher
 import com.akexorcist.library.dialoginteractor.InteractorDialog
 import com.akexorcist.library.dialoginteractor.createBundle
-import com.awonar.android.constrant.MarketOrderType
 import com.awonar.android.model.market.Instrument
+import com.awonar.android.model.tradingdata.TradingData
 import com.awonar.android.shared.steaming.QuoteSteamingManager
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarDialogOrderBinding
 import com.awonar.app.dialog.DialogViewModel
+import com.awonar.app.ui.order.leverageselector.adpater.LeverageSelectorAdapter
 import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.google.android.material.textfield.TextInputEditText
 import com.molysulfur.library.extension.toast
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectIndexed
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -34,17 +34,22 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         AwonarDialogOrderBinding.inflate(layoutInflater)
     }
 
+    var itemList = mutableListOf(
+        LeverageSelectorAdapter.StepViewData("X1", start = true, end = false),
+        LeverageSelectorAdapter.StepViewData("X2", start = false, end = false),
+        LeverageSelectorAdapter.StepViewData("X3", start = false, end = true)
+    )
+
     private val orderViewModel: OrderViewModel by activityViewModels()
     private val orderActivityViewModel: OrderViewModelActivity by activityViewModels()
     private val portfolioViewModel: PortFolioViewModel by activityViewModels()
+    private val leverageAdapter: LeverageSelectorAdapter by lazy {
+        val adapter = LeverageSelectorAdapter().apply {
+            onChecked = {
 
-    private val leverageAdapter: LeverageAdapter by lazy {
-        LeverageAdapter().apply {
-            onClick = { text ->
-                val newLeverage: Int = text.replace("X", "").toInt()
-                orderViewModel.updateLeverage(newLeverage)
             }
         }
+        adapter
     }
 
     @SuppressLint("SetTextI18n")
@@ -56,18 +61,18 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         observeActivityViewModel()
         observeError()
         launchAndRepeatWithViewLifecycle {
-            orderViewModel.depositState.collectLatest { isDeposit ->
-                if (isDeposit) {
-                    binding.awonarDialogOrderButtonOpenTrade.text = "Deposit"
-                } else {
-                    binding.awonarDialogOrderButtonOpenTrade.text = "Open Trade"
-                }
-            }
+//            orderViewModel.depositState.collectLatest { isDeposit ->
+//                if (isDeposit) {
+//                    binding.awonarDialogOrderButtonOpenTrade.text = "Deposit"
+//                } else {
+//                    binding.awonarDialogOrderButtonOpenTrade.text = "Open Trade"
+//                }
+//            }
         }
         launchAndRepeatWithViewLifecycle {
-            orderViewModel.overnightFeeMessage.collectLatest {
-                binding.awonarDialogOrderTextOrderOvernight.text = it
-            }
+//            orderViewModel.overnightFeeMessage.collectLatest {
+//                binding.awonarDialogOrderTextOrderOvernight.text = it
+//            }
         }
         /**
          * Current Price and Changed
@@ -123,7 +128,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             orderViewModel.tradingData.collect { tradingData ->
                 binding.awonarDialogOrderButtonTypeBuy.isEnabled = tradingData?.allowBuy == true
                 binding.awonarDialogOrderButtonTypeSell.isEnabled = tradingData?.allowSell == true
-                leverageAdapter.leverageString = tradingData?.leverages ?: emptyList()
+                setLeverageAdapter(tradingData)
             }
         }
         launchAndRepeatWithViewLifecycle {
@@ -227,6 +232,27 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         return binding.root
     }
 
+    private fun setLeverageAdapter(tradingData: TradingData?) {
+        Timber.e("${binding.awonarDialogOrderRecyclerLeverages.adapter == null} $tradingData")
+
+        if (binding.awonarDialogOrderRecyclerLeverages.adapter == null && tradingData != null) {
+            with(binding.awonarDialogOrderRecyclerLeverages) {
+                this.adapter = leverageAdapter
+                layoutManager =
+                    GridLayoutManager(requireContext(), tradingData.leverages.size)
+            }
+            leverageAdapter.itemList = tradingData.leverages.mapIndexed { index, s ->
+                LeverageSelectorAdapter.StepViewData(
+                    "X$s",
+                    start = index == 0,
+                    end = index == tradingData.leverages.size - 1,
+                    isCheck = s.equals(orderViewModel.leverageState.value)
+                )
+            }.toMutableList()
+        }
+
+    }
+
     private fun observeActivityViewModel() {
         launchAndRepeatWithViewLifecycle {
             orderActivityViewModel.showAmount.collectIndexed { _, isShowAmount ->
@@ -298,9 +324,9 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         binding.awonarDialogOrderImageIconClose.setOnClickListener {
             dismiss()
         }
-        binding.awonarDialogOrderButtonOpenTrade.setOnClickListener {
-            orderViewModel.submit()
-        }
+//        binding.awonarDialogOrderButtonOpenTrade.setOnClickListener {
+//            orderViewModel.submit()
+//        }
         setupRate()
         setupAmount()
         setupLeverageAdapter()
@@ -409,6 +435,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
 
 
     private fun setupLeverageAdapter() {
+
 //        binding.awonarDialogOrderToggleOrderType.addOnButtonCheckedListener { _, checkedId, _ ->
 //            getOvernight()
 //        }

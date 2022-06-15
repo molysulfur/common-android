@@ -8,10 +8,11 @@
         <entry key="../../.gradle/caches/transforms-3/f3ea59686c36bd564ab67af304dbf879/transformed/jetified-skeleton-1.1.2/res/layout/layout_shimmer.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/drawable/awoanr_ic_dollar.xml" value="0.122" />
         <entry key="app/src/main/res/drawable/awonar_ripple_border_gray.xml" value="0.122" />
+        <entry key="app/src/main/res/layout/awoanr_item_step.xml" value="0.13385416666666666" />
         <entry key="app/src/main/res/layout/awonar_activity_main.xml" value="0.18070652173913043" />
         <entry key="app/src/main/res/layout/awonar_activity_publish_feed.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/awonar_dialog_loading.xml" value="0.17135416666666667" />
-        <entry key="app/src/main/res/layout/awonar_dialog_order.xml" value="0.18051282051282053" />
+        <entry key="app/src/main/res/layout/awonar_dialog_order.xml" value="0.2672858617131063" />
         <entry key="app/src/main/res/layout/awonar_dialog_order_edit.xml" value="0.13802083333333334" />
         <entry key="app/src/main/res/layout/awonar_dialog_partialclose.xml" value="0.2652370203160271" />
         <entry key="app/src/main/res/layout/awonar_fragment_all_feed.xml" value="0.171875" />
@@ -33,6 +34,7 @@
         <entry key="app/src/main/res/layout/awonar_fragment_position_market.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/layout/awonar_fragment_profile_position_chart.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/layout/awonar_fragment_watchlist.xml" value="0.17135416666666667" />
+        <entry key="app/src/main/res/layout/awonar_include_set_tpsl.xml" value="0.37037037037037035" />
         <entry key="app/src/main/res/layout/awonar_item_button_item.xml" value="0.16145833333333334" />
         <entry key="app/src/main/res/layout/awonar_item_copier_card.xml" value="0.12239583333333333" />
         <entry key="app/src/main/res/layout/awonar_item_copier_position.xml" value="0.12239583333333333" />
@@ -46,6 +48,9 @@
         <entry key="app/src/main/res/layout/awonar_widget_default_feed.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/awonar_widget_images_preview_feed.xml" value="0.12447916666666667" />
         <entry key="app/src/main/res/layout/awonar_widget_instrument_position_card.xml" value="0.13020833333333334" />
+        <entry key="app/src/main/res/layout/awonar_widget_step.xml" value="0.13489583333333333" />
+        <entry key="app/src/main/res/layout/awonar_widget_stepper.xml" value="0.13489583333333333" />
+        <entry key="app/src/main/res/layout/awonar_widget_vertical_title.xml" value="0.13489583333333333" />
       </map>
     </option>
   </component>
