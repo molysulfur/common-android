@@ -13,7 +13,7 @@ class LeverageSelectorAdapter : RecyclerView.Adapter<LeverageStepViewHolder>() {
             notifyDataSetChanged()
         }
 
-    var onChecked: ((Boolean) -> Unit)? = null
+    var onChecked: ((Int) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LeverageStepViewHolder =
         LeverageStepViewHolder(
@@ -28,6 +28,7 @@ class LeverageSelectorAdapter : RecyclerView.Adapter<LeverageStepViewHolder>() {
 
     data class StepViewData(
         val label: String? = null,
+        val value: Int = 0,
         val start: Boolean = false,
         val end: Boolean = false,
         val isCheck: Boolean = false

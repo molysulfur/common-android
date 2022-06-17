@@ -9,6 +9,7 @@ import android.view.View
 import androidx.annotation.RequiresApi
 import com.awonar.app.databinding.AwonarWidgetStepBinding
 import com.molysulfur.library.widget.BaseViewGroup
+import timber.log.Timber
 
 class StepView : BaseViewGroup {
 
@@ -29,7 +30,7 @@ class StepView : BaseViewGroup {
             }
         }
 
-    var onChecked: ((Boolean) -> Unit)? = null
+    var onChecked: (() -> Unit)? = null
 
     private fun setLabel() {
         binding.awonarWidgetStepRadioItem.text = label
@@ -52,13 +53,12 @@ class StepView : BaseViewGroup {
         }
     }
 
-    var isChecked = false
-        set(value) {
-            if (field != value) {
-                field = value
-                updateChecked()
-            }
-        }
+    private var isChecked = false
+
+    fun setChecked(isChecked: Boolean) {
+        this.isChecked = isChecked
+        updateChecked()
+    }
 
     private fun updateChecked() {
         binding.awonarWidgetStepRadioItem.isChecked = isChecked
@@ -66,8 +66,8 @@ class StepView : BaseViewGroup {
 
 
     override fun setup() {
-        binding.awonarWidgetStepRadioItem.setOnCheckedChangeListener { buttonView, isChecked ->
-            onChecked?.invoke(isChecked)
+        binding.awonarWidgetStepRadioItem.setOnClickListener {
+            onChecked?.invoke()
         }
     }
 

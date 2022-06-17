@@ -155,7 +155,6 @@ class OrderViewModel @Inject constructor(
                     )
                     message += "Daily $%.2f Weekly $%.2f".format(day, week)
                 }
-
                 message
             }.collectLatest {
                 _overnightFeeMessage.value = it
