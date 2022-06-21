@@ -286,20 +286,33 @@
                     app:verticalTitleView_setTitle="TakeProfit" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <include
-                android:id="@+id/include"
-                layout="@layout/awonar_include_set_tpsl"
-                android:layout_width="wrap_content"
+            <FrameLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat2" />
+                app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat2">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/awonar_dialog_order_recycler_leverages"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/include" />
+                <include
+                    android:id="@+id/awonar_dialog_order_include_sl"
+                    layout="@layout/awonar_include_set_tpsl"
+                    android:layout_width="wrap_content"
+                    android:visibility="gone"
+                    android:layout_height="wrap_content" />
+
+                <include
+                    android:id="@+id/awonar_dialog_order_include_tp"
+                    layout="@layout/awonar_include_set_tpsl"
+                    android:layout_width="wrap_content"
+                    android:visibility="gone"
+                    android:layout_height="wrap_content" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/awonar_dialog_order_recycler_leverages"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/awonar_size_margin_padding_normal" />
+            </FrameLayout>
 
             <!--            <androidx.appcompat.widget.AppCompatButton-->
             <!--                android:id="@+id/awonar_dialog_order_button_open_trade"-->

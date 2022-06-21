@@ -30,6 +30,10 @@ class OrderViewModelActivity @Inject constructor(
 
     private val _showAmount = MutableStateFlow(true)
     val showAmount = _showAmount
+    private val _showAmountTp = MutableStateFlow(true)
+    val showAmountTp = _showAmountTp
+    private val _showAmountSl = MutableStateFlow(true)
+    val showAmountSl = _showAmountSl
     private val _isSetRate = MutableStateFlow(false)
     val isSetRate = _isSetRate
 
@@ -48,6 +52,14 @@ class OrderViewModelActivity @Inject constructor(
 
     fun toggleShowAmount() {
         _showAmount.value = !_showAmount.value
+    }
+
+    fun toggleShowTp() {
+        _showAmountTp.value = !_showAmountTp.value
+    }
+
+    fun toggleShowSl() {
+        _showAmountSl.value = !_showAmountSl.value
     }
 
     fun setAtMarket(isAtMarket: Boolean) {

@@ -1,17 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.material.slider.RangeSlider
-        style="@style/Awonar.Slider"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/awonar_include_set_tpsl_container"
         android:layout_width="match_parent"
-        android:layout_height="16dp"
-        android:valueFrom="0.0"
-        android:valueTo="100.0"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="wrap_content">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/awonar_include_set_tpsl_switch_noset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+            android:text="@string/awonar_example_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/awonar_include_set_tpsl_button_toggle"
+            style="@style/Awonar.Button.Link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="0dp"
+            android:text="@string/awonar_text_amount"
+            app:layout_constraintStart_toStartOf="@+id/awonar_include_set_tpsl_switch_noset"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_include_set_tpsl_switch_noset" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/awonar_include_set_tpsl_input_number"
+            style="@style/Awonar.EditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/awonar_include_set_tpsl_button_toggle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/awonar_include_set_tpsl_switch_noset"
+            app:layout_constraintTop_toTopOf="@+id/awonar_include_set_tpsl_switch_noset">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                tools:text="@string/awonar_example_name" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.slider.RangeSlider
+            android:id="@+id/awonar_include_set_tpsl_slider_min_max"
+            style="@style/Awonar.Slider"
+            android:layout_width="match_parent"
+            android:layout_height="16dp"
+            android:valueFrom="0.0"
+            android:valueTo="100.0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_include_set_tpsl_button_toggle" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_include_set_tpsl_text_form"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_include_set_tpsl_slider_min_max"
+            tools:text="@string/awonar_example_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/awonar_include_set_tpsl_text_to"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/awonar_include_set_tpsl_slider_min_max"
+            tools:text="@string/awonar_example_name" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
