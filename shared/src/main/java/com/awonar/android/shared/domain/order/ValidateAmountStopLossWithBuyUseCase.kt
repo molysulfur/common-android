@@ -20,7 +20,6 @@ class ValidateAmountStopLossWithBuyUseCase @Inject constructor(
         val maxAmountSL =
             -(parameters.amount.times(tradingData.maxStopLossPercentageLeveragedBuy)
                 .div(100))
-        Timber.e("$slRate $maxAmountSL ${tradingData.maxStopLossPercentageLeveragedBuy}")
         if (slRate < maxAmountSL) {
             throw ValidationException("Stop loss cannot less than $maxAmountSL", maxAmountSL)
         }

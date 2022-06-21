@@ -287,6 +287,7 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <FrameLayout
+                android:id="@+id/frameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -297,15 +298,15 @@
                     android:id="@+id/awonar_dialog_order_include_sl"
                     layout="@layout/awonar_include_set_tpsl"
                     android:layout_width="wrap_content"
-                    android:visibility="gone"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
 
                 <include
                     android:id="@+id/awonar_dialog_order_include_tp"
                     layout="@layout/awonar_include_set_tpsl"
                     android:layout_width="wrap_content"
-                    android:visibility="gone"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/awonar_dialog_order_recycler_leverages"
@@ -314,27 +315,27 @@
                     android:padding="@dimen/awonar_size_margin_padding_normal" />
             </FrameLayout>
 
-            <!--            <androidx.appcompat.widget.AppCompatButton-->
-            <!--                android:id="@+id/awonar_dialog_order_button_open_trade"-->
-            <!--                style="@style/Awonar.Button.Default.Primary"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:text="Open Trade"-->
-            <!--                app:layout_constraintBottom_toBottomOf="@+id/recyclerView2"-->
-            <!--                app:layout_constraintEnd_toEndOf="parent"-->
-            <!--                app:layout_constraintStart_toStartOf="parent"-->
-            <!--                app:layout_constraintTop_toBottomOf="@+id/include" />-->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/awonar_dialog_order_button_open_trade"
+                style="@style/Awonar.Button.Default.Primary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Open Trade"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
 
-            <!--            <androidx.appcompat.widget.AppCompatTextView-->
-            <!--                android:id="@+id/awonar_dialog_order_text_order_overnight"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_margin="@dimen/awonar_size_margin_padding_small"-->
-            <!--                android:gravity="center"-->
-            <!--                app:layout_constraintBottom_toBottomOf="parent"-->
-            <!--                app:layout_constraintEnd_toEndOf="parent"-->
-            <!--                app:layout_constraintStart_toStartOf="parent"-->
-            <!--                tools:text="@string/awonar_example_name" />-->
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/awonar_dialog_order_text_order_overnight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/awonar_size_margin_padding_small"
+                android:gravity="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_order_button_open_trade"
+                tools:text="@string/awonar_example_name" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

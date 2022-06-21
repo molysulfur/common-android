@@ -1,6 +1,7 @@
 package com.awonar.android.shared.utils
 
 import com.awonar.android.model.tradingdata.TradingData
+import timber.log.Timber
 import java.lang.Error
 
 object ConverterOrderUtil {

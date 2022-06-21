@@ -8,7 +8,7 @@ object ConverterQuoteUtil {
         quote: Quote, leverage: Int,
         isBuy: Boolean,
     ) = when (isBuy) {
-        true -> {
+        false -> {
             if (leverage > 1) quote.bid else quote.bidSpread
         }
         else -> {

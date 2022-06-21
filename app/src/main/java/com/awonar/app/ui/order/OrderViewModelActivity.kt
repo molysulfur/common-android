@@ -66,43 +66,6 @@ class OrderViewModelActivity @Inject constructor(
         _isSetRate.value = isAtMarket
     }
 
-    private suspend fun validateAmountStopLoss(
-        data: ValidateStopLossRequest,
-        type: String,
-        leverage: Int,
-    ): Result<Price> {
-        return when {
-            leverage == 1 && type == "buy" -> {
-                validateAmountStopLossWithNonLeverageBuyUseCase(data)
-            }
-            leverage == 1 && type == "sell" -> {
-                validateAmountStopLossWithNonLeverageSellUseCase(data)
-            }
-            leverage > 1 && type == "buy" -> {
-                validateAmountStopLossWithBuyUseCase(data)
-            }
-            leverage > 1 && type == "sell" -> {
-                validateAmountStopLossWithSellUseCase(data)
-            }
-            else -> {
-                Result.Error(ValidationException("leverage or type was wrong!", 0f))
-            }
-        }
-    }
-
-    private suspend fun validateRateStopLoss(
-        data: ValidateStopLossRequest,
-        type: String,
-    ): Result<Price> = when (type) {
-        "buy" -> validateRateStopLossWithBuyUseCase(
-            data
-        )
-        "sell" -> validateRateStopLossWithSellUseCase(
-            data
-        )
-        else -> Result.Error(ValidationException("type was wrong!", 0f))
-    }
-
     fun validateRate(rate: Float, price: Float, digit: Int) {
         viewModelScope.launch {
             val result = validateRateUseCase(

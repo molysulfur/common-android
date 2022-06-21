@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.math.pow
 
 @HiltViewModel
 class OrderViewModel @Inject constructor(
@@ -113,6 +114,9 @@ class OrderViewModel @Inject constructor(
     private val _buyOrSellMessage = MutableStateFlow("")
     val buyOrSellMessage get() = _buyOrSellMessage
 
+    private val _minMaxSl = MutableStateFlow(Pair(0f, 0f))
+    val minMaxSl get() = _minMaxSl
+
     init {
         viewModelScope.launch {
             combine(_amountState, _portfolioState) { amount, portfolio ->
@@ -130,8 +134,9 @@ class OrderViewModel @Inject constructor(
                 _amountState,
                 _leverageState,
                 tradingData,
-                _isBuyState
-            ) { amount, leverage, tradingData, isBuy ->
+                _isBuyState,
+                _instrument
+            ) { amount, leverage, tradingData, isBuy, instrument ->
                 _buyOrSellMessage.value = when (isBuy) {
                     true -> "Buy"
                     false -> "Sell"
@@ -141,7 +146,6 @@ class OrderViewModel @Inject constructor(
                 if (tradingData != null) {
                     val units = amount.second
                     val exposure = amount.first.div(leverage)
-
                     message += "%.2f Units | %s | Exposure $%.2f \n".format(
                         units,
                         "5% of Equity",
@@ -154,6 +158,28 @@ class OrderViewModel @Inject constructor(
                         isBuy == true
                     )
                     message += "Daily $%.2f Weekly $%.2f".format(day, week)
+                    /**
+                     * min max sl
+                     */
+                    val minRateSl = rateState.value ?: 0f
+                    val maxRateSl = 10.0.pow(instrument?.digit ?: 1).toFloat()
+                    val minAmountSl = getAmountUseCase(
+                        CalAmountUnitRequest(
+                            instrumentId = instrument?.id ?: 0,
+                            leverage = leverage,
+                            price = _priceState.value,
+                            amount = minRateSl
+                        )
+                    ).successOr(0f)
+                    val maxAmountSl = getAmountUseCase(
+                        CalAmountUnitRequest(
+                            instrumentId = instrument?.id ?: 0,
+                            leverage = leverage,
+                            price = _priceState.value,
+                            amount = maxRateSl
+                        )
+                    ).successOr(0f)
+                    _minMaxSl.value = Pair(minAmountSl, maxAmountSl)
                 }
                 message
             }.collectLatest {
@@ -223,7 +249,6 @@ class OrderViewModel @Inject constructor(
                     if (result is Result.Error) {
                         if (result.exception is ValidationException) {
                             val newRateSL = (result.exception as ValidationException).value
-                            Timber.e("$newRateSL")
                             setRateSl(newRateSL)
                         }
                     }
@@ -387,9 +412,11 @@ class OrderViewModel @Inject constructor(
                 rate = tpRate,
                 conversionRate = conversionRate,
                 units = _amountState.value.second,
-                openRate = rateState.value ?: 0f,
+                openRate = rateState.value ?: _priceState.value,
                 isBuy = _isBuyState.value == true
             )
+            Timber.e("new tp $tpAmount $tpRate")
+
             _takeProfitState.value = Pair(tpAmount, tpRate)
         }
     }
@@ -421,7 +448,7 @@ class OrderViewModel @Inject constructor(
                 rate = slRate,
                 conversionRate = conversionRate,
                 units = _amountState.value.second,
-                openRate = rateState.value ?: 0f,
+                openRate = rateState.value ?: _priceState.value,
                 isBuy = _isBuyState.value == true
             )
             _stopLossState.value = Pair(slAmount, slRate)
@@ -582,9 +609,13 @@ class OrderViewModel @Inject constructor(
             val value = PortfolioUtil.getValue(pl, position.amount)
             val leverage = position.leverage
             val minAmount =
-                if (leverage < tradingData?.minLeverage ?: 0) tradingData?.minPositionExposure?.div(
-                    position.leverage
-                ) else tradingData?.minPositionAmount
+                if (leverage < (tradingData?.minLeverage ?: 0)) {
+                    tradingData?.minPositionExposure?.div(
+                        position.leverage
+                    )
+                } else {
+                    tradingData?.minPositionAmount
+                }
             val defaultAmount =
                 value.minus(minAmount ?: 0).times(0.5f)
             val hasPartial = validateVisiblePartialUseCase(

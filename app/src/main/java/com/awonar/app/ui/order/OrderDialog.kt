@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.GridLayoutManager
@@ -25,8 +26,6 @@ import com.molysulfur.library.extension.toast
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.launch
-import timber.log.Timber
-import kotlin.math.pow
 
 class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogViewModel>() {
 
@@ -51,18 +50,41 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     ): View {
         observeActivityViewModel()
         launchAndRepeatWithViewLifecycle {
-//            orderViewModel.depositState.collectLatest { isDeposit ->
-//                if (isDeposit) {
-//                    binding.awonarDialogOrderButtonOpenTrade.text = "Deposit"
-//                } else {
-//                    binding.awonarDialogOrderButtonOpenTrade.text = "Open Trade"
-//                }
-//            }
+            orderViewModel.minMaxSl.collectIndexed { index, value ->
+                binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslTextForm.text =
+                    "%s".format(value.first)
+                binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.valueFrom =
+                    value.first
+                binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslTextTo.text =
+                    "%s".format(value.second)
+                binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.valueTo =
+                    value.second
+                binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.setValues(
+                    value.first
+                )
+            }
+        }
+        /**
+         * instrument observe
+         */
+        launchAndRepeatWithViewLifecycle {
+            orderViewModel.instrument.collect { _ ->
+
+            }
         }
         launchAndRepeatWithViewLifecycle {
-//            orderViewModel.overnightFeeMessage.collectLatest {
-//                binding.awonarDialogOrderTextOrderOvernight.text = it
-//            }
+            orderViewModel.depositState.collectIndexed { _, isDeposit ->
+                if (isDeposit) {
+                    binding.awonarDialogOrderButtonOpenTrade.text = "Deposit"
+                } else {
+                    binding.awonarDialogOrderButtonOpenTrade.text = "Open Trade"
+                }
+            }
+        }
+        launchAndRepeatWithViewLifecycle {
+            orderViewModel.overnightFeeMessage.collectIndexed { _, value ->
+                binding.awonarDialogOrderTextOrderOvernight.text = value
+            }
         }
         /**
          * Current Price and Changed
@@ -98,32 +120,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         launchAndRepeatWithViewLifecycle {
             orderViewModel.askState.collect { ask ->
                 binding.awonarDialogOrderButtonTypeSell.text = "Sell $ask"
-            }
-        }
-        /**
-         * instrument observe
-         */
-        launchAndRepeatWithViewLifecycle {
-            orderViewModel.instrument.collect { instrument ->
-                instrument?.let {
-                    /**
-                     * init input rate
-                     */
-                    val quote = QuoteSteamingManager.quotesState.value[instrument.id]
-                    val valueForm = 10f.pow(-instrument.digit)
-                    val valueTo = quote?.close ?: 1f
-                    binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslTextForm.text =
-                        "%s".format(valueForm)
-                    binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.valueFrom =
-                        valueForm
-                    binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslTextTo.text =
-                        "%s".format(valueTo)
-                    binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.valueTo =
-                        valueTo
-                    binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.setValues(
-                        valueForm
-                    )
-                }
             }
         }
         launchAndRepeatWithViewLifecycle {
@@ -208,7 +204,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
          */
         launchAndRepeatWithViewLifecycle {
             orderViewModel.takeProfit.collect { tp ->
-                Timber.e("$tp")
                 when (orderActivityViewModel.showAmountTp.value) {
                     false -> {
                         binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslInputNumber.setStartIconDrawable(
@@ -280,7 +275,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                                 isCheck = s.toInt() == leverage
                             )
                         }.toMutableList()
-                        Timber.e("$newList")
                         leverageAdapter.itemList = newList
                     }
 //                    binding.awonarDialogOrderCollapseLeverage.setDescription("X$it")
@@ -457,9 +451,9 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         binding.awonarDialogOrderImageIconClose.setOnClickListener {
             dismiss()
         }
-//        binding.awonarDialogOrderButtonOpenTrade.setOnClickListener {
-//            orderViewModel.submit()
-//        }
+        binding.awonarDialogOrderButtonOpenTrade.setOnClickListener {
+            orderViewModel.submit()
+        }
         setupRate()
         setupAmount()
         setupTabs()
@@ -538,15 +532,55 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
 
     private fun setupTakeProfit() {
         with(binding.awonarDialogOrderIncludeTp) {
+            awonarIncludeSetTpslInputNumber.editText?.setOnFocusChangeListener { v, hasFocus ->
+                if (!hasFocus) {
+                    val text = (v as EditText).text
+                    when (orderActivityViewModel.showAmountTp.value) {
+                        true -> orderViewModel.setAmountTp(
+                            text.toString().toFloatOrNull()
+                                ?: 0f
+                        )
+                        false -> orderViewModel.setRateTp(
+                            text.toString().toFloatOrNull()
+                                ?: 0f
+                        )
+                    }
+                }
+            }
             awonarIncludeSetTpslSwitchNoset.text = "Set TP"
             awonarIncludeSetTpslButtonToggle.setOnClickListener {
                 orderActivityViewModel.toggleShowTp()
             }
         }
+        with(binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslSliderMinMax) {
+            addOnChangeListener { slider, value, fromUser ->
+                orderViewModel.setAmountTp(value)
+            }
+        }
     }
 
     private fun setupStopLoss() {
+        with(binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax) {
+            addOnChangeListener { slider, value, fromUser ->
+                orderViewModel.setAmountSl(value)
+            }
+        }
         with(binding.awonarDialogOrderIncludeSl) {
+            awonarIncludeSetTpslInputNumber.editText?.setOnFocusChangeListener { v, hasFocus ->
+                if (!hasFocus) {
+                    val text = (v as EditText).text
+                    when (orderActivityViewModel.showAmountSl.value) {
+                        true -> orderViewModel.setAmountSl(
+                            text.toString().toFloatOrNull()
+                                ?: 0f
+                        )
+                        false -> orderViewModel.setRateSl(
+                            text.toString().toFloatOrNull()
+                                ?: 0f
+                        )
+                    }
+                }
+            }
             awonarIncludeSetTpslSwitchNoset.text = "Set SL"
             awonarIncludeSetTpslButtonToggle.setOnClickListener {
                 orderActivityViewModel.toggleShowSl()
