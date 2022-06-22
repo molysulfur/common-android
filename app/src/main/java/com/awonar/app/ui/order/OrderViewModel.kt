@@ -116,6 +116,8 @@ class OrderViewModel @Inject constructor(
 
     private val _minMaxSl = MutableStateFlow(Pair(0f, 0f))
     val minMaxSl get() = _minMaxSl
+    private val _minMaxTp = MutableStateFlow(Pair(0f, 0f))
+    val minMaxTp get() = _minMaxTp
 
     init {
         viewModelScope.launch {
@@ -161,25 +163,31 @@ class OrderViewModel @Inject constructor(
                     /**
                      * min max sl
                      */
-                    val minRateSl = rateState.value ?: 0f
-                    val maxRateSl = 10.0.pow(instrument?.digit ?: 1).toFloat()
-                    val minAmountSl = getAmountUseCase(
-                        CalAmountUnitRequest(
-                            instrumentId = instrument?.id ?: 0,
-                            leverage = leverage,
-                            price = _priceState.value,
-                            amount = minRateSl
-                        )
-                    ).successOr(0f)
-                    val maxAmountSl = getAmountUseCase(
-                        CalAmountUnitRequest(
-                            instrumentId = instrument?.id ?: 0,
-                            leverage = leverage,
-                            price = _priceState.value,
-                            amount = maxRateSl
-                        )
-                    ).successOr(0f)
+                    val minAmountSl = tradingData.minStopLossPercentage
+                    val maxAmountSl = when {
+                        isBuy == true && leverage > 1 -> tradingData.maxStopLossPercentageLeveragedBuy
+                        isBuy == false && leverage > 1 -> tradingData.maxStopLossPercentageLeveragedSell
+                        isBuy == true && leverage == 1 -> tradingData.maxStopLossPercentageNonLeveragedBuy
+                        isBuy == false && leverage == 1 -> tradingData.maxStopLossPercentageNonLeveragedSell
+                        else -> 0f
+                    }
+//                    val minAmountSl = minRateSl.minus(_priceState.value).times(units).div(
+//                        getConversionByInstrumentUseCase(
+//                            instrument?.id ?: 0
+//                        ).successOr(0f)
+//                    )
                     _minMaxSl.value = Pair(minAmountSl, maxAmountSl)
+                    /**
+                     * min max tp
+                     */
+                    val minRateTp = _rateState.value ?: _priceState.value
+                    val maxAmountTp = tradingData.maxTakeProfitPercentage
+                    val minAmountTp = minRateTp.minus(_priceState.value).times(units).div(
+                        getConversionByInstrumentUseCase(
+                            instrument?.id ?: 0
+                        ).successOr(0f)
+                    )
+                    _minMaxTp.value = Pair(minAmountTp, maxAmountTp)
                 }
                 message
             }.collectLatest {

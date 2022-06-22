@@ -26,6 +26,7 @@ import com.molysulfur.library.extension.toast
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogViewModel>() {
 
@@ -52,14 +53,29 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         launchAndRepeatWithViewLifecycle {
             orderViewModel.minMaxSl.collectIndexed { index, value ->
                 binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslTextForm.text =
-                    "%s".format(value.first)
+                    "$%s".format(value.first)
                 binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.valueFrom =
                     value.first
                 binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslTextTo.text =
-                    "%s".format(value.second)
+                    "$%s".format(value.second)
                 binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.valueTo =
                     value.second
                 binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.setValues(
+                    value.first
+                )
+            }
+        }
+        launchAndRepeatWithViewLifecycle {
+            orderViewModel.minMaxTp.collectIndexed { index, value ->
+                binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslTextForm.text =
+                    "$%s".format(value.first)
+                binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslSliderMinMax.valueFrom =
+                    value.first
+                binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslTextTo.text =
+                    "$%s".format(value.second)
+                binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslSliderMinMax.valueTo =
+                    value.second
+                binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslSliderMinMax.setValues(
                     value.first
                 )
             }
@@ -554,7 +570,9 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         }
         with(binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslSliderMinMax) {
             addOnChangeListener { slider, value, fromUser ->
-                orderViewModel.setAmountTp(value)
+                if (fromUser) {
+                    orderViewModel.setAmountTp(value)
+                }
             }
         }
     }
@@ -562,7 +580,9 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     private fun setupStopLoss() {
         with(binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax) {
             addOnChangeListener { slider, value, fromUser ->
-                orderViewModel.setAmountSl(value)
+                if (fromUser) {
+                    orderViewModel.setAmountSl(value)
+                }
             }
         }
         with(binding.awonarDialogOrderIncludeSl) {

@@ -19,13 +19,7 @@ import javax.inject.Inject
 class OrderViewModelActivity @Inject constructor(
     private val getOvernightFeeDaliyUseCase: GetOvernightFeeDaliyUseCase,
     private val validateExposureUseCase: ValidateExposureUseCase,
-    private val validateRateUseCase: ValidateRateUseCase,
-    private val validateRateStopLossWithBuyUseCase: ValidateRateStopLossWithBuyUseCase,
-    private val validateRateStopLossWithSellUseCase: ValidateRateStopLossWithSellUseCase,
-    private val validateAmountStopLossWithBuyUseCase: ValidateAmountStopLossWithBuyUseCase,
-    private val validateAmountStopLossWithSellUseCase: ValidateAmountStopLossWithSellUseCase,
-    private val validateAmountStopLossWithNonLeverageBuyUseCase: ValidateAmountStopLossWithNonLeverageBuyUseCase,
-    private val validateAmountStopLossWithNonLeverageSellUseCase: ValidateAmountStopLossWithNonLeverageSellUseCase,
+    private val validateRateUseCase: ValidateRateUseCase
 ) : ViewModel() {
 
     private val _showAmount = MutableStateFlow(true)

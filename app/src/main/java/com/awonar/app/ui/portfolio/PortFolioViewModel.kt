@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDirections
 import com.awonar.android.model.market.Quote
 import com.awonar.android.model.portfolio.*
+import com.awonar.android.shared.domain.market.GetConversionByInstrumentUseCase
 import com.awonar.android.shared.domain.portfolio.*
+import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.android.shared.utils.WhileViewSubscribed
 import com.awonar.app.ui.portfolio.adapter.PortfolioItem
 import com.molysulfur.library.result.successOr
@@ -22,7 +24,7 @@ class PortFolioViewModel @Inject constructor(
     private val getMyPortFolioUseCase: GetMyPortFolioUseCase,
     private var getUserPortfolioUseCase: GetUserPortfolioUseCase,
     private val getPendingOrdersUseCase: GetPendingOrdersUseCase,
-    private var convertOrderPositionToItemUseCase: ConvertOrderPositionToItemUseCase,
+    private var getConversionByInstrumentUseCase: GetConversionByInstrumentUseCase,
 ) : ViewModel() {
 
 
@@ -85,35 +87,35 @@ class PortFolioViewModel @Inject constructor(
                 var plCopy = 0f
                 _positionState.value?.positions?.forEach { position ->
                     quotes[position.instrument?.id]?.let { quote ->
-//                        val current = PortfolioUtil.getCurrent(position.isBuy, quote)
-//                        plSymbol += PortfolioUtil.getProfitOrLoss(
-//                            current,
-//                            position.openRate,
-//                            position.units,
-//                            getConversionByInstrumentUseCase(
-//                                position.instrument?.id
-//                                    ?: 0
-//                            ).successOr(0f),
-//                            position.isBuy
-//                        )
+                        val current = quote.close
+                        plSymbol += PortfolioUtil.getProfitOrLoss(
+                            current,
+                            position.openRate,
+                            position.units,
+                            getConversionByInstrumentUseCase(
+                                position.instrument?.id
+                                    ?: 0
+                            ).successOr(0f),
+                            position.isBuy
+                        )
                     }
                 }
                 _positionState.value?.copies?.forEach { copier ->
                     copier.positions?.forEach { position ->
                         quotes[position.instrument?.id]?.let { quote ->
-//                            val current = PortfolioUtil.getCurrent(position.isBuy, quote)
-//                            plCopy += PortfolioUtil.getProfitOrLoss(
-//                                current,
-//                                position.openRate,
-//                                position.units,
-//                                getConversionByInstrumentUseCase(
-//                                    position.instrument?.id
-//                                        ?: 0
-//                                ).successOr(
-//                                    0f
-//                                ),
-//                                position.isBuy
-//                            )
+                            val current = quote.close
+                            plCopy += PortfolioUtil.getProfitOrLoss(
+                                current,
+                                position.openRate,
+                                position.units,
+                                getConversionByInstrumentUseCase(
+                                    position.instrument?.id
+                                        ?: 0
+                                ).successOr(
+                                    0f
+                                ),
+                                position.isBuy
+                            )
                         }
                     }
                 }
