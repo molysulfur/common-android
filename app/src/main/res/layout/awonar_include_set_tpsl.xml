@@ -40,9 +40,10 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:lines="1"
-                android:inputType="numberDecimal"
+                android:digits="0123456789.-"
                 android:gravity="end"
+                android:inputType="numberSigned|numberDecimal"
+                android:lines="1"
                 tools:text="@string/awonar_example_name" />
         </com.google.android.material.textfield.TextInputLayout>
 

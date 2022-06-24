@@ -53,11 +53,11 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         launchAndRepeatWithViewLifecycle {
             orderViewModel.minMaxSl.collectIndexed { index, value ->
                 binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslTextForm.text =
-                    "$%s".format(value.first)
+                    "$%.2f".format(value.first)
                 binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.valueFrom =
                     value.first
                 binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslTextTo.text =
-                    "$%s".format(value.second)
+                    "$%.2f".format(value.second)
                 binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.valueTo =
                     value.second
                 binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.setValues(
@@ -237,6 +237,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                         binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslInputNumber.editText?.setText(
                             "%.2f".format(tp.first)
                         )
+                        binding.awonarDialogOrderVerticalTitleTakeprofit.setSubTitle("%s".format(tp.first))
                     }
                 }
             }
@@ -250,8 +251,12 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                         )
                         binding.awonarDialogOrderVerticalTitleStoploss.setSubTitle("%s".format(sl.second))
                         binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslInputNumber.editText?.setText(
-                            "%.2f".format(sl.second)
+                            "%s".format(sl.second)
                         )
+                        if (binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.valueFrom <= sl.first && binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.valueTo >= sl.first)
+                            binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.setValues(
+                                sl.first
+                            )
                     }
                     true -> {
                         binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslInputNumber.setStartIconDrawable(
@@ -259,12 +264,16 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                         )
                         binding.awonarDialogOrderVerticalTitleStoploss.setSubTitle(
                             "%.2f".format(
-                                sl.first
+                                kotlin.math.abs(sl.first)
                             )
                         )
                         binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslInputNumber.editText?.setText(
-                            "%.2f".format(sl.first)
+                            "%.2f".format(kotlin.math.abs(sl.first))
                         )
+                        if (binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.valueFrom <= sl.first && binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.valueTo >= sl.first)
+                            binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.setValues(
+                                sl.first
+                            )
                     }
                 }
             }
@@ -350,7 +359,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                             0
                         )
                         binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslInputNumber.editText?.setText(
-                            "%.2f".format(orderViewModel.takeProfit.value.second)
+                            "%s".format(orderViewModel.takeProfit.value.second)
                         )
                         binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslButtonToggle.text =
                             "Amount"
@@ -373,7 +382,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                         binding.awoanrDialogOrderInputLayoutAmount.setStartIconDrawable(0)
                         binding.awoanrDialogOrderButtonAmountToggle.text = "Amount"
                         binding.awoanrDialogOrderInputLayoutAmount.editText?.setText(
-                            "%.2f".format(orderViewModel.amountState.value.second)
+                            "%s".format(orderViewModel.amountState.value.second)
                         )
 
                     }
@@ -387,7 +396,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                         with(binding.awonarDialogOrderIncludeSl) {
                             awonarIncludeSetTpslInputNumber.setStartIconDrawable(R.drawable.awoanr_ic_dollar)
                             awonarIncludeSetTpslInputNumber.editText?.setText(
-                                "%.2f".format(orderViewModel.stopLossState.value.first)
+                                "%.2f".format(-orderViewModel.stopLossState.value.first)
                             )
                             awonarIncludeSetTpslButtonToggle.text = "Rate"
                         }
@@ -396,7 +405,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                         with(binding.awonarDialogOrderIncludeSl) {
                             awonarIncludeSetTpslInputNumber.setStartIconDrawable(0)
                             awonarIncludeSetTpslInputNumber.editText?.setText(
-                                "%.2f".format(orderViewModel.stopLossState.value.second)
+                                "%s".format(orderViewModel.stopLossState.value.second)
                             )
                             awonarIncludeSetTpslButtonToggle.text = "Amount"
                         }
@@ -420,7 +429,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                         with(binding.awonarDialogOrderIncludeTp) {
                             awonarIncludeSetTpslInputNumber.setStartIconDrawable(0)
                             awonarIncludeSetTpslInputNumber.editText?.setText(
-                                "%.2f".format(orderViewModel.takeProfit.value.second)
+                                "%s".format(orderViewModel.takeProfit.value.second)
                             )
                             awonarIncludeSetTpslButtonToggle.text = "Amount"
                         }
@@ -581,7 +590,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         with(binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax) {
             addOnChangeListener { slider, value, fromUser ->
                 if (fromUser) {
-                    orderViewModel.setAmountSl(value)
+                    orderViewModel.setAmountSl(-value)
                 }
             }
         }
