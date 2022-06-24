@@ -15,7 +15,8 @@ data class ValidateRateTakeProfitRequest(
     val isBuy: Boolean = false,
     val conversionRate: Float,
     val maxTakeProfitPercentage: Float,
-    val digit: Int
+    val digit: Int,
+    val quote : Quote
 ) : Parcelable
 
 @Parcelize

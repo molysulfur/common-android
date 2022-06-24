@@ -37,10 +37,7 @@ import kotlin.math.pow
 
 @HiltViewModel
 class OrderViewModel @Inject constructor(
-    private val getMyPortFolioUseCase: GetMyPortFolioUseCase,
     private val openOrderUseCase: OpenOrderUseCase,
-    private val calculateAmountTpSlUseCase: CalculateAmountTpSlUseCase,
-    private val calculateRateTpSlUseCase: CalculateRateTpSlUseCase,
     private val validateRateTakeProfitUseCase: ValidateRateTakeProfitUseCase,
     private val validateRateStopLossUseCase: ValidateRateStopLossUseCase,
     private val getConversionByInstrumentUseCase: GetConversionByInstrumentUseCase,
@@ -174,10 +171,9 @@ class OrderViewModel @Inject constructor(
             combine(
                 _amountState,
                 _takeProfitState,
-                _leverageState,
                 _isBuyState,
                 _tradingData
-            ) { amount, tp, leverage, isBuy, tradingData ->
+            ) { amount, tp, isBuy, tradingData ->
                 val quote = QuoteSteamingManager.quotesState.value[_instrument.value?.id]
                 quote?.let {
                     val minRateTp = if (isBuy == true) quote.bid else quote.ask
@@ -203,7 +199,8 @@ class OrderViewModel @Inject constructor(
                                 amount = _amountState.value.first,
                                 maxTakeProfitPercentage = _tradingData.value?.maxTakeProfitPercentage
                                     ?: 0f,
-                                digit = _instrument.value?.digit ?: 0
+                                digit = _instrument.value?.digit ?: 0,
+                                quote = quote
                             )
                         )
                         if (result is Result.Success) {

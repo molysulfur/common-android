@@ -27,6 +27,7 @@ import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.math.abs
 
 class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogViewModel>() {
 
@@ -68,16 +69,20 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         launchAndRepeatWithViewLifecycle {
             orderViewModel.minMaxTp.collectIndexed { index, value ->
                 binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslTextForm.text =
-                    "$%s".format(value.first)
+                    "$%.2f".format(abs(value.first))
                 binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslSliderMinMax.valueFrom =
-                    value.first
+                    abs(value.first)
                 binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslTextTo.text =
-                    "$%s".format(value.second)
+                    "$%.2f".format(value.second)
                 binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslSliderMinMax.valueTo =
-                    value.second
-                binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslSliderMinMax.setValues(
-                    value.first
+                    abs(value.second)
+                if (
+                    binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslSliderMinMax.valueFrom > 0 &&
+                    binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslSliderMinMax.valueTo > 0
                 )
+                    binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslSliderMinMax.setValues(
+                        value.first
+                    )
             }
         }
         /**
@@ -228,16 +233,20 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                         binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslInputNumber.editText?.setText(
                             "%.2f".format(tp.second)
                         )
-                        binding.awonarDialogOrderVerticalTitleTakeprofit.setSubTitle("%s".format(tp.second))
+                        binding.awonarDialogOrderVerticalTitleTakeprofit.setSubTitle(
+                            "$%.2f".format(
+                                abs(tp.first)
+                            )
+                        )
                     }
                     true -> {
                         binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslInputNumber.setStartIconDrawable(
                             R.drawable.awoanr_ic_dollar
                         )
                         binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslInputNumber.editText?.setText(
-                            "%.2f".format(tp.first)
+                            "%.2f".format(abs(tp.first))
                         )
-                        binding.awonarDialogOrderVerticalTitleTakeprofit.setSubTitle("%s".format(tp.first))
+                        binding.awonarDialogOrderVerticalTitleTakeprofit.setSubTitle("%s".format(tp.second))
                     }
                 }
             }
@@ -249,7 +258,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                         binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslInputNumber.setStartIconDrawable(
                             0
                         )
-                        binding.awonarDialogOrderVerticalTitleStoploss.setSubTitle("%s".format(sl.second))
+                        binding.awonarDialogOrderVerticalTitleStoploss.setSubTitle("$%.2f".format(sl.first))
                         binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslInputNumber.editText?.setText(
                             "%s".format(sl.second)
                         )
@@ -263,12 +272,12 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                             R.drawable.awoanr_ic_dollar
                         )
                         binding.awonarDialogOrderVerticalTitleStoploss.setSubTitle(
-                            "%.2f".format(
-                                kotlin.math.abs(sl.first)
+                            "%s".format(
+                                abs(sl.first)
                             )
                         )
                         binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslInputNumber.editText?.setText(
-                            "%.2f".format(kotlin.math.abs(sl.first))
+                            "%.2f".format(abs(sl.first))
                         )
                         if (binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.valueFrom <= sl.first && binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.valueTo >= sl.first)
                             binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.setValues(
@@ -349,7 +358,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                             R.drawable.awoanr_ic_dollar
                         )
                         binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslInputNumber.editText?.setText(
-                            "%.2f".format(orderViewModel.takeProfit.value.first)
+                            "%.2f".format(abs(orderViewModel.takeProfit.value.first))
                         )
                         binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslButtonToggle.text =
                             "Rate"
@@ -420,7 +429,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                         with(binding.awonarDialogOrderIncludeTp) {
                             awonarIncludeSetTpslInputNumber.setStartIconDrawable(R.drawable.awoanr_ic_dollar)
                             awonarIncludeSetTpslInputNumber.editText?.setText(
-                                "%.2f".format(orderViewModel.takeProfit.value.first)
+                                "%.2f".format(abs(orderViewModel.takeProfit.value.first))
                             )
                             awonarIncludeSetTpslButtonToggle.text = "Rate"
                         }

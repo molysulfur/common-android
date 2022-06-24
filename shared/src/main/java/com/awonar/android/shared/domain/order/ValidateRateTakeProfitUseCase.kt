@@ -19,7 +19,7 @@ class ValidateRateTakeProfitUseCase @Inject constructor(
 
     override suspend fun execute(parameters: ValidateRateTakeProfitRequest) {
         val rateTp = parameters.rateTp
-        val MIN_RATE_TP = parameters.currentPrice
+        val MIN_RATE_TP = if(parameters.isBuy) parameters.quote.bid else parameters.quote.ask
         /**
          * Check MIN RATE
          */
