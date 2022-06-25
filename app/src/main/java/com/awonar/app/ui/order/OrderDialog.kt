@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.GridLayoutManager
@@ -15,7 +14,6 @@ import com.akexorcist.library.dialoginteractor.InteractorDialog
 import com.akexorcist.library.dialoginteractor.createBundle
 import com.awonar.android.model.market.Instrument
 import com.awonar.android.shared.steaming.QuoteSteamingManager
-import com.awonar.android.shared.utils.PortfolioUtil
 import com.awonar.app.R
 import com.awonar.app.databinding.AwonarDialogOrderBinding
 import com.awonar.app.dialog.DialogViewModel
@@ -53,36 +51,44 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         observeActivityViewModel()
         launchAndRepeatWithViewLifecycle {
             orderViewModel.minMaxSl.collectIndexed { index, value ->
-                binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslTextForm.text =
-                    "$%.2f".format(value.first)
-                binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.valueFrom =
-                    value.first
-                binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslTextTo.text =
-                    "$%.2f".format(value.second)
-                binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.valueTo =
-                    value.second
-                binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.setValues(
-                    value.first
-                )
+                if (
+                    binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.valueFrom <= 0 &&
+                    binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.valueTo <= 0 &&
+                    value.first > 0
+                ) {
+                    binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslTextForm.text =
+                        "$%.2f".format(value.first)
+                    binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.valueFrom =
+                        value.first
+                    binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslTextTo.text =
+                        "$%.2f".format(value.second)
+                    binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.valueTo =
+                        value.second
+                    binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.setValues(
+                        abs(value.first)
+                    )
+                }
             }
         }
         launchAndRepeatWithViewLifecycle {
             orderViewModel.minMaxTp.collectIndexed { index, value ->
-                binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslTextForm.text =
-                    "$%.2f".format(abs(value.first))
-                binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslSliderMinMax.valueFrom =
-                    abs(value.first)
-                binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslTextTo.text =
-                    "$%.2f".format(value.second)
-                binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslSliderMinMax.valueTo =
-                    abs(value.second)
                 if (
-                    binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslSliderMinMax.valueFrom > 0 &&
-                    binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslSliderMinMax.valueTo > 0
-                )
+                    binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslSliderMinMax.valueFrom <= 0 &&
+                    binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslSliderMinMax.valueTo <= 0 &&
+                    value.second > 0
+                ) {
+                    binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslTextForm.text =
+                        "$%.2f".format(abs(value.first))
+                    binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslSliderMinMax.valueFrom =
+                        abs(value.first)
+                    binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslTextTo.text =
+                        "$%.2f".format(value.second)
+                    binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslSliderMinMax.valueTo =
+                        abs(value.second)
                     binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslSliderMinMax.setValues(
-                        value.first
+                        abs(value.first)
                     )
+                }
             }
         }
         /**
@@ -249,6 +255,12 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                         binding.awonarDialogOrderVerticalTitleTakeprofit.setSubTitle("%s".format(tp.second))
                     }
                 }
+                val slider = binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslSliderMinMax
+                if (slider.valueTo > 0 && tp.first >= slider.valueFrom && tp.first <= slider.valueTo) {
+                    binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslSliderMinMax.setValues(
+                        abs(tp.first)
+                    )
+                }
             }
         }
         launchAndRepeatWithViewLifecycle {
@@ -262,10 +274,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                         binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslInputNumber.editText?.setText(
                             "%s".format(sl.second)
                         )
-                        if (binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.valueFrom <= sl.first && binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.valueTo >= sl.first)
-                            binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.setValues(
-                                sl.first
-                            )
                     }
                     true -> {
                         binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslInputNumber.setStartIconDrawable(
@@ -279,11 +287,14 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                         binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslInputNumber.editText?.setText(
                             "%.2f".format(abs(sl.first))
                         )
-                        if (binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.valueFrom <= sl.first && binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.valueTo >= sl.first)
-                            binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.setValues(
-                                sl.first
-                            )
                     }
+                }
+                val slider = binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax
+                Timber.e("$sl")
+                if (slider.valueTo > 0 && sl.first >= slider.valueFrom && sl.first <= slider.valueTo) {
+                    binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.setValues(
+                        abs(sl.first)
+                    )
                 }
             }
         }
@@ -570,10 +581,21 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                 if (!hasFocus) {
                     val text = (v as EditText).text
                     when (orderActivityViewModel.showAmountTp.value) {
-                        true -> orderViewModel.setAmountTp(
-                            text.toString().toFloatOrNull()
-                                ?: 0f
-                        )
+                        true -> {
+                            try {
+                                val newAmount = text.toString().toFloatOrNull() ?: 0f
+                                orderViewModel.setAmountSl(newAmount)
+                                val slider =
+                                    binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslSliderMinMax
+                                if (newAmount >= slider.valueFrom && newAmount <= slider.valueTo) {
+                                    binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslSliderMinMax.setValues(
+                                        newAmount
+                                    )
+                                }
+                            } catch (e: IllegalStateException) {
+                                e.printStackTrace()
+                            }
+                        }
                         false -> orderViewModel.setRateTp(
                             text.toString().toFloatOrNull()
                                 ?: 0f
@@ -608,10 +630,18 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                 if (!hasFocus) {
                     val text = (v as EditText).text
                     when (orderActivityViewModel.showAmountSl.value) {
-                        true -> orderViewModel.setAmountSl(
-                            text.toString().toFloatOrNull()
+                        true -> {
+                            val newAmount = text.toString().toFloatOrNull()
                                 ?: 0f
-                        )
+                            orderViewModel.setAmountSl(-newAmount)
+                            val slider =
+                                binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax
+                            if (newAmount >= slider.valueFrom && newAmount <= slider.valueTo) {
+                                binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.setValues(
+                                    newAmount
+                                )
+                            }
+                        }
                         false -> orderViewModel.setRateSl(
                             text.toString().toFloatOrNull()
                                 ?: 0f

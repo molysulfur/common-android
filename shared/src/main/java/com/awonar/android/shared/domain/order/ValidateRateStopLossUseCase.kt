@@ -3,6 +3,7 @@ package com.awonar.android.shared.domain.order
 import com.awonar.android.exception.ValidationException
 import com.awonar.android.model.order.ValidateRateStopLossRequest
 import com.awonar.android.shared.di.IoDispatcher
+import com.awonar.android.shared.utils.ConverterOrderUtil
 import com.molysulfur.library.usecase.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import timber.log.Timber
@@ -20,9 +21,9 @@ class ValidateRateStopLossUseCase @Inject constructor(
         val maxRateSL = 10f.pow(-parameters.digit)
         val maxAmountSl = parameters.maxStopLoss
         val slRate = parameters.rateSl
-//        val amountSl = minRateSl.minus(parameters.openPrice).times(parameters.units).div(conversion)
+        val amountSl = slRate.minus(parameters.openPrice).times(parameters.units).div(conversion)
         if (parameters.isBuy) {
-            if ((slRate >= minRateSl) or (slRate < maxRateSL)) {
+            if ((slRate > minRateSl) or (slRate < maxRateSL)) {
                 throw ValidationException("Stop Loss cannot less than $minRateSl", minRateSl)
             } else {
 //                val diff = amountSl.minus(maxAmountSl)
@@ -53,7 +54,7 @@ class ValidateRateStopLossUseCase @Inject constructor(
 //                    }
 //                }
             }
-        } else if ((slRate <= minRateSl) or (slRate < maxRateSL)) {
+        } else if ((slRate < minRateSl) or (slRate < maxRateSL)) {
             throw ValidationException("Stop Loss cannot less than $minRateSl", minRateSl)
         }
     }

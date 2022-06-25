@@ -41,9 +41,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:digits="0123456789.-"
+                android:focusableInTouchMode="true"
                 android:gravity="end"
                 android:inputType="numberSigned|numberDecimal"
-                android:lines="1"
+                android:singleLine="true"
                 tools:text="@string/awonar_example_name" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -52,8 +53,8 @@
             style="@style/Awonar.Slider"
             android:layout_width="match_parent"
             android:layout_height="16dp"
-            android:valueFrom="0.0"
-            android:valueTo="100.0"
+            android:valueFrom="-1.0"
+            android:valueTo="0.0"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/awonar_include_set_tpsl_button_toggle" />
