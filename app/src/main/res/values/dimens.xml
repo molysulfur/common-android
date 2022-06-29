@@ -3,8 +3,8 @@
     <dimen name="awonar_size_text_extra_small">10sp</dimen>
     <dimen name="awonar_size_text_small">12sp</dimen>
     <dimen name="awonar_size_text_normal">14sp</dimen>
-    <dimen name="awonar_size_text_large">20sp</dimen>
-    <dimen name="awonar_size_text_extra_large">24sp</dimen>
+    <dimen name="awonar_size_text_large">16sp</dimen>
+    <dimen name="awonar_size_text_extra_large">18sp</dimen>
 
     <dimen name="awonar_size_margin_padding_extra_extra_small">2dp</dimen>
     <dimen name="awonar_size_margin_padding_extra_small">4dp</dimen>

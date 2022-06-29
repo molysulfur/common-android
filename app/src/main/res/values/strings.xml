@@ -52,7 +52,7 @@
     <string name="awonar_text_upload">Upload</string>
     <string name="awonar_text_required">This Field is Required.</string>
     <string name="awonar_text_experience">Experience</string>
-    <string name="awonar_dialog_order_text_title_set_rate">Set Rate</string>
+    <string name="awonar_dialog_order_text_title_set_rate">Price</string>
     <string name="awonar_dialog_order_text_title_amount">Amount</string>
     <string name="awonar_text_leverage">Leverage</string>
     <string name="awonar_text_amount">Amount</string>

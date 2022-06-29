@@ -105,10 +105,9 @@
                     digit="@{viewModel.instrument.digit}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
+                    android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
                     app:layout_constraintBottom_toBottomOf="@+id/awonar_dialog_order_text_title"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/awonar_dialog_order_text_title"
                     app:layout_constraintTop_toTopOf="@+id/awonar_dialog_order_text_title"
                     tools:text="@string/awonar_example_name" />
 
@@ -223,9 +222,8 @@
                 style="@style/Awonar.EditText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/awonar_dialog_order_text_title_rate"
+                app:layout_constraintStart_toEndOf="@+id/awonar_dialog_order_text_title_amount"
                 app:layout_constraintTop_toBottomOf="@+id/awoanr_dialog_order_button_rate_toggle">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -256,6 +254,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/awonar_size_margin_padding_normal"
+                android:background="@drawable/awonar_ripple_border_gray"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -266,6 +265,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:padding="@dimen/awonar_size_margin_padding_normal"
                     app:verticalTitleView_setSubTitle="X1"
                     app:verticalTitleView_setTitle="Leverage" />
 
@@ -274,6 +274,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:padding="@dimen/awonar_size_margin_padding_normal"
                     app:verticalTitleView_setSubTitle="1.000"
                     app:verticalTitleView_setTitle="StopLoss" />
 
@@ -282,6 +283,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:padding="@dimen/awonar_size_margin_padding_normal"
                     app:verticalTitleView_setSubTitle="1.000"
                     app:verticalTitleView_setTitle="TakeProfit" />
             </androidx.appcompat.widget.LinearLayoutCompat>
@@ -290,6 +292,7 @@
                 android:id="@+id/frameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat2">
@@ -321,6 +324,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Open Trade"
+                android:paddingStart="@dimen/awonar_size_margin_padding_extra_extra_large"
+                android:paddingEnd="@dimen/awonar_size_margin_padding_extra_extra_large"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
