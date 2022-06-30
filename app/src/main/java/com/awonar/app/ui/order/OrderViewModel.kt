@@ -657,7 +657,7 @@ class OrderViewModel @Inject constructor(
                 isBuy = _isBuyState.value == true
             )
             val change = ConverterQuoteUtil.change(price, quote.previous)
-            val percentChange = ConverterQuoteUtil.percentChange(price, quote.previous)
+            val percentChange = ConverterQuoteUtil.percentChange(quote.previous, price)
             _bidState.value = ConverterQuoteUtil.getCurrentPrice(quote, _leverageState.value, true)
             _askState.value = ConverterQuoteUtil.getCurrentPrice(quote, _leverageState.value, false)
             _changeState.value = Pair(change, percentChange)
