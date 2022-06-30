@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.GridLayoutManager
@@ -21,6 +22,7 @@ import com.awonar.app.ui.order.leverageselector.adpater.LeverageSelectorAdapter
 import com.awonar.app.ui.portfolio.PortFolioViewModel
 import com.google.android.material.textfield.TextInputEditText
 import com.molysulfur.library.extension.toast
+import com.molysulfur.library.utils.ColorUtils
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.launch
@@ -185,11 +187,14 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                     when (orderActivityViewModel.showAmount.value) {
                         false -> {
                             binding.awoanrDialogOrderInputLayoutAmount.setStartIconDrawable(0)
+                            binding.awoanrDialogOrderButtonAmountToggle.text = "Amount"
                             binding.awoanrDialogOrderInputLayoutAmount.editText?.setText(
                                 "%.2f".format(amount.second)
                             )
                         }
                         true -> {
+                            binding.awoanrDialogOrderButtonAmountToggle.text =
+                                "${amount.second} Units"
                             binding.awoanrDialogOrderInputLayoutAmount.editText?.setText(
                                 "$%.2f".format(amount.first)
                             )
@@ -429,6 +434,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                     isEnabled = isAtMarket
                     hint = if (isAtMarket) "Open Rate" else "At Market"
                 }
+
                 when (isAtMarket) {
                     false -> orderViewModel.updateRate(null)
                     true -> orderViewModel.updateRate(orderViewModel.priceState.value)
@@ -477,18 +483,38 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslContainer.visibility = View.GONE
             binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslContainer.visibility = View.GONE
             binding.awonarDialogOrderRecyclerLeverages.visibility = View.VISIBLE
+            binding.awonarDialogOrderVerticalTitleLeverage.background =
+                ContextCompat.getDrawable(requireContext(), R.color.awonar_color_light_gray)
+            binding.awonarDialogOrderVerticalTitleStoploss.background =
+                ContextCompat.getDrawable(requireContext(), R.color.awonar_color_surface)
+            binding.awonarDialogOrderVerticalTitleTakeprofit.background =
+                ContextCompat.getDrawable(requireContext(), R.color.awonar_color_surface)
         }
         binding.awonarDialogOrderVerticalTitleStoploss.setOnClickListener {
             binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslContainer.visibility =
                 View.VISIBLE
             binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslContainer.visibility = View.GONE
             binding.awonarDialogOrderRecyclerLeverages.visibility = View.GONE
+            binding.awonarDialogOrderVerticalTitleStoploss.background =
+                ContextCompat.getDrawable(requireContext(), R.color.awonar_color_light_gray)
+            binding.awonarDialogOrderVerticalTitleLeverage.background =
+                ContextCompat.getDrawable(requireContext(), R.color.awonar_color_surface)
+            binding.awonarDialogOrderVerticalTitleTakeprofit.background =
+                ContextCompat.getDrawable(requireContext(), R.color.awonar_color_surface)
+
         }
         binding.awonarDialogOrderVerticalTitleTakeprofit.setOnClickListener {
             binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslContainer.visibility = View.GONE
             binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpslContainer.visibility =
                 View.VISIBLE
             binding.awonarDialogOrderRecyclerLeverages.visibility = View.GONE
+            binding.awonarDialogOrderVerticalTitleTakeprofit.background =
+                ContextCompat.getDrawable(requireContext(), R.color.awonar_color_light_gray)
+            binding.awonarDialogOrderVerticalTitleLeverage.background =
+                ContextCompat.getDrawable(requireContext(), R.color.awonar_color_surface)
+            binding.awonarDialogOrderVerticalTitleStoploss.background =
+                ContextCompat.getDrawable(requireContext(), R.color.awonar_color_surface)
+
         }
     }
 
@@ -537,6 +563,9 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
 
         binding.awoanrDialogOrderButtonRateToggle.setOnClickListener {
             val updateEnable = !binding.awoanrDialogOrderInputLayoutRate.isEnabled
+            binding.awoanrDialogOrderButtonRateToggle.apply {
+                text = if (!updateEnable) "Rate" else "At Market"
+            }
             orderActivityViewModel.setAtMarket(updateEnable)
         }
     }

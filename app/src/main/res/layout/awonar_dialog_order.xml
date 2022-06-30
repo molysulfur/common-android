@@ -118,8 +118,8 @@
                     digit="@{viewModel.instrument.digit}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="@+id/awonar_dialog_order_text_price"
-                    app:layout_constraintStart_toStartOf="@+id/awonar_dialog_order_text_price"
+                    android:layout_marginEnd="@dimen/awonar_size_margin_padding_normal"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/awonar_dialog_order_text_price"
                     tools:text="@string/awonar_example_name" />
 
@@ -256,6 +256,7 @@
                 android:layout_margin="@dimen/awonar_size_margin_padding_normal"
                 android:background="@drawable/awonar_ripple_border_gray"
                 android:orientation="horizontal"
+                android:padding="@dimen/awonar_size_margin_padding_extra_extra_small"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/awoanr_dialog_order_button_amount_toggle">
@@ -315,7 +316,8 @@
                     android:id="@+id/awonar_dialog_order_recycler_leverages"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/awonar_size_margin_padding_normal" />
+                    android:padding="@dimen/awonar_size_margin_padding_normal"
+                    android:visibility="gone" />
             </FrameLayout>
 
             <androidx.appcompat.widget.AppCompatButton
@@ -323,9 +325,9 @@
                 style="@style/Awonar.Button.Default.Primary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Open Trade"
                 android:paddingStart="@dimen/awonar_size_margin_padding_extra_extra_large"
                 android:paddingEnd="@dimen/awonar_size_margin_padding_extra_extra_large"
+                android:text="Open Trade"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
