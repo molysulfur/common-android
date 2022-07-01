@@ -15,7 +15,8 @@
             android:layout_margin="@dimen/awonar_size_margin_padding_normal"
             android:text="@string/awonar_example_name"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:trackTint="@color/awonar_selector_red" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/awonar_include_set_tpsl_button_toggle"
@@ -54,7 +55,6 @@
             android:layout_width="match_parent"
             android:layout_height="16dp"
             android:valueFrom="-1.0"
-            android:valueTo="0.0"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/awonar_include_set_tpsl_button_toggle" />

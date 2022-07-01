@@ -133,58 +133,35 @@ class OrderViewModel @Inject constructor(
             combine(
                 _amountState,
                 _leverageState,
-                tradingData,
+                _tradingData,
                 _isBuyState,
-                _instrument
-            ) { amount, leverage, tradingData, isBuy, instrument ->
-                _buyOrSellMessage.value = when (isBuy) {
-                    true -> "Buy"
-                    false -> "Sell"
-                    else -> ""
-                }
-                var message = ""
-                if (tradingData != null) {
-                    val units = amount.second
-                    val exposure = amount.first.div(leverage)
-                    message += "%.2f Units | %s | Exposure $%.2f \n".format(
-                        units,
-                        "5% of Equity",
-                        exposure
-                    )
-                    val (day, week) = ConverterOrderUtil.getOverNightFee(
-                        tradingData,
-                        units,
-                        leverage,
-                        isBuy == true
-                    )
-                    message += "Daily $%.2f Weekly $%.2f".format(day, week)
-                }
-                message
-            }.collectLatest {
-                _overnightFeeMessage.value = it
-            }
-        }
-        viewModelScope.launch {
-            /**
-             * min max tp and validate
-             */
-            combine(
-                _amountState,
+                _instrument,
+                _stopLossState,
                 _takeProfitState,
-                _isBuyState,
-                _tradingData
-            ) { amount, tp, isBuy, tradingData ->
+            ) { flow ->
+                val amount = flow[0] as Pair<Float, Float>
+                val leverage = flow[1] as Int
+                val tradingData = flow[2] as? TradingData
+                val isBuy = flow[3] as? Boolean
+                val instrument = flow[4] as? Instrument
+                val sl = flow[5] as Pair<Float, Float>
+                val tp = flow[6] as Pair<Float, Float>
+
+                /**
+                 * Take Profit
+                 */
                 val quote = QuoteSteamingManager.quotesState.value[_instrument.value?.id]
                 quote?.let {
-                    val minRateTp = if (isBuy == true) quote.bid else quote.ask
-                    val maxAmountTp = tradingData?.maxTakeProfitPercentage
-                    val minAmountTp = minRateTp.minus(_priceState.value).times(amount.second).div(
-                        getConversionByInstrumentUseCase(
-                            _instrument.value?.id ?: 0
-                        ).successOr(0f)
-                    )
-                    _minMaxTp.value = Pair(minAmountTp, maxAmountTp ?: 0f)
-                    if (_tradingData.value != null) {
+                    if (_tradingData.value != null && leverage > 0) {
+                        val minRateTp = if (isBuy == true) quote.bid else quote.ask
+                        val maxAmountTp = tradingData?.maxTakeProfitPercentage
+                        val minAmountTp =
+                            minRateTp.minus(_priceState.value).times(amount.second).div(
+                                getConversionByInstrumentUseCase(
+                                    _instrument.value?.id ?: 0
+                                ).successOr(0f)
+                            )
+                        _minMaxTp.value = Pair(minAmountTp, maxAmountTp ?: 0f)
                         val result = validateRateTakeProfitUseCase(
                             ValidateRateTakeProfitRequest(
                                 rateTp = tp.second,
@@ -211,22 +188,9 @@ class OrderViewModel @Inject constructor(
                         }
                     }
                 }
-            }.collect {
-
-            }
-        }
-        viewModelScope.launch {
-            /**
-             * min max sl and validate
-             */
-            combine(
-                _amountState,
-                _stopLossState,
-                leverageState,
-                _isBuyState,
-                _tradingData
-            ) { amount, stoploss, leverage, isBuy, tradingData ->
-                val quote = QuoteSteamingManager.quotesState.value[_instrument.value?.id]
+                /**
+                 * Stop Loss
+                 */
                 quote?.let {
                     if (tradingData != null && leverage > 0) {
                         val minAmountSl = (quote.ask.minus(quote.bid)).times(amount.second).div(1f)
@@ -237,12 +201,10 @@ class OrderViewModel @Inject constructor(
                             tradingData = tradingData
                         )
                         _minMaxSl.value = Pair(minAmountSl, -maxAmountSl)
-                    }
-                    if (tradingData != null && leverage > 0) {
                         val result = validateRateStopLossUseCase(
                             ValidateRateStopLossRequest(
-                                amountSl = stoploss.first,
-                                rateSl = stoploss.second,
+                                amountSl = sl.first,
+                                rateSl = sl.second,
                                 amount = _amountState.value.first,
                                 openPrice = _rateState.value ?: _priceState.value,
                                 exposure = _exposureState.value,
@@ -272,11 +234,6 @@ class OrderViewModel @Inject constructor(
                         }
                     }
                 }
-            }.collect {
-            }
-        }
-        viewModelScope.launch {
-            _leverageState.collect { leverage ->
                 val result = validateExposureUseCase(
                     ExposureRequest(
                         instrumentId = _instrument.value?.id ?: 0,
@@ -288,8 +245,35 @@ class OrderViewModel @Inject constructor(
                 if (result is Result.Error) {
                     _amountError.value = result.exception.message ?: ""
                 }
+
+                _buyOrSellMessage.value = when (isBuy) {
+                    true -> "Buy"
+                    false -> "Sell"
+                    else -> ""
+                }
+                var message = ""
+                if (tradingData != null) {
+                    val units = amount.second
+                    val exposure = amount.first.div(leverage)
+                    message += "%.2f Units | %s | Exposure $%.2f \n".format(
+                        units,
+                        "%.2f%s of Equity".format(exposure, "%"),
+                        exposure
+                    )
+                    val (day, week) = ConverterOrderUtil.getOverNightFee(
+                        tradingData,
+                        units,
+                        leverage,
+                        isBuy == true
+                    )
+                    message += "Daily $%.2f Weekly $%.2f".format(day, week)
+                }
+                message
+            }.collectLatest {
+                _overnightFeeMessage.value = it
             }
         }
+
         val initState = combine(
             _portfolioState,
             _instrument,

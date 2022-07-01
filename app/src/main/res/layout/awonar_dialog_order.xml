@@ -300,14 +300,14 @@
 
                 <include
                     android:id="@+id/awonar_dialog_order_include_sl"
-                    layout="@layout/awonar_include_set_tpsl"
+                    layout="@layout/awonar_include_set_sl"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="gone" />
 
                 <include
                     android:id="@+id/awonar_dialog_order_include_tp"
-                    layout="@layout/awonar_include_set_tpsl"
+                    layout="@layout/awonar_include_set_tp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="gone" />
