@@ -5,6 +5,7 @@ import com.awonar.android.model.order.ValidateRateTakeProfitRequest
 import com.awonar.android.shared.di.IoDispatcher
 import com.awonar.android.shared.repos.CurrenciesRepository
 import com.awonar.android.shared.repos.MarketRepository
+import com.awonar.android.shared.utils.ConverterOrderUtil
 import com.awonar.android.shared.utils.PortfolioUtil
 import com.molysulfur.library.usecase.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
@@ -52,9 +53,14 @@ class ValidateRateTakeProfitUseCase @Inject constructor(
         val MAX_AMOUNT_TP = value.times(parameters.maxTakeProfitPercentage).div(100)
         when (parameters.isBuy) {
             true -> {
-                val MAX_RATE_TP =
-                    MAX_AMOUNT_TP.times(parameters.conversionRate).div(parameters.units)
-                        .plus(parameters.openPrice)
+                val MAX_RATE_TP = ConverterOrderUtil.convertAmountToRate(
+                    MAX_AMOUNT_TP,
+                    parameters.conversionRate,
+                    parameters.units,
+                    parameters.openPrice,
+                    parameters.isBuy
+                )
+                Timber.e("$rateTp , $MAX_RATE_TP")
                 if (rateTp > MAX_RATE_TP) {
                     throw ValidationException(
                         "Take Profit can't more than $MAX_RATE_TP",
