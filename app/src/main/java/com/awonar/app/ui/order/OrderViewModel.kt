@@ -194,7 +194,7 @@ class OrderViewModel @Inject constructor(
                         leverage,
                         isBuy == true
                     )
-                    message += "Daily $%.2f Weekly $%.2f".format(abs(day), abs(week))
+                    message += "Overnight Fee: Daily $%.2f Weekly $%.2f".format(abs(day), abs(week))
                 }
                 message
             }.collectLatest {
