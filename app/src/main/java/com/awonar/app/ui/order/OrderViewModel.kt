@@ -142,14 +142,15 @@ class OrderViewModel @Inject constructor(
                 val quote = QuoteSteamingManager.quotesState.value[_instrument.value?.id]
                 quote?.let {
                     if (_tradingData.value != null && leverage > 0) {
-                        val minAmountSl = (quote.ask.minus(quote.bid)).times(amount.second).div(1f)
+                        val minRate = if (isBuy == true) quote.bid.minus(quote.ask) else quote.ask.minus(quote.bid)
+                        val minAmountSl = (minRate).times(amount.second).div(1f)
                         val maxAmountSl = ConverterOrderUtil.getMaxAmountSl(
                             native = amount.first,
                             leverage = leverage,
                             isBuy = isBuy == true,
                             tradingData = tradingData
                         )
-                        _minMaxSl.value = Pair(minAmountSl, -maxAmountSl)
+                        _minMaxSl.value = Pair(-minAmountSl, -maxAmountSl)
                         val minRateTp = if (isBuy == true) quote.bid else quote.ask
                         val maxAmountTp = tradingData?.maxTakeProfitPercentage
                         val minAmountTp =

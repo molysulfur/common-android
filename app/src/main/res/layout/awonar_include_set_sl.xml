@@ -12,11 +12,11 @@
             android:id="@+id/awonar_include_set_tpsl_switch_noset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:thumbTint="@color/awonar_color_light_gray"
             android:layout_margin="@dimen/awonar_size_margin_padding_normal"
             android:text="@string/awonar_example_name"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:thumbTint="@color/awonar_color_light_gray"
             app:trackTint="@color/awonar_selector_red" />
 
         <androidx.appcompat.widget.AppCompatButton
@@ -46,8 +46,7 @@
                 android:focusableInTouchMode="true"
                 android:gravity="end"
                 android:inputType="numberSigned|numberDecimal"
-                android:singleLine="true"
-                tools:text="@string/awonar_example_name" />
+                android:singleLine="true" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.slider.RangeSlider

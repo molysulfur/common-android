@@ -57,6 +57,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
          */
         launchAndRepeatWithViewLifecycle {
             orderViewModel.minMaxSl.collectIndexed { _, value ->
+                Timber.e("minMaxSl: $value")
                 setMinMaxStopLossText(value)
             }
         }
@@ -359,7 +360,8 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                     }
                     else -> {
                         binding.awoanrDialogOrderInputLayoutAmount.setStartIconDrawable(0)
-                        binding.awoanrDialogOrderButtonAmountToggle.text = "$%.2f Amount".format(orderViewModel.amountState.value.first)
+                        binding.awoanrDialogOrderButtonAmountToggle.text =
+                            "$%.2f Amount".format(orderViewModel.amountState.value.first)
                         binding.awoanrDialogOrderInputLayoutAmount.editText?.setText(
                             "%s".format(orderViewModel.amountState.value.second)
                         )
@@ -519,6 +521,21 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             }
         }
         with(binding.awonarDialogOrderIncludeTp) {
+            awonarIncludeSetTpSwitchNoset.setOnCheckedChangeListener { buttonView, isChecked ->
+                if (isChecked) {
+                    awonarIncludeSetTpInputNumber.editText?.apply {
+                        setText("")
+                        hint = "No Set"
+                        isEnabled = false
+                    }
+                } else {
+                    awonarIncludeSetTpInputNumber.editText?.apply {
+                        setTakeProfitText(orderViewModel.takeProfit.value)
+                        hint = ""
+                        isEnabled = true
+                    }
+                }
+            }
             awonarIncludeSetTpInputNumber.editText?.setOnFocusChangeListener { v, hasFocus ->
                 if (!hasFocus) {
                     val text = (v as EditText).text
@@ -563,6 +580,21 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             }
         }
         with(binding.awonarDialogOrderIncludeSl) {
+            awonarIncludeSetTpslSwitchNoset.setOnCheckedChangeListener { buttonView, isChecked ->
+                if (isChecked) {
+                    awonarIncludeSetTpslInputNumber.editText?.apply {
+                        setText("")
+                        hint = "No Set"
+                        isEnabled = false
+                    }
+                } else {
+                    awonarIncludeSetTpslInputNumber.editText?.apply {
+                        setStopLossText(orderViewModel.stopLossState.value)
+                        hint = ""
+                        isEnabled = true
+                    }
+                }
+            }
             awonarIncludeSetTpslInputNumber.editText?.setOnFocusChangeListener { v, hasFocus ->
                 if (!hasFocus) {
                     val text = (v as EditText).text

@@ -46,8 +46,7 @@
                 android:focusableInTouchMode="true"
                 android:gravity="end"
                 android:inputType="numberSigned|numberDecimal"
-                android:singleLine="true"
-                tools:text="@string/awonar_example_name" />
+                android:singleLine="true" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.slider.RangeSlider
