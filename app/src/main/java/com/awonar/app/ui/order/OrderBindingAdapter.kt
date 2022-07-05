@@ -57,7 +57,7 @@ fun setNumberPickerCollapsibleView(
 @BindingAdapter("currentChange", "digit")
 fun setCurrentChange(view: TextView, change: Pair<Float, Float>, digit: Int) {
     with(view) {
-        text = "$%.${digit}f (%.2f%s)".format(change.first, change.second, "%")
+        text = "%.${digit}f (%.2f%s)".format(change.first, change.second, "%")
         setTextColor(
             ColorChangingUtil.getTextColorChange(
                 view.context,

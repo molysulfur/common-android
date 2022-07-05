@@ -57,7 +57,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
          */
         launchAndRepeatWithViewLifecycle {
             orderViewModel.minMaxSl.collectIndexed { _, value ->
-                Timber.e("minMaxSl: $value")
                 setMinMaxStopLossText(value)
             }
         }
@@ -98,24 +97,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         launchAndRepeatWithViewLifecycle {
             orderViewModel.overnightFeeMessage.collectIndexed { _, value ->
                 binding.awonarDialogOrderTextOrderOvernight.text = value
-            }
-        }
-        /**
-         * Current Price and Changed
-         */
-        launchAndRepeatWithViewLifecycle {
-            orderViewModel.priceState.collect {
-                binding.awonarDialogOrderTextPrice.text =
-                    "%.${orderViewModel.instrument.value?.digit}f".format(it)
-            }
-        }
-        launchAndRepeatWithViewLifecycle {
-            orderViewModel.changeState.collect {
-                binding.awonarDialogOrderTextChange.text =
-                    "%.${orderViewModel.instrument.value?.digit}f (%.2f%s)".format(
-                        it.first,
-                        it.second, "%"
-                    )
             }
         }
         /**
@@ -373,7 +354,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
             orderActivityViewModel.isSetRate.collectIndexed { _, isAtMarket ->
                 binding.awoanrDialogOrderInputLayoutRate.apply {
                     isEnabled = isAtMarket
-                    hint = if (isAtMarket) "Open Rate" else "At Market"
+                    hint = if (isAtMarket) "" else "At Market"
                 }
 
                 when (isAtMarket) {

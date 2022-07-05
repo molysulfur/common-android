@@ -24,9 +24,9 @@ class OrderViewModelActivity @Inject constructor(
 
     private val _showAmount = MutableStateFlow(true)
     val showAmount = _showAmount
-    private val _showAmountTp = MutableStateFlow(true)
+    private val _showAmountTp = MutableStateFlow(false)
     val showAmountTp = _showAmountTp
-    private val _showAmountSl = MutableStateFlow(true)
+    private val _showAmountSl = MutableStateFlow(false)
     val showAmountSl = _showAmountSl
     private val _isSetRate = MutableStateFlow(false)
     val isSetRate = _isSetRate

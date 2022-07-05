@@ -142,8 +142,13 @@ class OrderViewModel @Inject constructor(
                 val quote = QuoteSteamingManager.quotesState.value[_instrument.value?.id]
                 quote?.let {
                     if (_tradingData.value != null && leverage > 0) {
-                        val minRate = if (isBuy == true) quote.bid.minus(quote.ask) else quote.ask.minus(quote.bid)
-                        val minAmountSl = (minRate).times(amount.second).div(1f)
+                        val minRate =
+                            if (isBuy == true) quote.bid.minus(quote.ask) else quote.ask.minus(quote.bid)
+                        val conversion =
+                            getConversionByInstrumentUseCase(
+                                _instrument.value?.id ?: 0
+                            ).successOr(0f)
+                        val minAmountSl = (minRate).times(amount.second).div(conversion)
                         val maxAmountSl = ConverterOrderUtil.getMaxAmountSl(
                             native = amount.first,
                             leverage = leverage,
@@ -235,7 +240,7 @@ class OrderViewModel @Inject constructor(
                         _takeProfit.value = tp
                     }
                     if (result is Result.Error) {
-                        setRateTp((result.exception as ValidationException).value)
+                        setAmountTp(_minMaxTp.value.second)
                     }
                 }
             }
@@ -248,7 +253,6 @@ class OrderViewModel @Inject constructor(
             _isBuyState,
             _stopLossState
         ) { tradingData, leverage, amount, isBuy, sl ->
-            Timber.e("$sl")
             val quote = QuoteSteamingManager.quotesState.value[_instrument.value?.id]
             quote?.let {
                 if (tradingData != null && leverage > 0) {
@@ -279,8 +283,7 @@ class OrderViewModel @Inject constructor(
                     )
                     if (result is Result.Error) {
                         if (result.exception is ValidationException) {
-                            val newRateSL = (result.exception as ValidationException).value
-                            setRateSl(newRateSL)
+                            setAmountSl(_minMaxSl.value.second)
                         }
                     }
                 }
