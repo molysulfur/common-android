@@ -23,7 +23,7 @@ class ValidateRateStopLossUseCase @Inject constructor(
         val slRate = parameters.rateSl
         val amountSl = slRate.minus(parameters.openPrice).times(parameters.units).div(conversion)
         if (parameters.isBuy) {
-            if (slRate in minRateSl..maxRateSL) {
+            if ((slRate < maxRateSL) or (slRate > minRateSl)) {
                 throw ValidationException("Stop Loss cannot less than $minRateSl", minRateSl)
             } else {
 //                val diff = amountSl.minus(maxAmountSl)
