@@ -14,18 +14,22 @@ class ValidateRateStopLossUseCase @Inject constructor(
     @IoDispatcher dispatcher: CoroutineDispatcher
 ) : UseCase<ValidateRateStopLossRequest, Unit>(dispatcher) {
     override suspend fun execute(parameters: ValidateRateStopLossRequest) {
-        val conversion = parameters.conversionRate
-        val exposure = parameters.exposure
-        val nativeAmount = exposure.div(parameters.leverage)
         val minRateSl = if (parameters.isBuy) parameters.quote.bid else parameters.quote.ask
         val maxRateSL = 10f.pow(-parameters.digit)
-        val maxAmountSl = parameters.maxStopLoss
         val slRate = parameters.rateSl
-        val amountSl = minRateSl.minus(parameters.openPrice).times(parameters.units).div(conversion)
         if (parameters.isBuy) {
             if ((slRate < maxRateSL) or (slRate > minRateSl)) {
                 throw ValidationException("Stop Loss cannot less than $minRateSl", minRateSl)
             } else {
+
+            }
+        } else if ((slRate < minRateSl) or (slRate < maxRateSL)) {
+            throw ValidationException("Stop Loss cannot less than $minRateSl", minRateSl)
+        }
+    }
+}
+
+
 //                val diff = amountSl.minus(maxAmountSl)
 //                if (diff < 0) {
 //                    if (kotlin.math.abs(-diff.minus(parameters.amountSl.minus(nativeAmount))) < parameters.available) {
@@ -53,9 +57,3 @@ class ValidateRateStopLossUseCase @Inject constructor(
 //                        )
 //                    }
 //                }
-            }
-        } else if ((slRate < minRateSl) or (slRate < maxRateSL)) {
-            throw ValidationException("Stop Loss cannot less than $minRateSl", minRateSl)
-        }
-    }
-}

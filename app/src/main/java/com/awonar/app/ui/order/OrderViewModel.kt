@@ -295,6 +295,12 @@ class OrderViewModel @Inject constructor(
             _instrument,
             _tradingData
         ) { portfolio, instrument, tradingData ->
+            if (tradingData == null) {
+                val newTradingData =
+                    getTradingDataByInstrumentIdUseCase(instrument?.id ?: 1).successOr(null)
+                Timber.e("$instrument $newTradingData")
+                _tradingData.value = newTradingData
+            }
             if (portfolio != null && instrument != null && tradingData != null) {
                 /**
                  * Default Amount
@@ -327,9 +333,7 @@ class OrderViewModel @Inject constructor(
             initState.collect {}
         }
 
-        viewModelScope.launch {
-            getTradingDataByInstrumentIdUseCase(1)
-        }
+
     }
 
     fun setAmountTp(

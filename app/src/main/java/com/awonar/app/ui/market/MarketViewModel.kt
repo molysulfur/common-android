@@ -10,6 +10,7 @@ import com.awonar.android.model.tradingdata.TradingData
 import com.awonar.android.shared.domain.market.GetConversionByInstrumentUseCase
 import com.awonar.android.shared.domain.market.GetInstrumentListUseCase
 import com.awonar.android.shared.domain.order.GetTradingDataByInstrumentIdUseCase
+import com.awonar.android.shared.domain.order.GetTradingDataUseCase
 import com.awonar.android.shared.steaming.QuoteSteamingEvent
 import com.awonar.android.shared.steaming.QuoteSteamingListener
 import com.awonar.android.shared.steaming.QuoteSteamingManager
@@ -22,10 +23,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class MarketViewModel @Inject constructor(
+    private val getTradingDataUseCase: GetTradingDataUseCase,
     private val getInstrumentListUseCase: GetInstrumentListUseCase,
     private val convertRememberToItemUseCase: ConvertRememberToItemUseCase,
     private val convertInstrumentStockToItemUseCase: ConvertInstrumentStockToItemUseCase,
@@ -34,17 +37,9 @@ class MarketViewModel @Inject constructor(
     private val quoteSteamingManager: QuoteSteamingManager,
 ) : ViewModel() {
 
-    private val _conversionRateState = MutableStateFlow(0f)
-
-    private val _conversionRateListState = MutableStateFlow<HashMap<Int, Float>>(hashMapOf())
-    val conversionRateListState: StateFlow<HashMap<Int, Float>> get() = _conversionRateListState
 
     private val _viewMoreState = Channel<MarketViewMoreArg?>(capacity = Channel.CONFLATED)
     val viewMoreState = _viewMoreState.receiveAsFlow()
-
-    private val _quoteSteamingState
-    = MutableStateFlow<Array<Quote>>(emptyArray())
-    val quoteSteamingState: StateFlow<Array<Quote>> get() = _quoteSteamingState
 
     private val _marketTabState =
         MutableSharedFlow<MarketFragment.Companion.MarketTabSelectedState>(replay = 0)
@@ -179,18 +174,14 @@ class MarketViewModel @Inject constructor(
         }
     }
 
-    fun getConversionsRate(instrumentId: Int) {
-        viewModelScope.launch {
-            _conversionRateState.emit(getConversionByInstrumentUseCase(instrumentId).successOr(1f))
-        }
-    }
+    private val _navigateAction = Channel<Unit>(capacity = Channel.CONFLATED)
+    val navigateAction = _navigateAction.receiveAsFlow()
 
-    fun getConversionsRateList(list: List<Position>) {
+    fun getTradingData() {
         viewModelScope.launch {
-            val conversions = HashMap<Int, Float>()
-            list.forEach {
-                val conversion = getConversionByInstrumentUseCase(it.instrumentId).successOr(1f)
-                conversions[it.instrumentId] = conversion
+            getTradingDataUseCase(Unit).collectLatest {
+                Timber.e("${it.successOr(null)}")
+                _navigateAction.send(Unit)
             }
         }
     }

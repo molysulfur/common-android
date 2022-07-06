@@ -49,17 +49,17 @@ class LauncherViewModel @Inject constructor(
     val navigateAction get() = _navigateAction.receiveAsFlow()
 
     init {
-        val combine = combine(loadTradingData,
+        val combine = combine(
+            loadTradingData,
             loadConversionState,
-            instruments) { trading, conversion, instruments ->
-            if (trading != null) {
-                if (instruments.isNotEmpty()) {
-                    subscribe(instruments)
-                    viewModelScope.launch {
-                        _navigateAction.send(Unit)
-                    }
+            instruments
+        ) { trading, conversion, instruments ->
+            if (trading != null && instruments.isNotEmpty()) {
+                subscribe(instruments)
+                Timber.e("$trading")
+                viewModelScope.launch {
+                    _navigateAction.send(Unit)
                 }
-
             }
         }
         viewModelScope.launch {

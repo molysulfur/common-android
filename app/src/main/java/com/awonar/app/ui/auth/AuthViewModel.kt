@@ -41,18 +41,23 @@ class AuthViewModel @Inject constructor(
     val signOutState: StateFlow<Unit?> get() = _signOutState
 
     val autoSignIn: StateFlow<Boolean?> = flow {
-        autoSignInUseCase(Unit).collect {
-            val isAuth: Boolean = it.successOr(false)
+        autoSignInUseCase(Unit).collectIndexed { _, value ->
+            val isAuth: Boolean = value.successOr(false)
             emit(isAuth)
         }
     }.stateIn(viewModelScope, WhileViewSubscribed, null)
 
     fun signIn(username: String, password: String) {
         viewModelScope.launch {
-            signInWithPasswordUseCase(SignInRequest(username, password)).collect {
-                when (it) {
+            signInWithPasswordUseCase(
+                SignInRequest(
+                    username,
+                    password
+                )
+            ).collectIndexed { _, value ->
+                when (value) {
                     is Result.Success -> {
-                        val data = it.successOr(null)
+                        val data = value.successOr(null)
                         if (data != null) {
                             _signInState.value = data
                         } else {
@@ -62,6 +67,7 @@ class AuthViewModel @Inject constructor(
                     is Result.Error -> {
                         _signInError.value = "Error"
                     }
+                    else -> {}
                 }
 
 
@@ -77,7 +83,7 @@ class AuthViewModel @Inject constructor(
                     token = token,
                     id = id
                 )
-            ).collect { result ->
+            ).collectIndexed { _, result ->
                 when (result) {
                     is Result.Success -> {
                         _signInState.value = result.data
@@ -99,14 +105,14 @@ class AuthViewModel @Inject constructor(
 
     fun signOut() {
         viewModelScope.launch {
-            signOutUseCase(Unit).collect {
-                when (it) {
+            signOutUseCase(Unit).collectIndexed { _, value ->
+                when (value) {
                     is Result.Success -> {
-                        if (it.data)
+                        if (value.data)
                             _signOutState.value = Unit
                     }
                     is Result.Error -> {
-                        _signInError.value = "${it.exception.message}"
+                        _signInError.value = "${value.exception.message}"
                     }
                     is Result.Loading -> {
                         _signInLoading.value = Unit
@@ -123,7 +129,7 @@ class AuthViewModel @Inject constructor(
                     token = token,
                     id = userId
                 )
-            ).collect { result ->
+            ).collectIndexed { _, result ->
                 when (result) {
                     is Result.Success -> {
                         _signInState.value = result.data

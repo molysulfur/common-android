@@ -22,7 +22,9 @@ import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
+import com.awonar.app.ui.launcher.LauncherViewModel
 import com.awonar.app.ui.main.MainActivity
+import com.awonar.app.ui.market.MarketViewModel
 import com.facebook.*
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
@@ -34,6 +36,8 @@ import com.molysulfur.library.extension.openActivity
 import com.molysulfur.library.extension.openActivityAndClearAllActivity
 import com.molysulfur.library.extension.toast
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
+import kotlinx.coroutines.flow.collectIndexed
+import kotlinx.coroutines.flow.collectLatest
 
 
 class SignInFragment : Fragment(), FacebookCallback<LoginResult> {
@@ -54,6 +58,7 @@ class SignInFragment : Fragment(), FacebookCallback<LoginResult> {
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
     private val authViewModel: AuthViewModel by activityViewModels()
+    private val marketViewModel: MarketViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -80,6 +85,11 @@ class SignInFragment : Fragment(), FacebookCallback<LoginResult> {
 
     private fun observe() {
         launchAndRepeatWithViewLifecycle {
+            marketViewModel.navigateAction.collectLatest {
+                openActivityAndClearAllActivity(MainActivity::class.java)
+            }
+        }
+        launchAndRepeatWithViewLifecycle {
             authViewModel.navigation.collect { email ->
                 if (!email.isNullOrBlank()) {
                     findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToLinkAccountFragment(
@@ -101,7 +111,7 @@ class SignInFragment : Fragment(), FacebookCallback<LoginResult> {
         launchAndRepeatWithViewLifecycle {
             authViewModel.signInState.collect {
                 if (it != null) {
-                    openActivityAndClearAllActivity(MainActivity::class.java)
+                    marketViewModel.getTradingData()
                 }
             }
         }
