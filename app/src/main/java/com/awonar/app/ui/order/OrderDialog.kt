@@ -299,17 +299,17 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     }
 
     private fun setMinMaxStopLossText(stopLoss: Pair<Float, Float>) {
-        if (stopLoss.first > 0) {
-            orderViewModel.setAmountSl(stopLoss.second)
-            binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.setValues(stopLoss.second)
+        if (abs(stopLoss.first) > 0) {
+            orderViewModel.setAmountSl(abs(stopLoss.second))
+            binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.setValues(abs(stopLoss.second))
             binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.valueFrom =
-                stopLoss.first
+                abs(stopLoss.first)
             binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslSliderMinMax.valueTo =
-                stopLoss.second
+                abs(stopLoss.second)
             binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslTextForm.text =
-                "-$%.2f".format(stopLoss.first)
+                "-$%.2f".format(abs(stopLoss.first))
             binding.awonarDialogOrderIncludeSl.awonarIncludeSetTpslTextTo.text =
-                "-$%.2f".format(stopLoss.second)
+                "-$%.2f".format(abs(stopLoss.second))
         }
     }
 

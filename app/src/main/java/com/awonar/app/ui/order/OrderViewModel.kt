@@ -24,17 +24,14 @@ import com.awonar.android.shared.utils.ConverterOrderUtil
 import com.awonar.android.shared.utils.ConverterQuoteUtil
 import com.awonar.android.shared.utils.PortfolioUtil
 import com.molysulfur.library.result.Result
-import com.molysulfur.library.result.data
 import com.molysulfur.library.result.succeeded
 import com.molysulfur.library.result.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.abs
-import kotlin.math.pow
 
 @HiltViewModel
 class OrderViewModel @Inject constructor(
@@ -298,7 +295,6 @@ class OrderViewModel @Inject constructor(
             if (tradingData == null) {
                 val newTradingData =
                     getTradingDataByInstrumentIdUseCase(instrument?.id ?: 1).successOr(null)
-                Timber.e("$instrument $newTradingData")
                 _tradingData.value = newTradingData
             }
             if (portfolio != null && instrument != null && tradingData != null) {
@@ -349,7 +345,6 @@ class OrderViewModel @Inject constructor(
                 openRate = rateState.value ?: _priceState.value,
                 isBuy = _isBuyState.value == true
             )
-            Timber.e("$tpRate $amount")
             _takeProfit.value = Pair(amount, tpRate)
         }
     }
@@ -384,7 +379,6 @@ class OrderViewModel @Inject constructor(
                 openRate = rateState.value ?: _priceState.value,
                 isBuy = _isBuyState.value == true
             )
-            Timber.e("setSl :$amount $slRate")
             _stopLossState.value = Pair(amount, slRate)
         }
     }
