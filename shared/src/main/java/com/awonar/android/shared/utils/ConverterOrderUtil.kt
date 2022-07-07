@@ -43,10 +43,10 @@ object ConverterOrderUtil {
                     .div(units)).plus(openRate)
             }
             else -> {
-                -(openRate.minus(
+                openRate.minus(
                     amount.times(conversionRate)
                         .div(units)
-                ))
+                )
             }
         }
     }

@@ -17,13 +17,14 @@ class ValidateRateStopLossUseCase @Inject constructor(
         val minRateSl = if (parameters.isBuy) parameters.quote.bid else parameters.quote.ask
         val maxRateSL = 10f.pow(-parameters.digit)
         val slRate = parameters.rateSl
+        Timber.e("Validate :$slRate $minRateSl $maxRateSL")
         if (parameters.isBuy) {
             if ((slRate < maxRateSL) or (slRate > minRateSl)) {
                 throw ValidationException("Stop Loss cannot less than $minRateSl", minRateSl)
             } else {
 
             }
-        } else if ((slRate < minRateSl) or (slRate < maxRateSL)) {
+        } else if (slRate < minRateSl) {
             throw ValidationException("Stop Loss cannot less than $minRateSl", minRateSl)
         }
     }

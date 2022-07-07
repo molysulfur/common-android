@@ -11,6 +11,7 @@ import com.molysulfur.library.usecase.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.math.abs
 import kotlin.math.pow
 
 
@@ -19,8 +20,8 @@ class ValidateRateTakeProfitUseCase @Inject constructor(
 ) : UseCase<ValidateRateTakeProfitRequest, Unit>(dispatcher) {
 
     override suspend fun execute(parameters: ValidateRateTakeProfitRequest) {
-        val rateTp = parameters.rateTp
-        val MIN_RATE_TP = if(parameters.isBuy) parameters.quote.bid else parameters.quote.ask
+        val rateTp = abs(parameters.rateTp)
+        val MIN_RATE_TP = if (parameters.isBuy) parameters.quote.bid else parameters.quote.ask
         /**
          * Check MIN RATE
          */
@@ -60,7 +61,6 @@ class ValidateRateTakeProfitUseCase @Inject constructor(
                     parameters.openPrice,
                     parameters.isBuy
                 )
-                Timber.e("$rateTp , $MAX_RATE_TP")
                 if (rateTp > MAX_RATE_TP) {
                     throw ValidationException(
                         "Take Profit can't more than $MAX_RATE_TP",

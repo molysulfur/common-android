@@ -497,7 +497,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         with(binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpSliderMinMax) {
             addOnChangeListener { _, value, fromUser ->
                 if (fromUser) {
-                    orderViewModel.setAmountTp(value)
+                    orderViewModel.setAmountTp(abs(value))
                 }
             }
         }

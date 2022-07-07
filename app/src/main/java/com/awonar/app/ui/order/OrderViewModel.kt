@@ -349,6 +349,7 @@ class OrderViewModel @Inject constructor(
                 openRate = rateState.value ?: _priceState.value,
                 isBuy = _isBuyState.value == true
             )
+            Timber.e("$tpRate $amount")
             _takeProfit.value = Pair(amount, tpRate)
         }
     }
@@ -383,6 +384,7 @@ class OrderViewModel @Inject constructor(
                 openRate = rateState.value ?: _priceState.value,
                 isBuy = _isBuyState.value == true
             )
+            Timber.e("setSl :$amount $slRate")
             _stopLossState.value = Pair(amount, slRate)
         }
     }
