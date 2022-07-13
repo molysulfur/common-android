@@ -30,6 +30,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -280,7 +281,7 @@ class OrderViewModel @Inject constructor(
                     )
                     if (result is Result.Error) {
                         if (result.exception is ValidationException) {
-                            setAmountSl(_minMaxSl.value.second)
+                            setAmountSl(-_minMaxSl.value.second)
                         }
                     }
                 }
@@ -379,7 +380,7 @@ class OrderViewModel @Inject constructor(
                 openRate = rateState.value ?: _priceState.value,
                 isBuy = _isBuyState.value == true
             )
-            _stopLossState.value = Pair(amount, slRate)
+            _stopLossState.value = Pair(amount, abs(slRate))
         }
     }
 
@@ -644,10 +645,10 @@ class OrderViewModel @Inject constructor(
             )
             val change = ConverterQuoteUtil.change(price, quote.previous)
             val percentChange = ConverterQuoteUtil.percentChange(quote.previous, price)
-            _bidState.value =
-                ConverterQuoteUtil.getCurrentPrice(quote, _leverageState.value, true)
-            _askState.value =
-                ConverterQuoteUtil.getCurrentPrice(quote, _leverageState.value, false)
+            val newBid = ConverterQuoteUtil.getCurrentPrice(quote, _leverageState.value, true)
+            val newAsk = ConverterQuoteUtil.getCurrentPrice(quote, _leverageState.value, false)
+            _bidState.value = newBid
+            _askState.value = newAsk
             _changeState.value = Pair(change, percentChange)
             _priceState.value = price
         }

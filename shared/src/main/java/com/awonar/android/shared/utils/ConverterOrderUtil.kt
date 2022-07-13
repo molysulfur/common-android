@@ -39,8 +39,8 @@ object ConverterOrderUtil {
     ): Float {
         return when (isBuy) {
             true -> {
-                (amount.times(conversionRate)
-                    .div(units)).plus(openRate)
+                amount.times(conversionRate)
+                    .div(units).plus(openRate)
             }
             else -> {
                 openRate.minus(
