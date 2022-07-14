@@ -41,6 +41,8 @@ class OrderViewModel @Inject constructor(
     private val validateRateStopLossUseCase: ValidateRateStopLossUseCase,
     private val getConversionByInstrumentUseCase: GetConversionByInstrumentUseCase,
     private val getTradingDataByInstrumentIdUseCase: GetTradingDataByInstrumentIdUseCase,
+    private val getMinMaxStoplossUseCase: GetMinMaxStoplossUseCase,
+    private val getMinMaxTakeProfitUseCase: GetMinMaxTakeProfitUseCase,
     private val validatePartialCloseAmountUseCase: ValidatePartialCloseAmountUseCase,
     private val updateOrderUseCase: UpdateOrderUseCase,
     private val getUnitUseCase: GetUnitUseCase,
@@ -128,41 +130,40 @@ class OrderViewModel @Inject constructor(
                 _leverageState,
                 _tradingData,
                 _isBuyState,
+                _instrument
             ) { flow ->
                 val amount = flow[0] as Pair<Float, Float>
                 val leverage = flow[1] as Int
                 val tradingData = flow[2] as? TradingData
                 val isBuy = flow[3] as? Boolean
-
+                val instrument = flow[4] as? Instrument
                 /**
                  * MinMax Take Profit and StopLoss
                  */
                 val quote = QuoteSteamingManager.quotesState.value[_instrument.value?.id]
                 quote?.let {
-                    if (_tradingData.value != null && leverage > 0) {
-                        val minRate =
-                            if (isBuy == true) quote.bid.minus(quote.ask) else quote.ask.minus(quote.bid)
-                        val conversion =
-                            getConversionByInstrumentUseCase(
-                                _instrument.value?.id ?: 0
-                            ).successOr(0f)
-                        val minAmountSl = (minRate).times(amount.second).div(conversion)
-                        val maxAmountSl = ConverterOrderUtil.getMaxAmountSl(
-                            native = amount.first,
-                            leverage = leverage,
-                            isBuy = isBuy == true,
-                            tradingData = tradingData
-                        )
-                        _minMaxSl.value = Pair(-minAmountSl, -maxAmountSl)
-                        val minRateTp = if (isBuy == true) quote.bid else quote.ask
-                        val maxAmountTp = tradingData?.maxTakeProfitPercentage
-                        val minAmountTp =
-                            minRateTp.minus(_priceState.value).times(amount.second).div(
-                                getConversionByInstrumentUseCase(
-                                    _instrument.value?.id ?: 0
-                                ).successOr(0f)
+                    if (instrument != null && _tradingData.value != null && leverage > 0) {
+                        val newMinMax = getMinMaxStoplossUseCase(
+                            MinMaxStopLossRequest(
+                                isBuy = isBuy == true,
+                                amount = amount.first,
+                                units = amount.second,
+                                leverage = leverage,
+                                instrumentId = instrument.id
                             )
-                        _minMaxTp.value = Pair(minAmountTp, maxAmountTp ?: 0f)
+                        ).successOr(Pair(0f, 0f))
+                        _minMaxSl.value = newMinMax
+                        val newMinMaxTp = getMinMaxTakeProfitUseCase(
+                            MinMaxTakeProfitRequest(
+                                isBuy = isBuy == true,
+                                amount = amount.first,
+                                units = amount.second,
+                                leverage = leverage,
+                                instrumentId = instrument.id,
+                                openRate = _rateState.value ?: _priceState.value
+                            )
+                        ).successOr(Pair(0f, 0f))
+                        _minMaxTp.value = newMinMaxTp
                     }
                 }
                 val result = validateExposureUseCase(

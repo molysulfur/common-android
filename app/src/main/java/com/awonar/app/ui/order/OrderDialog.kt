@@ -27,7 +27,6 @@ import com.molysulfur.library.extension.toast
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import kotlin.math.abs
 
 class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogViewModel>() {
@@ -234,7 +233,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
     }
 
     private fun setTakeProfitText(tp: Pair<Float, Float>) {
-        Timber.e("$tp")
         when (orderActivityViewModel.showAmountTp.value) {
             false -> {
                 binding.awonarDialogOrderIncludeTp.awonarIncludeSetTpInputNumber.setStartIconDrawable(

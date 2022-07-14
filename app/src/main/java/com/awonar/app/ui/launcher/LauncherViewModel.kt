@@ -16,7 +16,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,15 +32,15 @@ class LauncherViewModel @Inject constructor(
     }.stateIn(viewModelScope, WhileViewSubscribed, emptyList())
 
     private val loadTradingData: StateFlow<List<TradingData>?> = flow {
-        getTradingDataUseCase(Unit).collect {
-            val isAuth = it.successOr(emptyList())
+        getTradingDataUseCase(Unit).collectIndexed { _, value ->
+            val isAuth = value.successOr(emptyList())
             emit(isAuth)
         }
     }.stateIn(viewModelScope, WhileViewSubscribed, null)
 
     private val loadConversionState: StateFlow<List<Conversion>> = flow {
-        getConversionUseCase(Unit).collect {
-            emit(it.successOr(emptyList()))
+        getConversionUseCase(Unit).collectIndexed { _, value ->
+            emit(value.successOr(emptyList()))
         }
     }.stateIn(viewModelScope, WhileViewSubscribed, emptyList())
 
@@ -56,7 +55,6 @@ class LauncherViewModel @Inject constructor(
         ) { trading, conversion, instruments ->
             if (trading != null && instruments.isNotEmpty()) {
                 subscribe(instruments)
-                Timber.e("$trading")
                 viewModelScope.launch {
                     _navigateAction.send(Unit)
                 }
