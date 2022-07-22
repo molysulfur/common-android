@@ -12,6 +12,7 @@ data class UserPortfolioResponse(
     @SerializedName("entryOrder") val entries: List<EntryOrderPortfolio>?,
     @SerializedName("orders") val orders: List<OrderPortfolio>?,
     @SerializedName("positions") val positions: List<Position>?,
+    @SerializedName("portfolio") val portfolio: Portfolio,
 ) : Parcelable
 
 @Parcelize

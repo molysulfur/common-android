@@ -137,6 +137,7 @@ class OrderViewModel @Inject constructor(
                 val tradingData = flow[2] as? TradingData
                 val isBuy = flow[3] as? Boolean
                 val instrument = flow[4] as? Instrument
+
                 /**
                  * MinMax Take Profit and StopLoss
                  */
@@ -618,6 +619,15 @@ class OrderViewModel @Inject constructor(
     fun setIsBuy(isBuy: Boolean?) {
         viewModelScope.launch {
             val currentType: Boolean? = isBuy
+            val quote = QuoteSteamingManager.quotesState.value[_instrument.value?.id]
+            quote?.let {
+                val price = ConverterQuoteUtil.getCurrentPrice(
+                    quote,
+                    _leverageState.value,
+                    currentType == true
+                )
+                _priceState.value = price
+            }
             val tradingData =
                 getTradingDataByInstrumentIdUseCase(_instrument.value?.id ?: 0).successOr(null)
             _tradingData.value = tradingData

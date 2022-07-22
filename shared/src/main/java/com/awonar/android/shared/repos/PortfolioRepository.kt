@@ -65,10 +65,10 @@ class PortfolioRepository @Inject constructor(
         }
     }.asFlow()
 
-    fun getPortFolio() = object : DirectNetworkFlow<Boolean, Portfolio, Portfolio>() {
-        override fun createCall(): Response<Portfolio> = portfolioService.getPortFolio().execute()
+    fun getPortFolio() = object : DirectNetworkFlow<Boolean, Portfolio, UserPortfolioResponse>() {
+        override fun createCall(): Response<UserPortfolioResponse> = portfolioService.getMyPositionManual().execute()
 
-        override fun convertToResultType(response: Portfolio): Portfolio = response
+        override fun convertToResultType(response: UserPortfolioResponse): Portfolio = response.portfolio
 
         override fun onFetchFailed(errorMessage: String) {
             println(errorMessage)

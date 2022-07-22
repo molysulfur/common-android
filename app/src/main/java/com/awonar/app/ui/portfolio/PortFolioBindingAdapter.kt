@@ -84,12 +84,6 @@ fun setEquity(
     equity: Float,
 ) {
     with(textView) {
-        setTextColor(
-            ColorChangingUtil.getTextColorChange(
-                textView.context,
-                equity
-            )
-        )
         text = "Equity: $%.2f".format(equity)
     }
 }

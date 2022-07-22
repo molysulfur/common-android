@@ -18,6 +18,7 @@ import javax.inject.Inject
 import com.awonar.app.domain.portfolio.*
 import com.awonar.app.ui.profile.user.PublicPortfolioFragmentDirections
 import kotlinx.coroutines.channels.Channel
+import timber.log.Timber
 
 @HiltViewModel
 class PortFolioViewModel @Inject constructor(
@@ -40,6 +41,7 @@ class PortFolioViewModel @Inject constructor(
 
     val portfolioState: StateFlow<Portfolio?> = flow {
         getMyPortFolioUseCase(true).collectIndexed { _, value ->
+            Timber.e("$value")
             val data = value.successOr(null)
             this.emit(data)
         }
