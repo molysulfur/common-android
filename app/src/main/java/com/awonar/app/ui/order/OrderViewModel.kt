@@ -143,6 +143,18 @@ class OrderViewModel @Inject constructor(
                  */
                 val quote = QuoteSteamingManager.quotesState.value[_instrument.value?.id]
                 quote?.let {
+                    /**
+                     * Calculat Unit when type change
+                     */
+                    updateAmount(
+                        instrument?.id ?: 0,
+                        amount.first,
+                        ConverterQuoteUtil.getCurrentPrice(
+                            quote,
+                            leverage,
+                            isBuy == true
+                        )
+                    )
                     if (instrument != null && _tradingData.value != null && leverage > 0) {
                         val newMinMax = getMinMaxStoplossUseCase(
                             MinMaxStopLossRequest(
