@@ -51,39 +51,77 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/awonar_portfolio_text_title_available"
-                    style="@style/Awonar.Text.Default.Normal"
-                    setAvaliable="@{viewModel.portfolioState.available}"
+                    style="@style/Awonar.Text.Default.Normal.Gray"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/awonar_size_margin_padding_normal"
                     android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+                    android:text="@string/awonar_text_avaliable"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_portfolio_text_available"
+                    style="@style/Awonar.Text.Default.Normal"
+                    setAvaliable="@{viewModel.portfolioState.available}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+                    app:layout_constraintStart_toEndOf="@+id/awonar_portfolio_text_title_available"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="@string/awonar_example_name" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/awonar_portfolio_text_title_total_allocate"
+                    style="@style/Awonar.Text.Default.Normal.Gray"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
+                    android:text="@string/awonar_text_allocate"
+                    app:layout_constraintStart_toStartOf="@+id/awonar_portfolio_text_title_available"
+                    app:layout_constraintTop_toBottomOf="@+id/awonar_portfolio_text_title_available" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_portfolio_text_title_allocate"
                     style="@style/Awonar.Text.Default.Normal"
                     setAllocate="@{viewModel.portfolioState.totalAllocated}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/awonar_size_margin_padding_normal"
-                    app:layout_constraintStart_toStartOf="@+id/awonar_portfolio_text_title_available"
+                    app:layout_constraintStart_toEndOf="@+id/awonar_portfolio_text_title_total_allocate"
                     app:layout_constraintTop_toBottomOf="@+id/awonar_portfolio_text_title_available"
                     tools:text="@string/awonar_example_name" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/awonar_portfolio_text_title_equity"
+                    style="@style/Awonar.Text.Default.Normal.Gray"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/awonar_text_equity"
+                    app:layout_constraintEnd_toStartOf="@+id/awonar_portfolio_text_equity"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_text_title_total_allocate" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_portfolio_text_equity"
                     style="@style/Awonar.Text.Default.Normal"
                     setEquity="@{+viewModel.equityState}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="@+id/awonar_portfolio_text_title_profit"
+                    app:layout_constraintEnd_toEndOf="@+id/awonar_portfolio_text_profit"
                     app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_text_title_total_allocate"
                     tools:text="@string/awonar_example_name" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/awonar_portfolio_text_title_profit"
+                    style="@style/Awonar.Text.Default.Normal.Gray"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/awonar_text_profit"
+                    app:layout_constraintEnd_toStartOf="@+id/awonar_portfolio_text_profit"
+                    app:layout_constraintTop_toTopOf="@+id/awonar_portfolio_text_title_available" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/awonar_portfolio_text_profit"
                     style="@style/Awonar.Text.Default.Normal"
                     setProfit="@{+viewModel.profitState}"
                     android:layout_width="wrap_content"

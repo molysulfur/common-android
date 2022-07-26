@@ -97,4 +97,8 @@
     <string name="awoanr_publish_feed_text_success">Publish Feed is Successful.</string>
     <string name="awonar_feed_title_empty">Empty Post</string>
     <string name="awoanr_feed_text_empty_description">The Timeline is empty It seems there are no shares insights.</string>
+    <string name="awonar_text_avaliable">Avaliable:</string>
+    <string name="awonar_text_allocate">Allocate:</string>
+    <string name="awonar_text_equity">Equity:</string>
+    <string name="awonar_text_profit">Profit:</string>
 </resources>

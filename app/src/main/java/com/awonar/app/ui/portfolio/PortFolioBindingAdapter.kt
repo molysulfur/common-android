@@ -1,6 +1,7 @@
 package com.awonar.app.ui.portfolio
 
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +14,7 @@ import com.awonar.app.utils.ColorChangingUtil
 import com.awonar.app.widget.CopierPositionCardView
 import com.awonar.app.widget.PositionView
 import com.awonar.app.widget.InstrumentPositionCardView
+import com.molysulfur.library.utils.ColorUtils
 
 @BindingAdapter("setUserPortfolio", "viewModel", "column1", "column2", "column3", "column4")
 fun setUserPortfolio(
@@ -47,7 +49,7 @@ fun setAvaliable(
     avaliable: Float,
 ) {
     with(textView) {
-        text = "Avaliable: $%.2f".format(avaliable)
+        text = " $%.2f".format(avaliable)
     }
 }
 
@@ -57,7 +59,7 @@ fun setAllocate(
     allocate: Float,
 ) {
     with(textView) {
-        text = "Allocate: $%.2f".format(allocate)
+        text = " $%.2f".format(allocate)
     }
 }
 
@@ -74,7 +76,7 @@ fun setProfit(
                 profit
             )
         )
-        text = "Profit: $%.2f".format(profit)
+        text = " $%.2f".format(profit)
     }
 }
 
@@ -84,7 +86,10 @@ fun setEquity(
     equity: Float,
 ) {
     with(textView) {
-        text = "Equity: $%.2f".format(equity)
+        setTextColor(
+            ContextCompat.getColor(this.context, R.color.awonar_color_primary)
+        )
+        text = " $%.2f".format(equity)
     }
 }
 
