@@ -87,7 +87,6 @@ class OrderViewModel @Inject constructor(
     val openOrderState get() = _openOrderState.receiveAsFlow()
     private val _orderSuccessState = Channel<String>(capacity = Channel.CONFLATED)
     val orderSuccessState get() = _orderSuccessState.receiveAsFlow()
-
     /**
      * first = amount
      * second = rate
