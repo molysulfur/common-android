@@ -27,6 +27,7 @@ import com.molysulfur.library.extension.toast
 import com.molysulfur.library.utils.launchAndRepeatWithViewLifecycle
 import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import kotlin.math.abs
 
 class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogViewModel>() {
@@ -51,6 +52,23 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         savedInstanceState: Bundle?,
     ): View {
         observeActivityViewModel()
+        launchAndRepeatWithViewLifecycle {
+            orderViewModel.showNoTp.collectIndexed { _, value ->
+                with(binding.awonarDialogOrderIncludeTp) {
+                    awonarIncludeSetTpSwitchNoset.visibility =
+                        if (value) View.VISIBLE else View.INVISIBLE
+                }
+            }
+        }
+        launchAndRepeatWithViewLifecycle {
+            orderViewModel.showNoSl.collectIndexed { _, value ->
+                with(binding.awonarDialogOrderIncludeSl) {
+                    awonarIncludeSetTpslSwitchNoset.visibility =
+                        if (value) View.VISIBLE else View.INVISIBLE
+
+                }
+            }
+        }
         /**
          * TP SL Observer
          */
@@ -505,17 +523,18 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
         }
         with(binding.awonarDialogOrderIncludeTp) {
             awonarIncludeSetTpSwitchNoset.setOnCheckedChangeListener { buttonView, isChecked ->
+                orderViewModel.setNoTp(!isChecked)
                 if (isChecked) {
-                    awonarIncludeSetTpInputNumber.editText?.apply {
-                        setText("")
-                        hint = "No Set"
-                        isEnabled = false
-                    }
-                } else {
                     awonarIncludeSetTpInputNumber.editText?.apply {
                         setTakeProfitText(orderViewModel.takeProfit.value)
                         hint = ""
                         isEnabled = true
+                    }
+                } else {
+                    awonarIncludeSetTpInputNumber.editText?.apply {
+                        setText("")
+                        hint = "No Set"
+                        isEnabled = false
                     }
                 }
             }
@@ -539,7 +558,7 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                     }
                 }
             }
-            awonarIncludeSetTpSwitchNoset.text = "Set TP"
+            awonarIncludeSetTpTextNoset.text = "Set TP"
             awonarIncludeSetTpButtonToggle.setOnClickListener {
                 orderActivityViewModel.toggleShowTp()
             }
@@ -562,19 +581,22 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                 }
             }
         }
+
         with(binding.awonarDialogOrderIncludeSl) {
+            awonarIncludeSetTpslTextNoset.text = "Set SL"
             awonarIncludeSetTpslSwitchNoset.setOnCheckedChangeListener { buttonView, isChecked ->
+                orderViewModel.setNoSl(!isChecked)
                 if (isChecked) {
-                    awonarIncludeSetTpslInputNumber.editText?.apply {
-                        setText("")
-                        hint = "No Set"
-                        isEnabled = false
-                    }
-                } else {
                     awonarIncludeSetTpslInputNumber.editText?.apply {
                         setStopLossText(orderViewModel.stopLossState.value)
                         hint = ""
                         isEnabled = true
+                    }
+                } else {
+                    awonarIncludeSetTpslInputNumber.editText?.apply {
+                        setText("")
+                        hint = "No Set"
+                        isEnabled = false
                     }
                 }
             }
@@ -594,7 +616,6 @@ class OrderDialog : InteractorDialog<OrderMapper, OrderDialogListener, DialogVie
                     }
                 }
             }
-            awonarIncludeSetTpslSwitchNoset.text = "Set SL"
             awonarIncludeSetTpslButtonToggle.setOnClickListener {
                 orderActivityViewModel.toggleShowSl()
             }

@@ -58,6 +58,8 @@ class OrderViewModel @Inject constructor(
     private val _marketType = MutableStateFlow(MarketOrderType.ENTRY_ORDER)
     private val _portfolioState = MutableStateFlow<Portfolio?>(null)
     private val _exposureState = MutableStateFlow(0f)
+    private val _isNoTp = MutableStateFlow(false)
+    private val _isNoSl = MutableStateFlow(false)
 
     private val _priceState = MutableStateFlow(0f)
     val priceState get() = _priceState
@@ -98,8 +100,6 @@ class OrderViewModel @Inject constructor(
     val stopLossState: StateFlow<Pair<Float, Float>> get() = _stopLossState
     private val _errorState = MutableStateFlow("")
     val errorState: StateFlow<String> get() = _errorState
-    private val _amountError = MutableStateFlow("")
-    val amountError: StateFlow<String> get() = _amountError
     private val _overnightFeeMessage = MutableStateFlow("")
     val overnightFeeMessage: StateFlow<String> get() = _overnightFeeMessage
     private val _depositState = MutableStateFlow(false)
@@ -111,6 +111,11 @@ class OrderViewModel @Inject constructor(
     val minMaxSl get() = _minMaxSl
     private val _minMaxTp = MutableStateFlow(Pair(0f, 0f))
     val minMaxTp get() = _minMaxTp
+
+    private val _showNoTp = MutableStateFlow(false)
+    val showNoTp = _showNoTp
+    private val _showNoSl = MutableStateFlow(false)
+    val showNoSl = _showNoSl
 
     init {
         viewModelScope.launch {
@@ -138,6 +143,20 @@ class OrderViewModel @Inject constructor(
                 val isBuy = flow[3] as? Boolean
                 val instrument = flow[4] as? Instrument
 
+                when {
+                    leverage == 1 && isBuy == true -> {
+                        _showNoTp.value = true
+                        _showNoSl.value = true
+                    }
+                    leverage == 1 && isBuy == false -> {
+                        _showNoTp.value = true
+                        _showNoSl.value = false
+                    }
+                    else -> {
+                        _showNoTp.value = false
+                        _showNoSl.value = false
+                    }
+                }
                 /**
                  * MinMax Take Profit and StopLoss
                  */
@@ -187,9 +206,6 @@ class OrderViewModel @Inject constructor(
                     )
                 )
                 _exposureState.value = _amountState.value.first.times(leverage)
-                if (result is Result.Error) {
-                    _amountError.value = result.exception.message ?: ""
-                }
 
                 _buyOrSellMessage.value = when (isBuy) {
                     true -> "Buy"
@@ -343,8 +359,14 @@ class OrderViewModel @Inject constructor(
         viewModelScope.launch {
             initState.collect {}
         }
+    }
 
+    fun setNoTp(isNoTp: Boolean) {
+        _isNoTp.value = isNoTp
+    }
 
+    fun setNoSl(isNoSl: Boolean) {
+        _isNoSl.value = isNoSl
     }
 
     fun setAmountTp(
@@ -692,6 +714,8 @@ class OrderViewModel @Inject constructor(
 
     fun submit() {
         viewModelScope.launch {
+            val isNoTp = _isNoTp.value
+            val isNoSl = _isNoSl.value
             if (_depositState.value) {
                 return@launch
             }
@@ -701,8 +725,8 @@ class OrderViewModel @Inject constructor(
                 isBuy = _isBuyState.value == true,
                 leverage = _leverageState.value,
                 rate = _rateState.value ?: _priceState.value,
-                stopLoss = _stopLossState.value.second,
-                takeProfit = _takeProfit.value.second,
+                stopLoss = if (isNoSl) 0f else _stopLossState.value.second,
+                takeProfit = if (isNoTp) 0f else _takeProfit.value.second,
                 units = _amountState.value.second
             )
             openOrderUseCase(request).collectLatest {
