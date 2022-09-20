@@ -6,10 +6,12 @@ import android.os.Parcel
 import android.os.Parcelable
 import android.util.AttributeSet
 import android.util.SparseArray
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import androidx.annotation.LayoutRes
 import androidx.annotation.RequiresApi
-
+import androidx.customview.view.AbsSavedState
 
 abstract class BaseViewGroup : FrameLayout {
     constructor(context: Context) : super(context) {
@@ -47,7 +49,7 @@ abstract class BaseViewGroup : FrameLayout {
     }
 
     private fun inflateLayout() {
-        View.inflate(context, getLayoutResource(), this)
+        addView(getLayoutResource())
     }
 
     override fun dispatchSaveInstanceState(container: SparseArray<Parcelable>) {
@@ -69,7 +71,7 @@ abstract class BaseViewGroup : FrameLayout {
     }
 
     override fun onSaveInstanceState(): Parcelable? {
-        return super.onSaveInstanceState()?.let { saveInstanceState(it) }
+        return saveInstanceState(super.onSaveInstanceState())
     }
 
     protected fun onSaveInstanceChildState(ss: ChildSavedState): Parcelable {
@@ -102,7 +104,7 @@ abstract class BaseViewGroup : FrameLayout {
         }
     }
 
-    abstract class ChildSavedState : BaseSavedState {
+    abstract class ChildSavedState : AbsSavedState {
         var childrenStates: SparseArray<Any>? = null
 
         constructor(superState: Parcelable) : super(superState)
@@ -119,15 +121,13 @@ abstract class BaseViewGroup : FrameLayout {
         }
     }
 
-    abstract fun getLayoutResource(): Int
-
+    abstract fun getLayoutResource(): View
 
     abstract fun setupStyleables(attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int)
 
     abstract fun setup()
 
-    abstract fun saveInstanceState(state: Parcelable): Parcelable
+    abstract fun saveInstanceState(state: Parcelable?): Parcelable?
 
     abstract fun restoreInstanceState(state: Parcelable)
-
 }

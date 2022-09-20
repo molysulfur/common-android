@@ -4,10 +4,6 @@ import retrofit2.Response
 import timber.log.Timber
 import java.util.regex.Pattern
 
-/**
- * Common class used by API responses.
- * @param <T> the type of the response object
-</T> */
 @Suppress("unused") // T is used in extending classes
 sealed class ApiResponse<T> {
     companion object {
@@ -40,11 +36,10 @@ sealed class ApiResponse<T> {
 }
 
 /**
- * separate class for HTTP 204 resposes so that we can make ApiSuccessResponse's body non-null.
+ * separate class for HTTP 204 responses so that we can make ApiSuccessResponse's body non-null.
  */
 class ApiEmptyResponse<T> : ApiResponse<T>()
 
-@Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 data class ApiSuccessResponse<T>(
     val body: T,
     val links: Map<String, String>
@@ -61,7 +56,7 @@ data class ApiSuccessResponse<T>(
                 null
             } else {
                 try {
-                    Integer.parseInt(matcher.group(1))
+                    Integer.parseInt(matcher.group(1)!!)
                 } catch (ex: NumberFormatException) {
                     Timber.w("cannot parse next page from %s", next)
                     null
@@ -71,8 +66,8 @@ data class ApiSuccessResponse<T>(
     }
 
     companion object {
-        private val LINK_PATTERN by lazy { Pattern.compile("<([^>]*)>[\\s]*;[\\s]*rel=\"([a-zA-Z0-9]+)\"") }
-        private val PAGE_PATTERN by lazy { Pattern.compile("\\bpage=(\\d+)") }
+        private val LINK_PATTERN = Pattern.compile("<([^>]*)>[\\s]*;[\\s]*rel=\"([a-zA-Z0-9]+)\"")
+        private val PAGE_PATTERN = Pattern.compile("\\bpage=(\\d+)")
         private const val NEXT_LINK = "next"
 
         private fun String.extractLinks(): Map<String, String> {
@@ -82,7 +77,7 @@ data class ApiSuccessResponse<T>(
             while (matcher.find()) {
                 val count = matcher.groupCount()
                 if (count == 2) {
-                    links[matcher.group(2)] = matcher.group(1)
+                    links[matcher.group(2)!!] = matcher.group(1)!!
                 }
             }
             return links

@@ -1,4 +1,4 @@
-package com.molysulfur.library.network
+package com.molysulfur.library.usecase
 
 import androidx.lifecycle.MediatorLiveData
 import com.molysulfur.library.result.Result
